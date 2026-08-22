@@ -1,0 +1,21 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Cache de testes
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Dataset gerado (grande, reproduzível via dataset/generator.py)
+data/
+
+# Editores / SO
+.vscode/
+.idea/
+.DS_Store
