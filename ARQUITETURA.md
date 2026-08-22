@@ -12,6 +12,8 @@ Ele não substitui os outros três:
 | *como está hoje?* — estado, decisões tomadas na execução, pontos abertos | `HANDOFF.md` |
 | *quanto deu?* — todos os números medidos, com a metodologia de cada limiar | `reports/part1_metrics.md` (**gerado**) |
 | *o que cada peça é e como se encaixam?* | este arquivo |
+| *em que literatura isso se apoia?* | `REFERENCIAS.md` |
+| *e se fosse fim-a-fim?* | `PLANO_CNN_FIM_A_FIM.md` |
 
 Ambiente: sempre `/home/loizm/work/TCC-2/.venv/bin/python` (3.11). O `python3` do
 sistema é 3.14 e não tem as bibliotecas.
@@ -21,29 +23,37 @@ sistema é 3.14 e não tem as bibliotecas.
 ## 1. O sistema em uma tela
 
 O sistema final identifica os parâmetros de uma planta a partir de **uma imagem**
-de resposta ao degrau, em quatro estágios:
+de resposta ao degrau, em três estágios:
 
 ```
 image.png
    │
-   ├─[A]─► extração da curva            U-Net → polilinha em pixels
+   ├─[A]─► extração da curva          U-Net (ou extrator clássico) → polilinha
    │
-   ├─[B]─► calibração dos eixos         moldura + ticks + OCR + RANSAC
+   ├─[B]─► calibração dos eixos       moldura + ticks + OCR opcional + RANSAC
    │            │
    │            ▼
-   │      série y(t) em unidades físicas
+   │      série y(t)  ──► adimensional sempre; física quando a calibração fecha
    │            │
-   ├─[C]─► estimador neural 1D          ordem do sistema + chute inicial
-   │            │
-   └─[D]─► refinamento least_squares    ──► K, τ, θ, ωn, ζ
+   └─[D]─► identificação least_squares   multi-start + AIC  ──► K, τ, θ, ωn, ζ
 ```
 
-A divisão entre **C** e **D** é o argumento central do trabalho. Identificação
-por otimização não-linear atinge erro sub-1%, mas falha de dois modos clássicos:
-estrutura errada e mínimo local por inicialização ruim. Rede neural é excelente
-nessas duas coisas e medíocre em precisão numérica; o otimizador é o oposto. É
-isso que define **qual é exatamente a contribuição da rede** — sem esse
-enquadramento, "por que não usar só mínimos quadrados?" não tem resposta boa.
+**Havia um quarto estágio.** O plano original punha um `[C] estimador neural 1D`
+entre B e D, para escolher a estrutura e dar o chute inicial ao otimizador. Ele foi
+**medido e removido** em 22/08/2026 (`PLANO.md §1.3`): a arbitragem por AIC acerta
+**100%** onde a distinção entre FOPDT e 2ª ordem é observável (ζ < 1,6), e onde erra
+o custo é 9e-04 de NRMSE — porque ali as duas estruturas são indistinguíveis e
+nenhuma rede pode superar a ausência de informação no dado. O multi-start clássico
+convergiu em 400/400 amostras, e o estágio D reduz 72% o NRMSE do chute inicial,
+contra o alvo de 40% que o critério original pedia da rede.
+
+Resta **um** modelo treinado: a U-Net do estágio A. Segmentar uma curva de um
+gráfico com resolução, paleta, grade, legenda e distratores arbitrários é o problema
+de aprendizado profundo deste trabalho — e é onde a contribuição está.
+
+E a pergunta de banca "por que não usar só mínimos quadrados?" tem hoje uma resposta
+melhor que a original: **é exatamente o que se usa, e aqui está a estratificação que
+mostra onde isso basta e onde nada bastaria.**
 
 ### Onde cada Parte do trabalho entra
 
@@ -51,10 +61,14 @@ enquadramento, "por que não usar só mínimos quadrados?" não tem resposta boa
 |---|---|---|
 | **Parte 1** | gerador de dados + **D** + prova de solubilidade com oráculo | concluída, 33/33 verdes |
 | **Parte 2** | **A** e **B** — substituir o oráculo por percepção real | não iniciada |
-| **Parte 3** | **C** + integração + validação fora da distribuição | não iniciada |
+| **Parte 3** | validação fora da distribuição + PID/IMC + baseline fim-a-fim | não iniciada |
 
-A Parte 1 curto-circuita A, B e C: lê a série direto do gabarito e roda só o D.
+A Parte 1 curto-circuita A e B: lê a série direto do gabarito e roda só o D.
 Ver §7 (glossário, *oráculo*).
+
+A Parte 3 não constrói componente novo — o pipeline está completo ao fim da Parte 2.
+Ela **mede**: fora da distribuição, utilidade para controle, e a CNN fim-a-fim como
+baseline (`PLANO_CNN_FIM_A_FIM.md`).
 
 ---
 
@@ -482,7 +496,7 @@ interseção entre máscara predita e verdadeira, dividida pela área da união.
 | `plot_bbox_px`, `axis_affine`, `ticks` | Parte 2, Estágio B — verdade de terra de calibração |
 | `render` | os estratos do critério 2.7, já registrados amostra a amostra |
 | MAPE do oráculo | o denominador do critério 2.6 |
-| `series` | Parte 3, Estágio C — treino do estimador |
+| `series` | Parte 1, oráculo do estágio D; Parte 2, verdade de terra do critério 2.2 |
 | erro do extrator ingênuo por estilo de traço | dado de projeto do Estágio A: 0,184 px em linha sólida contra **0,896 px** em pontilhada, com **43,8% das colunas sem tinta** em `:` (§5.1 do relatório) — diz de antemão quanto será preciso interpolar |
 
 E o modo oráculo continua sendo o instrumento de medida: a Parte 2 não pergunta

@@ -12,29 +12,33 @@ que vão para a monografia.
 
 ---
 
-## O pipeline em quatro estágios
+## O pipeline em três estágios
 
 ```
 image.png
    │
-   ├─[A]─► extração da curva            U-Net → polilinha em pixels
+   ├─[A]─► extração da curva          U-Net (ou extrator clássico) → polilinha
    │
-   ├─[B]─► calibração dos eixos         moldura + ticks + OCR + RANSAC
+   ├─[B]─► calibração dos eixos       moldura + ticks + OCR opcional + RANSAC
    │            │
    │            ▼
-   │      série y(t) em unidades físicas
+   │      série y(t)  ──► adimensional sempre; física quando a calibração fecha
    │            │
-   ├─[C]─► estimador neural 1D          ordem do sistema + chute inicial
-   │            │
-   └─[D]─► refinamento least_squares    ──► K, τ, θ, ωn, ζ
+   └─[D]─► identificação least_squares   multi-start + AIC  ──► K, τ, θ, ωn, ζ
 ```
 
-A separação entre **C** e **D** é o argumento central do trabalho. Otimização
-não-linear atinge erro sub-1%, mas falha de dois modos clássicos: escolher a
-estrutura errada e cair em mínimo local por inicialização ruim. Rede neural é
-boa exatamente nessas duas coisas e medíocre em precisão numérica; o otimizador
-é o oposto. Isso define qual é a contribuição da rede — sem esse enquadramento,
-"por que não usar só mínimos quadrados?" não tem resposta boa.
+**O plano original tinha quatro estágios.** Havia um `[C] estimador neural 1D`
+entre B e D, encarregado de escolher a estrutura do modelo e dar o chute inicial ao
+otimizador. Ele foi **medido e removido** (`PLANO.md §1.3`): a arbitragem por AIC
+acerta 100% onde a distinção entre FOPDT e 2ª ordem é observável, e onde erra as
+duas estruturas são indistinguíveis e o custo é 9e-04 de NRMSE. O multi-start
+clássico convergiu em 400/400 amostras. Sobrou um modelo treinado — a U-Net do
+estágio A — e um resultado mais forte que o argumento que ele substituiu.
+
+Duas decisões de robustez acompanham essa: o **OCR é opcional** (a saída
+adimensional — estrutura, ζ, ωn·T, θ/T — não depende de calibração e é sempre
+produzida) e há um **extrator clássico sem rede** como contingência do risco de GPU
+e como baseline que justifica a U-Net.
 
 ### Estado do trabalho
 
@@ -42,11 +46,11 @@ boa exatamente nessas duas coisas e medíocre em precisão numérica; o otimizad
 |---|---|---|
 | **Parte 1** | gerador de dados + estágio **D** + prova de solubilidade com oráculo | **concluída**, 33/33 testes verdes |
 | **Parte 2** | estágios **A** e **B** — substituir o oráculo por percepção real | planejada (`PLANO_PARTE2.md`), não iniciada |
-| **Parte 3** | estágio **C** + integração + validação fora da distribuição | não iniciada |
+| **Parte 3** | validação fora da distribuição + PID/IMC + baseline fim-a-fim | não iniciada |
 
-A Parte 1 curto-circuita A, B e C: lê a série direto do gabarito (o *oráculo*) e
-roda só o estágio D. Serve para provar que o problema é solúvel e para medir o
-teto de desempenho contra o qual a percepção real será comparada.
+A Parte 1 curto-circuita A e B: lê a série direto do gabarito (o *oráculo*) e roda
+só o estágio D. Serve para provar que o problema é solúvel e para medir o teto de
+desempenho contra o qual a percepção real será comparada.
 
 ---
 
@@ -70,9 +74,11 @@ TCC/
 │   └── part1_metrics.md        GERADO pela suíte — não editar à mão
 │
 ├── PLANO.md                    plano das 3 partes, decisões e critérios de aceitação
-├── PLANO_PARTE2.md             plano de execução da Parte 2, em 6 blocos
+├── PLANO_PARTE2.md             plano de execução da Parte 2, em blocos
+├── PLANO_CNN_FIM_A_FIM.md      plano do baseline fim-a-fim: prós, contras e passos
 ├── HANDOFF.md                  estado atual, decisões tomadas e pontos abertos
 ├── ARQUITETURA.md              mapa detalhado, fluxo de dados e glossário
+├── REFERENCIAS.md              bibliografia mapeada decisão por decisão
 ├── img.py               (264)  LEGADO DEFEITUOSO — evidência, não código
 ├── pytest.ini                  testpaths e marcador `slow`
 ├── requirements.txt            ambiente PINADO (um critério compara sha256 de PNG)
@@ -308,7 +314,9 @@ Gerar um dataset fora dos testes:
 | *por que assim?* — decisões de arquitetura, critérios de aceitação | `PLANO.md` |
 | *como está hoje?* — estado, decisões da execução, pontos abertos | `HANDOFF.md` |
 | *o que cada peça é e como se encaixam?* — mapa detalhado e glossário | `ARQUITETURA.md` |
-| *o que vem agora?* — Parte 2 em 6 blocos, com critérios e handoffs | `PLANO_PARTE2.md` |
+| *o que vem agora?* — Parte 2 em blocos, com critérios e handoffs | `PLANO_PARTE2.md` |
+| *e se fosse fim-a-fim?* — o baseline rejeitado, com prós, contras e passos | `PLANO_CNN_FIM_A_FIM.md` |
+| *em que me apoio?* — literatura que sustenta cada decisão | `REFERENCIAS.md` |
 | *quanto deu?* — todos os números medidos, com a metodologia de cada limiar | `reports/part1_metrics.md` (**gerado**) |
 
 Comece por `ARQUITETURA.md` se o objetivo é entender o código; por `HANDOFF.md`

@@ -1,25 +1,39 @@
 # Parte 2 — Plano de execução em blocos
 
 > **Para executores (humanos ou agentes):** este documento **não altera** o `PLANO.md`.
-> Ele decompõe a Parte 2 em seis blocos entregáveis, cada um com portão numérico
-> próprio e um **handoff** escrito ao final. Os alvos dos critérios 2.1 a 2.8 são
+> Ele decompõe a Parte 2 em blocos entregáveis, cada um com portão numérico
+> próprio e um **handoff** escrito ao final. Os alvos dos critérios 2.1 a 2.11 são
 > citados verbatim do `PLANO.md §PARTE 2` e **não podem ser negociados aqui**.
 > Os passos usam caixas (`- [ ]`) para acompanhamento.
+>
+> **Revisão de 22/08/2026 — leia antes de executar.** O `PLANO.md` foi revisado e
+> três decisões novas mudam este plano:
+> - **§1.3 (Decisão C):** o Estágio C foi medido e **removido**. O pipeline tem três
+>   estágios, A → B → D. Nada neste documento muda por isso (a Parte 2 nunca
+>   construiu o C), mas o handoff final do Bloco 5 muda — ver Bloco 5, Passo 8.
+> - **§1.7 (Decisão E):** o OCR passa a ser **opcional**, não estrutural. Afeta o
+>   Bloco 2 e acrescenta os critérios **2.9** e **2.11**.
+> - **§1.8 (Decisão F):** um extrator clássico sem rede entra como Plano B do risco
+>   de GPU e como baseline do Estágio A. Acrescenta o **Bloco 3b** e o critério **2.10**.
 
 **Objetivo:** substituir o oráculo da Parte 1 por percepção real (Estágios A e B) e
 medir quanto o pipeline degrada, com o critério 2.6 (ΔMAPE ≤ 3 p.p.) como veredito.
 
-**Arquitetura:** `imagem → [B] calibração dos eixos (determinístico + OCR) → [A]
-segmentação da curva (U-Net) → polilinha → série y(t) em unidades físicas → [D]
+**Arquitetura:** `imagem → [B] calibração dos eixos (determinístico + OCR opcional) → [A]
+segmentação da curva (U-Net, ou extrator clássico) → polilinha → série y(t) → [D]
 `identify()` da Parte 1, inalterado`. O Estágio B vem antes do A na ordem de
 execução porque é determinístico, não treina e dá feedback em segundos — é o
 conselho registrado em `HANDOFF.md §9, item 5`.
 
+**Não há Estágio C.** O pipeline entregue pela Parte 2 já é o pipeline final:
+`identify()` consome a série extraída diretamente. Ver `PLANO.md §1.3`.
+
 **Stack:** Python 3.11 (`.venv`), PyTorch (CPU ou CUDA), OpenCV, scikit-image,
 Tesseract via `pytesseract`, NumPy/SciPy, pytest.
 
-**Spec:** `PLANO.md` §PARTE 2 (critérios 2.1–2.8) e §1.1–1.3 (decisões A, B, C);
-`HANDOFF.md` §4 (o que a Parte 1 entrega) e §9 (ordem de retomada).
+**Spec:** `PLANO.md` §PARTE 2 (critérios 2.1–2.11) e §1.1–1.3, §1.7, §1.8
+(decisões A, B, C, E, F); `HANDOFF.md` §4 (o que a Parte 1 entrega) e §9 (ordem
+de retomada).
 O plano argumenta a partir da spec — leia os dois.
 
 ---
@@ -69,21 +83,30 @@ convenções verificadas no código da Parte 1.
 |---|---|---|---|---|---|
 | **0** | Ambiente + dataset em disco + guarda do relatório | — (portões próprios G0.1–G0.4) | decide | 0,5–1 dia | +3 h de timebox |
 | **1** | Estágio B, geometria: moldura e ticks, **sem OCR** | — (portões G1.1–G1.3) | não | 1 dia | minutos |
-| **2** | Estágio B completo: OCR + RANSAC + consistência | **2.3, 2.4, 2.5** | não | 1–1,5 dia | minutos |
-| **3** | Estágio A: U-Net, perda Dice+BCE, treino | **2.1, 2.7** | **sim, muda tudo** | 0,5 dia | 20–35 h/rodada em CPU; 0,5–1 h com GPU |
+| **2** | Estágio B completo: OCR **opcional** + RANSAC + consistência + saída em dois níveis | **2.3, 2.4, 2.5, 2.9, 2.11** | não | 1–1,5 dia | minutos |
+| **3b** | Estágio A **sem rede**: extrator clássico (§1.8) | **2.10** (metade) | **não** | 0,5–1 dia | minutos |
+| **3** | Estágio A: U-Net, perda Dice+BCE, treino | **2.1, 2.7, 2.10** | **sim, muda o prazo — não mais o escopo** | 0,5 dia | 20–35 h/rodada em CPU; 0,5–1 h com GPU |
 | **4** | Estágio A: pós-processamento → polilinha | **2.2** | não | 1 dia | minutos |
 | **5** | Integração A+B+D, degradação, relatório | **2.6, 2.8** | não | 1,5–2 dias | ~10 min de suíte |
 
 **Grafo de dependência** — o que pode andar em paralelo:
 
 ```
-Bloco 0 ──┬─> Bloco 1 ──> Bloco 2 ──┐
-          │                          ├─> Bloco 5
-          ├─> Bloco 3 (treino) ──────┤
-          └─> Bloco 4 ───────────────┘
+Bloco 0 ──┬─> Bloco 1 ──> Bloco 2 ──────┐
+          │                              │
+          ├─> Bloco 3b (clássico) ───────┤
+          │        │                     ├─> Bloco 5
+          ├─> Bloco 3  (U-Net, treino) ──┤
+          └─> Bloco 4 ───────────────────┘
              (contra mask.png verdadeira,
               não espera o treino do Bloco 3)
 ```
+
+**O Bloco 3b é o que tira a GPU do caminho crítico.** Ele produz uma máscara com a
+mesma assinatura de `predict_mask`, então o Bloco 5 fecha — e a Parte 2 entrega —
+**mesmo que o Bloco 3 nunca termine**. A U-Net deixa de ser pré-requisito e passa a
+ser melhoria mensurável (critério 2.10). Se o driver NVIDIA não subir no timebox do
+Bloco 0, execute 3b e siga; o Bloco 3 vira trabalho de fundo.
 
 O ganho de escalonamento está no Bloco 4: ele se desenvolve contra a
 `mask.png` **verdadeira** da Parte 1, que é a segmentação ideal. Então ele pode
@@ -118,13 +141,14 @@ Se ele não puder ser escrito sem inventar um número, o bloco não terminou.
 
 | Arquivo | Responsabilidade | Bloco |
 |---|---|---|
-| `identify/calibrate.py` | Estágio B inteiro: moldura, ticks, OCR, RANSAC, consistência | 1, 2 |
+| `identify/calibrate.py` | Estágio B inteiro: moldura, ticks, OCR opcional, RANSAC, consistência | 1, 2 |
+| `identify/extract_classical.py` | Estágio A sem rede: cor modal, componentes, rejeição de retas (§1.8) | 3b |
 | `identify/extract.py` | Estágio A: U-Net, letterbox, perda, inferência de máscara | 3 |
 | `identify/polyline.py` | Máscara → polilinha → série física (pós-processamento puro) | 4 |
-| `identify/pipeline.py` | Cola A+B+D; a única função que a Parte 3 vai importar | 5 |
+| `identify/pipeline.py` | Cola A+B+D; a única função que a Parte 3 vai importar. Saída em dois níveis (§1.7) | 5 |
 | `train_unet.py` (raiz) | Script de treino, fora do pacote (não é biblioteca) | 3 |
 | `tests/part2/conftest.py` | Fixtures da Parte 2 + geração de `reports/part2_strata.md` | 1→5 |
-| `tests/part2/test_part2.py` | Critérios 2.1 a 2.8 | 1→5 |
+| `tests/part2/test_part2.py` | Critérios 2.1 a 2.11 | 1→5 |
 | `tests/conftest.py` | **modificar**: guarda contra sobrescrever o relatório da Parte 1 | 0 |
 
 Motivo de `polyline.py` separado de `extract.py`: o pós-processamento é
@@ -139,6 +163,12 @@ exatamente a serialização que o grafo acima evita.
 **Por que primeiro:** é a dívida do Dia 1 do cronograma que a Parte 1 nunca pagou.
 `data/` está vazio, `torch`, `cv2` e `tesseract` não existem no ambiente, e
 `nvidia-smi` não existe na máquina. Nada da Parte 2 anda sem isto.
+
+> **Revisão de 22/08/2026:** o timebox de 3 h do driver deixou de ser crítico. Se
+> estourar, siga para o Bloco 3b (extrator clássico, `PLANO.md §1.8`) e trate o
+> Bloco 3 como trabalho de fundo. `torch` continua na lista de dependências, mas
+> **não** é bloqueio para fechar a Parte 2. O portão G0.2 continua valendo: a
+> decisão de dispositivo tem de ficar registrada por escrito de todo modo.
 
 **Arquivos:**
 - Modificar: `requirements.txt`
@@ -455,7 +485,7 @@ def test_samples() -> list[dict]:
 `tests/part2/test_part2.py`:
 
 ```python
-"""Critérios 2.1 a 2.8 do PLANO §PARTE 2, mais os portões internos G1/G2."""
+"""Critérios 2.1 a 2.11 do PLANO §PARTE 2, mais os portões internos G1/G2/G3b."""
 from __future__ import annotations
 
 import numpy as np
@@ -697,9 +727,18 @@ as assinaturas exatas de `detect_plot_bbox` e `detect_tick_pixels` para o Bloco 
 
 ---
 
-# Bloco 2 — Estágio B completo: OCR, RANSAC e consistência
+# Bloco 2 — Estágio B completo: OCR opcional, RANSAC e consistência
 
-**Critérios do PLANO fechados aqui: 2.3, 2.4, 2.5.**
+**Critérios do PLANO fechados aqui: 2.3, 2.4, 2.5, 2.9, 2.11.**
+
+> **Decisão E (`PLANO.md §1.7`) — o OCR não é estrutural.** `ok = False` **não**
+> descarta a amostra: a saída adimensional (`order`, ζ, ωₙ·T, θ/T, K/y_faixa) não
+> depende de calibração nenhuma e tem de ser produzida de qualquer forma. Dois
+> critérios novos guardam isso: **2.9** (cobertura ≥ 90 %, estratificada por DPI —
+> impede que 2.3 e 2.4 sejam satisfeitos rejeitando tudo) e **2.11** (a saída
+> adimensional existe em 100 % das amostras, sem exceção levantada).
+> Acrescente aos campos de `Calibration` nada novo — `ok` e `reason` já bastam —
+> mas o **`px_to_data` não pode ser o único caminho de saída** do pipeline.
 
 **Arquivos:**
 - Modificar: `identify/calibrate.py`
@@ -1009,6 +1048,79 @@ Obrigatório, além do formato padrão: **a taxa de acerto do OCR por estrato**
 (`dpi`, `bg_color` escuro vs. claro, `has_grid`). É o número que o Bloco 5 vai
 precisar para explicar a degradação do critério 2.6 — sem ele, um ΔMAPE alto fica
 sem diagnóstico, que é justamente o que o `PLANO.md §1.2, ponto 3` quer evitar.
+
+---
+
+# Bloco 3b — Estágio A sem rede: extrator clássico
+
+**Critério do PLANO fechado aqui: metade do 2.10.** Decisão F, `PLANO.md §1.8`.
+
+**Por que antes do Bloco 3:** ele tira a GPU do caminho crítico. Ao fim deste bloco a
+Parte 2 **pode fechar** — o Bloco 5 integra, o critério 2.6 é medido, o entregável
+existe. O Bloco 3 (U-Net) passa a ser melhoria com número próprio, não pré-requisito.
+Se o timebox de driver do Bloco 0 estourou, este é o bloco que salva o cronograma.
+
+**Arquivos:**
+- Criar: `identify/extract_classical.py`
+- Modificar: `tests/part2/test_part2.py`
+- Criar: `HANDOFF_P2_3b.md`
+
+**Interfaces:**
+- Consome: `load_sample` (Parte 1); `detect_plot_bbox` (Bloco 1).
+- Produz, com **a mesma assinatura** de `predict_mask` do Bloco 3, para ser
+  intercambiável no Bloco 5:
+  - `extract_mask_classical(image_rgb: np.ndarray, bbox: tuple | None = None) -> np.ndarray`
+    — `uint8` 0/255, mesma resolução da entrada.
+
+A igualdade de assinatura é o ponto do bloco. O `pipeline.py` do Bloco 5 recebe o
+extrator como parâmetro (`extractor=...`), nunca o escolhe por dentro — é isso que
+permite medir os dois lado a lado no critério 2.10 sem duplicar código de avaliação.
+
+### Portões do bloco
+
+| # | Portão | Alvo |
+|---|---|---|
+| G3b.1 | IoU mediana contra `mask.png` verdadeira, conjunto de teste | ≥ 0,70 (piso baixo de propósito: é baseline, não solução) |
+| G3b.2 | Rejeição de grade e distratores: nenhuma reta de span completo na máscara | 0 violações, reusando `_spanning_rows` do critério 1.4e |
+| G3b.3 | Não importa `torch` | `import identify.extract_classical` com `torch` ausente do ambiente |
+| G3b.4 | Latência por imagem | < 200 ms |
+
+O G3b.3 é o que dá valor de contingência ao bloco, e tem de ser testado de verdade —
+um `import torch` acidental no topo do arquivo anula o propósito inteiro. Teste com
+`subprocess` num interpretador em que `torch` esteja bloqueado, não confie em leitura.
+
+- [ ] **Passo 1: escrever o teste do G3b.3 (o teste de contingência) primeiro**
+
+Ele é o mais fácil de esquecer e o único que não dá para consertar depois sem
+reescrever o módulo. Bloqueie `torch` em `sys.modules` e importe.
+
+- [ ] **Passo 2: implementar a segmentação por cor**
+
+Pipeline determinístico, sem parâmetro aprendido:
+
+1. **cor de fundo** = cor modal da imagem inteira;
+2. **modos de cor restantes**: quantize em ~32 níveis por canal e conte; cada modo com
+   fração ≥ 0,1 % dos pixels é candidato;
+3. **componentes conexas** de cada modo, dentro da `plot_bbox_px`;
+4. **rejeição de retas** — o passo que faz o método funcionar: grade, *spines* e
+   distratores são segmentos retos de span completo, e o critério 1.4e já implementa
+   essa detecção (`_spanning_rows`, com a verificação de cobertura de bins que foi
+   calibrada na Parte 1). **Reuse a implementação, não reescreva** — ela levou três
+   iterações para acertar o denominador;
+5. entre os sobreviventes, o de maior extensão horizontal é a curva;
+6. saída `uint8` 0/255.
+
+- [ ] **Passo 3: medir o G3b.1 e registrar por estrato**
+
+Registre IoU por `has_grid`, por fundo escuro e por `n_distractors`. A expectativa é
+que o método clássico caia justamente onde a U-Net deve ganhar — e essa comparação
+por estrato é o material do critério 2.10, mais informativa que as duas medianas.
+
+- [ ] **Passo 4: escrever `HANDOFF_P2_3b.md`**
+
+Registre explicitamente: **este extrator é baseline e contingência, não a solução**.
+Se ele empatar com a U-Net no critério 2.10, o achado é que a U-Net não se justifica
+neste dataset — e isso é um resultado a reportar, não um problema a esconder.
 
 ---
 
@@ -1785,18 +1897,28 @@ explicando por que ele é inofensivo.
 
 No `HANDOFF.md`, mude a linha da tabela de status de `Parte 2 | ... | **não
 iniciada**` para o estado real, e acrescente uma seção "O que a Parte 2 entrega
-para a Parte 3": a série extraída em unidades físicas é exatamente a entrada do
-Estágio C, e as distribuições de erro medidas aqui (jitter de extração em px, erro
-de escala em %, taxa de truncamento, fração de colunas sem tinta) são os
-**parâmetros da degradação simulada** que o `PLANO.md §PARTE 3` manda injetar no
-treino do estimador 1D. Sem esses números, a Parte 3 treina sobre uma degradação
-inventada.
+para a Parte 3".
+
+**Atenção — isto mudou com a revisão de 22/08/2026.** Não há mais Estágio C, então
+as distribuições de erro medidas aqui **não** alimentam treino de estimador nenhum.
+Elas passam a ter dois usos, ambos de medição:
+
+1. **Decomposição de erro para a monografia** (`PLANO.md §1.2`, ponto 3): quanto do
+   erro final vem da segmentação, quanto da calibração, quanto do estágio D. Registre
+   jitter de extração em px, erro de escala em %, taxa de truncamento e fração de
+   colunas sem tinta — são os números dessa decomposição.
+2. **O gatilho do critério 3.12** (`PLANO.md §1.3`): meça e registre a **taxa de
+   convergência de `identify` sobre as séries extraídas**. Se ela cair abaixo de 99 %,
+   ou se o NRMSE p95 passar de 0,02, a decisão de remover o Estágio C tem de ser
+   reaberta. Este é o único número que pode ressuscitar o estimador neural, e o
+   `HANDOFF_P2_5.md` **tem de reportá-lo explicitamente**, mesmo que passe folgado.
 
 ---
 
 ## Autorrevisão
 
-**Cobertura da spec.** Os oito critérios do `PLANO.md §PARTE 2` estão alocados:
+**Cobertura da spec.** Os onze critérios do `PLANO.md §PARTE 2` estão alocados
+(2.9 e 2.11 → Bloco 2; 2.10 → Blocos 3b e 3):
 2.1 e 2.7 → Bloco 3; 2.2 → Bloco 4 (piso) e Bloco 5 (operação); 2.3, 2.4, 2.5 →
 Bloco 2; 2.6 e 2.8 → Bloco 5. Os artefatos nomeados na spec — `identify/extract.py`,
 `identify/calibrate.py`, `tests/test_part2.py`, `reports/part2_strata.md` — todos

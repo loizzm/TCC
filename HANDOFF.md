@@ -14,7 +14,14 @@ O `python3` do sistema é 3.14 e não tem as bibliotecas.
 |---|---|---|
 | **Parte 1** | Gerador saneado + identificação clássica + prova de solubilidade com oráculo | **CONCLUÍDA — 33/33 testes verdes**, com o teste de mutação fechado (§3.5) |
 | Parte 2 | Estágio A (extração da curva) + Estágio B (calibração dos eixos) | **não iniciada** |
-| Parte 3 | Estágio C (estimador neural) + D (refinamento) + validação OOD | **não iniciada** |
+| Parte 3 | Validação OOD + PID/IMC + baseline fim-a-fim | **não iniciada** |
+
+> **Revisão de arquitetura, 22/08/2026.** O **Estágio C (estimador neural 1D) foi
+> medido e removido** do plano. O pipeline passou de quatro para três estágios:
+> A → B → D. Duas decisões de robustez acompanham: OCR opcional e extrator clássico
+> como contingência de GPU. Registro completo em `PLANO.md §1.3, §1.7, §1.8`; a
+> alternativa fim-a-fim ficou planejada em `PLANO_CNN_FIM_A_FIM.md`; as referências
+> que sustentam cada decisão em `REFERENCIAS.md`.
 
 A Parte 1 fecha o portão de aceitação: os sete critérios 1.1–1.7 do PLANO estão
 medidos, com os números na tabela mestre de `reports/part1_metrics.md`.
@@ -257,22 +264,32 @@ não do método — e é isso que sustenta o item 1 da §3.4.
 **Ideia central:** substituir o oráculo por percepção real e medir **quanto** o
 pipeline degrada. A métrica de sucesso é relativa ao oráculo da Parte 1.
 
-Arquivos a criar: `identify/extract.py`, `identify/calibrate.py`,
-`tests/test_part2.py`, `reports/part2_strata.md`.
+Arquivos a criar: `identify/extract.py`, `identify/extract_classical.py`,
+`identify/calibrate.py`, `identify/polyline.py`, `identify/pipeline.py`,
+`tests/part2/`, `reports/part2_strata.md`.
 
 - **Estágio A — segmentação da curva.** U-Net compacta (~1,2 M parâmetros, 4
   níveis, base 16 canais). Entrada 512×512 com preenchimento que **preserva a
   razão de aspecto**. Perda Dice + BCE. Pós-processamento: maior componente
   conexa → esqueletonização → mediana por coluna → polilinha.
-- **Estágio B — calibração dos eixos (determinístico + OCR).** Moldura por
+- **Estágio A sem rede (novo, `PLANO.md §1.8`).** `identify/extract_classical.py`:
+  segmentação por cor + rejeição de componentes retilíneas, mesma assinatura de
+  `predict_mask`, zero treino. É o Plano B do risco de GPU **e** o baseline que
+  justifica a U-Net (critério 2.10). Bloco 3b do `PLANO_PARTE2.md`.
+- **Estágio B — calibração dos eixos (determinístico + OCR opcional).** Moldura por
   projeção de gradientes, ticks por picos, OCR dos rótulos (Tesseract), ajuste
   afim px→dados por **RANSAC**, mais teste de consistência interna (ticks
-  equiespaçados) com bandeira `calibration_failed`.
+  equiespaçados). `ok = False` **não** descarta a amostra: a saída adimensional é
+  produzida de todo modo (`PLANO.md §1.7`).
 
-Critérios 2.1 a 2.8 (alvos no PLANO §PARTE 2). O mais importante é o **2.6**:
-degradação end-to-end vs. o oráculo da Parte 1, ΔMAPE ≤ 3 p.p.
+Critérios 2.1 a 2.11 (alvos no PLANO §PARTE 2). O mais importante continua sendo o
+**2.6**: degradação end-to-end vs. o oráculo da Parte 1, ΔMAPE ≤ 3 p.p. Novos:
+**2.9** (cobertura da calibração ≥ 90%), **2.10** (U-Net × extrator clássico) e
+**2.11** (saída adimensional sempre presente).
 
-**Dependência nova:** `torch` (ainda não instalado) e Tesseract/EasyOCR.
+**Dependência nova:** Tesseract via `pytesseract`, `cv2`, `scikit-image`. `torch`
+continua na lista, mas **deixou de ser bloqueio** — o Bloco 3b fecha a Parte 2 sem
+ele.
 
 **O que a Parte 1 já entrega para a Parte 2:**
 - `mask.png` como verdade de terra de segmentação, validada contra a
@@ -287,29 +304,49 @@ degradação end-to-end vs. o oráculo da Parte 1, ΔMAPE ≤ 3 p.p.
 
 ---
 
-## 5. O que falta — Parte 3 (Estágios C e D + OOD)
+## 5. O que falta — Parte 3 (validação OOD, controle e baseline fim-a-fim)
 
-Arquivos a criar: `dataset/series.py`, `identify/estimator.py`,
-`identify/pipeline.py`, `tests/test_part3.py`, `reports/final_report.md`, `ood/`.
+> **Reescrita em 22/08/2026.** A versão anterior desta seção era "Estágios C e D + OOD".
+> O Estágio C foi removido (`PLANO.md §1.3`) e o D já existe desde a Parte 1. A Parte 3
+> **não constrói componente novo** — o pipeline está completo ao fim da Parte 2. Ela mede.
 
-- **Estágio C.** CNN 1D dilatada (dilatações 1..32) + pooling estatístico + três
-  cabeças: classificação de ordem, regressão FOPDT `(log K, log τ/T, θ/T)` e
-  regressão de 2ª ordem `(log K, log ωnT, logit ζ/3)`. Treino com **degradação
-  simulada** (jitter de ~2 px, erro de escala de ±1%, truncamento, falhas de
-  coluna) sobre 200.000 séries geradas em memória.
-- **Estágio D.** Já existe (`identify/classical.py`); falta apenas partir da
-  predição da rede e ajustar as duas estruturas quando `p(ordem) ∈ [0,3; 0,7]`.
-- **`pipeline.py` com modo oráculo comutável** — é o que permite medir a
-  degradação de cada estágio isoladamente sem reescrever código de avaliação.
+Arquivos a criar: `tests/test_part3.py`, `reports/final_report.md`, `ood/`, `e2e/`.
+Arquivos que **deixaram** de ser necessários: `dataset/series.py`, `identify/estimator.py`.
+
 - **Validação OOD (~60 imagens nunca vistas):** MATLAB/Simulink, Python Control,
   figuras de livro (Ogata, Nise), planilhas, e ~10 curvas de plantas reais (ou
-  4ª ordem simulada). **Sem esse conjunto o trabalho demonstra apenas que a rede
-  aprendeu a inverter o gerador.**
+  4ª ordem simulada). **Sem esse conjunto o trabalho demonstra apenas que o sistema
+  aprendeu a inverter o gerador.** Comece a coletar no Dia 1, não no Dia 17.
+- **Experimento de utilidade para controle:** PID por IMC sobre o modelo identificado
+  vs. sobre o verdadeiro, comparados em malha fechada simulada. Critério 3.10.
+- **Baseline fim-a-fim:** treinar a CNN 2D que a `§1.2` rejeitou, sobre o mesmo dataset,
+  e comparar — sobretudo no OOD. Plano completo em `PLANO_CNN_FIM_A_FIM.md`. Critério 3.9.
 
-Critérios 3.1 a 3.10. Os dois que fecham o argumento: **3.5/3.6** (NRMSE de
-reconstrução, métrica primária) e **3.9** (PID por IMC sobre o modelo
-identificado vs. o verdadeiro — mostra que o erro paramétrico residual é
-irrelevante para a finalidade de controle).
+Critérios 3.1 a 3.12. Os três que carregam o argumento:
+
+- **3.6/3.7** — NRMSE de reconstrução, métrica primária, no sintético e no OOD;
+- **3.10** — PID por IMC: mostra que o erro paramétrico residual é irrelevante para a
+  finalidade de controle, o que fecha o círculo com o título do curso;
+- **3.9** — CNN fim-a-fim × pipeline em estágios: converte a Decisão B de argumento em
+  medição, e testa a hipótese de vazamento pelo seu sintoma observável (generalizar
+  pior fora da distribuição).
+
+### 5.1 O gatilho que pode ressuscitar o Estágio C
+
+O critério **3.12** existe para isso, e é a condição de honestidade da Decisão C.
+Meça, sobre as séries **extraídas** (não as do oráculo):
+
+| medida | limite | consequência se violar |
+|---|---|---|
+| taxa de convergência de `identify` | ≥ 99% | abaixo disso, o chute inicial voltou a ser problema |
+| NRMSE p95 de reconstrução | ≤ 0,02 | acima disso, idem |
+
+Se qualquer um dos dois falhar, a especificação original do Estágio C — CNN 1D dilatada,
+três cabeças, parametrização log/logit, degradação simulada — está preservada no
+histórico do git (commit anterior a esta revisão) e volta à mesa. **Enquanto os dois
+passarem, uma segunda rede é peso morto.** Reporte os dois números explicitamente no
+`HANDOFF_P2_5.md`, mesmo que passem folgado: um critério que ninguém mede é decoração,
+e isso é exatamente o que o §8 proíbe.
 
 ---
 
