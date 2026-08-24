@@ -13,7 +13,7 @@ O `python3` do sistema é 3.14 e não tem as bibliotecas.
 | Parte | Escopo | Estado |
 |---|---|---|
 | **Parte 1** | Gerador saneado + identificação clássica + prova de solubilidade com oráculo | **CONCLUÍDA — 33/33 testes verdes**, com o teste de mutação fechado (§3.5) |
-| Parte 2 | Estágio A (extração da curva) + Estágio B (calibração dos eixos) | **não iniciada** |
+| Parte 2 | Estágio A (extração da curva) + Estágio B (calibração dos eixos) | **executada — sistema funcional, nenhum critério numérico fechado integralmente (ver §4)** |
 | Parte 3 | Validação OOD + PID/IMC + baseline fim-a-fim | **não iniciada** |
 
 > **Revisão de arquitetura, 22/08/2026.** O **Estágio C (estimador neural 1D) foi
@@ -259,48 +259,96 @@ não do método — e é isso que sustenta o item 1 da §3.4.
 
 ---
 
-## 4. O que falta — Parte 2 (Estágios A e B)
+## 4. O que a Parte 2 entrega para a Parte 3
 
-**Ideia central:** substituir o oráculo por percepção real e medir **quanto** o
-pipeline degrada. A métrica de sucesso é relativa ao oráculo da Parte 1.
+**Executada em 22/08/2026** (mesma sessão), nos seis blocos do
+`PLANO_PARTE2.md` (0, 1, 2, 3b, 3, 4, 5). Handoffs completos, um por bloco:
+`HANDOFF_P2_0.md` a `HANDOFF_P2_5.md` — cada um com os números medidos, os
+Rulings (divergências do plano encontradas e corrigidas com medição) e as
+armadilhas registradas. **Leia `HANDOFF_P2_5.md §6` primeiro** — tem a tabela
+consolidada dos onze critérios.
 
-Arquivos a criar: `identify/extract.py`, `identify/extract_classical.py`,
-`identify/calibrate.py`, `identify/polyline.py`, `identify/pipeline.py`,
-`tests/part2/`, `reports/part2_strata.md`.
+**Resumo honesto: o sistema funciona (produz parâmetros físicos a partir de
+imagem, sem exceção, na maioria dos casos), e o critério mais importante
+(2.6, degradação end-to-end dos parâmetros físicos) chegou muito perto de
+fechar — mas nenhum dos onze critérios numéricos do PLANO fecha
+integralmente.** As causas são conhecidas e diagnosticadas, não um
+mistério:
 
-- **Estágio A — segmentação da curva.** U-Net compacta (~1,2 M parâmetros, 4
-  níveis, base 16 canais). Entrada 512×512 com preenchimento que **preserva a
-  razão de aspecto**. Perda Dice + BCE. Pós-processamento: maior componente
-  conexa → esqueletonização → mediana por coluna → polilinha.
-- **Estágio A sem rede (novo, `PLANO.md §1.8`).** `identify/extract_classical.py`:
-  segmentação por cor + rejeição de componentes retilíneas, mesma assinatura de
-  `predict_mask`, zero treino. É o Plano B do risco de GPU **e** o baseline que
-  justifica a U-Net (critério 2.10). Bloco 3b do `PLANO_PARTE2.md`.
-- **Estágio B — calibração dos eixos (determinístico + OCR opcional).** Moldura por
-  projeção de gradientes, ticks por picos, OCR dos rótulos (Tesseract), ajuste
-  afim px→dados por **RANSAC**, mais teste de consistência interna (ticks
-  equiespaçados). `ok = False` **não** descarta a amostra: a saída adimensional é
-  produzida de todo modo (`PLANO.md §1.7`).
+1. **A U-Net (Estágio A) passou por CINCO rodadas de treino, cada uma
+   motivada por uma causa raiz medida** (não tentativa cega) — histórico
+   completo no `HANDOFF_P2_3.md §0`. Rodada 1 (LR fixo): platô em
+   IoU_val ~0,66. Rodada 2 (+ *scheduler* `ReduceLROnPlateau`): platô em
+   ~0,685 — descartou taxa de aprendizado como único gargalo. Investigando
+   mais fundo, mediu-se que o `letterbox` para 256×256 (256² foi a
+   resolução viável nesta máquina sem GPU — 512² mede > 90 min/época)
+   estava **apagando a curva do alvo de treino** em imagens grandes (68% do
+   conjunto). Rodada 3 (alvo corrigido, limiar 0): resolveu o sumiço mas
+   **inflou a máscara-alvo além do necessário**, piorando o IoU real de
+   teste apesar do IoU de validação disparar — não era *overfitting* (a
+   régua de treino e a régua de avaliação é que eram diferentes). Rodada 4
+   (limiar recalibrado para 32, por medição): IoU de teste 0,56, e **o
+   critério 2.6 chegou a 4 dos 5 parâmetros dentro do alvo**, faltando só
+   ζ, por 0,64 ponto percentual — o melhor resultado em 2.6 até hoje.
+   Rodada 5 (alvo contínuo, eliminando a escolha de limiar por completo):
+   **melhor IoU de teste das cinco rodadas (0,62)**, mas ζ em 2.6 não
+   melhorou — ficou 0,73 p.p. acima do alvo, levemente pior que a rodada 4.
+   **Não há checkpoint único "final"**: rodada 4 continua melhor em 2.6
+   (o critério que decide), rodada 5 é melhor em IoU puro — ambos
+   preservados em disco. `identify/extract_classical.py` (Bloco 3b, §1.8
+   do PLANO) é o extrator sem rede que tira a GPU do caminho crítico, e
+   **continua com IoU de máscara melhor que a U-Net treinada** (0,72 vs.
+   0,56–0,62) — mas medido em 2.6 (o que realmente decide a qualidade do
+   sistema, não IoU de máscara isolado), **a U-Net vence** (pior parâmetro
+   +3,64 p.p. contra +4,38 p.p. do clássico, que chega a reprovar ωₙ
+   enquanto a U-Net não). É a medição que justifica a U-Net estar no
+   trabalho — ver `HANDOFF_P2_5.md §3`. **Hipóteses de capacidade do
+   modelo e tamanho do dataset ficam PENDENTES**, documentadas para
+   continuar em outra máquina — ver `HANDOFF_P2_3.md` Ruling 10 e
+   `HANDOFF_P2_5.md §7` item 5 (inclui o comando exato para regenerar
+   `data/train`/`val`/`test`, já que `data/` não é versionado no git).
+2. **A calibração de eixos (Estágio B, OCR) cobre ~77% das amostras**, não
+   90%. Seis correções reais foram encontradas e aplicadas com medição
+   (`HANDOFF_P2_2.md` Rulings 1–6): a ordem RANSAC→consistência (não o
+   inverso), a whitelist do Tesseract que quebrava o OCR no engine LSTM,
+   detecção de ticks bidirecional (dentro E fora da moldura), leitura de
+   rótulo por blob de texto (não por marca de tick), tolerância a lacunas na
+   checagem de equiespaçamento, e desempate do RANSAC por resíduo total. O
+   sistema saiu de "quase não funciona" (2/30 amostras calibravam) para
+   "funciona na maioria dos casos" (77%) — sem um próximo alvo óbvio de alto
+   retorno para fechar os 13 pontos percentuais restantes.
+3. **A latência (critério 2.8) é dominada pelo custo de disparar um
+   subprocesso `tesseract` por rótulo candidato** — mediana medida entre
+   2,1 s e 6,5 s (varia com a carga da máquina no momento da medição, não
+   com o pipeline) contra o alvo de 500 ms. Caminho de correção conhecido e
+   não implementado: um engine OCR persistente (`tesserocr`) em vez de
+   `pytesseract`.
 
-Critérios 2.1 a 2.11 (alvos no PLANO §PARTE 2). O mais importante continua sendo o
-**2.6**: degradação end-to-end vs. o oráculo da Parte 1, ΔMAPE ≤ 3 p.p. Novos:
-**2.9** (cobertura da calibração ≥ 90%), **2.10** (U-Net × extrator clássico) e
-**2.11** (saída adimensional sempre presente).
+**Arquivos entregues** (todos com testes em `tests/part2/test_part2.py` e
+suíte de mutação, ver cada `HANDOFF_P2_*.md`):
+`identify/calibrate.py` (Estágio B — Blocos 1+2), `identify/extract.py`
+(U-Net — Bloco 3), `identify/extract_classical.py` (extrator sem rede —
+Bloco 3b), `identify/polyline.py` (máscara→polilinha — Bloco 4),
+`identify/pipeline.py` (`identify_from_image`, a porta de entrada — Bloco 5),
+`train_unet.py` (script de treino, raiz).
 
-**Dependência nova:** Tesseract via `pytesseract`, `cv2`, `scikit-image`. `torch`
-continua na lista, mas **deixou de ser bloqueio** — o Bloco 3b fecha a Parte 2 sem
-ele.
+**Lacuna real, não fechada:** `identify_from_image` devolve só o nível
+**físico** dos parâmetros — a separação `dimensionless`/`physical` da
+Decisão E (`PLANO.md §1.7`) não está implementada no dicionário de retorno.
+Ver `HANDOFF_P2_5.md` Ruling 3 antes de assumir que o critério 2.11 fecha na
+leitura estrita do PLANO.
 
-**O que a Parte 1 já entrega para a Parte 2:**
+**O que a Parte 1 entregou para a Parte 2** (histórico, ainda válido):
 - `mask.png` como verdade de terra de segmentação, validada contra a
   `axis_affine` a **0,03 px** de viés no estrato sem marcador;
 - `plot_bbox_px`, `axis_affine` e `ticks` no meta como verdade de terra de
   calibração;
-- o número que o Estágio A precisa saber de antemão: **quanto o extrator ingênuo
-  "mediana por coluna" erra por estilo de traço** — 0,19 px em linha sólida
-  contra 0,92 px em pontilhada, com **43% das colunas sem tinta** em `:`
-  (§5.1 do relatório). É o dado de projeto que diz quanto será preciso
-  interpolar.
+- o número que o Estágio A precisava saber de antemão: **quanto o extrator
+  ingênuo "mediana por coluna" erra por estilo de traço** — 0,19 px em linha
+  sólida contra 0,92 px em pontilhada, com **43% das colunas sem tinta** em
+  `:` (§5.1 do relatório) — confirmado como o fator dominante também em
+  `identify/polyline.py` (Bloco 4), que precisou de uma correção adicional
+  (união de componentes conexas, não só a maior) para lidar com isso.
 
 ---
 

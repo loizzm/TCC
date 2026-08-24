@@ -1047,6 +1047,10 @@ def pytest_sessionstart(session):  # noqa: ARG001
 
 
 def pytest_sessionfinish(session, exitstatus):  # noqa: ARG001
+    # Sessão que não mediu nenhum critério da Parte 1 (ex.: `pytest tests/part2`)
+    # NÃO pode reescrever o relatório: ele é a linha de base do critério 2.6.
+    if not RESULTS["criteria"]:
+        return
     if _SESSION_T0:
         record_block("suite_seconds", time.perf_counter() - _SESSION_T0[0])
     opt = session.config.option
@@ -1056,6 +1060,10 @@ def pytest_sessionfinish(session, exitstatus):  # noqa: ARG001
         if val
     )
     if sel:
+        record_block("selection", sel)
+    args = [a for a in getattr(session.config, "args", []) if not a.startswith("-")]
+    if args and args != ["tests"]:
+        sel = (sel + " " if sel else "") + f"paths {args!r}"
         record_block("selection", sel)
     try:
         _write_report()

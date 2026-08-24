@@ -1,0 +1,26 @@
+epoca 00  IoU_val=0.6131  lr=3.00e-04  966s
+epoca 01  IoU_val=0.7506  lr=3.00e-04  917s
+epoca 02  IoU_val=0.8321  lr=3.00e-04  905s
+epoca 03  IoU_val=0.8521  lr=3.00e-04  904s
+epoca 04  IoU_val=0.8641  lr=3.00e-04  911s
+epoca 05  IoU_val=0.8642  lr=3.00e-04  904s
+epoca 06  IoU_val=0.8784  lr=3.00e-04  902s
+epoca 07  IoU_val=0.8866  lr=3.00e-04  909s
+epoca 08  IoU_val=0.8898  lr=3.00e-04  943s
+epoca 09  IoU_val=0.8866  lr=3.00e-04  940s
+epoca 10  IoU_val=0.8966  lr=1.50e-04 (LR reduzido)  1046s
+epoca 11  IoU_val=0.9005  lr=1.50e-04  942s
+epoca 12  IoU_val=0.9006  lr=1.50e-04  944s
+epoca 13  IoU_val=0.9024  lr=7.50e-05 (LR reduzido)  942s
+epoca 14  IoU_val=0.9037  lr=7.50e-05  940s
+epoca 15  IoU_val=0.9039  lr=3.75e-05 (LR reduzido)  942s
+epoca 16  IoU_val=0.9050  lr=3.75e-05  944s
+epoca 17  IoU_val=0.9049  lr=1.87e-05 (LR reduzido)  941s
+epoca 18  IoU_val=0.9055  lr=1.87e-05  942s
+epoca 19  IoU_val=0.9052  lr=9.37e-06 (LR reduzido)  944s
+epoca 20  IoU_val=0.9053  lr=9.37e-06  943s
+epoca 21  IoU_val=0.9055  lr=4.69e-06 (LR reduzido)  943s
+epoca 22  IoU_val=0.9055  lr=4.69e-06  947s
+epoca 23  IoU_val=0.9055  lr=2.34e-06 (LR reduzido)  944s
+epoca 24  IoU_val=0.9055  lr=2.34e-06  941s
+melhor IoU_val=0.9055 -> models/unet_stageA.pt

@@ -1,0 +1,127 @@
+"""Treino do Estágio A. Determinístico: seed fixa, sem RNG global."""
+from __future__ import annotations
+
+import argparse
+import time
+from pathlib import Path
+
+import numpy as np
+import torch
+from torch.utils.data import DataLoader, Dataset
+
+from dataset.generator import load_sample
+from identify.extract import UNet, dice_bce_loss, letterbox
+
+
+class MaskDataset(Dataset):
+    # HISTÓRICO (ver HANDOFF_P2_3.md, Rulings 7/8): o alvo binário depois do
+    # `letterbox` teve três versões — limiar 127 (perdia a curva quase toda
+    # em imagens grandes, cobertura de colunas caía a 0,4%), limiar 0
+    # (recuperava a presença mas inflava a ÁREA do alvo até 3,03x, piorando
+    # o IoU de teste de 0,572 para 0,495 apesar do IoU de validação subir
+    # pra 0,91) e limiar 32 (equilíbrio medido por varredura: cobertura
+    # 85,1%, inflação 2,14x — melhor resultado das quatro rodadas de treino,
+    # IoU de teste 0,560, mas ζ em 2.6 ainda ficava 0,64 p.p. acima do alvo).
+    #
+    # Em vez de continuar caçando um QUARTO limiar mágico, este alvo é
+    # CONTÍNUO: usa o valor real que sai do `cv2.INTER_AREA` (0 a 255,
+    # normalizado para 0,0-1,0), sem nenhuma binarização. `dice_bce_loss`
+    # (BCE + Dice) aceita alvo contínuo nativamente — é a definição
+    # matemática usual dos dois, sem mudança de código lá. A vantagem sobre
+    # qualquer limiar fixo: uma caixa do downscale com pouca cobertura de
+    # curva vira um alvo baixo mas não-zero (preserva o gradiente de BCE,
+    # resolvendo o sumiço do limiar 127 sem escolher limiar nenhum), e uma
+    # caixa com cobertura parcial não empurra a rede a prever confiança
+    # alta ali (limitando a inflação de área do limiar 0/32 pela raiz, não
+    # por um corte arbitrário).
+    def __init__(self, root: str, size: int = 512):
+        self.dirs = sorted(Path(root).glob("sample_*"))
+        self.size = size
+
+    def __len__(self) -> int:
+        return len(self.dirs)
+
+    def __getitem__(self, i: int):
+        m = load_sample(self.dirs[i])
+        w = np.array([0.299, 0.587, 0.114], dtype=np.float32)
+        gray = (m["image"].astype(np.float32) @ w).round().astype(np.uint8)
+        x, _ = letterbox(gray, self.size)
+        y, _ = letterbox(m["mask"], self.size)
+        return (torch.from_numpy(x.astype(np.float32) / 255.0)[None],
+                torch.from_numpy(y.astype(np.float32) / 255.0)[None])
+
+
+def iou(logits, target, thr: float = 0.5) -> float:
+    # `target` agora pode ser contínuo (MaskDataset) — binariza aqui dentro
+    # pra manter o IoU de validação interpretável como métrica de progresso
+    # (mesmo alvo binário que as rodadas anteriores usavam para reportar,
+    # só que agora o TREINO em si não vê essa binarização).
+    p = (torch.sigmoid(logits) >= thr).float()
+    t = (target >= thr).float()
+    inter = (p * t).sum(dim=(1, 2, 3))
+    union = ((p + t) >= 1).float().sum(dim=(1, 2, 3))
+    return float((inter / union.clamp(min=1.0)).mean())
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--epochs", type=int, default=25)
+    ap.add_argument("--batch", type=int, default=8)
+    ap.add_argument("--size", type=int, default=512)
+    ap.add_argument("--lr", type=float, default=3e-4)
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    ap.add_argument("--out", default="models/unet_stageA.pt")
+    # Scheduler de LR — ver Ruling no HANDOFF_P2_3.md: sem ele, o treino sobe
+    # rápido nas 3 primeiras épocas e depois oscila em torno de um platô
+    # (IoU_val 0,65-0,67 por 10+ épocas, sem tendência de melhora) porque o
+    # passo de otimização fica grande demais para refinar perto do mínimo.
+    # ReduceLROnPlateau reage à métrica que de fato importa (IoU de
+    # validação), reduzindo o LR só quando ela para de melhorar — não segue
+    # um cronograma fixo que teria de ser adivinhado de antemão.
+    ap.add_argument("--lr-patience", type=int, default=1,
+                    help="épocas sem melhora de IoU_val antes de reduzir o LR")
+    ap.add_argument("--lr-factor", type=float, default=0.5,
+                    help="fator de redução do LR quando o platô dispara")
+    ap.add_argument("--lr-threshold", type=float, default=0.01,
+                    help="ganho mínimo de IoU_val para contar como melhora real")
+    a = ap.parse_args()
+
+    torch.manual_seed(20260817)
+    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+    tr = DataLoader(MaskDataset("data/train", a.size), batch_size=a.batch,
+                    shuffle=True, num_workers=4, drop_last=True)
+    va = DataLoader(MaskDataset("data/val", a.size), batch_size=a.batch,
+                    num_workers=2)
+    model = UNet().to(a.device)
+    opt = torch.optim.AdamW(model.parameters(), lr=a.lr)
+    sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        opt, mode="max", factor=a.lr_factor, patience=a.lr_patience,
+        threshold=a.lr_threshold, threshold_mode="abs")
+    melhor = -1.0
+    for ep in range(a.epochs):
+        t0 = time.perf_counter()
+        model.train()
+        for x, y in tr:
+            x, y = x.to(a.device), y.to(a.device)
+            opt.zero_grad()
+            loss = dice_bce_loss(model(x), y)
+            loss.backward()
+            opt.step()
+        model.eval()
+        with torch.no_grad():
+            ious = [iou(model(x.to(a.device)), y.to(a.device)) for x, y in va]
+        m = float(np.mean(ious))
+        lr_antes = opt.param_groups[0]["lr"]
+        sched.step(m)
+        lr_depois = opt.param_groups[0]["lr"]
+        marca = " (LR reduzido)" if lr_depois < lr_antes else ""
+        print(f"epoca {ep:02d}  IoU_val={m:.4f}  lr={lr_depois:.2e}{marca}  "
+              f"{time.perf_counter()-t0:.0f}s", flush=True)
+        if m > melhor:
+            melhor = m
+            torch.save(model.state_dict(), a.out)
+    print(f"melhor IoU_val={melhor:.4f} -> {a.out}")
+
+
+if __name__ == "__main__":
+    main()
