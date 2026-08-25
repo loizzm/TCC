@@ -84,7 +84,7 @@ reproduzem nesta máquina. Investigado: o RNG e a geometria são idênticos (as 
 amostras saem com exatamente as mesmas dimensões, dpi e estilo de traço), e os
 IoU batem em quatro casas decimais — logo **os pixels são idênticos e a diferença
 é só o encoder PNG** (versão de zlib/libpng comprime os mesmos pixels em bytes
-diferentes). A instrução do `HANDOFF_P2_5.md §7.6` está correta na prática; o que
+diferentes; aqui `zlib 1.3.1.zlib-ng` — ver `reports/ambiente_maquina_triagem.md`). A instrução do `HANDOFF_P2_5.md §7.6` está correta na prática; o que
 precisa de ressalva é o teste de determinismo por hash, que é válido **dentro** de
 uma máquina e não **entre** máquinas.
 
@@ -93,7 +93,8 @@ diferença real na linha de base (173 vs 168 amostras comparáveis, ζ +3,65 vs
 +3,73) vem do `tesseract 5.5.3` desta máquina, que calibra 5 amostras a mais.
 Os critérios 2.3/2.4/2.5/2.6/2.9 carregam essa sensibilidade e o handoff anterior
 não a registrava. Quem comparar números de OCR entre máquinas precisa registrar a
-versão do tesseract junto.
+versão do tesseract junto. Versão completa desta máquina (com a leptonica) em
+`reports/ambiente_maquina_triagem.md`.
 
 ### 3.2 Diagnóstico: a rede sub-ajusta (medição inédita, e ela prevê o resultado)
 
@@ -200,7 +201,8 @@ carrega essa variância.
     máquina original, com o mesmo código e os mesmos dados.** A rodada 5 chegou a
     IoU_val 0,5895 em 25 épocas; o piloto A1, mesma configuração, passou disso em
     **3** (0,6794). Como os pixels são idênticos (§3.1), a causa mais provável é a
-    versão do torch (2.13.0+cpu aqui), que muda inicialização de pesos,
+    versão do torch (2.13.0+cpu aqui; ambiente completo em
+    `reports/ambiente_maquina_triagem.md`), que muda inicialização de pesos,
     embaralhamento e numérica. **Se isso se confirmar numa rodada completa, parte
     do teto de IoU atribuído à arquitetura nas cinco rodadas pode ter sido da
     stack de software.** NÃO afirmar isso sem uma rodada de 25 épocas — 3 épocas
@@ -246,6 +248,11 @@ Logs: `logs/piloto_*.log` (treino) · `logs/medir_base_rodada5.log` (linha de ba
 · `logs/regen_dataset.log` (geração).
 
 Relatório da linha de base: `reports/part2_strata_base_rodada5.md`.
+
+**Registro do ambiente: `reports/ambiente_maquina_triagem.md`** — SO, CPU, RAM,
+Python, `pip freeze` completo, tesseract + leptonica e os codecs de imagem.
+Os Rulings 11, 12 e 14 dependem desses números: sem eles, nenhum resultado desta
+sessão é reproduzível nem comparável com outra máquina.
 
 ## 7. Como executar a rodada completa
 
