@@ -15,7 +15,12 @@ tornam estes números parte do resultado, não detalhe de infraestrutura.
 | núcleos / threads | 16 threads |
 | RAM | 15 GiB |
 | swap | 7 GiB |
-| GPU | nenhuma (torch.cuda.is_available() == False) |
+| GPU integrada | Intel UHD Graphics (Raptor Lake-P), driver `i915` |
+| GPU discreta | **NVIDIA AD107M [GeForce RTX 4050 Max-Q / Mobile]** |
+| driver da discreta | `nouveau` (livre) — **não expõe CUDA** |
+| driver proprietário | não instalado (só `nvidia-gpu-firmware`); RPM Fusion nonfree já configurado |
+| build do torch | `2.13.0+cpu` — `torch.version.cuda is None`, **sem CUDA por construção** |
+| GPU usada na triagem | **nenhuma — todos os pilotos rodaram em CPU** (ver Ruling 17) |
 | Python | 3.11.15 |
 
 ## OCR (Ruling 12)

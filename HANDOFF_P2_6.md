@@ -215,6 +215,38 @@ carrega essa variância.
     e mesmo assim ζ piorou 0,09 p.p.). A triagem autoriza gastar as 21 h; não
     promete o resultado.
 
+16. **`base=24` custa 1,71× o de `base=16`, não 2,25×** — ver §3.4.
+
+17. **Esta máquina TEM uma GPU discreta, e nenhum treino deste projeto a usou.**
+    Descoberto em 25/08/2026, depois da triagem inteira. O hardware é uma
+    **NVIDIA AD107M [GeForce RTX 4050 Max-Q / Mobile]** (mais a Intel UHD
+    integrada). Dois bloqueios independentes impedem o CUDA hoje:
+
+    a. **Driver.** A RTX 4050 está no `nouveau`, o driver livre, que não expõe
+       CUDA. Só o driver proprietário expõe. Instalado hoje há apenas
+       `nvidia-gpu-firmware`; o repositório do RPM Fusion nonfree do driver
+       **já está configurado**, falta instalar (`akmod-nvidia` +
+       `xorg-x11-drv-nvidia-cuda`), o que compila módulo de kernel e exige
+       reboot.
+    b. **Build do torch.** `2.13.0+cpu` tem `torch.version.cuda is None` —
+       não usaria a GPU nem com o driver certo. Precisaria da build de CUDA.
+
+    **Erro metodológico que produziu a afirmação errada, registrado para não se
+    repetir:** o registro de ambiente dizia "GPU: nenhuma", inferido de
+    `nvidia-smi` ausente do PATH e de `torch.cuda.is_available() == False`.
+    Nenhum dos dois mede presença de hardware — o primeiro mede o driver
+    proprietário, e o segundo era **circular**, porque uma build `+cpu` retorna
+    `False` por construção. A verificação correta é `lspci | grep -i vga`, que
+    lê o barramento. **Nunca concluir ausência de hardware a partir de uma
+    biblioteca compilada sem suporte a ele.**
+
+    **Consequência prática, não medida:** uma RTX 4050 deve treinar esta U-Net
+    em uma ordem de grandeza menos tempo que os ~21 h de CPU do `base=24`. Se
+    isso se confirmar, o cálculo que justificou a triagem de 3 épocas (§0) deixa
+    de valer: rodar as quatro células do fatorial COMPLETAS, 25 épocas cada,
+    passaria a ser viável. **Nada disso foi medido** — ver §7.6 para o que
+    precisa ser verificado antes de assumir qualquer ganho.
+
 ## 5. Armadilhas
 
 1. **Instalar o torch exige o índice do PyTorch.** `pip install -r requirements.txt`
@@ -297,6 +329,11 @@ Se alguém reverter essa decisão e mover para outra máquina: refazer §7.1 e �
 e **remedir a linha de base** (§7.4 com o checkpoint da rodada 5) ANTES de
 comparar qualquer número novo.
 
+**Ressalva posterior:** esta decisão foi tomada comparando duas máquinas **em
+CPU**, antes de se descobrir que esta tem uma RTX 4050 inutilizada (Ruling 17).
+Se a opção GPU do §7.6 for adiante, a comparação de 21 h × 11–14 h fica obsoleta
+— o eixo que decide passa a ser CPU × GPU, não máquina A × máquina B.
+
 ### 7.3 A rodada completa: `base=24`, 25 épocas
 
 ```bash
@@ -342,3 +379,25 @@ amostra a amostra **quais** casos de ζ erram mais (sistemas muito subamortecido
 picos estreitos de *overshoot*) em vez de mais uma mudança global de treino.
 O Ruling 13 acrescenta um filtro barato a aplicar antes de qualquer hipótese nova:
 medir o gap treino−validação primeiro.
+
+### 7.6 Opção GPU — não avaliada, potencialmente decisiva
+
+Ver Ruling 17. A máquina tem uma RTX 4050 Mobile inutilizada. Antes de assumir
+qualquer ganho, o que precisa ser verificado, nesta ordem:
+
+1. **Instalar o driver proprietário e a build CUDA do torch.** Mudança de
+   sistema com reboot, em laptop híbrido Intel+NVIDIA — risco não-nulo para a
+   sessão gráfica. Decisão do dono da máquina, não do plano.
+2. **Confirmar que `base=24`, batch 8, 512² cabe na VRAM.** A RTX 4050 Mobile
+   é especificada com 6 GB; a VRAM real não foi confirmada sob `nouveau`. Se
+   não couber, baixar o batch — **o que quebra a comparabilidade com os pilotos
+   de §3.3**, que usaram batch 8.
+3. **Remedir a linha de base em GPU.** Toda a §3.1 (ζ +3,65 p.p.) foi medida em
+   CPU. `identify_from_image` e os testes selecionam `cuda` sozinhos quando
+   disponível, então a medição mudaria de dispositivo sem aviso. O critério 2.8
+   (latência) mudaria de forma drástica e deixaria de ser comparável com
+   qualquer número anterior do projeto.
+
+O Ruling 14 já mostrou que este projeto é sensível à stack de software; trocar
+CPU por GPU adiciona mais um eixo de variação. O ganho de tempo provavelmente
+compensa, mas os três pontos acima precisam ser fechados antes, não depois.
