@@ -163,6 +163,30 @@ As contagens de parâmetros batem exatamente com a tabela do Ruling 10a.
 Geração do dataset: **71 s** para as 6.000 amostras (o `HANDOFF_P2_5.md §7.6`
 estimava ~7 min; esta máquina é bem mais rápida nisso e mais lenta no treino).
 
+**Ruling 16 — o custo de `base=24` é 1,71× o de `base=16`, não 2,25×.** Medido
+em épocas limpas de 525 passos nesta máquina: 1.772 s (`base=16`, piloto B) e
+3.030 s (`base=24`, piloto A2). O Ruling 10a estimava o custo pela contagem de
+parâmetros (2,25×), mas convolução não escala assim — as camadas de resolução
+alta e o carregamento de dados quase não mudam com a largura da rede. **O
+experimento de capacidade sempre foi ~35% mais barato do que o handoff supunha**,
+nas duas máquinas.
+
+Aplicando o fator medido aos tempos de `base=16` que estão nos logs da máquina
+original (medição direta, não estimativa), a rodada completa de 25 épocas custa:
+
+| Máquina | s/época `base=16` | `base=24` estimado | 25 épocas |
+|---|---|---|---|
+| original (log rodada 4) | 942 (medido) | 1.611 | **11,2 h** |
+| original (log rodada 5) | 1.211 (medido) | 2.072 | **14,4 h** |
+| esta (i7-13620H) | 1.772 (medido) | 3.030 (**medido**) | **21,0 h** |
+
+O intervalo de 11–14 h para a máquina original não é imprecisão da extrapolação:
+as rodadas 4 e 5 rodaram **na mesma máquina com a mesma configuração** e mesmo
+assim diferiram 29% no tempo por época (942 vs 1.211 s), sem explicação
+registrada em nenhum handoff. É o mesmo tipo de efeito de estado da máquina que
+a Armadilha 4 documenta aqui. Qualquer previsão de tempo de treino neste projeto
+carrega essa variância.
+
 ## 4. Rulings
 
 11. **Dataset reprodutível entre máquinas; sha256 não** — ver §3.1.
@@ -254,6 +278,18 @@ seleciona `cuda` sozinho quando `torch.cuda.is_available()`.
 
 **Não gerar `data/train_extra`** — a hipótese (b) está reprovada (§3.3).
 
+### 7.2b Decisão de máquina (25/08/2026)
+
+**A rodada completa foi decidida para ESTA máquina**, apesar de a original ser
+7–10 h mais rápida (§3.4, Ruling 16). Razões: aqui o ambiente já está montado e
+validado, e a linha de base do 2.6 (**ζ +3,65 p.p.**) foi medida com o
+`tesseract 5.5.3` daqui. Mudar de máquina obrigaria a **remedir a linha de base**
+antes de qualquer comparação (Ruling 12), o que consome parte do ganho de tempo.
+
+Se alguém reverter essa decisão e mover para outra máquina: refazer §7.1 e §7.2,
+e **remedir a linha de base** (§7.4 com o checkpoint da rodada 5) ANTES de
+comparar qualquer número novo.
+
 ### 7.3 A rodada completa: `base=24`, 25 épocas
 
 ```bash
@@ -280,6 +316,15 @@ cp reports/part2_strata.md reports/part2_strata_rodada6_base24.md
 
 Comparar contra §3.1. O número que decide é **ζ: precisa cair de +3,65 para ≤ 3,00 p.p.**
 Registrar também a versão do tesseract junto (Ruling 12).
+
+### 7.4b Condição de memória (não ignorar)
+
+A Armadilha 4 não é teórica: o piloto C levou 4h37 de parede para 2h39 somadas
+nas épocas, com o swap saturado (7,8 de 8,0 GB) por uso simultâneo do desktop.
+São 15,6 GB de RAM para desktop e treino ao mesmo tempo. **Com o desktop em uso
+pesado, as 21 h podem virar bem mais.** Rodar com a máquina livre; se isso não
+for possível, baixar `num_workers` de 4 para 2 nos `DataLoader` de
+`train_unet.py` antes de disparar (perde I/O, reduz a pegada de memória).
 
 ### 7.5 Se ζ não fechar
 
