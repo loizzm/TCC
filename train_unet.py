@@ -34,8 +34,9 @@ class MaskDataset(Dataset):
     # caixa com cobertura parcial não empurra a rede a prever confiança
     # alta ali (limitando a inflação de área do limiar 0/32 pela raiz, não
     # por um corte arbitrário).
-    def __init__(self, root: str, size: int = 512):
-        self.dirs = sorted(Path(root).glob("sample_*"))
+    def __init__(self, root: str | list[str], size: int = 512):
+        roots = [root] if isinstance(root, str) else list(root)
+        self.dirs = [d for r in roots for d in sorted(Path(r).glob("sample_*"))]
         self.size = size
 
     def __len__(self) -> int:
@@ -71,6 +72,22 @@ def main() -> None:
     ap.add_argument("--lr", type=float, default=3e-4)
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     ap.add_argument("--out", default="models/unet_stageA.pt")
+    # Hipotese (a) do Ruling 10 (HANDOFF_P2_3): capacidade da rede. `base=16`
+    # e o que as cinco rodadas usaram; 24 e 32 sao as alternativas medidas la.
+    ap.add_argument("--base", type=int, default=16,
+                    help="canais da primeira camada da UNet (16, 24, 32)")
+    # Hipotese (b) do Ruling 10: tamanho do dataset. Aceita mais de um
+    # diretorio para somar um split extra (seed-base >= 4) ao data/train atual
+    # sem tocar em data/val e data/test, que ficam fixos para os numeros
+    # continuarem comparaveis com as rodadas 1-5.
+    ap.add_argument("--train-dir", action="append", default=None,
+                    help="diretorio de treino (repetivel; padrao: data/train)")
+    # Sem isto, comparar 4.200 com 8.400 amostras mudaria DUAS variaveis de uma
+    # vez (diversidade de dados E numero de passos de gradiente por epoca).
+    # Fixando os passos, a unica diferenca entre as duas curvas de IoU_val e a
+    # diversidade -- que e exatamente a hipotese (b) do Ruling 10.
+    ap.add_argument("--batches-per-epoch", type=int, default=0,
+                    help="limita os passos de gradiente por epoca (0 = split inteiro)")
     # Scheduler de LR — ver Ruling no HANDOFF_P2_3.md: sem ele, o treino sobe
     # rápido nas 3 primeiras épocas e depois oscila em torno de um platô
     # (IoU_val 0,65-0,67 por 10+ épocas, sem tendência de melhora) porque o
@@ -88,11 +105,18 @@ def main() -> None:
 
     torch.manual_seed(20260817)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-    tr = DataLoader(MaskDataset("data/train", a.size), batch_size=a.batch,
+    train_dirs = a.train_dir or ["data/train"]
+    ds_tr = MaskDataset(train_dirs, a.size)
+    passos = a.batches_per_epoch or (len(ds_tr) // a.batch)
+    print(f"treino: {len(ds_tr)} amostras de {train_dirs}  base={a.base}  "
+          f"{passos} passos/epoca", flush=True)
+    tr = DataLoader(ds_tr, batch_size=a.batch,
                     shuffle=True, num_workers=4, drop_last=True)
     va = DataLoader(MaskDataset("data/val", a.size), batch_size=a.batch,
                     num_workers=2)
-    model = UNet().to(a.device)
+    model = UNet(base=a.base).to(a.device)
+    n_par = sum(p.numel() for p in model.parameters())
+    print(f"parametros: {n_par}", flush=True)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr)
     sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
         opt, mode="max", factor=a.lr_factor, patience=a.lr_patience,
@@ -101,7 +125,9 @@ def main() -> None:
     for ep in range(a.epochs):
         t0 = time.perf_counter()
         model.train()
-        for x, y in tr:
+        for nb, (x, y) in enumerate(tr):
+            if a.batches_per_epoch and nb >= a.batches_per_epoch:
+                break
             x, y = x.to(a.device), y.to(a.device)
             opt.zero_grad()
             loss = dice_bce_loss(model(x), y)

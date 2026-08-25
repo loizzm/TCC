@@ -1,0 +1,7 @@
+4200 amostras em data/train
+900 amostras em data/val
+900 amostras em data/test
+
+real	1m10.843s
+user	15m7.057s
+sys	0m23.672s

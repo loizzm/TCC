@@ -342,7 +342,13 @@ causa raiz medida, não adivinhada.** Causa de cada critério:
    pipeline final**, não só a intuição de que "deveria" ser melhor.
    `identify_from_image` ganhou o parâmetro opcional `extractor=` para
    permitir essa troca sem quebrar a assinatura do PLANO.
-5. **Hipóteses pendentes para fechar ζ — PLANEJADAS, NÃO EXECUTADAS,
+5. **Hipóteses para fechar ζ — TRIADAS em 25/08/2026, ver `HANDOFF_P2_6.md`.**
+   Fatorial 2×2 de 4 pilotos: capacidade (`base=24`) APROVADA, tamanho do
+   dataset REPROVADO. A rodada completa de 25 épocas segue não executada, com
+   o procedimento em `HANDOFF_P2_6.md §7`. Linha de base remedida: **ζ = +3,65 p.p.**
+   O texto abaixo é o plano original, preservado como registro.
+
+   *(redação original:)* **PLANEJADAS, NÃO EXECUTADAS,
    documentadas para retomar em outra máquina** (`HANDOFF_P2_3.md` Ruling
    10, texto completo lá):
    - **(a) Capacidade do modelo.** `UNet(base=24)` (4,37 M parâmetros,
@@ -379,7 +385,8 @@ causa raiz medida, não adivinhada.** Causa de cada critério:
    para os números de 2.1/2.6/2.7/2.8/2.10 continuarem comparáveis com as
    cinco rodadas já medidas.
 7. **Trabalho futuro de maior retorno, em ordem:** (a) fechar ζ em 2.6
-   (hipóteses pendentes do item 5 acima); (b) fechar a separação
+   — rodada completa de `base=24`, única hipótese aprovada na triagem
+   (`HANDOFF_P2_6.md §7.3`); (b) fechar a separação
    dimensionless/physical em `identify_from_image`; (c) investigar a cauda
    de falhas de OCR do Bloco 2 amostra a amostra; (d) `tesserocr` (engine
    persistente) para o critério 2.8.

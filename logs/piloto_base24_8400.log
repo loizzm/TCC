@@ -1,0 +1,6 @@
+treino: 8400 amostras de ['data/train', 'data/train_extra']  base=24  525 passos/epoca
+parametros: 4367641
+epoca 00  IoU_val=0.4379  lr=3.00e-04  2926s
+epoca 01  IoU_val=0.5538  lr=3.00e-04  3154s
+epoca 02  IoU_val=0.7203  lr=3.00e-04  3460s
+melhor IoU_val=0.7203 -> models/piloto_base24_8400.pt

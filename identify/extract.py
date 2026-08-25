@@ -96,8 +96,14 @@ def dice_bce_loss(logits: torch.Tensor, target: torch.Tensor,
 
 
 def load_model(path: str | Path, device: str = "cpu") -> UNet:
-    model = UNet()
-    model.load_state_dict(torch.load(path, map_location=device))
+    # `base`/`levels` saem do proprio checkpoint: as rodadas de capacidade
+    # (HANDOFF_P2_3 Ruling 10a) salvam UNet(base=24)/UNet(base=32) com a mesma
+    # arquitetura, e um `UNet()` fixo aqui recusaria carrega-los.
+    state = torch.load(path, map_location=device)
+    base = int(state["enc.0.0.weight"].shape[0])
+    levels = sum(1 for k in state if k.startswith("enc.") and k.endswith(".0.weight"))
+    model = UNet(base=base, levels=levels)
+    model.load_state_dict(state)
     model.to(device).eval()
     return model
 

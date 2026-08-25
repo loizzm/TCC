@@ -1,0 +1,133 @@
+FF.F.                                                                    [100%]
+=================================== FAILURES ===================================
+_____________________________ test_2_1_iou_mediana _____________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_1_iou_mediana(test_samples):
+        import torch
+        from identify.extract import load_model, predict_mask
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        ious = []
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            inter = float(np.logical_and(pred, alvo).sum())
+            union = float(np.logical_or(pred, alvo).sum())
+            ious.append(inter / max(union, 1.0))
+        med = float(np.median(ious))
+        record_p2("2.1", "IoU da máscara (U-Net)", "≥ 0,85 (mediana)", f"{med:.4f}", med >= 0.85)
+>       assert med >= 0.85
+E       assert 0.620501234318382 >= 0.85
+
+tests/part2/test_part2.py:348: AssertionError
+___________________________ test_2_7_iou_por_estrato ___________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_7_iou_por_estrato(test_samples):
+        import torch
+        from identify.extract import load_model, predict_mask
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        estratos: dict[str, list[float]] = {}
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            v = float(np.logical_and(pred, alvo).sum()) / max(
+                float(np.logical_or(pred, alvo).sum()), 1.0)
+            r = m["render"]
+            escuro = int(r["bg_color"].lstrip("#")[:2], 16) < 128
+            for nome in (f"grade={r['has_grid']}", f"legenda={r['has_legend']}",
+                         f"fundo_escuro={escuro}", f"traco={r['line_style']}"):
+                estratos.setdefault(nome, []).append(v)
+        for nome, vs in sorted(estratos.items()):
+            med = float(np.median(vs))
+            record_p2(f"2.7[{nome}]", f"IoU — {nome}", "≥ 0,75",
+                      f"{med:.4f} (n={len(vs)})", med >= 0.75)
+>           assert med >= 0.75, f"estrato {nome}: IoU mediano {med:.4f}"
+E           AssertionError: estrato fundo_escuro=False: IoU mediano 0.5856
+E           assert 0.5855944745929945 >= 0.75
+
+tests/part2/test_part2.py:372: AssertionError
+________________________ test_2_6_degradacao_vs_oraculo ________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_6_degradacao_vs_oraculo(test_samples):
+        """ΔMAPE ≤ 3 p.p. Mesmas amostras, mesmo estágio D, mesma métrica da Parte 1."""
+        import torch
+        from identify.classical import identify as estagio_d
+        from identify.extract import load_model
+        from identify.pipeline import identify_from_image
+        from tests.conftest import meta_t_dom
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+    
+        err_oraculo: dict[str, list[float]] = {}
+        err_real: dict[str, list[float]] = {}
+        aceitas = 0
+        for m in test_samples:
+            alvo = m["params"]
+            t_dom = meta_t_dom(m)
+    
+            # Oráculo: série VERDADEIRA do meta -> estágio D (idêntico à Parte 1).
+            o = estagio_d(m["series"]["t"], m["series"]["y"])
+            r = identify_from_image(m["image"], model, dev)
+            if not (o.success and r["ok"] and r["order"] == m["order"]
+                    and o.order == m["order"]):
+                continue
+            aceitas += 1
+            for k in ("K", "tau", "wn", "zeta"):
+                if alvo.get(k) is None:
+                    continue
+                for saida, acc in ((o.params, err_oraculo), (r["params"], err_real)):
+                    if saida.get(k) is None:
+                        continue
+                    acc.setdefault(k, []).append(
+                        abs(saida[k] - alvo[k]) / max(abs(alvo[k]), 1e-12) * 100.0)
+            # θ em NMAE/T_dom — convenção da Parte 1 (tests/conftest.py:441).
+            for saida, acc in ((o.params, err_oraculo), (r["params"], err_real)):
+                if saida.get("theta") is not None:
+                    acc.setdefault("theta", []).append(
+                        abs(saida["theta"] - alvo["theta"]) / max(t_dom, 1e-12) * 100.0)
+    
+        record_p2("2.6-aceitas", "Amostras comparáveis (mesma ordem, ambos convergem)",
+                  "diagnóstico", f"{aceitas}/{len(test_samples)}", None)
+        if aceitas < 100:
+            record_p2("2.6", "Degradação end-to-end (pior parâmetro)",
+                      "≤ 3 p.p. (n insuficiente)", f"n={aceitas} < 100 — não asseverável", None)
+            return
+        piores = []
+        for k in sorted(set(err_oraculo) & set(err_real)):
+            d = float(np.median(err_real[k])) - float(np.median(err_oraculo[k]))
+            piores.append((k, d))
+            record_p2(f"2.6[{k}]", f"ΔMAPE — {k}", "≤ 3 p.p.",
+                      f"{d:+.2f} p.p. (oráculo {np.median(err_oraculo[k]):.2f}%, "
+                      f"real {np.median(err_real[k]):.2f}%)", d <= 3.0)
+        pior = max(d for _, d in piores)
+        record_p2("2.6", "Degradação end-to-end (pior parâmetro)", "≤ 3 p.p.",
+                  f"{pior:+.2f} p.p. (n={aceitas})", pior <= 3.0)
+>       assert pior <= 3.0, f"pior degradação: {piores}"
+E       AssertionError: pior degradação: [('K', 1.0066561028501892), ('tau', 2.4401039588480598), ('theta', 0.5032272617512561), ('wn', 2.0321068228350336), ('zeta', 3.6543475056611125)]
+E       assert 3.6543475056611125 <= 3.0
+
+tests/part2/test_part2.py:471: AssertionError
+============================= slowest 10 durations =============================
+722.83s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+630.23s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+145.13s call     tests/part2/test_part2.py::test_g3b_1_vs_2_1_comparacao_iou
+130.62s call     tests/part2/test_part2.py::test_2_1_iou_mediana
+130.43s call     tests/part2/test_part2.py::test_2_7_iou_por_estrato
+3.61s setup    tests/part2/test_part2.py::test_2_1_iou_mediana
+
+(4 durations < 0.005s hidden.  Use -vv to show these durations.)
+=========================== short test summary info ============================
+FAILED tests/part2/test_part2.py::test_2_1_iou_mediana - assert 0.62050123431...
+FAILED tests/part2/test_part2.py::test_2_7_iou_por_estrato - AssertionError: ...
+FAILED tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo - AssertionE...
+3 failed, 2 passed, 16 deselected in 1762.99s (0:29:22)

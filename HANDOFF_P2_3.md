@@ -476,7 +476,13 @@ Bloco 2; ainda assim uma medição por mutante):
    cobrem essencialmente o espaço de "como binarizar/suavizar o alvo"; o
    próximo eixo de investigação é outro — ver Ruling 10.
 10. **Hipóteses do Ruling 6 (capacidade do modelo, tamanho do dataset) —
-    PENDENTES, ainda NÃO executadas nesta máquina.** Depois de cinco
+    TRIADAS em 25/08/2026, ver `HANDOFF_P2_6.md`.** Veredito: (a) capacidade
+    APROVADA (+0,065 de IoU_val, consistente nos dois níveis de dados);
+    (b) tamanho do dataset REPROVADA (piora nos dois níveis de capacidade).
+    A rodada completa de 25 épocas de `base=24` continua NÃO executada. O texto
+    abaixo é o plano original, preservado como registro do que foi triado.
+
+    *(redação original:)* **PENDENTES, ainda NÃO executadas nesta máquina.** Depois de cinco
     rodadas de treino (~35h de parede acumuladas nesta máquina, só CPU) sem
     fechar ζ por variações no preparo do alvo, a decisão foi migrar o
     experimento para outra máquina (mais rápida/com GPU) em vez de gastar

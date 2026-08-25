@@ -1,0 +1,6 @@
+treino: 4200 amostras de ['data/train']  base=24  525 passos/epoca
+parametros: 4367641
+epoca 00  IoU_val=0.4156  lr=3.00e-04  2982s
+epoca 01  IoU_val=0.4787  lr=3.00e-04  3034s
+epoca 02  IoU_val=0.7445  lr=3.00e-04  3075s
+melhor IoU_val=0.7445 -> models/piloto_base24_4200.pt

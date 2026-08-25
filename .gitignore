@@ -19,3 +19,7 @@ data/
 .vscode/
 .idea/
 .DS_Store
+
+# Checkpoints dos pilotos de triagem (3 epocas, ~49 MB): nao sao modelos
+# utilizaveis, e os numeros deles estao em HANDOFF_P2_6.md §3.3
+models/piloto_*.pt
