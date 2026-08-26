@@ -1,0 +1,7 @@
+amostras=299
+
+  ATUAL (reprova a amostra)          ok=239/299 (79.9%)  err_sx_med= 0.055%  err_sy_med= 0.055%  ambos<1%: 95.8%
+  poda 1 par, piso 3                 ok=253/299 (84.6%)  err_sx_med= 0.056%  err_sy_med= 0.055%  ambos<1%: 94.5%
+  poda ate 2 pares, piso 3           ok=255/299 (85.3%)  err_sx_med= 0.056%  err_sy_med= 0.055%  ambos<1%: 94.1%
+  poda ate 2 pares, piso 4           ok=248/299 (82.9%)  err_sx_med= 0.056%  err_sy_med= 0.053%  ambos<1%: 95.2%
+  poda ate 3 pares, piso 3           ok=255/299 (85.3%)  err_sx_med= 0.056%  err_sy_med= 0.055%  ambos<1%: 94.1%
