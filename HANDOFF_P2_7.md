@@ -1738,3 +1738,96 @@ Decisão E não dá. Se a Parte 3 (PID/IMC) consome físico, cada amostra conta.
 
 **Recomendação: não fazer a troca agora.** Se for feita, `piso 4` é a única
 configuração defensável, e exige rodar a suíte inteira antes de adotar.
+
+## 31. Ruling 52 — 2.4 e 2.9 são a MESMA grandeza; 2.3 e 2.5 têm limiares INCONSISTENTES
+
+Dado bruto: `reports/part2_tres_criterios.json`, `part2_guarda.json`.
+
+### 31.1 Correção ao Ruling 51: a poda FECHA o 2.5
+
+O Ruling 51 concluiu que a poda "nunca converte reprovação em aprovação". **Isso
+estava errado** — a análise olhou só 2.9 e 2.3, e o 2.5 não estava no quadro.
+Avaliando os QUATRO critérios juntos:
+
+| config | 2.9 cobertura | 2.4 rejeição | **2.5 precisão** | 2.3 |
+|---|---|---|---|---|
+| **atual** | 79,7 % | 20,3 % | **72,1 % ❌** | 95,8 % ✅ |
+| poda ≤2 piso 4 | 82,7 % | 17,3 % | 82,7 % ❌ | 95,2 % ✅ |
+| **poda ≤2 piso 3** | 85,0 % | 15,0 % | **95,6 % ✅** | 94,1 % ❌ |
+
+**As 17 rejeições desnecessárias são 100 % `calibration_failed`** — o guardião de
+consistência é a fonte inteira dos falsos alarmes. A poda recupera 15 das 17.
+
+### 31.2 2.4 SUBSUME 2.9
+
+`test_2_4` mede `rejeitadas/total`, que é exatamente `1 − cobertura` do 2.9.
+São a mesma medição: 2.4 exige rejeição < 5 % (cobertura > 95 %) e 2.9 exige
+cobertura ≥ 90 %. **Se 2.4 passa, 2.9 passa por construção.** Ter os dois como
+critérios independentes dá peso duplo à mesma grandeza.
+
+Consequência prática: **2.4 é inalcançável hoje.** Exige ≤ 15 rejeições em 300;
+as melhores configurações dão 45. Mesmo recuperando TODAS as 30
+`calibration_failed`, sobram as 25 de `ocr_insuficiente` → 31 rejeições (10,3 %).
+O 2.4 só fecha atacando os dois motivos até quase zero.
+
+### 31.3 2.3 e 2.5 são incompatíveis por construção
+
+2.3 exige erro de escala ≤ 1 % nas ACEITAS; 2.5 chama a rejeição de "justificada"
+quando o erro seria > 5 %. As amostras na faixa 1–5 % são **simultaneamente**
+"não deviam ter sido rejeitadas" (2.5) e "ruins o bastante para estragar o 2.3".
+
+Prova aritmética de que nenhum subconjunto fecha os dois (16 recuperáveis,
+11 com erro ≤ 1 %, 15 com erro ≤ 5 %):
+
+| escolha | 2.3 | 2.5 |
+|---|---|---|
+| recuperar as 16 | 94,1 % ❌ | 95,6 % ✅ |
+| recuperar só as 11 (≤ 1 %) | **96,0 % ✅** | 88,0 % ❌ |
+
+O guardião por resíduo do ajuste foi testado (o resíduo SEPARA: mediana 0,0005
+nas boas × 0,0033 nas ruins) e **não resolve**: a varredura alterna direto de
+(2.3 ✅, 2.5 ❌) em `res ≤ 0,002` para (2.5 ✅, 2.3 ❌) em `res ≤ 0,005`. Não
+existe limiar onde ambos passam.
+
+### 31.4 A margem de rótulos NÃO conserta `ocr_insuficiente`
+
+`MARGIN_Y_W`/`MARGIN_X_H` são fixos em px enquanto o dpi varia 3,3× (Ruling 33).
+Sete configurações testadas:
+
+| config | cobertura | `ocr_insuf` | `cal_failed` |
+|---|---|---|---|
+| atual (90/40) | 79,7 % | 25 | 30 |
+| fixo ×2 | 80,3 % | 23 | **31** |
+| **proporcional 0,9·dpi** | **81,0 %** | 24 | 28 |
+| proporcional 1,2·dpi | 80,3 % | 22 | **32** |
+
+Ganho máximo de **1,3 p.p. (4 amostras)**, e na maioria das configurações o
+`calibration_failed` SOBE: alargar a faixa captura número que não é rótulo
+(legenda, anotação), que passa o `_NUM_RE` e entra como par falso. **É troca de
+motivo, não conserto.** Confirma o Ruling 33: o corte geométrico é causa
+secundária.
+
+### 31.5 Veredito: os três NÃO fecham
+
+| critério | alvo | melhor alcançado | fecha? |
+|---|---|---|---|
+| 2.9 | cobertura ≥ 90 % | 85,0 % (poda piso 3) + ~1 p.p. | **não** |
+| 2.4 | rejeição < 5 % | 15,0 % (45 rejeições × 15 permitidas) | **não** |
+| 2.5 | precisão ≥ 90 % | **95,6 %** (poda piso 3) | **sim, mas custa o 2.3** |
+
+O que está disponível é uma **troca um-por-um**: 2.5 fecha, 2.3 abre. Não há
+ganho líquido em contagem de critérios, e a escolha depende de qual importa mais
+para a Parte 3.
+
+### 31.6 Recomendação: revisar os critérios, não o código
+
+O bloqueio não é de implementação. Três propostas, todas decisão do autor:
+
+1. **Unificar 2.4 e 2.9** numa só medição de cobertura, com um limiar. Manter
+   duas com limiares diferentes sobre a mesma grandeza é peso duplo.
+2. **Alinhar os limiares de 2.3 e 2.5** (hoje 1 % e 5 %). Enquanto divergirem,
+   existe uma faixa de amostras que nenhuma configuração resolve.
+3. **Reconsiderar o alvo do 2.4** (< 5 % de rejeição). Com precisão de OCR de
+   92 % e recall de ~85 % (Ruling 36), exigir 95 % de cobertura de calibração é
+   incompatível com o desempenho do OCR disponível — e a Decisão E já reduziu o
+   custo de uma calibração que falha (Ruling 47).

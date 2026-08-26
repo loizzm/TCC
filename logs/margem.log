@@ -1,0 +1,9 @@
+amostras=300  MARGIN_Y_W base=90  MARGIN_X_H base=40
+
+  ATUAL (90 / 40 fixos)              cob= 79.7%    rej= 20.3%    2.3= 95.8%OK  ocr_insuf= 25  cal_failed= 30
+  fixo x1.5                          cob= 80.0%    rej= 20.0%    2.3= 95.4%OK  ocr_insuf= 25  cal_failed= 30
+  fixo x2.0                          cob= 80.3%    rej= 19.7%    2.3= 95.4%OK  ocr_insuf= 23  cal_failed= 31
+  fixo x3.0                          cob= 80.3%    rej= 19.7%    2.3= 95.4%OK  ocr_insuf= 23  cal_failed= 31
+  proporcional 0.9*dpi (y)           cob= 81.0%    rej= 19.0%    2.3= 95.1%OK  ocr_insuf= 24  cal_failed= 28
+  proporcional 1.2*dpi (y)           cob= 80.3%    rej= 19.7%    2.3= 95.0%OK  ocr_insuf= 22  cal_failed= 32
+  proporcional 1.8*dpi (y)           cob= 80.3%    rej= 19.7%    2.3= 95.4%OK  ocr_insuf= 23  cal_failed= 31

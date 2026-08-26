@@ -1,0 +1,11 @@
+n=300
+
+=== os QUATRO criterios, por configuracao ===
+  ATUAL                  2.9_cob= 79.7%    2.4_rej= 20.3%    2.5_prec= 72.1%    2.3= 95.8%OK
+  poda <=2 piso 4        2.9_cob= 82.7%    2.4_rej= 17.3%    2.5_prec= 82.7%    2.3= 95.2%OK
+  poda <=2 piso 3        2.9_cob= 85.0%    2.4_rej= 15.0%    2.5_prec= 95.6%OK  2.3= 94.1%  
+
+=== as rejeicoes DESNECESSARIAS (erro <= 5% se aceitas) ===
+  rejeitadas=61  desnecessarias=17 (27.9%)
+  por motivo: {'calibration_failed': 17}
+  destas, a poda recupera: 8 (piso 4) / 15 (piso 3)
