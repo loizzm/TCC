@@ -199,6 +199,109 @@ def _ocr_number(crop: np.ndarray) -> float | None:
         return None
 
 
+_OCR_UP = 3            # fator de ampliação antes do OCR (era inline em _ocr_number)
+_LOTE_GAP = 400        # px de fundo entre recortes vizinhos no mosaico, JÁ ampliados.
+                       # Varrido em 99 amostras contra a implementação anterior
+                       # (HANDOFF_P2_7 Ruling 35): 60 -> 60,6 % de calibração ok,
+                       # 200 -> 75,8 %, **400 -> 77,8 % (empata com a referência)**,
+                       # 700 -> 74,7 %. Folga pequena funde dois rótulos numa
+                       # palavra só e o `_NUM_RE` rejeita os dois; folga grande
+                       # espalha demais e o `--psm 7` perde a linha. 400 é o ótimo
+                       # medido, não um palpite.
+_LOTE_PAD = 8          # px de fundo na borda do mosaico
+
+
+def _texto_para_numero(txt: str) -> float | None:
+    """`str` -> número, com o MESMO filtro de `_ocr_number` (contrato §1.7)."""
+    txt = txt.strip().replace(" ", "")
+    if not _NUM_RE.match(txt):
+        return None
+    try:
+        return float(txt.replace(",", "."))
+    except ValueError:
+        return None
+
+
+def _ocr_numeros_lote(crops: list[np.ndarray]) -> list[float | None]:
+    """Lê N recortes numéricos em UMA invocação do tesseract.
+
+    Motivo (HANDOFF_P2_7 Ruling 31): o custo do tesseract aqui é partida de
+    processo, não reconhecimento. Medido com recortes sintéticos, 52,6 ms para
+    um rótulo e 55,0 ms para dez — ~52 ms fixos por invocação e ~0,3 ms por
+    rótulo. Com mediana de 16 chamadas por imagem (p95 57, máx 105), o estágio B
+    gastava 790 dos seus 800 ms só abrindo processo.
+
+    Os recortes são ampliados individualmente (igual ao `_ocr_number`), então
+    alinhados numa ÚNICA LINHA horizontal separada por `_LOTE_GAP` de fundo.
+    A linha única preserva o `--psm 7` do `_OCR_CFG`: o tesseract continua
+    vendo "uma linha de texto", só que com vários números nela.
+
+    O mapeamento de volta usa as caixas do `image_to_data`: cada palavra é
+    atribuída ao recorte cuja faixa horizontal contém o centro dela, e as
+    palavras do mesmo recorte são concatenadas em ordem de x. Isso reproduz o
+    `.strip().replace(" ", "")` do `_ocr_number` para o caso em que o tesseract
+    quebra "1.5" em vários pedaços.
+    """
+    n = len(crops)
+    if n == 0:
+        return []
+    amp: list[np.ndarray | None] = []
+    for c in crops:
+        if c is None or c.size == 0 or c.shape[0] < 1 or c.shape[1] < 1:
+            amp.append(None)
+            continue
+        img = Image.fromarray(c.astype(np.uint8), mode="L")
+        img = img.resize((img.width * _OCR_UP, img.height * _OCR_UP), Image.LANCZOS)
+        amp.append(np.asarray(img, dtype=np.uint8))
+    validos = [i for i, a in enumerate(amp) if a is not None]
+    if not validos:
+        return [None] * n
+    if len(validos) == 1:
+        # nada a ganhar com mosaico, e evita qualquer divergência de leitura
+        i = validos[0]
+        out: list[float | None] = [None] * n
+        out[i] = _ocr_number(crops[i])
+        return out
+
+    alt = max(amp[i].shape[0] for i in validos)
+    fundo = int(np.median([int(np.median(amp[i])) for i in validos]))
+    larguras = [amp[i].shape[1] for i in validos]
+    larg_tot = _LOTE_PAD * 2 + sum(larguras) + _LOTE_GAP * (len(validos) - 1)
+    mosaico = np.full((alt + _LOTE_PAD * 2, larg_tot), fundo, dtype=np.uint8)
+    faixas: list[tuple[int, int, int]] = []      # (indice, x_ini, x_fim)
+    cur = _LOTE_PAD
+    for i in validos:
+        a = amp[i]
+        dy = _LOTE_PAD + (alt - a.shape[0]) // 2
+        mosaico[dy:dy + a.shape[0], cur:cur + a.shape[1]] = a
+        faixas.append((i, cur, cur + a.shape[1]))
+        cur += a.shape[1] + _LOTE_GAP
+
+    try:
+        dados = pytesseract.image_to_data(
+            Image.fromarray(mosaico, mode="L"), config=_OCR_CFG,
+            output_type=pytesseract.Output.DICT)
+    except Exception:
+        return [_ocr_number(c) for c in crops]
+
+    achados: dict[int, list[tuple[float, str]]] = {}
+    for txt, left, width in zip(dados.get("text", []), dados.get("left", []),
+                                dados.get("width", [])):
+        if not txt or not txt.strip():
+            continue
+        centro = float(left) + float(width) / 2.0
+        for i, xa, xb in faixas:
+            if xa <= centro <= xb:
+                achados.setdefault(i, []).append((float(left), txt))
+                break
+
+    out = [None] * n
+    for i, itens in achados.items():
+        itens.sort(key=lambda p: p[0])
+        out[i] = _texto_para_numero("".join(t for _, t in itens))
+    return out
+
+
 MARGIN_X_H = 40    # altura da faixa de rótulos do eixo x, abaixo da moldura
 MARGIN_Y_W = 90    # largura da faixa de rótulos do eixo y, à esquerda da moldura
 TICK_GAP = 8       # px mais próximos da moldura, excluídos da busca de blob:
@@ -258,45 +361,48 @@ def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
     fundo = float(np.median(gray))
     pares: dict[str, list[tuple[float, float]]] = {"x": [], "y": []}
 
-    def _ocr_blob(strip: np.ndarray, bx0: int, by0: int, bx1: int, by1: int,
-                  trim_top: bool, trim_right: bool) -> float | None:
-        """OCR do blob; se falhar E o blob tocar a borda perto do spine
-        (onde uma marca de tick pode ter se fundido com o dígito), tenta de
-        novo aparando essa borda. As duas tentativas custam pouco — bem mais
-        barato que decidir de antemão se há marca fundida ou não, e evita
-        cortar rótulos legítimos que só por acaso começam perto do spine
-        (medido: cortar sempre quebrava tanto quanto ajudava). Ver Ruling.
+    def _candidatos(strip, bx0, by0, bx1, by1, trim_top, trim_right):
+        """Os MESMOS recortes de antes, em ordem de precedência.
+
+        Antes cada um virava uma chamada separada ao tesseract e as duas
+        tentativas extras só rodavam se a primeira falhasse. Agora todos vão
+        no mesmo lote e a precedência é resolvida depois — o custo de um
+        recorte a mais no mosaico é ~0,3 ms (Ruling 31), contra ~52 ms de uma
+        invocação nova, então gerar os três sempre é mais barato que
+        condicionar.
         """
         pad = 2
-        crop = strip[max(by0 - pad, 0):by1 + pad, max(bx0 - pad, 0):bx1 + pad]
-        v = _ocr_number(crop)
-        if v is not None:
-            return v
+        cands = [strip[max(by0 - pad, 0):by1 + pad, max(bx0 - pad, 0):bx1 + pad]]
         if trim_top and by1 - by0 > TICK_GAP + 3:
-            crop2 = strip[by0 + TICK_GAP:by1 + pad, max(bx0 - pad, 0):bx1 + pad]
-            v = _ocr_number(crop2)
-            if v is not None:
-                return v
+            cands.append(strip[by0 + TICK_GAP:by1 + pad, max(bx0 - pad, 0):bx1 + pad])
         if trim_right and bx1 - bx0 > TICK_GAP + 3:
-            crop3 = strip[max(by0 - pad, 0):by1 + pad, max(bx0 - pad, 0):bx1 - TICK_GAP]
-            v = _ocr_number(crop3)
-            if v is not None:
-                return v
-        return None
+            cands.append(strip[max(by0 - pad, 0):by1 + pad, max(bx0 - pad, 0):bx1 - TICK_GAP])
+        return cands
 
     faixa_x = gray[min(y1 + 1, h - 1):min(y1 + 1 + MARGIN_X_H, h), x0:x1 + 1]
-    for bx0, by0, bx1, by1 in _text_blobs(faixa_x, fundo):
-        v = _ocr_blob(faixa_x, bx0, by0, bx1, by1, trim_top=(by0 <= 1), trim_right=False)
-        if v is not None:
-            pares["x"].append((x0 + (bx0 + bx1) / 2.0, v))
-
     faixa_y = gray[y0:y1 + 1, max(x0 - MARGIN_Y_W, 0):x0]
     fy_w = faixa_y.shape[1]
+
+    crops: list[np.ndarray] = []
+    # (eixo, posicao_px, indices dos candidatos em ordem de precedencia)
+    plano: list[tuple[str, float, list[int]]] = []
+    for bx0, by0, bx1, by1 in _text_blobs(faixa_x, fundo):
+        cs = _candidatos(faixa_x, bx0, by0, bx1, by1, by0 <= 1, False)
+        plano.append(("x", x0 + (bx0 + bx1) / 2.0,
+                      list(range(len(crops), len(crops) + len(cs)))))
+        crops.extend(cs)
     for bx0, by0, bx1, by1 in _text_blobs(faixa_y, fundo):
-        v = _ocr_blob(faixa_y, bx0, by0, bx1, by1, trim_top=False,
-                      trim_right=(bx1 >= fy_w - 1))
-        if v is not None:
-            pares["y"].append((y0 + (by0 + by1) / 2.0, v))
+        cs = _candidatos(faixa_y, bx0, by0, bx1, by1, False, bx1 >= fy_w - 1)
+        plano.append(("y", y0 + (by0 + by1) / 2.0,
+                      list(range(len(crops), len(crops) + len(cs)))))
+        crops.extend(cs)
+
+    lidos = _ocr_numeros_lote(crops)
+    for eixo, pos, idxs in plano:
+        for i in idxs:
+            if lidos[i] is not None:
+                pares[eixo].append((pos, lidos[i]))
+                break
     return pares
 
 

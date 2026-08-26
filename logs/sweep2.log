@@ -1,0 +1,9 @@
+amostras=99
+
+  ANTIGO (referencia)              pares=  882  ok= 77/99 (77.8%)   1020.3 ms/amostra
+  LOTE UNICO gap=200               pares=  867  ok= 75/99 (75.8%)     93.0 ms/amostra
+  LOTE UNICO gap=400               pares=  912  ok= 77/99 (77.8%)    152.5 ms/amostra
+  LOTE UNICO gap=700               pares=  868  ok= 74/99 (74.7%)    362.1 ms/amostra
+  CASCATA gap=200                  pares=  847  ok= 72/99 (72.7%)    129.3 ms/amostra
+  CASCATA gap=400                  pares=  849  ok= 72/99 (72.7%)    171.2 ms/amostra
+  CASCATA gap=700                  pares=  855  ok= 73/99 (73.7%)    281.4 ms/amostra
