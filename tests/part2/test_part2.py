@@ -260,17 +260,57 @@ def test_2_9_cobertura_da_calibracao(test_samples):
     assert cobertura >= 0.90, f"cobertura da calibração: {cobertura:.1%}"
 
 
-def test_2_11_saida_adimensional_sempre_presente(test_samples):
-    """Portão 2.11: a saída adimensional existe mesmo com ok=False (§1.7)."""
-    from identify.calibrate import calibrate
+CHAVES_ADIM = {"zeta", "wn_T", "tau_T", "theta_T", "theta_tau", "K_yrange"}
 
+
+def test_2_11_saida_adimensional_sempre_presente(test_samples):
+    """Portão 2.11: a saída adimensional existe mesmo com ok=False (§1.7).
+
+    Este teste MEDIA COISA OUTRA até o Bloco 7 (HANDOFF_P2_7 Ruling 34): ele só
+    verificava que `calibrate()` não levanta exceção, e passava com a Decisão E
+    inteira não implementada. O `PLANO.md:299` pede "100% das amostras com
+    `dimensionless` preenchido e nenhuma exceção levantada", o que é sobre a
+    saída de `identify_from_image`, não sobre o calibrador.
+    """
+    import torch
+    from identify.calibrate import calibrate
+    from identify.extract import load_model
+    from identify.pipeline import identify_from_image
+
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    model = load_model("models/unet_stageA.pt", dev)
+
+    com_bloco = com_valor = 0
+    sem_calibracao = adim_sem_calibracao = 0
     for m in test_samples:
-        # Nunca levanta, mesmo em amostras adversárias — checagem do contrato.
+        # Nenhuma das duas portas levanta, nem em amostras adversárias.
         cal = calibrate(m["image"])
         assert cal.ok in (True, False)
         assert isinstance(cal.reason, str)
-    record_p2("2.11", "calibrate() nunca levanta exceção", "100% das amostras",
-              f"{len(test_samples)}/{len(test_samples)}", True)
+
+        r = identify_from_image(m["image"], model, dev)
+        # Estrutura: o bloco existe sempre, com todas as chaves.
+        assert isinstance(r.get("dimensionless"), dict), r.get("reason")
+        assert CHAVES_ADIM <= set(r["dimensionless"]), r["dimensionless"].keys()
+        com_bloco += 1
+        # `physical` é null exatamente quando não há saída física.
+        assert (r["physical"] is None) == (not r["ok"])
+        assert r["calibration"]["ok"] == cal.ok
+        if any(v is not None for v in r["dimensionless"].values()):
+            com_valor += 1
+        if not cal.ok:
+            sem_calibracao += 1
+            if r["dimensionless"].get("zeta") is not None or \
+               r["dimensionless"].get("tau_T") is not None:
+                adim_sem_calibracao += 1
+
+    n = len(test_samples)
+    record_p2("2.11", "Bloco `dimensionless` presente em toda amostra",
+              "100% das amostras, sem exceção",
+              f"{com_bloco}/{n} com bloco; {com_valor}/{n} com valor; "
+              f"{adim_sem_calibracao}/{sem_calibracao} das sem calibração",
+              com_bloco == n)
+    assert com_bloco == n
 
 
 # --- Bloco 4: máscara -> polilinha ------------------------------------------

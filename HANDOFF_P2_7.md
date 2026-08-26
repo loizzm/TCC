@@ -1012,3 +1012,430 @@ A poda **não foi aplicada** ao código. É decisão de projeto: troca +3,0 p.p.
 2.9 por −0,6 p.p. de 2.3, com o 2.3 ficando a 0,2 p.p. do limiar. Nenhum dos dois
 critérios passa a ser aprovado com a mudança (2.9 iria a 82,9%, alvo 90%), então
 o ganho é de posição, não de veredito.
+
+## 18. A rede de IoU 0,65 NÃO é o gargalo — três Rulings
+
+Dado bruto: `reports/part2_rede_metricas.json` (300 amostras; IoU, Dice,
+espessura predita e verdadeira, RMSE da polilinha contra a curva analítica para
+máscara verdadeira E predita, distância de centerline e o end-to-end com o
+código atual). 214 aceitas, consistente com o §14.3.
+
+### 18.1 Ruling 38 — Dice não pode ajudar: é identidade com IoU
+
+```
+max |Dice − 2·IoU/(1+IoU)| = 1,11e-16
+```
+
+Dice **é** `2·IoU/(1+IoU)`, transformação estritamente monótona. Spearman é
+baseado em ranks, logo as duas dão correlação **idêntica** (+0,114, p=0,234) com
+o erro end-to-end. Dice mede 0,7862 contra IoU 0,6478 e **parece** melhor, mas é
+o mesmo número reparametrizado.
+
+**Registrado porque é a armadilha natural:** trocar de métrica de área não escapa
+do problema de área. Qualquer métrica de sobreposição sofre igual numa estrutura
+fina.
+
+### 18.2 Ruling 39 — o IoU aqui mede ESPESSURA DE TRAÇO, não acurácia geométrica
+
+| | Spearman vs IoU |
+|---|---|
+| **espessura verdadeira do traço (w)** | **+0,860** (p=5e-89) |
+| **razão de espessura pred/true (k)** | **−0,879** (p=5e-98) |
+| deslocamento de centerline | +0,284 (p=6e-07) |
+
+Estratificado por espessura verdadeira:
+
+| w | n | IoU | **centerline** |
+|---|---|---|---|
+| < 4 px | 98 | **0,468** | **1,00 px** |
+| 4–6 px | 60 | 0,609 | **1,00 px** |
+| 6–9 px | 54 | 0,710 | **1,00 px** |
+| ≥ 9 px | 88 | **0,782** | 1,08 px |
+
+**O erro geométrico é 1,00 px em TODAS as faixas — constante — e o IoU varia
+0,31.** Linha fina × grossa: IoU 0,548 × 0,727, centerline 1,00 px nas duas.
+Espessura predita 6,30 px contra 5,77 verdadeira (razão 1,076 mediana, p90 1,409).
+
+Um modelo geométrico trivial (deslocamento `d` numa faixa de largura `w`, com
+espessura `k·w`) prevê IoU **0,667** contra 0,648 medido, com correlação
+previsto × medido de **+0,932**. O IoU está ~93% explicado por espessura e
+deslocamento — e o deslocamento não varia.
+
+**Consequência para o critério 2.1:** o alvo IoU ≥ 0,85 é provavelmente
+**inalcançável por construção** para traço fino. 168 das 300 amostras têm linha
+de ~4,11 px; com 1 px de centerline, o teto aritmético fica na casa de 0,55. **A
+meta foi fixada sem considerar a largura da linha.** Isto fundamenta com número o
+que o Ruling 25 só suspeitava.
+
+### 18.3 Ruling 40 — a contribuição geométrica da rede é sub-pixel, e nada na máscara prevê o end-to-end
+
+Convenção do próprio critério 2.2 (RMSE em px contra a curva analítica do meta):
+
+| | RMSE mediano | p95 |
+|---|---|---|
+| **piso** — polilinha da máscara VERDADEIRA | 1,488 px | 6,701 |
+| **rede** — polilinha da máscara PREDITA | 1,924 px | 9,422 |
+| **adicionado pela rede** | **+0,359 px** | +2,109 |
+
+A rede acrescenta **um terço de pixel** sobre um piso de 1,49 px que pertence ao
+extrator de polilinha. Cobertura de colunas 99,9%, 630 pontos nas duas — sem
+lacunas. Centerline predita × verdadeira: mediana 1,00 px, RMSE 1,79 px,
+p95 3,52 px. A polilinha é float (centroide), então a métrica tem resolução
+sub-pixel — o 1,00 px não é artefato de quantização.
+
+Correlação com a **degradação** de ζ (real − oráculo, que isola a contribuição da
+visão), n=110:
+
+| métrica | Spearman | p |
+|---|---|---|
+| IoU / Dice | +0,001 | 0,995 |
+| razão de espessura | −0,025 | 0,792 |
+| RMSE da polilinha (rede) | +0,045 | 0,642 |
+| **erro adicionado pela rede** | **+0,007** | **0,946** |
+| centerline RMSE / p95 / max | +0,033 / +0,034 / +0,054 | > 0,72 |
+
+Todas indistinguíveis de zero. **Ressalva de potência: com n=110 o Spearman só
+resolve |r| > ~0,19.** Leitura correta: "o efeito, se existe, é pequeno" — NÃO
+"é exatamente zero".
+
+### 18.4 Ruling 41 — a falha do critério 2.2 é 100% do extrator, 0% da rede
+
+O 2.2 exige RMSE ≤ 2 px **e** p95 ≤ 5 px. Usando a máscara **VERDADEIRA**:
+RMSE 1,488 (passa) e **p95 6,701 (REPROVA)**. O critério já está reprovado antes
+de a rede contribuir. Com a máscara predita vai a 9,422 — a rede piora a cauda,
+mas não é a causa.
+
+Isto fecha a atribuição do §15: **2.2 nunca foi problema de segmentação.**
+
+### 18.5 Veredito
+
+`base=32` está descartado por três medições independentes: o IoU não prevê o
+end-to-end (Ruling 25), o IoU mede espessura e não acurácia (Ruling 39), e a rede
+contribui 0,36 px sobre um piso de 1,49 px que não é dela (Ruling 40). **Treinar
+mais capacidade otimizaria uma métrica que os dados mostram desacoplada do
+objetivo, para reduzir um termo que já é o menor da cadeia.**
+
+O que 2.1 e 2.7 exigem, se forem mantidos como estão, é revisão da META — e o
+Ruling 39 dá a base quantitativa para propor isso na monografia: uma métrica
+geométrica (centerline, ou RMSE de polilinha) mede o que o pipeline consome;
+IoU de máscara mede a largura do traço que o matplotlib sorteou.
+
+## 19. Ruling 42 — ablação: o extrator de polilinha domina a perda de ACURÁCIA, a calibração domina a perda de AMOSTRA
+
+Dado bruto: `reports/part2_ablacao.json`. Quatro cadeias, trocando um elo por sua
+versão perfeita de cada vez:
+
+| | cadeia |
+|---|---|
+| **E0** | série VERDADEIRA → estágio D (oráculo) |
+| **E1** | máscara VERDADEIRA → polilinha → afim VERDADEIRO → D |
+| **E2** | máscara PREDITA → polilinha → afim VERDADEIRO → D |
+| **E3** | máscara PREDITA → polilinha → afim do OCR → D (= pipeline real) |
+
+### 19.1 Acurácia: teste PAREADO, não diferença de medianas
+
+Wilcoxon pareado por amostra, conjunto comum n=207 (delta em p.p.):
+
+| elo | K | tau | wn | **zeta** | theta |
+|---|---|---|---|---|---|
+| **extrator de polilinha** | **+0,074**✱ | **+0,135**✱ | **+0,194**✱ | **+0,368**✱ | **+0,065**✱ |
+| rede (U-Net) | +0,003 | +0,034 | −0,041 | +0,127 (p=0,056) | **+0,050**✱ |
+| calibração / OCR | **+0,059**✱ | +0,000 | +0,200 | +0,120 | **+0,111**✱ |
+
+✱ = p < 0,05.
+
+**O extrator é o único elo que degrada os CINCO parâmetros significativamente**, e
+lidera no que decide: **+0,368 p.p. em ζ (p=0,002)**. A rede só tem efeito
+significativo em θ (+0,050 p.p.). A calibração pesa em K e θ.
+
+**ARMADILHA METODOLÓGICA, registrada porque quase produziu conclusão errada:** a
+diferença de MEDIANAS por estágio sugere que a rede *melhora* ζ (−0,129 p.p.),
+porque cada estágio tem subconjunto de convergência diferente. O teste PAREADO
+refuta: +0,127 p.p., ou seja piora levemente. **Nunca decompor esta cadeia por
+mediana de estágio; usar sempre delta pareado por amostra.**
+
+Erro absoluto de ζ ao longo da cadeia (conjunto comum): E0 1,380% → E1 2,019%
+→ E2 1,890% → E3 2,239%.
+
+### 19.2 Perda de amostra
+
+| estágio | converge com ordem certa | derruba | recupera | saldo |
+|---|---|---|---|---|
+| E0 oráculo | 287/300 (95,7%) | — | — | — |
+| E1 + extrator | 277 (92,3%) | 18 | 8 | **−10** |
+| E2 + rede | 275 (91,7%) | 13 | 11 | **−2** |
+| **E3 + calibração** | **219 (73,0%)** | **58** | 2 | **−56** |
+
+**A calibração responde por 56 das ~68 amostras perdidas. A rede custa 2.**
+
+### 19.3 O piso do estágio D
+
+O E0 perde **13/300** e erra **1,380% em ζ com a série VERDADEIRA na mão**. É o
+piso irredutível do ajustador atual. O critério 2.6 mede *degradação*
+(real − oráculo), então este piso não o afeta — mas limita qualquer critério de
+erro ABSOLUTO que a Parte 3 venha a definir.
+
+### 19.4 Prioridade resultante
+
+1. **Extrator de polilinha.** Maior contribuinte de erro em todos os parâmetros
+   E a causa única da reprovação do 2.2 (p95 6,701 px na máscara VERDADEIRA,
+   Ruling 41). Dois critérios, uma causa, e **nunca investigado**. O RMSE mediano
+   do piso (1,488 px) PASSA o alvo de 2 px — quem reprova é a cauda, logo é um
+   subconjunto onde a extração quebra, não erro típico. Candidatos pelos estratos
+   já medidos do 2.2: traço `:` (1,80 px), com marcador (1,91 × 1,33 sem), traço
+   grosso (1,76 × 1,15 fino). **A cauda em si não está medida** — é onde começar.
+2. **Calibração.** Maior alvo para perda de amostra. Dois consertos já medidos:
+   a **Decisão E** (Ruling 34) recupera as 56 para ζ, que é adimensional e não
+   precisa de calibração; a **poda** (Ruling 37) recupera 16 das 30
+   `calibration_failed`.
+3. **Rede: nada a ganhar.** Terceira medição independente concordando
+   (Rulings 25, 39/40, 42).
+
+## 20. Ruling 43 — a cauda do 2.2 é curva ÍNGREME, e é limite da representação, não bug
+
+Dado bruto: `reports/part2_cauda_polilinha.json`.
+
+A cauda é **27/300 (9,0%)** das amostras com RMSE > 5 px. **Sem ela o p95 seria
+4,046 px e o 2.2 passaria.**
+
+### 20.1 As três hipóteses do §15/§19.4 estão REFUTADAS
+
+Fração de cada estrato que cai na cauda:
+
+| estrato | na cauda |
+|---|---|
+| traço `:` (que o §19.4 apontou como pior) | **7,5%** — o MENOR de todos |
+| traço `-.` | 11,9% |
+| com marcador × sem | 9,3% × 8,9% (sem sinal) |
+| linha grossa × fina | 11,4% × 7,1% (fraco) |
+| **dpi 150–200 × 60–99** | **14,0% × 2,4%** |
+
+As diferenças de RMSE MEDIANO que o §19.4 citou (traço `:` 1,80 px, marcador
+1,91 px) são reais mas **não se traduzem em pertencer à cauda**. Lição: estrato
+que move a mediana não é o mesmo que estrato que produz a cauda.
+
+### 20.2 A causa: inclinação da curva em px/px
+
+| | Spearman vs RMSE da polilinha |
+|---|---|
+| **inclinação máxima (p99, px/px)** | **+0,868** (p=9e-93) |
+| tinta por coluna | +0,763 |
+| largura da linha (pontos) | +0,287 |
+| dpi | +0,178 |
+
+| inclinação máx | n | RMSE | na cauda |
+|---|---|---|---|
+| 0,49–2,85 | 75 | 0,62 px | **0,0%** |
+| 2,85–6,45 | 75 | 1,00 px | **0,0%** |
+| 6,45–13,79 | 75 | 1,77 px | 2,7% |
+| 13,79–26,55 | 45 | 3,37 px | 8,9% |
+| **26,55–174,94** | 30 | **6,67 px** | **70,0%** |
+
+**Nenhuma amostra com inclinação < 6,45 px/px está na cauda; 70% das acima de
+26,55 estão.**
+
+**Mecanismo:** `mask_to_polyline` representa a curva como **um y por coluna**.
+Onde `|dy/dx|` é grande, a coluna abrange dezenas de px em y e nenhum valor único
+a representa — o erro fica em torno de metade da extensão vertical. **É limite da
+REPRESENTAÇÃO, não defeito de implementação.**
+
+Evidência corroborante: o perfil do erro na cauda é **uniforme** ao longo da
+janela (6,83 / 7,05 / 7,23 / 7,08 / 7,14 px por quinto), inclusive no trecho já
+assentado; o viés é 0,364 px num RMSE de 7 (5%), logo não é deslocamento
+sistemático; e a fração de colunas com >1 ramo de tinta é 0,464 na cauda contra
+0,024 no resto.
+
+**Correção a uma métrica do Ruling 39:** o que foi chamado de "espessura do
+traço" é **tinta por coluna**, e ela é explicada mais pela inclinação (+0,727)
+que pela largura de linha (+0,471). Para curva suave as duas coincidem; na cauda,
+não. O Ruling 39 segue válido no que afirma (IoU acompanha tinta por coluna e não
+acurácia), mas a interpretação "largura do traço" é imprecisa.
+
+### 20.3 A inclinação NÃO vem dos parâmetros do sistema
+
+| | Spearman vs inclinação px/px |
+|---|---|
+| ζ | −0,163 (p=0,046, marginal) |
+| ωₙ | −0,025 (n.s.) |
+| τ | +0,004 (n.s.) |
+| **inclinação em unidades de dado (normalizada)** | **+0,762** |
+| **aspecto do quadro (w/h)** | **−0,600** |
+| razão das escalas \|sx/sy\| | +0,123 |
+
+ωₙ e τ absolutos não importam porque a `t_window` é escalada à dinâmica. O que
+importa é **quanto da janela o transiente ocupa** (grandeza normalizada) e o
+**aspecto do quadro** — quadro largo achata a curva em pixels, quadro alto a
+verticaliza. **A cauda é estrato de RENDER, não de dinâmica.** Isso também
+explica por que o Ruling 26 não achou padrão limpo por faixa de ζ.
+
+### 20.4 Direção de conserto (não implementada)
+
+O gargalo é a representação "um y por coluna". Candidatos, em ordem de custo:
+
+1. **Descartar/despriorizar colunas íngremes no ajuste.** Uma coluna com
+   `|dy/dx|` alto carrega pouca informação sobre `y(x)` e muito ruído. Barato,
+   não muda a representação.
+2. **Emitir mais de um ponto por coluna íngreme**, ou parametrizar por
+   comprimento de arco em vez de por x (traçado de esqueleto).
+3. **Reamostrar por aspecto** antes de extrair, normalizando `|dy/dx|`.
+
+Nenhuma foi medida. O item 1 é o mais barato e ataca também a degradação de
+acurácia do Ruling 42, que é o mesmo componente.
+
+## 21. Ruling 44 — a Decisão E é implementável: recupera 53 das 61, com ζ a 2,93%
+
+Dado bruto: `reports/part2_decisaoE.json`. Testa se ζ é recuperável SEM
+calibração, ajustando num quadro normalizado (`t` em [0,1]; `y` com zero estimado
+pela mediana dos 8% de colunas iniciais e sinal invertido, pois o pixel cresce
+para baixo; escala de `y` arbitrária, pois ζ é invariante a ela). Corresponde ao
+nível adimensional do `PLANO §1.7`.
+
+### 21.1 Recuperação
+
+| | n |
+|---|---|
+| calibração falhou | **61** |
+| ajuste adimensional converge | **61 (100%)** |
+| com a **ordem certa** | **53** |
+| destas, de 2ª ordem (têm ζ) | **31** |
+
+Por motivo: `calibration_failed` 26/30 (86,7%) · `ocr_insuficiente` 21/25 (84,0%)
+· `sinal_de_escala_invalido` 5/5 · `bbox_not_found` 1/1.
+
+### 21.2 Acurácia
+
+| caminho | n | MAPE de ζ, mediana | p95 |
+|---|---|---|---|
+| físico (calibrado) | 110 | **2,40%** | 43,82% |
+| adimensional, cal OK | 105 | 3,27% | 62,02% |
+| **adimensional, cal FALHOU** | **31** | **2,93%** | **16,33%** |
+
+O ζ recuperado erra 2,93% — equivalente ao caminho físico nas amostras que
+funcionam (2,40%). **Não é resposta degradada; é resposta de qualidade
+comparável em amostras hoje descartadas.**
+
+E confirma a hierarquia do plano: onde a calibração fecha, o físico é melhor
+(2,40% × 3,27%). O adimensional entra só quando o físico não existe.
+
+### 21.3 RESSALVA que impede tratar os dois caminhos como equivalentes
+
+Controle nas 104 amostras onde dá para comparar os dois:
+
+| | valor |
+|---|---|
+| \|ζ_adim − ζ_fís\| mediana | 0,0205 |
+| erro relativo entre os caminhos, mediana | **1,33%** |
+| erro relativo, **p95** | **50,5%** |
+
+Concordam no caso típico e **divergem muito na cauda**. O ponto fraco é o **zero
+estimado**: erra quando há tempo morto grande ou ruído no trecho inicial. Logo o
+nível adimensional precisa ser reportado como **saída própria, com acurácia
+própria** — nunca fundido nos números do nível físico. Isso é exatamente a
+estrutura de dois níveis do `PLANO §1.7`, e a ressalva aqui é a razão de ser dela.
+
+### 21.4 O que falta para implementar
+
+1. `identify_from_image` não pode mais retornar `{**vazio}` em `cal.ok == False`:
+   precisa devolver o bloco `dimensionless` (ordem, ζ, ωₙ·T, θ/T, K/y_faixa) e
+   deixar `physical` nulo.
+2. Endurecer `test_2_11` para o que o `PLANO.md:299` pede — hoje ele só verifica
+   que `calibrate()` não levanta (Ruling 34).
+3. Decidir como o critério 2.6 trata o nível adimensional: ζ entra direto;
+   ωₙ·T e θ/T exigem valores de referência derivados do meta (a `t_window` está
+   lá); K e τ **não** entram sem calibração. Isso é decisão de projeto, não de
+   implementação.
+
+Nada disso foi implementado nesta sessão.
+
+## 22. Resumo das duas investigações do §19.4
+
+| alvo | investigado | conserto | medido |
+|---|---|---|---|
+| **extrator** (acurácia + 2.2) | Ruling 43 | descartar colunas íngremes / reparametrizar | **não** |
+| **calibração — Decisão E** (perda de amostra) | Ruling 44 | bloco adimensional | **sim: 53 recuperadas, ζ a 2,93%** |
+| **calibração — poda** (2.9) | Ruling 37 | poda ≤2 com piso 4 | **sim: 2.9 79,9% -> 82,9%, 2.3 cai 0,6 p.p.** |
+
+A Decisão E é o único dos três com ganho medido e sem contrapartida em outro
+critério. A poda troca 2.9 por 2.3. O extrator é o maior alvo mas o conserto
+ainda não tem número.
+
+## 23. Ruling 45 — Decisão E IMPLEMENTADA, a 5 ms de custo
+
+`identify/pipeline.py` reescrito e `test_2_11` endurecido. O contrato do
+`PLANO §1.7` (linhas 150–161) passa a valer.
+
+### 23.1 O que mudou
+
+`identify_from_image` não aborta mais em `cal.ok == False`. Agora sempre calcula
+máscara e polilinha, e devolve os blocos do plano:
+
+```
+{"order", "params",                     # nível FÍSICO (compatibilidade)
+ "dimensionless": {zeta, wn_T, tau_T, theta_T, theta_tau, K_yrange},
+ "physical": {...} | None,
+ "calibration": {ok, reason, n_pairs_x, n_pairs_y},
+ "ok", "reason", "latency_ms", "n_points"}
+```
+
+Duas decisões de compatibilidade, deliberadas e documentadas no docstring:
+
+1. **`params` e `order` no topo continuam sendo os do nível FÍSICO**, porque
+   `tests/part2` e a Parte 3 os consomem. Os campos do plano entram ao lado, sem
+   substituir.
+2. **`ok` continua significando "há saída física"**, não "há resposta". É o que o
+   próprio §1.7 pede em "Consequência nos critérios": 2.3, 2.4 e 2.5 passam a ser
+   medidos sobre o subconjunto em que a calibração declarou sucesso. Quem quer o
+   nível adimensional lê `dimensionless`, que nunca é nulo.
+
+**Decisão técnica que resolve a ressalva do §21.3:** quando a calibração fecha, o
+bloco adimensional é **derivado do ajuste físico** (ζ direto, `wn_T = wn·T`,
+`theta_T = θ/T`, `K_yrange = K/faixa_y`), não de um segundo ajuste. Economiza um
+ajuste por imagem **e** faz os dois níveis concordarem por construção — a
+divergência de 50,5 % no p95 que o §21.3 mediu entre ajustes independentes deixa
+de existir. O ajuste no quadro normalizado roda só quando não há calibração.
+
+`_serie_normalizada` usa `_FRAC_REPOUSO = 0.08` para estimar o nível de repouso
+(o degrau parte de zero e o tempo morto mantém a curva parada), valor do §21.
+
+### 23.2 `test_2_11` deixou de ser falso-verde
+
+Antes verificava apenas que `calibrate()` não levanta exceção, e passava com a
+Decisão E inteira ausente (Ruling 34). Agora executa `identify_from_image` nas
+300 amostras e verifica: o bloco existe com as seis chaves; `physical` é `None`
+**exatamente** quando `ok` é falso; `calibration.ok` reflete o calibrador. E
+registra como número medido quantas amostras SEM calibração ainda entregam
+ζ ou τ/T.
+
+**Medido: 300/300 com bloco, 300/300 com valor, 61/61 das sem calibração.**
+Toda amostra entrega resposta adimensional, inclusive as 61 que o pipeline
+descartava.
+
+### 23.3 Custo e regressão — suíte completa, `pytest -q` sem filtros
+
+| | antes | depois |
+|---|---|---|
+| **2.11** | "calibrate() nunca levanta" 300/300 | **300/300 bloco, 300/300 valor, 61/61 sem calibração** |
+| **2.8 latência** | 172 ms · p95 254 | **177 ms · p95 265** ✅ (alvo 500) |
+| 2.1 / 2.2 / 2.3 / 2.4 / 2.5 / 2.6 / 2.7 / 2.9 | — | **byte a byte idênticos** |
+| falhas | 5 | **5** |
+
+**Custo da Decisão E: +5 ms na mediana, +11 ms no p95.** A U-Net passou a rodar
+também nas 61 amostras que a calibração derrubava (antes o `return` antecipado
+vinha antes dela), e mesmo assim o custo é desprezível por causa da derivação
+do §23.1.
+
+**Nenhum critério físico se moveu um decimal** — a preservação da semântica de
+`ok` é o que garante isso, e era o principal risco da mudança.
+
+### 23.4 O que a Decisão E ainda NÃO faz
+
+O critério **2.6 continua medindo só o nível físico**. Fazer o ζ adimensional
+entrar no 2.6 exige decidir (decisão de projeto, não de implementação):
+
+- ζ entra direto — é o mesmo parâmetro;
+- ωₙ·T e θ/T precisam de valores de referência derivados do meta (a `t_window`
+  está lá);
+- K e τ **não** entram sem calibração.
+
+Enquanto isso não for decidido, o ganho da Decisão E aparece no 2.11 e na
+robustez do sistema, **não** no número do 2.6.
