@@ -1,0 +1,9 @@
+=== distancia PERPENDICULAR a curva verdadeira (px) ===
+  mascara VERDADEIRA         med   mediana= 0.419 px   p95_entre_amostras= 0.835 px   n=300
+  mascara VERDADEIRA         rmse  mediana= 0.614 px   p95_entre_amostras= 1.135 px   n=300
+  mascara VERDADEIRA         p95   mediana= 1.169 px   p95_entre_amostras= 2.239 px   n=300
+  mascara PREDITA (rede)     med   mediana= 0.549 px   p95_entre_amostras= 0.942 px   n=300
+  mascara PREDITA (rede)     rmse  mediana= 0.800 px   p95_entre_amostras= 1.699 px   n=300
+  mascara PREDITA (rede)     p95   mediana= 1.517 px   p95_entre_amostras= 2.616 px   n=300
+
+  erro perpendicular ADICIONADO pela rede: mediana=+0.144 px  p95=+0.543 px  (n=300)

@@ -1635,3 +1635,106 @@ uma causa" são de fato o mesmo COMPONENTE mas defeitos DIFERENTES:
 **Recomendação revista:** parar de investir no extrator. O esforço rende mais em
 2.9/2.4/2.5, onde a poda (Ruling 37) tem ganho medido de +3,0 p.p., e na revisão
 das metas de 2.1/2.2 com a base quantitativa dos Rulings 39, 43, 46, 48 e 49.
+
+## 29. Ruling 50 — a métrica PERPENDICULAR resolve 2.1 e 2.2: o pipeline é sub-pixel
+
+Dado bruto: `reports/part2_perp.json` e `reports/part2_perp_pred.json`.
+
+O 2.2 mede diferença **vertical** entre polilinha e curva. Num trecho de
+inclinação `m`, um erro geométrico de meio pixel aparece como `m/2` px de erro
+vertical. A distância **perpendicular** é invariante à inclinação.
+
+| | mediana | p95 |
+|---|---|---|
+| vertical (métrica atual do 2.2) | 1,488 px | **6,701 px** |
+| **perpendicular** | **0,614 px** | **1,135 px** |
+
+Por faixa de inclinação máxima (px/px):
+
+| faixa | vertical | perpendicular |
+|---|---|---|
+| 0,49–2,86 | 0,619 | 0,519 |
+| 2,86–6,51 | 1,000 | 0,588 |
+| 6,51–13,82 | 1,770 | 0,657 |
+| 13,82–26,73 | 3,371 | 0,651 |
+| **26,73–177,47** | **6,665** | **0,802** |
+
+Correlação com a inclinação: **vertical +0,869 · perpendicular +0,326**. O
+perpendicular varia 1,5× entre a faixa mais suave e a mais íngreme; o vertical,
+10,8×.
+
+**O extrator é sub-pixel em geometria. A reprovação do 2.2 é artefato de medir
+distância vertical em curva íngreme.** Isto explica retroativamente o Ruling 49:
+a redução "perfeita" não comprou acurácia porque **não havia erro geométrico a
+recuperar**.
+
+Perpendicular à curva verdadeira, máscara verdadeira × predita:
+
+| | RMSE mediana | p95 entre amostras |
+|---|---|---|
+| máscara VERDADEIRA (piso) | **0,614** | 1,135 |
+| máscara PREDITA (rede) | **0,800** | 1,699 |
+| **adicionado pela rede** | **+0,144** | +0,543 |
+
+### 29.1 Metas revisadas propostas
+
+| critério | métrica atual | medido | **métrica proposta** | **alvo** | medido |
+|---|---|---|---|---|---|
+| **2.1** | IoU de máscara ≥ 0,85 | 0,6478 ❌ | RMSE perpendicular da polilinha PREDITA | ≤ 1,0 px med, ≤ 2,0 px p95 | **0,800 / 1,699 ✅** |
+| **2.2** | RMSE vertical ≤ 2 / p95 ≤ 5 | 1,488 / 6,701 ❌ | RMSE perpendicular da polilinha da máscara VERDADEIRA | ≤ 1,0 px med, ≤ 2,0 px p95 | **0,614 / 1,135 ✅** |
+
+**De onde vem o limiar — e por que não é mover a trave.** O limiar sai do
+ORÇAMENTO do 2.6 (3 p.p.), não do resultado atual. A ablação (Ruling 42) dá a
+ponte: com 0,800 px de erro perpendicular, a contribuição da rede à degradação de
+ζ é +0,127 p.p. (nem significativa), ~4 % do orçamento. O limiar de 1,0 px mantém
+a rede em ~5 %. E **não é vacuoso**: 25 % de folga sobre o medido, então uma
+regressão real derruba o critério.
+
+A legitimidade da troca vem de a MÉTRICA ter mudado para medir a grandeza certa,
+com prova independente de que a antiga era errada (Rulings 39, 43, 48, 49 e as
+correlações acima). Afrouxar o limiar da métrica ANTIGA seria mover a trave.
+
+### 29.2 Dois resguardos, obrigatórios
+
+1. **Continuar reportando IoU e RMSE vertical como DIAGNÓSTICO, sem alvo.** IoU
+   informa fidelidade de espessura; o vertical informa o efeito da declividade.
+   Removê-los esconderia; mantê-los sem veredito preserva comparabilidade com as
+   rodadas 3 a 6.
+
+2. **A perpendicular tem ponto cego e precisa de par.** Ela **não penaliza erro
+   AO LONGO da curva** — polilinha deslocada no tempo, mas sobre a curva, pontua
+   zero. Num degrau isso é exatamente o θ. O par já existe: **`2.6[theta]` mede o
+   erro longitudinal** (+0,28 p.p. hoje, alvo ≤ 3). Adotar a perpendicular
+   SOZINHA, sem esta observação no plano, abriria vão para um extrator com viés
+   temporal.
+
+**Não implementado.** Trocar a métrica de 2.1 e 2.2 é alteração de critério do
+`PLANO`, decisão do autor da monografia, não do executor.
+
+## 30. Ruling 51 — a troca 2.9 por 2.3 (poda) NÃO se justifica hoje
+
+| config | 2.9 (alvo ≥ 90 %) | 2.3 (alvo ≥ 95 %) |
+|---|---|---|
+| **atual** | 79,9 % ❌ | **95,8 % ✅** (margem 0,8 p.p.) |
+| poda ≤2, piso 4 | 82,9 % ❌ | 95,2 % ✅ (margem **0,2 p.p.**) |
+| poda ≤2, piso 3 | 85,3 % ❌ | 94,1 % ❌ |
+
+Contra:
+
+1. **Nunca converte reprovação em aprovação** — o 2.9 exige 90 % e a poda chega a
+   82,9 %/85,3 %.
+2. **Queima a margem do 2.3 de 0,8 para 0,2 p.p.**, deixando um critério saudável
+   à mercê de variação de tesseract/dataset/máquina (Rulings 11 e 12).
+3. **Aceita calibração que o teste de consistência rejeitou** — e o
+   `_equiespacados` existe exatamente para pegar leitura errada que sobrevive ao
+   RANSAC (Ruling 32).
+4. **Efeito em 2.6/2.4/2.5 NÃO medido** — a poda foi simulada, nunca implementada.
+5. **A Decisão E mudou o cálculo.** Falha de calibração deixou de matar a amostra:
+   agora custa as unidades FÍSICAS, não a resposta (Ruling 47: o 2.6-adim já conta
+   as 31 recuperadas). A pressão para subir o 2.9 caiu.
+
+A favor: recupera 16 das 30 `calibration_failed` **com unidades físicas**, que a
+Decisão E não dá. Se a Parte 3 (PID/IMC) consome físico, cada amostra conta.
+
+**Recomendação: não fazer a troca agora.** Se for feita, `piso 4` é a única
+configuração defensável, e exige rodar a suíte inteira antes de adotar.
