@@ -1,0 +1,8 @@
+conjunto comum n=266
+
+parametro   E0 oraculo   E1 atual   E1 teto  ganho possivel  p (pareado)
+  K              0.121      0.261     0.268          -0.008     2.11e-01  n=266
+  tau            0.233      0.431     0.424          +0.007     1.01e-01  n=120
+  wn             0.709      1.150     0.991          +0.160     4.12e-02  n=146
+  zeta           1.215      2.026     1.635          +0.391     2.80e-01  n=146
+  theta          0.062      0.160     0.134          +0.026     1.37e-08  n=266

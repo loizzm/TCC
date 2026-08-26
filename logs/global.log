@@ -1,0 +1,9 @@
+variante                            n   mediana      p95    >5px  2.2
+  mediana (atual)                 300     1.488    6.701    9.0%  REPROVA
+  global sigma=1.0 iters=20       300     1.540    8.380   12.7%  REPROVA
+  global sigma=2.0 iters=20       300     1.502    8.548   12.7%  REPROVA
+  global sigma=2.0 iters=60       300     1.505    8.564   12.7%  REPROVA
+  global sigma=4.0 iters=20       300     1.536    8.604   12.7%  REPROVA
+  global sigma=4.0 iters=60       300     1.536    8.604   12.7%  REPROVA
+  global sigma=8.0 iters=60       300     1.605    8.586   12.0%  REPROVA
+  (oraculo limitado a tinta = 1.186 / 3.947 PASSA)
