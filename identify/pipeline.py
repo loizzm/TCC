@@ -162,5 +162,10 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                       _vazio_adimensional(), cal, x_px.size)
     g = identify(tn, yn)
     dim = _adimensional(g.params, 1.0, 1.0) if g.success else _vazio_adimensional()
-    # `order` e `params` do topo são do nível FÍSICO, que aqui não existe.
-    return _saida("", {}, False, cal.reason, dim, cal, x_px.size)
+    # `order` É adimensional — o PLANO §1.7 lista a estrutura como não dependente
+    # de calibração —, então sai preenchido mesmo sem nível físico. Já `params`
+    # fica vazio: ele é, por contrato, o bloco FÍSICO, que aqui não existe.
+    # Consumidores antigos não se confundem porque todos passam por `ok`, que
+    # continua falso; quem quer a estrutura sem calibração lê `order`.
+    return _saida(g.order if g.success else "", {}, False, cal.reason,
+                  dim, cal, x_px.size)

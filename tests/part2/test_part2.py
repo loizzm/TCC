@@ -467,6 +467,15 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
     err_oraculo: dict[str, list[float]] = {}
     err_real: dict[str, list[float]] = {}
     aceitas = 0
+    # Nível ADIMENSIONAL (Decisão E, PLANO §1.7). ζ é adimensional e não depende
+    # de calibração, então este acumulador NÃO exige `r["ok"]` — só que a
+    # estrutura tenha sido acertada. É o que faz as amostras sem calibração
+    # entrarem no 2.6, que antes as descartava inteiras (HANDOFF_P2_7 Ruling 42:
+    # a calibração derrubava 56 das ~68 amostras perdidas).
+    err_orac_adim: list[float] = []
+    err_real_adim: list[float] = []
+    aceitas_adim = 0
+    sem_calib_adim = 0
     for m in test_samples:
         alvo = m["params"]
         t_dom = meta_t_dom(m)
@@ -474,6 +483,18 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
         # Oráculo: série VERDADEIRA do meta -> estágio D (idêntico à Parte 1).
         o = estagio_d(m["series"]["t"], m["series"]["y"])
         r = identify_from_image(m["image"], model, dev)
+
+        z_adim = (r.get("dimensionless") or {}).get("zeta")
+        if (o.success and o.order == m["order"] and r["order"] == m["order"]
+                and z_adim is not None and alvo.get("zeta") is not None
+                and o.params.get("zeta") is not None):
+            aceitas_adim += 1
+            if not r["calibration"]["ok"]:
+                sem_calib_adim += 1
+            esc = max(abs(alvo["zeta"]), 1e-12)
+            err_real_adim.append(abs(z_adim - alvo["zeta"]) / esc * 100.0)
+            err_orac_adim.append(abs(o.params["zeta"] - alvo["zeta"]) / esc * 100.0)
+
         if not (o.success and r["ok"] and r["order"] == m["order"]
                 and o.order == m["order"]):
             continue
@@ -508,7 +529,27 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
     pior = max(d for _, d in piores)
     record_p2("2.6", "Degradação end-to-end (pior parâmetro)", "≤ 3 p.p.",
               f"{pior:+.2f} p.p. (n={aceitas})", pior <= 3.0)
+
+    # --- nível adimensional: ζ sem depender de calibração (Decisão E) ---------
+    d_adim = None
+    if aceitas_adim >= 100:
+        d_adim = float(np.median(err_real_adim)) - float(np.median(err_orac_adim))
+        record_p2("2.6-adim-aceitas",
+                  "Amostras comparáveis no nível adimensional (dispensa calibração)",
+                  "diagnóstico",
+                  f"{aceitas_adim}/{len(test_samples)} "
+                  f"({sem_calib_adim} sem calibração)", None)
+        record_p2("2.6-adim[zeta]", "ΔMAPE adimensional — zeta", "≤ 3 p.p.",
+                  f"{d_adim:+.2f} p.p. (oráculo {np.median(err_orac_adim):.2f}%, "
+                  f"real {np.median(err_real_adim):.2f}%)", d_adim <= 3.0)
+    else:
+        record_p2("2.6-adim[zeta]", "ΔMAPE adimensional — zeta",
+                  "≤ 3 p.p. (n insuficiente)",
+                  f"n={aceitas_adim} < 100 — não asseverável", None)
+
     assert pior <= 3.0, f"pior degradação: {piores}"
+    if d_adim is not None:
+        assert d_adim <= 3.0, f"degradação adimensional de zeta: {d_adim:+.2f} p.p."
 
 
 def test_2_6_diagnostico_extrator_classico(test_samples):
