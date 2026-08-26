@@ -734,12 +734,69 @@ def identify_both(t, y) -> tuple[FitResult, FitResult]:
     return fit_fopdt(t, y), fit_second(t, y)
 
 
+def _rho1(resid: np.ndarray) -> float:
+    """Autocorrelação de defasagem 1 do resíduo, saturada em [0, 0.99]."""
+    if resid.size < 3:
+        return 0.0
+    r = resid - resid.mean()
+    d = float(r @ r)
+    if not np.isfinite(d) or d <= 0.0:
+        return 0.0
+    return float(np.clip(float(r[:-1] @ r[1:]) / d, 0.0, 0.99))
+
+
+def _n_efetivo(t: np.ndarray, y: np.ndarray, fit: FitResult) -> float:
+    """Nº de pontos EFETIVAMENTE independentes, `n*(1-rho)/(1+rho)`.
+
+    O AIC do `_metrics` usa `n` cru. Isso é correto para observações
+    independentes e errado aqui: a série vem de uma polilinha extraída de
+    imagem, onde pixels vizinhos carregam erro de extração correlacionado.
+    Medido em `data/test` (HANDOFF_P2_7 §9.1), o resíduo tem autocorrelação de
+    defasagem 1 de ~0,71 e `n` mediano 738 contra `n_eff` mediano 112 — o AIC
+    tratava 738 pontos correlacionados como 738 evidências independentes.
+
+    A consequência era estrutural, não de calibração: a 2ª ordem vence quando
+    `SSE1/SSE2 > exp(2/n)`, e com n=806 bastava 0,234 % de ganho de SSE. Ela
+    consegue isso ajustando o próprio artefato de extração com o polo extra —
+    o NRMSE das duas estruturas empatava (0,00353 x 0,00351). Resultado: 32 %
+    das plantas de 1ª ordem eram classificadas como 2ª ordem, contra 6 % quando
+    o mesmo estágio D recebe a série verdadeira.
+
+    Trocar AIC por BIC NÃO resolve (corrige só 40 % dos casos): o problema não
+    é a constante da penalidade, é o `n` inflado.
+
+    O `rho` sai do resíduo da estrutura MAIS FLEXÍVEL (2ª ordem) de propósito:
+    num modelo subespecificado a correlação do resíduo mistura ruído de
+    extração com erro de estrutura, e superestimaria a correção.
+    """
+    resid = y - model_response(fit.order, fit.params, t)
+    rho = _rho1(resid)
+    n_eff = float(t.size) * (1.0 - rho) / (1.0 + rho)
+    return max(n_eff, float(fit.n_params) + 2.0)
+
+
 def identify(t, y) -> FitResult:
-    """Estágio D: ajusta FOPDT e 2ª ordem e escolhe pelo menor AIC."""
+    """Estágio D: ajusta FOPDT e 2ª ordem e escolhe pela verossimilhança
+    penalizada com nº de pontos EFETIVO (ver `_n_efetivo`).
+
+    Equivale ao AIC quando o resíduo é branco; difere dele exatamente na medida
+    em que a polilinha extraída é autocorrelacionada. Os campos `.aic` dos dois
+    `FitResult` continuam sendo o AIC clássico e NÃO mudaram — `tests/conftest`
+    os reporta na Parte 1.
+    """
     r1, r2 = identify_both(t, y)
     if not np.isfinite(r1.aic) and not np.isfinite(r2.aic):
         return r1
-    return r1 if r1.aic <= r2.aic else r2
+    if not np.isfinite(r2.aic):
+        return r1
+    if not np.isfinite(r1.aic):
+        return r2
+    tc, yc = _clean(t, y)
+    if tc.size < 3:
+        return r1 if r1.aic <= r2.aic else r2
+    n_eff = _n_efetivo(tc, yc, r2)
+    ganho = n_eff * np.log(max(r1.sse, 1e-300) / max(r2.sse, 1e-300))
+    return r2 if ganho > 2.0 * (r2.n_params - r1.n_params) else r1
 
 
 # --------------------------------------------------------------------------- #

@@ -1,0 +1,13 @@
+.................................                                        [100%]
+============================= slowest 10 durations =============================
+31.42s call     tests/test_leakage.py::test_1_4b_spearman_on_rendered_dataset[clean]
+23.09s setup    tests/test_part1.py::test_1_5_mask_matches_affine
+21.16s call     tests/test_leakage.py::test_1_4b_spearman_on_rendered_dataset[noisy]
+14.83s setup    tests/test_part1.py::test_1_2_oracle_pipeline_noisy
+13.94s setup    tests/test_part1.py::test_1_1_oracle_pipeline_clean
+6.67s setup    tests/test_part1.py::test_ruling_n_evidence_table
+6.04s setup    tests/test_leakage.py::test_1_4d_ink_color_in_the_image_is_the_sampled_line_color
+2.39s call     tests/test_leakage.py::test_1_3_render_attributes_do_not_predict_order
+2.04s call     tests/test_part1.py::test_1_7_generation_throughput
+1.77s setup    tests/test_part1.py::test_mask_is_clean_and_binary
+33 passed in 127.98s (0:02:07)

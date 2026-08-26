@@ -1,0 +1,186 @@
+..........FF.F.FF.F..                                                    [100%]
+=================================== FAILURES ===================================
+____________________ test_2_4_2_5_rejeicao_por_consistencia ____________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_4_2_5_rejeicao_por_consistencia(test_samples):
+        from identify.calibrate import calibrate
+    
+        rejeitadas, erro_se_aceitasse = 0, []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            a = m["axis_affine"]
+            if cal.ok:
+                continue
+            rejeitadas += 1
+            e = _erro_de_escala_sem_guarda(m["image"], a)
+            erro_se_aceitasse.append(e)
+    
+        taxa = rejeitadas / len(test_samples)
+        record_p2("2.4", "Taxa de rejeição (falso alarme)", "< 5%",
+                  f"{taxa:.3f}", taxa < 0.05)
+    
+        if rejeitadas < 5:
+            record_p2("2.5", "Rejeições corretas", "≥ 90% (n insuficiente)",
+                      f"n={rejeitadas} < 5 — não asseverável", None)
+            return
+    
+        corretas = float(np.mean([e > 0.05 for e in erro_se_aceitasse]))
+        record_p2("2.5", "Rejeições corretas", "≥ 90%",
+                  f"{corretas:.3f} (n={rejeitadas})", corretas >= 0.90)
+>       assert corretas >= 0.90
+E       assert 0.6779661016949152 >= 0.9
+
+tests/part2/test_part2.py:239: AssertionError
+_______________________ test_2_9_cobertura_da_calibracao _______________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_9_cobertura_da_calibracao(test_samples):
+        from identify.calibrate import calibrate
+    
+        por_dpi: dict[str, list[bool]] = {}
+        todos = []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            todos.append(cal.ok)
+            dpi = int(m["render"]["dpi"])
+            faixa = "60-99" if dpi < 100 else ("100-149" if dpi < 150 else "150-200")
+            por_dpi.setdefault(faixa, []).append(cal.ok)
+        cobertura = float(np.mean(todos))
+        record_p2("2.9", "Cobertura da calibração (ok=True)", "≥ 90% global",
+                  f"{cobertura:.3f} (n={len(todos)})", cobertura >= 0.90)
+        for faixa, vs in sorted(por_dpi.items()):
+            record_p2(f"2.9[dpi={faixa}]", f"Cobertura — dpi {faixa}",
+                      "diagnóstico, sem alvo por estrato",
+                      f"{float(np.mean(vs)):.3f} (n={len(vs)})", None)
+>       assert cobertura >= 0.90, f"cobertura da calibração: {cobertura:.1%}"
+E       AssertionError: cobertura da calibração: 80.3%
+E       assert 0.8033333333333333 >= 0.9
+
+tests/part2/test_part2.py:260: AssertionError
+_________________ test_2_2_polilinha_contra_mascara_verdadeira _________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_2_polilinha_contra_mascara_verdadeira(test_samples):
+        from identify.polyline import mask_to_polyline
+    
+        rmses = []
+        for m in test_samples:
+            xp, yp = mask_to_polyline(m["mask"])
+            if xp.size == 0:
+                rmses.append(np.inf)
+                continue
+            a = m["axis_affine"]
+            t_col = a["sx"] * xp + a["ox"]
+            y_col = np.interp(t_col, m["series"]["t"], m["series"]["y"])
+            yp_true = (y_col - a["oy"]) / a["sy"]        # de volta a pixels
+            dentro = (t_col >= m["series"]["t"][0]) & (t_col <= m["series"]["t"][-1])
+            if dentro.sum() < 10:
+                rmses.append(np.inf)
+                continue
+            rmses.append(float(np.sqrt(np.mean((yp[dentro] - yp_true[dentro]) ** 2))))
+        r = np.asarray(rmses, dtype=float)
+        med, p95 = float(np.median(r)), float(np.percentile(r, 95))
+        record_p2("2.2-piso", "Polilinha vs. máscara VERDADEIRA",
+                  "RMSE ≤ 2 px, p95 ≤ 5 px", f"RMSE={med:.2f} px, p95={p95:.2f} px",
+                  med <= 2.0 and p95 <= 5.0)
+>       assert med <= 2.0 and p95 <= 5.0
+E       assert (1.4879817123604537 <= 2.0 and 6.700501493212554 <= 5.0)
+
+tests/part2/test_part2.py:301: AssertionError
+_____________________________ test_2_1_iou_mediana _____________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_1_iou_mediana(test_samples):
+        import torch
+        from identify.extract import load_model, predict_mask
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        ious = []
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            inter = float(np.logical_and(pred, alvo).sum())
+            union = float(np.logical_or(pred, alvo).sum())
+            ious.append(inter / max(union, 1.0))
+        med = float(np.median(ious))
+        record_p2("2.1", "IoU da máscara (U-Net)", "≥ 0,85 (mediana)", f"{med:.4f}", med >= 0.85)
+>       assert med >= 0.85
+E       assert 0.6477812904013032 >= 0.85
+
+tests/part2/test_part2.py:348: AssertionError
+___________________________ test_2_7_iou_por_estrato ___________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_7_iou_por_estrato(test_samples):
+        import torch
+        from identify.extract import load_model, predict_mask
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        estratos: dict[str, list[float]] = {}
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            v = float(np.logical_and(pred, alvo).sum()) / max(
+                float(np.logical_or(pred, alvo).sum()), 1.0)
+            r = m["render"]
+            escuro = int(r["bg_color"].lstrip("#")[:2], 16) < 128
+            for nome in (f"grade={r['has_grid']}", f"legenda={r['has_legend']}",
+                         f"fundo_escuro={escuro}", f"traco={r['line_style']}"):
+                estratos.setdefault(nome, []).append(v)
+        for nome, vs in sorted(estratos.items()):
+            med = float(np.median(vs))
+            record_p2(f"2.7[{nome}]", f"IoU — {nome}", "≥ 0,75",
+                      f"{med:.4f} (n={len(vs)})", med >= 0.75)
+>           assert med >= 0.75, f"estrato {nome}: IoU mediano {med:.4f}"
+E           AssertionError: estrato fundo_escuro=False: IoU mediano 0.6330
+E           assert 0.6330409356725146 >= 0.75
+
+tests/part2/test_part2.py:372: AssertionError
+_________________________ test_2_8_latencia_por_imagem _________________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_8_latencia_por_imagem(test_samples):
+        import torch
+        from identify.extract import load_model
+        from identify.pipeline import identify_from_image
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        identify_from_image(test_samples[0]["image"], model, dev)   # aquecimento
+        lat = [identify_from_image(m["image"], model, dev)["latency_ms"]
+               for m in test_samples[:100]]
+        p95 = float(np.percentile(lat, 95))
+        record_p2("2.8", "Latência por imagem", "< 500 ms",
+                  f"mediana {np.median(lat):.0f} ms, p95 {p95:.0f} ms", p95 < 500.0)
+>       assert p95 < 500.0
+E       assert 2325.434107000001 < 500.0
+
+tests/part2/test_part2.py:413: AssertionError
+============================= slowest 10 durations =============================
+401.67s call     tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia
+363.46s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+360.68s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+330.79s call     tests/part2/test_part2.py::test_2_11_saida_adimensional_sempre_presente
+323.96s call     tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao
+319.30s call     tests/part2/test_part2.py::test_2_3_erro_das_escalas
+109.81s call     tests/part2/test_part2.py::test_2_8_latencia_por_imagem
+10.17s call     tests/part2/test_part2.py::test_g3b_1_vs_2_1_comparacao_iou
+6.05s call     tests/part2/test_part2.py::test_2_1_iou_mediana
+5.40s call     tests/part2/test_part2.py::test_2_7_iou_por_estrato
+=========================== short test summary info ============================
+FAILED tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia - as...
+FAILED tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao - Assertio...
+FAILED tests/part2/test_part2.py::test_2_2_polilinha_contra_mascara_verdadeira
+FAILED tests/part2/test_part2.py::test_2_1_iou_mediana - assert 0.64778129040...
+FAILED tests/part2/test_part2.py::test_2_7_iou_por_estrato - AssertionError: ...
+FAILED tests/part2/test_part2.py::test_2_8_latencia_por_imagem - assert 2325....
+6 failed, 15 passed in 2256.20s (0:37:36)
