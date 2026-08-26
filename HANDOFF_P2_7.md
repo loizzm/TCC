@@ -1439,3 +1439,199 @@ entrar no 2.6 exige decidir (decisão de projeto, não de implementação):
 
 Enquanto isso não for decidido, o ganho da Decisão E aparece no 2.11 e na
 robustez do sistema, **não** no número do 2.6.
+
+## 24. Ruling 46 — extrator: NÃO fechado. Sete regras testadas, todas piores; mas o teto NÃO é a representação
+
+Tentativa de fechar o 2.2 atacando a redução coluna→ponto do `mask_to_polyline`.
+**Resultado negativo, registrado com os números para ninguém repetir.**
+
+### 24.1 A hipótese do meio pixel está refutada
+
+`mask_to_polyline` devolve `x` como índice INTEIRO da coluna e `y` como mediana
+das linhas do esqueleto — que corresponde à curva no CENTRO do pixel. Parecia um
+deslocamento de meio pixel amplificado pela inclinação (com `m=27`, 13,5 px, a
+ordem exata da cauda), e explicaria RMSE alto com viés quase nulo. Medido:
+
+| dx usado na comparação | mediana | p95 |
+|---|---|---|
+| **0,00 (atual)** | **1,488** | **6,701** |
+| 0,25 | 1,466 | 6,890 |
+| 0,50 | 1,583 | 7,386 |
+| 1,00 | 2,009 | 8,867 |
+
+`dx=0` já é praticamente ótimo. **Não é artefato de convenção.**
+
+### 24.2 Sete regras de redução, todas piores que a mediana
+
+| variante | mediana | p95 |
+|---|---|---|
+| **mediana por coluna (atual)** | **1,488** | **6,701** |
+| centro do maior run | 1,547 | 7,480 |
+| descarta coluna multi-run | 1,495 | 9,631 |
+| continuidade (centro do run) | 1,554 | 9,078 |
+| continuidade (borda do run) | 1,580 | 9,099 |
+| extremo → borda da tinta | 1,537 | 7,337 |
+| extrapolação linear clipada à tinta | 1,616 | 8,257 |
+| extremo + extrapolação | 1,626 | 8,155 |
+
+**A mediana por coluna é a melhor das oito.** A hipótese do multi-run (§20.2)
+descreve o mecanismo corretamente, mas nenhuma regra LOCAL que a explore melhora
+o resultado — continuidade e extrapolação pioram bastante o p95.
+
+### 24.3 Mas existe margem: o oráculo limitado à tinta PASSA
+
+Limite superior de qualquer regra coluna→um-y: em cada coluna, o y ótimo
+(a verdade), **limitado à faixa de tinta disponível**.
+
+| | mediana | p95 | 2.2 |
+|---|---|---|---|
+| atual | 1,488 | 6,701 | **REPROVA** |
+| **oráculo limitado à tinta** | **1,186** | **3,947** | **PASSA** |
+
+**A informação ESTÁ na tinta e o teto NÃO é a representação.** A faixa de tinta
+contém a verdade quase sempre; num trecho monótono ela fica no meio (a mediana
+acerta) e numa coluna que contém um extremo da curva ela fica na borda (a mediana
+erra metade da faixa). Margem disponível: 6,701 → 3,947.
+
+### 24.4 Direção que os dados indicam (não implementada)
+
+Nenhuma heurística LOCAL captura a margem. O que sobra é formulação **global**:
+escolher a sequência `y(x)` que minimiza a segunda diferença sujeita a
+`y(x) ∈ [tinta_min(x), tinta_max(x))` — programação dinâmica sobre as colunas.
+É mudança de porte no módulo mais central do pipeline e **não foi tentada**.
+
+Contraindicação a atalhos: as sete regras acima mostram que trocar a heurística
+sem otimizar globalmente tende a PIORAR, então uma tentativa parcial é
+provavelmente pior que o estado atual.
+
+## 25. Ruling 47 — o ζ adimensional entrou no critério 2.6
+
+`identify_from_image` passa a preencher `order` também no caminho adimensional —
+o `PLANO §1.7` lista a estrutura como não dependente de calibração, e sem isso o
+2.6 não tem como conferir a ordem nas amostras recuperadas. `params` continua
+vazio ali, porque é por contrato o bloco FÍSICO. Seguro para os consumidores
+antigos: os dois usos de `r["order"]` em `tests/part2` passam por `r["ok"]`
+antes, que continua falso.
+
+`test_2_6` ganhou um acumulador do nível adimensional cujo portão exige acerto de
+estrutura mas **NÃO** exige `r["ok"]` — é isso que faz as amostras sem calibração
+entrarem.
+
+### 25.1 Desenho, e por que não é substituição
+
+**O 2.6 físico fica intacto** — mesma definição, mesmos números, comparável com
+as rodadas 3 a 6. O ζ adimensional entra como critério COMPANHEIRO
+(`2.6-adim[zeta]`), com o mesmo alvo de ≤ 3 p.p. e com `assert`.
+
+Razão de não fundir os dois num número só: o `PLANO §1.7` existe para manter a
+distinção entre os níveis, e o §21.3 mediu 50,5 % de divergência no p95 entre
+eles — são grandezas de acurácia diferente. Fundir apagaria isso e quebraria a
+comparabilidade histórica do 2.6.
+
+### 25.2 Medido
+
+| | valor |
+|---|---|
+| `2.6-adim-aceitas` | **141/300, sendo 31 sem calibração** |
+| **`2.6-adim[zeta]`** | **+1,53 p.p.** (oráculo 1,24 %, real 2,78 %) ✅ |
+| `2.6[zeta]` físico, para comparar | +0,99 p.p. (~110 amostras) |
+
+O ζ passa a ser medido sobre **141 amostras em vez de ~110** — as 31 de 2ª ordem
+que a Decisão E recuperou. A degradação é maior (+1,53 × +0,99) porque inclui
+exatamente as amostras difíceis sem calibração, e fica a menos da metade do
+limite.
+
+Suíte completa: **5 failed / 54 passed**, os mesmos de antes. 2.8 foi de 177 para
+183 ms (ruído, segue aprovado); nenhum outro critério se moveu.
+
+## 26. Estado ao fim do Bloco 7
+
+| critério | início da sessão | fim |
+|---|---|---|
+| **2.6 (ζ físico)** | +3,65 p.p. ❌ | **+0,99 p.p. ✅** |
+| **2.6-adim[zeta]** | não existia | **+1,53 p.p. ✅** (141 amostras) |
+| **2.8 latência** | 885 ms ❌ | **183 ms ✅** |
+| 2.6-clássico | +4,36 ❌ | **+1,62 ✅** |
+| 2.11 | falso-verde | **300/300, 61/61 sem calibração ✅** |
+| 2.1 / 2.7 | 0,6205 / 0,5856 ❌ | 0,6478 / 0,6330 ❌ |
+| 2.2-piso | 6,70 px ❌ | 6,70 px ❌ |
+| 2.4 / 2.5 / 2.9 | ❌ | ❌ |
+| **falhas na suíte** | **7** | **5** |
+
+Aberto, com o que se sabe de cada um:
+
+1. **2.2** — margem medida (6,70 → 3,95) mas exige formulação global (Ruling 46).
+2. **2.9 / 2.4 / 2.5** — poda medida (+3,0 p.p., custa 0,6 p.p. do 2.3, Ruling 37);
+   os 14 restantes de `calibration_failed` e as 25 de `ocr_insuficiente` seguem
+   sem hipótese.
+3. **2.1 / 2.7** — a meta mede espessura de traço, não acurácia (Ruling 39). O
+   caminho é revisar a meta, não treinar mais capacidade.
+
+## 27. Ruling 48 — formulação global também perde, e o prior de SUAVIDADE é errado aqui
+
+Tentativa de fechar o 2.2 pela direção que o §24.4 indicava: sequência mais suave
+compatível com a faixa de tinta (suavizar e projetar na caixa
+`[tinta_min, tinta_max]` por coluna, iterando; colunas sem tinta ficam livres e a
+suavização as interpola).
+
+| variante | mediana | p95 |
+|---|---|---|
+| **mediana por coluna (atual)** | **1,488** | **6,701** |
+| global σ=1, 20 iter | 1,540 | 8,380 |
+| global σ=2, 20 iter | 1,502 | 8,548 |
+| global σ=2, 60 iter | 1,505 | 8,564 |
+| global σ=4, 20/60 iter | 1,536 | 8,604 |
+| global σ=8, 60 iter | 1,605 | 8,586 |
+
+Todas perdem, e são **quase idênticas entre si** (12,7 % de cauda em todas), o que
+indica convergência para a mesma solução independente de σ e de iterações.
+
+**Diagnóstico: suavidade é o prior ERRADO.** Numa resposta ao degrau a curva é
+genuinamente íngreme no transiente, então penalizar curvatura briga com a verdade
+exatamente onde a cauda mora. Isso explica de uma vez as **14 tentativas** que
+perderam (7 locais no §24.2, o meio pixel no §24.1, 6 globais aqui) e por que só
+o oráculo ganha: ele não usa prior, usa a verdade.
+
+O prior correto seria **o próprio modelo** — ajustar `y(t)` a observações em
+INTERVALO (`[tinta_min, tinta_max]` por coluna) em vez de a pontos, com perda nula
+dentro do intervalo e quadrática fora. Isso elimina a polilinha intermediária e é
+mudança arquitetural em `classical.py` + `polyline.py`.
+
+## 28. Ruling 49 — e NÃO vale a mudança: um extrator perfeito não recupera acurácia
+
+Antes de propor a mudança arquitetural, mediu-se o TETO do extrator: redução
+oráculo (a que passa o 2.2, §24.3) contra a atual, ambas com afim VERDADEIRO,
+Wilcoxon pareado. Dado bruto: `reports/part2_extrator_teto.json`, n=266.
+
+| parâmetro | E0 oráculo de série | E1 atual | **E1 teto** | ganho possível | p |
+|---|---|---|---|---|---|
+| K | 0,121 | 0,261 | 0,268 | −0,008 | 0,21 (n.s.) |
+| tau | 0,233 | 0,431 | 0,424 | +0,007 | 0,10 (n.s.) |
+| wn | 0,709 | 1,150 | 0,991 | **+0,160** | **0,041** |
+| **zeta** | 1,215 | 2,026 | **1,635** | **+0,391** | **0,28 (n.s.)** |
+| theta | 0,062 | 0,160 | 0,134 | +0,026 | **1,4e-08** |
+
+**Um extrator perfeito na redução coluna→ponto não recupera acurácia de forma
+significativa.** O ganho em ζ tem p=0,28. Só ωₙ (+0,160) e θ (+0,026) melhoram
+significativamente, e θ é desprezível em magnitude.
+
+**E o achado que reorienta tudo:** mesmo no TETO, ζ fica em 1,635 contra 1,215 do
+oráculo de série. **A maior parte da degradação que o Ruling 42 atribuiu ao
+extrator NÃO está na redução coluna→ponto** — está na esqueletização, na
+interpolação de vãos e na discretização em pixel. Fechar o 2.2 não a alcança.
+
+### 28.1 Consequência
+
+**2.2 é, como 2.1, mais desalinhamento entre critério e representação do que
+defeito consertável.** As duas coisas que o §19.4 tratou como "dois critérios,
+uma causa" são de fato o mesmo COMPONENTE mas defeitos DIFERENTES:
+
+- o p95 do 2.2 vem da redução coluna→ponto — corrigível em princípio (o oráculo
+  passa), mas nenhuma das 14 heurísticas testadas o consegue, e corrigi-lo **não
+  compra acurácia**;
+- a degradação de acurácia do Ruling 42 vem de outra parte do extrator, e o teto
+  medido aqui mostra que ela sobrevive a uma redução perfeita.
+
+**Recomendação revista:** parar de investir no extrator. O esforço rende mais em
+2.9/2.4/2.5, onde a poda (Ruling 37) tem ganho medido de +3,0 p.p., e na revisão
+das metas de 2.1/2.2 com a base quantitativa dos Rulings 39, 43, 46, 48 e 49.
