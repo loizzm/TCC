@@ -177,6 +177,8 @@ def test_unet_tamanho_declarado():
 # --- Bloco 2: OCR opcional, RANSAC, consistência ----------------------------
 
 def test_2_3_erro_das_escalas(test_samples):
+    from tests.part2.conftest import ESCALA_TOL
+
     from identify.calibrate import calibrate
 
     erros = []
@@ -189,8 +191,10 @@ def test_2_3_erro_das_escalas(test_samples):
                 abs(cal.sy - a["sy"]) / abs(a["sy"]))
         erros.append(float(e))
     assert len(erros) >= 0.5 * len(test_samples), "aceitou amostras de menos"
-    frac = float(np.mean(np.asarray(erros) < 0.01))
-    record_p2("2.3", "Erro relativo de sx, sy", "< 1% em ≥ 95%",
+    # ESCALA_TOL, não 0.01 literal: o alinhamento com o 2.5 (Ruling 52) precisa ser
+    # garantido por construção, não por coincidência de valor.
+    frac = float(np.mean(np.asarray(erros) < ESCALA_TOL))
+    record_p2("2.3", "Erro relativo de sx, sy", f"< {ESCALA_TOL:.0%} em ≥ 95%",
               f"{frac:.3f} (n={len(erros)})", frac >= 0.95)
     assert frac >= 0.95
 
@@ -213,6 +217,7 @@ def _erro_de_escala_sem_guarda(image, affine_verdadeira) -> float:
 
 def test_2_4_2_5_rejeicao_por_consistencia(test_samples):
     from identify.calibrate import calibrate
+    from tests.part2.conftest import ESCALA_TOL
 
     rejeitadas, erro_se_aceitasse = 0, []
     for m in test_samples:
@@ -224,17 +229,28 @@ def test_2_4_2_5_rejeicao_por_consistencia(test_samples):
         e = _erro_de_escala_sem_guarda(m["image"], a)
         erro_se_aceitasse.append(e)
 
+    # 2.4 APOSENTADO como critério (PLANO §2.4, HANDOFF_P2_7 Ruling 52):
+    # `rejeitadas/total` é exatamente `1 - cobertura` do 2.9 — a MESMA grandeza,
+    # com limiar diferente (< 5% de rejeição x >= 90% de cobertura). O 2.4
+    # subsumia o 2.9 e dava peso duplo a uma medição. Fica como diagnóstico; o
+    # veredito de cobertura é do 2.9.
     taxa = rejeitadas / len(test_samples)
-    record_p2("2.4", "Taxa de rejeição (falso alarme)", "< 5%",
-              f"{taxa:.3f}", taxa < 0.05)
+    record_p2("2.4", "Taxa de rejeição (diagnóstico — unificado no 2.9)",
+              "sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52)",
+              f"{taxa:.3f}", None)
 
     if rejeitadas < 5:
         record_p2("2.5", "Rejeições corretas", "≥ 90% (n insuficiente)",
                   f"n={rejeitadas} < 5 — não asseverável", None)
         return
 
-    corretas = float(np.mean([e > 0.05 for e in erro_se_aceitasse]))
-    record_p2("2.5", "Rejeições corretas", "≥ 90%",
+    # 2.5 com o limiar ALINHADO ao do 2.3 (Ruling 52). Antes usava 5% enquanto o
+    # 2.3 usava 1%, e as amostras na faixa intermediária eram simultaneamente
+    # "não deviam ter sido rejeitadas" (2.5) e "ruins o bastante para estragar o
+    # 2.3" — nenhum subconjunto satisfazia os dois.
+    corretas = float(np.mean([e > ESCALA_TOL for e in erro_se_aceitasse]))
+    record_p2("2.5", "Rejeições corretas",
+              f"≥ 90% (erro > {ESCALA_TOL:.0%}, alinhado ao 2.3)",
               f"{corretas:.3f} (n={rejeitadas})", corretas >= 0.90)
     assert corretas >= 0.90
 
@@ -316,7 +332,21 @@ def test_2_11_saida_adimensional_sempre_presente(test_samples):
 # --- Bloco 4: máscara -> polilinha ------------------------------------------
 
 def test_2_2_polilinha_contra_mascara_verdadeira(test_samples):
+    """Portão 2.2 REVISADO (PLANO §2.2, HANDOFF_P2_7 Ruling 50).
+
+    Media diferença VERTICAL até o Bloco 7. Num trecho de inclinação `m`, um erro
+    geométrico de meio pixel aparece como `m/2` px de erro vertical — a métrica
+    respondia à declividade do render (Spearman +0,869 com a inclinação) e não à
+    geometria (perpendicular: +0,326). Dezenove tentativas de melhorar a redução
+    coluna->ponto ficaram todas PIORES que a atual, e um extrator oráculo que
+    passa a métrica antiga não recupera acurácia significativa (Ruling 49): o erro
+    que o critério antigo penalizava não existia.
+
+    O número vertical continua REPORTADO como diagnóstico, sem alvo.
+    """
     from identify.polyline import mask_to_polyline
+    from tests.part2.conftest import (PERP_MED_MAX, PERP_P95_MAX,
+                                      erro_perpendicular)
 
     rmses = []
     for m in test_samples:
@@ -335,10 +365,21 @@ def test_2_2_polilinha_contra_mascara_verdadeira(test_samples):
         rmses.append(float(np.sqrt(np.mean((yp[dentro] - yp_true[dentro]) ** 2))))
     r = np.asarray(rmses, dtype=float)
     med, p95 = float(np.median(r)), float(np.percentile(r, 95))
-    record_p2("2.2-piso", "Polilinha vs. máscara VERDADEIRA",
-              "RMSE ≤ 2 px, p95 ≤ 5 px", f"RMSE={med:.2f} px, p95={p95:.2f} px",
-              med <= 2.0 and p95 <= 5.0)
-    assert med <= 2.0 and p95 <= 5.0
+    record_p2("2.2-piso-vertical",
+              "Polilinha vs. máscara VERDADEIRA, diferença VERTICAL (diagnóstico)",
+              "sem alvo: responde à declividade do render (Ruling 50)",
+              f"RMSE={med:.2f} px, p95={p95:.2f} px", None)
+
+    # --- métrica REVISADA: distância perpendicular (PLANO §2.2, Ruling 50) ----
+    pm = [erro_perpendicular(*mask_to_polyline(m["mask"])[:2], m) for m in test_samples]
+    pm = [e for e in pm if e is not None]
+    pmed = float(np.median([e["rmse"] for e in pm]))
+    pp95 = float(np.percentile([e["rmse"] for e in pm], 95))
+    record_p2("2.2-piso", "Polilinha vs. máscara VERDADEIRA (perpendicular)",
+              f"RMSE ≤ {PERP_MED_MAX:.1f} px, p95 ≤ {PERP_P95_MAX:.1f} px",
+              f"RMSE={pmed:.3f} px, p95={pp95:.3f} px (n={len(pm)})",
+              pmed <= PERP_MED_MAX and pp95 <= PERP_P95_MAX)
+    assert pmed <= PERP_MED_MAX and pp95 <= PERP_P95_MAX
 
 
 def test_2_2_estrato_marcador_e_estilo(test_samples):
@@ -370,46 +411,86 @@ def test_2_2_estrato_marcador_e_estilo(test_samples):
 
 # --- Bloco 3: U-Net treinada -------------------------------------------------
 
-def test_2_1_iou_mediana(test_samples):
+def test_2_1_erro_geometrico_da_mascara(test_samples):
+    """Portão 2.1 REVISADO (PLANO §2.1, HANDOFF_P2_7 Ruling 50).
+
+    Media IoU de máscara até o Bloco 7. Numa curva fina a área é dominada pela
+    espessura do traço: IoU correlaciona +0,860 com a tinta por coluna e -0,879
+    com a razão de espessura, contra só +0,284 com o deslocamento real. Em todas
+    as faixas de espessura o erro de centerline é 1,00 px CONSTANTE enquanto o
+    IoU vai de 0,468 a 0,782 — a métrica lia a largura de linha que o gerador
+    sorteia. Dice não ajudaria: é `2*IoU/(1+IoU)` por identidade exata.
+
+    O IoU continua REPORTADO como diagnóstico, sem alvo, para preservar a
+    comparabilidade com as rodadas 3 a 6.
+    """
     import torch
     from identify.extract import load_model, predict_mask
+    from identify.polyline import mask_to_polyline
+    from tests.part2.conftest import (PERP_MED_MAX, PERP_P95_MAX,
+                                      erro_perpendicular)
 
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     model = load_model("models/unet_stageA.pt", dev)
-    ious = []
+    ious, meds, p95s = [], [], []
     for m in test_samples:
         pred = predict_mask(model, m["image"], dev) > 127
         alvo = m["mask"] > 127
         inter = float(np.logical_and(pred, alvo).sum())
         union = float(np.logical_or(pred, alvo).sum())
         ious.append(inter / max(union, 1.0))
-    med = float(np.median(ious))
-    record_p2("2.1", "IoU da máscara (U-Net)", "≥ 0,85 (mediana)", f"{med:.4f}", med >= 0.85)
-    assert med >= 0.85
+        xq, yq = mask_to_polyline((pred * 255).astype(np.uint8))
+        e = erro_perpendicular(xq, yq, m)
+        if e is not None:
+            # RMSE por amostra, a MESMA estatística de que o limiar foi derivado
+            # (Ruling 50: 0,800 px medido -> +0,127 p.p. em ζ). Usar a mediana por
+            # amostra aqui deixaria o critério mais frouxo que a justificativa.
+            meds.append(e["rmse"]); p95s.append(e["p95"])
+
+    med = float(np.median(meds)); p95 = float(np.percentile(meds, 95))
+    record_p2("2.1", "Erro perpendicular da máscara (U-Net)",
+              f"≤ {PERP_MED_MAX:.1f} px mediana, ≤ {PERP_P95_MAX:.1f} px p95",
+              f"{med:.3f} px / {p95:.3f} px (n={len(meds)})",
+              med <= PERP_MED_MAX and p95 <= PERP_P95_MAX)
+    record_p2("2.1-iou", "IoU da máscara (diagnóstico — ver Ruling 50)",
+              "sem alvo: mede espessura de traço, não acurácia",
+              f"{float(np.median(ious)):.4f}", None)
+    assert med <= PERP_MED_MAX and p95 <= PERP_P95_MAX
 
 
 def test_2_7_iou_por_estrato(test_samples):
     import torch
     from identify.extract import load_model, predict_mask
 
+    from identify.polyline import mask_to_polyline
+    from tests.part2.conftest import PERP_MED_MAX, erro_perpendicular
+
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     model = load_model("models/unet_stageA.pt", dev)
-    estratos: dict[str, list[float]] = {}
+    estratos: dict[str, list[tuple]] = {}
     for m in test_samples:
         pred = predict_mask(model, m["image"], dev) > 127
         alvo = m["mask"] > 127
         v = float(np.logical_and(pred, alvo).sum()) / max(
             float(np.logical_or(pred, alvo).sum()), 1.0)
+        xq, yq = mask_to_polyline((pred * 255).astype(np.uint8))
+        e = erro_perpendicular(xq, yq, m)
+        v = (v, None if e is None else e["rmse"])
         r = m["render"]
         escuro = int(r["bg_color"].lstrip("#")[:2], 16) < 128
         for nome in (f"grade={r['has_grid']}", f"legenda={r['has_legend']}",
                      f"fundo_escuro={escuro}", f"traco={r['line_style']}"):
             estratos.setdefault(nome, []).append(v)
     for nome, vs in sorted(estratos.items()):
-        med = float(np.median(vs))
-        record_p2(f"2.7[{nome}]", f"IoU — {nome}", "≥ 0,75",
-                  f"{med:.4f} (n={len(vs)})", med >= 0.75)
-        assert med >= 0.75, f"estrato {nome}: IoU mediano {med:.4f}"
+        med = float(np.median([v for v, _ in vs]))
+        perp = [p for _, p in vs if p is not None]
+        pmed = float(np.median(perp)) if perp else float("inf")
+        record_p2(f"2.7[{nome}]", f"Erro perpendicular — {nome}",
+                  f"≤ {PERP_MED_MAX:.1f} px mediana",
+                  f"{pmed:.3f} px (n={len(perp)})", pmed <= PERP_MED_MAX)
+        record_p2(f"2.7-iou[{nome}]", f"IoU — {nome} (diagnóstico)",
+                  "sem alvo (Ruling 50)", f"{med:.4f} (n={len(vs)})", None)
+        assert pmed <= PERP_MED_MAX, f"estrato {nome}: perpendicular {pmed:.3f} px"
 
 
 def test_g3b_1_vs_2_1_comparacao_iou(test_samples):

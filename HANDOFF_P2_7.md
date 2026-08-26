@@ -1831,3 +1831,69 @@ O bloqueio não é de implementação. Três propostas, todas decisão do autor:
    92 % e recall de ~85 % (Ruling 36), exigir 95 % de cobertura de calibração é
    incompatível com o desempenho do OCR disponível — e a Decisão E já reduziu o
    custo de uma calibração que falha (Ruling 47).
+
+## 32. Ruling 53 — a revisão dos critérios foi ESCRITA no plano e IMPLEMENTADA
+
+`PLANO.md` ganhou a **§2.12** (as quatro classes, com a evidência de cada uma) e a
+tabela de critérios foi atualizada. `tests/part2/` implementa as Classes A, B e C.
+
+### 32.1 O que foi implementado
+
+`tests/part2/conftest.py`: `erro_perpendicular()` (distância ponto-a-poligonal,
+vetorizada em blocos), mais os limiares `PERP_MED_MAX = 1.0`, `PERP_P95_MAX = 2.0`
+e `ESCALA_TOL = 0.01`.
+
+| critério | antes | agora |
+|---|---|---|
+| **2.1** | IoU ≥ 0,85 | RMSE perpendicular ≤ 1,0 / 2,0 px; **IoU vira diagnóstico** |
+| **2.2** | vertical ≤ 2 / 5 px | RMSE perpendicular ≤ 1,0 / 2,0 px; **vertical vira diagnóstico** |
+| **2.7** | IoU por estrato ≥ 0,75 | perpendicular por estrato ≤ 1,0 px; **IoU vira diagnóstico** |
+| **2.4** | rejeição < 5 % | **aposentado** — diagnóstico, unificado no 2.9 |
+| **2.5** | erro > 5 % | erro > **`ESCALA_TOL`**, alinhado ao 2.3 |
+| **2.3** | `0.01` literal | `ESCALA_TOL` — alinhamento garantido por construção |
+
+**A poda NÃO foi ativada.** A decisão de não fazer a troca 2.5↔2.3 foi mantida;
+alinhar o limiar sozinho move o 2.5 de 0,721 para 0,885 **sem** abrir o 2.3.
+
+### 32.2 Armadilha 8 — justificar o limiar com uma estatística e implementar com outra
+
+Na primeira versão, o 2.1 e o 2.7 mediam a **mediana** do erro perpendicular por
+amostra, enquanto o limiar de 1,0 px foi derivado do **RMSE** por amostra
+(Ruling 50: 0,800 px → +0,127 p.p. em ζ). A mediana é mais leniente e dava
+**0,549 px**, deixando o critério mais fácil que a própria justificativa.
+
+Corrigido para RMSE por amostra, coerente com o 2.2 e com a derivação: o 2.1
+passa a reportar **0,800 / 1,699 px**, os números exatos do Ruling 50.
+
+**Registrado porque é o modo de falha específico de uma revisão de critério:** não
+basta a métrica ser a certa e o limiar ser derivado — a *estatística* medida tem de
+ser a mesma da derivação, ou o critério fica mais frouxo do que o argumento que o
+sustenta.
+
+### 32.3 Resultado
+
+| critério | antes da revisão | depois |
+|---|---|---|
+| **2.1** | IoU 0,6478 ❌ | **0,800 / 1,699 px ✅** (IoU 0,6478 diagnóstico) |
+| **2.2** | vertical 1,49 / 6,70 ❌ | **0,614 / 1,135 px ✅** (vertical diagnóstico) |
+| **2.7** | IoU por estrato ❌ | **0,680 – 0,956 px, todos ✅** |
+| 2.3 | 0,958 ✅ | 0,958 ✅ |
+| 2.4 | 0,203 ❌ | diagnóstico ❓ |
+| **2.5** | 0,721 ❌ | **0,885 ❌** (+16 p.p.; falta 1,5 p.p. ≈ 1 amostra em 61) |
+| 2.9 | 0,797 ❌ | 0,797 ❌ (limiar EM ABERTO, Classe D) |
+
+**Falhas na suíte: 5 → 2.** Restam o 2.5 (a 1,5 p.p.) e o 2.9 (limiar não decidido).
+
+**Achado que a métrica nova revela:** o estrato **`traco=:` fica em 0,956 px contra
+alvo de 1,0** — 4,4 % de folga, o mais apertado de todos. É coerente com a
+docstring do `mask_to_polyline`, que documenta que o estilo `:` deixa 43 % das
+colunas sem tinta. Com a métrica de área isso ficava escondido no ruído da
+espessura.
+
+### 32.4 O que continua em aberto
+
+1. **Limiar da cobertura (2.9)** — Classe D. Deliberadamente não proposto: exige
+   argumento sobre o que o sistema precisa entregar para ser útil, e a Decisão E
+   mudou o custo de falhar (perde-se a escala, não a resposta).
+2. **2.5 a 1,5 p.p.** — a poda fecharia (100 %) ao custo do 2.3; decisão mantida de
+   não fazer. Fechar sem essa troca exige reduzir os misreads de OCR na origem.

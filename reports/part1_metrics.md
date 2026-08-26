@@ -6,7 +6,7 @@ Relatório gerado automaticamente por `tests/` (`pytest_sessionfinish` em `tests
 - Sorteios sem renderização (critérios 1.3 e 1.4a): **20000**
 - Estrato assertado nos critérios 1.1/1.2 (RULING C): `w = (t_end - θ)/T_dom ≥ 3`
 - Workers: 16
-- Tempo total da suíte: **669.6 s**
+- Tempo total da suíte: **681.5 s**
 
 ## 1. Critérios de aceitação
 
@@ -27,7 +27,7 @@ Relatório gerado automaticamente por `tests/` (`pytest_sessionfinish` em `tests
 | **1.5** | Máscara reprojetada pela `axis_affine` × `series` | RMSE do viés normal < 1.5 px; \|viés vertical\| < 0.3 px (sólida s/ marcador) | RMSE = 0.1649 px (0.0298 px sem marcador); viés vertical = +0.0027 px; cobertura = 0.492 px (máx) | **PASSA** |
 | **1.5c** | Controle negativo do critério 1.5 | deslocar a afim em 3 px deve piorar o RMSE ≥ 10× | 0.1649 px → 2.2293 px (13.5×) | **PASSA** |
 | **1.6** | Determinismo bit-a-bit (mesma seed ⇒ mesmos bytes) | sha256 idêntico de image.png e mask.png + meta.json idêntico | 5 seeds × 2 gerações: todos idênticos | **PASSA** |
-| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 2.38 s para 200 amostras ⇒ 1.19 min | **PASSA** |
+| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 3.30 s para 200 amostras ⇒ 1.65 min | **PASSA** |
 | **B** | Baselines clássicos × `identify` (FOPDT limpo, `w ≥ 3`) | sem alvo: comparação da monografia | MAPE(τ): identify = 0.0000% vs melhor baseline = 0.0491% | **medido** |
 | **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.627% (n = 442) | **medido** |
 | **G** | `_estimate_gain` em janela truncada (`w < 3`, FOPDT limpo) | MAPE < 1.0% e cobertura = 100%; controle positivo: o atalho max(y) erra ≥ 10.0% no mesmo estrato | MAPE = 0.0000% (n = 191, cobertura 1.000) vs max(y) = 30.48% | **PASSA** |
@@ -353,7 +353,7 @@ Cada seed foi gerada duas vezes, em diretórios distintos; os hashes são dos do
 
 | n medido | workers | tempo (s) | s/amostra | extrapolado p/ 6000 (min) | alvo |
 |---|---|---|---|---|---|
-| 200 | 16 | 2.38 | 0.0119 | **1.19** | < 15 min (folga 2× sobre os 30 min do PLANO) |
+| 200 | 16 | 3.30 | 0.0165 | **1.65** | < 15 min (folga 2× sobre os 30 min do PLANO) |
 
 ## 8. Baselines clássicos × `identify` (mesmas séries limpas, FOPDT)
 

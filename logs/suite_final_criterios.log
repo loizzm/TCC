@@ -1,0 +1,89 @@
+...............FF..........................................              [100%]
+=================================== FAILURES ===================================
+____________________ test_2_4_2_5_rejeicao_por_consistencia ____________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_4_2_5_rejeicao_por_consistencia(test_samples):
+        from identify.calibrate import calibrate
+        from tests.part2.conftest import ESCALA_TOL
+    
+        rejeitadas, erro_se_aceitasse = 0, []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            a = m["axis_affine"]
+            if cal.ok:
+                continue
+            rejeitadas += 1
+            e = _erro_de_escala_sem_guarda(m["image"], a)
+            erro_se_aceitasse.append(e)
+    
+        # 2.4 APOSENTADO como critério (PLANO §2.4, HANDOFF_P2_7 Ruling 52):
+        # `rejeitadas/total` é exatamente `1 - cobertura` do 2.9 — a MESMA grandeza,
+        # com limiar diferente (< 5% de rejeição x >= 90% de cobertura). O 2.4
+        # subsumia o 2.9 e dava peso duplo a uma medição. Fica como diagnóstico; o
+        # veredito de cobertura é do 2.9.
+        taxa = rejeitadas / len(test_samples)
+        record_p2("2.4", "Taxa de rejeição (diagnóstico — unificado no 2.9)",
+                  "sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52)",
+                  f"{taxa:.3f}", None)
+    
+        if rejeitadas < 5:
+            record_p2("2.5", "Rejeições corretas", "≥ 90% (n insuficiente)",
+                      f"n={rejeitadas} < 5 — não asseverável", None)
+            return
+    
+        # 2.5 com o limiar ALINHADO ao do 2.3 (Ruling 52). Antes usava 5% enquanto o
+        # 2.3 usava 1%, e as amostras na faixa intermediária eram simultaneamente
+        # "não deviam ter sido rejeitadas" (2.5) e "ruins o bastante para estragar o
+        # 2.3" — nenhum subconjunto satisfazia os dois.
+        corretas = float(np.mean([e > ESCALA_TOL for e in erro_se_aceitasse]))
+        record_p2("2.5", "Rejeições corretas",
+                  f"≥ 90% (erro > {ESCALA_TOL:.0%}, alinhado ao 2.3)",
+                  f"{corretas:.3f} (n={rejeitadas})", corretas >= 0.90)
+>       assert corretas >= 0.90
+E       assert 0.8852459016393442 >= 0.9
+
+tests/part2/test_part2.py:255: AssertionError
+_______________________ test_2_9_cobertura_da_calibracao _______________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_9_cobertura_da_calibracao(test_samples):
+        from identify.calibrate import calibrate
+    
+        por_dpi: dict[str, list[bool]] = {}
+        todos = []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            todos.append(cal.ok)
+            dpi = int(m["render"]["dpi"])
+            faixa = "60-99" if dpi < 100 else ("100-149" if dpi < 150 else "150-200")
+            por_dpi.setdefault(faixa, []).append(cal.ok)
+        cobertura = float(np.mean(todos))
+        record_p2("2.9", "Cobertura da calibração (ok=True)", "≥ 90% global",
+                  f"{cobertura:.3f} (n={len(todos)})", cobertura >= 0.90)
+        for faixa, vs in sorted(por_dpi.items()):
+            record_p2(f"2.9[dpi={faixa}]", f"Cobertura — dpi {faixa}",
+                      "diagnóstico, sem alvo por estrato",
+                      f"{float(np.mean(vs)):.3f} (n={len(vs)})", None)
+>       assert cobertura >= 0.90, f"cobertura da calibração: {cobertura:.1%}"
+E       AssertionError: cobertura da calibração: 79.7%
+E       assert 0.7966666666666666 >= 0.9
+
+tests/part2/test_part2.py:276: AssertionError
+============================= slowest 10 durations =============================
+121.52s call     tests/part2/test_part2.py::test_2_11_saida_adimensional_sempre_presente
+86.37s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+85.97s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+65.05s call     tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia
+49.34s call     tests/part2/test_part2.py::test_2_3_erro_das_escalas
+48.85s call     tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao
+29.21s call     tests/test_leakage.py::test_1_4b_spearman_on_rendered_dataset[clean]
+23.55s call     tests/part2/test_part2.py::test_2_8_latencia_por_imagem
+21.87s call     tests/test_leakage.py::test_1_4b_spearman_on_rendered_dataset[noisy]
+21.48s setup    tests/test_part1.py::test_1_5_mask_matches_affine
+=========================== short test summary info ============================
+FAILED tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia - as...
+FAILED tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao - Assertio...
+2 failed, 57 passed in 681.52s (0:11:21)

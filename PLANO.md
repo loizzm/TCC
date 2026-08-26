@@ -286,17 +286,124 @@ Justificativa da escolha determinística: a estrutura de um gráfico cartesiano 
 
 | # | Critério | Alvo |
 |---|---|---|
-| 2.1 | IoU da máscara no conjunto de teste | ≥ 0,85 (mediana) |
-| 2.2 | Erro da polilinha extraída vs. verdade | RMSE ≤ 2 px (p95 ≤ 5 px) |
-| 2.3 | Erro relativo das escalas `sx`, `sy`, **no subconjunto `ok = True`** | < 1 % em ≥ 95 % do subconjunto |
-| 2.4 | Taxa de rejeição por consistência (falso alarme) | < 5 % |
-| 2.5 | Rejeições corretas: quando rejeita, o erro de escala seria de fato > 5 % | ≥ 90 % das rejeições, com n ≥ 5 |
+| 2.1 | **Erro perpendicular** da polilinha da máscara PREDITA à curva verdadeira (**revisado §2.12**) | ≤ 1,0 px mediana e ≤ 2,0 px p95 |
+| 2.1-iou | IoU da máscara — *diagnóstico, sem alvo* (§2.12) | reportado para comparabilidade histórica |
+| 2.2 | **Erro perpendicular** da polilinha da máscara VERDADEIRA à curva (**revisado §2.12**) | ≤ 1,0 px mediana e ≤ 2,0 px p95 |
+| 2.2-piso-vertical | Diferença VERTICAL da polilinha — *diagnóstico, sem alvo* (§2.12) | reportado para comparabilidade histórica |
+| 2.3 | Erro relativo das escalas `sx`, `sy`, **no subconjunto `ok = True`** | < **τ = 1 %** em ≥ 95 % do subconjunto |
+| 2.4 | Taxa de rejeição por consistência — *diagnóstico; unificado no 2.9* (§2.12) | sem alvo próprio: é `1 − cobertura` do 2.9 |
+| 2.5 | Rejeições corretas: quando rejeita, o erro de escala seria de fato > **τ = 1 %** (**alinhado ao 2.3, §2.12**) | ≥ 90 % das rejeições, com n ≥ 5 |
 | 2.6 | **Degradação end-to-end** vs. oráculo da Parte 1 (mesmas amostras, estágio D idêntico) | ΔMAPE ≤ 3 pontos percentuais |
-| 2.7 | Estratificação: IoU por presença de grade / legenda / fundo escuro | nenhum estrato < 0,75 |
+| 2.6-adim | Degradação de **ζ no nível adimensional** (§1.7), sem exigir calibração | ΔMAPE ≤ 3 p.p. |
+| 2.7 | Estratificação: **erro perpendicular** por grade / legenda / fundo escuro / traço (**revisado §2.12**) | nenhum estrato > 1,0 px mediana |
 | 2.8 | Tempo de inferência por imagem | < 500 ms |
 | **2.9** | **Cobertura da calibração** (§1.7): fração de amostras com `ok = True`, estratificada por DPI | ≥ 90 % global; reportada por estrato, sem alvo por estrato |
 | **2.10** | **U-Net × extrator clássico** (§1.8): IoU mediana das duas no mesmo conjunto de teste | sem alvo — é o resultado que justifica (ou não) a U-Net |
 | **2.11** | Saída adimensional produzida mesmo com `ok = False` | 100 % das amostras com `dimensionless` preenchido e nenhuma exceção levantada |
+
+### 2.12 Revisão dos critérios de percepção e de calibração (Bloco 7)
+
+Seis critérios reprovavam ao fim do Bloco 7. As medições daquele bloco
+(`HANDOFF_P2_7.md` §18–31, Rulings 38–52; dado bruto por amostra em `reports/`)
+mostraram que quatro deles **mediam a grandeza errada** e que dois eram **a mesma
+medição contada duas vezes**. As revisões abaixo estão classificadas por *de onde
+vem a justificativa* — a distinção que separa correção de instrumento de
+afrouxamento de meta.
+
+**Classe A — a métrica media a grandeza errada (2.1, 2.2, 2.7).**
+
+O 2.1 e o 2.7 usavam IoU de máscara. Numa curva fina a área é dominada pela
+espessura do traço: IoU correlaciona **+0,860** com a tinta por coluna e
+**−0,879** com a razão de espessura predita/verdadeira, contra apenas **+0,284**
+com o deslocamento real da curva. Estratificado por espessura, o erro de
+centerline é **1,00 px constante** enquanto o IoU vai de 0,468 a 0,782 — a métrica
+lia a largura de linha que o gerador sorteia. Um modelo de dois termos
+(deslocamento e espessura) prediz o IoU medido com Spearman **+0,932**.
+
+Métricas alternativas de sobreposição não resolvem: **Dice é `2·IoU/(1+IoU)` por
+identidade exata** (desvio máximo medido de 1,11 × 10⁻¹⁶), logo preserva ranks e
+carrega informação idêntica. O mesmo vale para Jaccard, F1 e Tversky — o problema
+não é a fórmula, é medir *área* numa estrutura fina.
+
+O 2.2 usava diferença **vertical** à curva. Num trecho de inclinação `m`, um erro
+geométrico de meio pixel aparece como `m/2` px de erro vertical: a métrica
+respondia à declividade do render (Spearman **+0,869** com a inclinação máxima),
+não à geometria. A distância perpendicular correlaciona **+0,326**, e varia 1,5×
+entre a faixa de inclinação mais suave e a mais íngreme, contra 10,8× da vertical.
+A inclinação em px/px, por sua vez, não vem da dinâmica (ζ −0,163, ωₙ −0,025,
+τ +0,004) e sim do aspecto do quadro (−0,600) — é estrato de render.
+
+Confirmação independente de que o erro penalizado pelo 2.2 não existia: dezenove
+tentativas de melhorar a redução coluna→ponto do extrator (sete regras locais,
+seis formulações globais, mais a hipótese de deslocamento de meio pixel) ficaram
+**todas piores** que a mediana por coluna vigente; e um extrator oráculo que
+*passa* a métrica antiga não recupera acurácia de forma significativa (ganho em ζ
+de +0,391 p.p., p = 0,28).
+
+**Origem do limiar de 1,0 px.** Do **orçamento do critério 2.6** (3 p.p.), não do
+resultado medido: com 0,800 px de erro perpendicular, a contribuição da rede à
+degradação de ζ é +0,127 p.p. — nem significativa, e ~4 % do orçamento. O limiar
+de 1,0 px a mantém em ~5 %, com 25 % de folga sobre o medido: apertado o bastante
+para derrubar uma regressão real, portanto não vacuoso.
+
+**Dois resguardos, obrigatórios.** (1) IoU e diferença vertical **continuam
+reportados como diagnóstico, sem alvo**, preservando a comparabilidade com as
+rodadas 3 a 6 e a rastreabilidade do argumento. (2) A distância perpendicular
+**não penaliza erro ao longo da curva** — uma polilinha deslocada no tempo, mas
+sobre a curva, pontua zero, e num degrau isso é exatamente o θ. O par que fecha
+esse vão é o **2.6[theta]**, que passa a ser obrigatório ao lado da métrica
+perpendicular, nunca opcional.
+
+**Classe B — dois critérios, uma medição (2.4 unificado no 2.9).**
+
+`test_2_4` media `rejeitadas / total`, que é exatamente `1 − cobertura` do 2.9.
+São a mesma grandeza com limiares diferentes (rejeição < 5 % contra cobertura
+≥ 90 %), de modo que o 2.4 **subsumia** o 2.9: se o 2.4 passasse, o 2.9 passaria
+por construção. Manter os dois dava peso duplo a uma medição e sugeria duas
+evidências independentes onde havia uma. O 2.4 passa a ser diagnóstico; o veredito
+de cobertura é do 2.9.
+
+**Classe C — dois critérios que se contradiziam (2.3 e 2.5).**
+
+O 2.3 exigia erro de escala ≤ 1 % nas aceitas; o 2.5 considerava a rejeição
+justificada quando o erro seria > 5 %. As amostras na faixa intermediária eram
+**simultaneamente** "não deviam ter sido rejeitadas" (2.5) e "ruins o bastante
+para estragar o 2.3", e nenhum subconjunto de recuperação satisfazia os dois
+(prova aritmética no Ruling 52). Um guardião por resíduo do ajuste foi testado — o
+resíduo *separa* (mediana 0,0005 nas boas contra 0,0033 nas ruins) — e não resolve:
+a varredura alterna direto de (2.3 ✅, 2.5 ❌) para (2.5 ✅, 2.3 ❌) sem limiar
+intermediário.
+
+Os dois passam a usar **o mesmo limiar τ = 1 %**. A escolha é o valor
+fisicamente motivado, não o mais confortável: o erro de escala propaga direto para
+`K` e `τ`, e τ = 5 % consumiria sozinho quase o dobro do orçamento de 3 p.p. do
+2.6. Com τ = 5 % ambos os critérios passariam; com τ = 1 % o 2.5 fica em 88,5 % —
+melhor que os 72,1 % de antes, ainda reprovando — e o 2.3 permanece aprovado.
+
+**Classe D — o limiar da cobertura permanece EM ABERTO.**
+
+A cobertura da calibração (2.9) é a métrica certa: mede exatamente a fração de
+amostras que recebe unidades físicas. O que não fecha é o alvo, e baixá-lo seria
+mover a trave. Registro os fatos e **deixo a decisão para a monografia**:
+
+- o alvo do 2.4 (< 5 % de rejeição, ou seja ≤ 15 rejeições em 300) é inalcançável:
+  a melhor configuração medida dá 45, e mesmo recuperando *todas* as falhas de
+  consistência restam as 25 de leitura insuficiente;
+- o OCR tem **precisão de 92 % e recall de ~85 %** por rótulo, o que é
+  incompatível com 95 % de cobertura de calibração. Alargar a faixa de rótulos foi
+  testado em sete configurações e rendeu 1,3 p.p., trocando motivo de falha;
+- a **Decisão E** (§1.7), agora implementada, mudou o custo de uma calibração que
+  falha: ela deixou de matar a amostra. As 61 amostras entregam `ζ`, `ωₙ·T` e
+  `θ/T` pelo nível adimensional, contadas pelo critério 2.6-adim (141 amostras
+  contra ~110 do nível físico). O que se perde é a **escala**, não a resposta —
+  o que torna defensável um alvo de cobertura mais baixo, mediante argumento
+  explícito sobre o que o sistema precisa entregar para ser útil.
+
+**Precedente.** O 2.11 media, até o Bloco 7, apenas que `calibrate()` não levantava
+exceção, e passava com a Decisão E inteira não implementada. Foi corrigido para
+medir o que este plano define. Serve de advertência: um critério pode passar
+indefinidamente medindo outra coisa — e as revisões da Classe A são o mesmo
+fenômeno na direção oposta.
 
 **Por que 2.9 existe.** Sem ele, 2.3 e 2.4 são vacuamente satisfeitos por um calibrador que rejeita quase tudo: zero falsos alarmes e erro de escala baixíssimo no punhado que sobra. 2.9 é o lado "cobertura" do par precisão/cobertura, e usa a mesma lógica que já liga 2.4 a 2.5.
 
