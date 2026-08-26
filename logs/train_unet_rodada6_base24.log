@@ -1,0 +1,28 @@
+treino: 4200 amostras de ['data/train']  base=24  525 passos/epoca
+parametros: 4367641
+epoca 00  IoU_val=0.4099  lr=3.00e-04  292s
+epoca 01  IoU_val=0.3991  lr=3.00e-04  291s
+epoca 02  IoU_val=0.7526  lr=3.00e-04  291s
+epoca 03  IoU_val=0.7666  lr=3.00e-04  292s
+epoca 04  IoU_val=0.7505  lr=3.00e-04  260s
+epoca 05  IoU_val=0.7817  lr=3.00e-04  251s
+epoca 06  IoU_val=0.7773  lr=3.00e-04  251s
+epoca 07  IoU_val=0.7845  lr=1.50e-04 (LR reduzido)  250s
+epoca 08  IoU_val=0.7847  lr=1.50e-04  251s
+epoca 09  IoU_val=0.7803  lr=7.50e-05 (LR reduzido)  251s
+epoca 10  IoU_val=0.7832  lr=7.50e-05  251s
+epoca 11  IoU_val=0.7838  lr=3.75e-05 (LR reduzido)  251s
+epoca 12  IoU_val=0.7850  lr=3.75e-05  250s
+epoca 13  IoU_val=0.7814  lr=1.87e-05 (LR reduzido)  251s
+epoca 14  IoU_val=0.7876  lr=1.87e-05  250s
+epoca 15  IoU_val=0.7880  lr=9.37e-06 (LR reduzido)  251s
+epoca 16  IoU_val=0.7823  lr=9.37e-06  251s
+epoca 17  IoU_val=0.7851  lr=4.69e-06 (LR reduzido)  251s
+epoca 18  IoU_val=0.7838  lr=4.69e-06  251s
+epoca 19  IoU_val=0.7867  lr=2.34e-06 (LR reduzido)  251s
+epoca 20  IoU_val=0.7855  lr=2.34e-06  252s
+epoca 21  IoU_val=0.7832  lr=1.17e-06 (LR reduzido)  250s
+epoca 22  IoU_val=0.7846  lr=1.17e-06  251s
+epoca 23  IoU_val=0.7844  lr=5.86e-07 (LR reduzido)  250s
+epoca 24  IoU_val=0.7857  lr=5.86e-07  252s
+melhor IoU_val=0.7880 -> models/unet_stageA_rodada6_base24.pt
