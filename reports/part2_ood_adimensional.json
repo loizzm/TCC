@@ -1,0 +1,44 @@
+{
+  "original": {
+    "sai": 55,
+    "ordem": 55,
+    "n_err": 55,
+    "mape_med": 2.5520147560844095
+  },
+  "JPEG q=30": {
+    "sai": 51,
+    "ordem": 51,
+    "n_err": 51,
+    "mape_med": 3.1300027195440014
+  },
+  "reescala 0.33x": {
+    "sai": 53,
+    "ordem": 53,
+    "n_err": 53,
+    "mape_med": 3.2407805644551813
+  },
+  "rotacao 0.5 grau": {
+    "sai": 54,
+    "ordem": 54,
+    "n_err": 54,
+    "mape_med": 2.8865389803594965
+  },
+  "rotacao 2 graus": {
+    "sai": 52,
+    "ordem": 52,
+    "n_err": 52,
+    "mape_med": 14.483051530108762
+  },
+  "ruido sigma=8": {
+    "sai": 46,
+    "ordem": 46,
+    "n_err": 46,
+    "mape_med": 2.604765112273231
+  },
+  "JPEG60+0.5x+rot1": {
+    "sai": 53,
+    "ordem": 53,
+    "n_err": 53,
+    "mape_med": 5.835572140259715
+  }
+}

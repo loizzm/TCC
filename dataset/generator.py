@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 import os
 from concurrent.futures import ProcessPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -87,6 +87,33 @@ class SystemSpec:
 
 def _loguniform(rng: np.random.Generator, lo: float, hi: float) -> float:
     return float(np.exp(rng.uniform(np.log(lo), np.log(hi))))
+
+
+# Quantas constantes de tempo dominantes o estrato `reta_no_patamar` garante
+# DEPOIS do tempo morto. `sample_system` sorteia a janela em
+# `loguniform(0.5, 6.0) * t_dom`, e assentar a 1% leva ~4.6 t_dom — por isso o
+# corpus praticamente nunca mostra o patamar: medido, a fracao final ja
+# assentada tem MEDIANA de 0,98% da janela, e ZERO de 60 amostras chegam a 30%.
+# As duas imagens reais do Ruling 55 usam 10 e ~21 t_dom, com ~50% da janela
+# assentada. Sem patamar visivel a reta de referencia toca a curva so na ultima
+# coluna, e nao ha trecho colinear para ocluir — foi o que a primeira tentativa
+# deste estrato mediu (cobertura mediana 0,96, criterio pede < 0,75).
+# Valor escolhido por VARREDURA medida (n=40 por ponto), tendo como alvo o
+# maior vao de colunas sem tinta predita das duas imagens reais: 0,1669
+# (Figure_1) e 0,3802 (resposta_degrau).
+#   T_DOM   mediana     p90      max    >=0.15   >=0.20
+#     9.2    0.0434   0.2710   0.4319    10/40     6/40
+#    14.0    0.0479   0.4902   0.5744    11/40     9/40
+#    20.0    0.0501   0.6007   0.7095    12/40     9/40   <- escolhido
+#    30.0    0.0543   0.6724   0.8270    12/40    10/40
+#    45.0    0.0516   0.6469   0.8907    14/40    12/40
+# 20 casa com a janela das imagens reais (10 e ~21 t_dom). Acima disso o maximo
+# vai a 0,83-0,89, FORA da faixa real, e a mediana nao sobe: os bloqueadores
+# medidos sao ruido (Spearman SNR x vao +0,423, p=7e-4) e marcador (-0,346,
+# p=7e-3), que fazem a curva escapar de tras da reta. Sao variacao legitima de
+# estilo, entao o estrato exibe o fenomeno com forca em ~30% das amostras e
+# isso e o correto — suprimi-los deixaria o estrato limpo demais para ser real.
+_T_DOM_ESTRATO = 20.0
 
 
 def sample_system(rng: np.random.Generator) -> SystemSpec:
@@ -203,6 +230,56 @@ def _new_figure(style: RenderStyle, facecolor: str) -> tuple[Figure, Axes]:
     return fig, ax
 
 
+# Luminancia ITU-R BT.601, a MESMA de `identify/extract.py::predict_mask`.
+_PESO_CINZA = (0.299, 0.587, 0.114)
+
+
+def _cinza(rgb) -> float:
+    """Luminancia que a U-Net enxerga: ela recebe 1 canal, nao RGB."""
+    return sum(p * c for p, c in zip(_PESO_CINZA, rgb))
+
+
+def _cor_colidente(hex_curva: str) -> str:
+    """Cor com a MESMA luminancia da curva e matiz oposta.
+
+    O estagio A converte a imagem para cinza antes da U-Net
+    (`identify/extract.py::predict_mask`), entao dois objetos de luminancia
+    igual chegam a rede como o MESMO byte — medido nas duas imagens reais do
+    Ruling 55: curva (44,160,44) e reta de referencia (230,61,61) viram ambas
+    112. Separar um do outro deixa de ser dificil e passa a ser impossivel:
+    nenhuma funcao de uma entrada distingue pontos onde a entrada e identica.
+
+    O estrato precisa reproduzir ISSO, e nao apenas "existe uma reta". Uma cor
+    sorteada ao acaso colide raramente (medido no gerador: 2,05% dos
+    distratores ficam a menos de 2 bytes da curva) e, pior, colide sem se
+    SOBREPOR — e a medicao mostrou que colisao sem sobreposicao e inofensiva
+    (Spearman colisao x IoU = -0,006, p=0,86, n=900). Aqui a colisao e
+    construida de proposito e combinada com sobreposicao no patamar.
+
+    Depende so de `style.line_color`, que `sample_style` sorteia cego ao spec,
+    entao nao abre caminho de vazamento (tests/test_part1.py:1115).
+    """
+    import colorsys
+    rgb = tuple(int(hex_curva[i:i + 2], 16) for i in (1, 3, 5))
+    alvo = _cinza(rgb)
+    h, ll, s = colorsys.rgb_to_hls(*[c / 255.0 for c in rgb])
+    girado = colorsys.hls_to_rgb((h + 0.5) % 1.0, ll, s)
+    lg = _cinza([c * 255.0 for c in girado])
+    if lg <= 1e-6:
+        return hex_curva
+    # reescala para casar a luminancia; se estourar, dessatura ate caber.
+    for _ in range(24):
+        k = alvo / lg
+        cand = [c * 255.0 * k for c in girado]
+        if max(cand) <= 255.0:
+            return "#%02x%02x%02x" % tuple(int(round(min(255.0, max(0.0, c)))) for c in cand)
+        s *= 0.85
+        girado = colorsys.hls_to_rgb((h + 0.5) % 1.0, ll, s)
+        lg = _cinza([c * 255.0 for c in girado])
+        if lg <= 1e-6:
+            break
+    return hex_curva
+
 def _plot_curve(ax, t: np.ndarray, y: np.ndarray, style: RenderStyle, color: str, label=None):
     kwargs = dict(
         color=color,
@@ -271,12 +348,20 @@ def render_sample(
     rng: np.random.Generator | None = None,
     *,
     seed: int | None = None,
+    reta_no_patamar: bool = False,
 ) -> dict:
     """Escreve image.png, mask.png e meta.json em out_dir. Devolve o dict do meta."""
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     if rng is None:
         rng = np.random.default_rng(0)
+
+    # Marca o estrato OOD numa COPIA do estilo (via `dataclasses.replace`),
+    # nunca mutando o objeto `style` recebido do chamador: `render_sample` nao
+    # e o dono desse objeto, e mutar um argumento e efeito colateral
+    # observavel para quem chamou. `has_reference_line` e campo de RENDER
+    # (dataset/randomize.py), nao sorteado por `sample_style`.
+    style = replace(style, has_reference_line=bool(reta_no_patamar))
 
     t = np.linspace(spec.t_start, spec.t_end, N_SERIES)
     y_clean = step_response(spec, t)
@@ -293,18 +378,69 @@ def render_sample(
     _apply_locators(ax, style, xlim, ylim)
 
     # distratores: posicoes uniformes nos limites dos eixos, sem relacao com o rotulo
-    for d in style.distractors:
+    distractors = list(style.distractors)
+    if reta_no_patamar:
+        # Estrato OOD, opt-in (HANDOFF_P2_7 §34.5). O laco acima sorteia
+        # posicao uniforme; aqui se acrescenta uma reta horizontal FIXADA no
+        # patamar da curva, que e o caso real do setpoint marcado e onde a
+        # U-Net perde a curva. Entra no RENDER e nao em `sample_style`, porque
+        # a posicao depende do sistema e `sample_style` tem de continuar cega
+        # ao spec (tests/test_part1.py:1115). Sob `if`, para que o caminho
+        # padrao nao mude um byte.
+        # `line_style` tracejado ("--"), de proposito: e o traco real de um
+        # setpoint marcado (a linha do caso real que motivou este estrato), e
+        # e o caso DIFICIL: um traco tracejado fragmenta em varios blocos
+        # separados por coluna, exatamente a condicao multi-bloco que o
+        # extrator de polilinha precisa resolver. Solido seria mais facil de
+        # extrair e menos fiel ao problema real — nao serviria de estrato de
+        # teste para o defeito do §34.5.
+        distractors = distractors + [
+            {"orient": "h", "frac": None, "no_patamar": True,
+             # Cor de LUMINANCIA IGUAL a da curva (ver `_cor_colidente`): em
+             # cinza, que e o que a U-Net recebe, os dois objetos viram o mesmo
+             # byte. Sem isso o estrato so testa "existe uma reta", e a medicao
+             # mostrou que reta de cor qualquer nao degrada nada
+             # (Spearman colisao x IoU = -0,006, p=0,86, n=900).
+             "color": _cor_colidente(style.line_color), "line_style": "--",
+             # ACIMA da curva: os distratores comuns ficam em `zorder=1`, sob
+             # ela, e por isso nao ocluem. O fenomeno real do Ruling 55 e a
+             # reta passar POR CIMA do trecho assentado — e a mistura
+             # antialiasada dos dois que apaga o contraste (medido: cai a 32%
+             # do original) e faz a mascara perder a curva.
+             "zorder": 3,
+             # Espessura acompanhando a da curva: uma reta mais fina deixaria
+             # borda de curva visivel dos dois lados e nao ocluiria de fato.
+             "line_width": max(2.0, style.line_width * 1.8), "alpha": 1.0}
+        ]
+    for d in distractors:
         if d["orient"] == "h":
-            val = ylim[0] + d["frac"] * (ylim[1] - ylim[0])
+            if d.get("no_patamar"):
+                # SETPOINT comandado (`K * degrau`), nao `y_draw[-1]` nem
+                # `y_clean[-1]`. Tres razoes, nesta ordem:
+                #  - e o que um grafico real marca: nas duas imagens do
+                #    Ruling 55 a reta esta exatamente em 1,0, o valor de
+                #    referencia, nao "onde a curva calhou de terminar";
+                #  - `y_draw[-1]` e uma amostra RUIDOSA, e a reta ancorada
+                #    nela cobre a curva so em parte (medido: 12 px de desvio
+                #    numa seed, e a oclusao vira parcial);
+                #  - `y_clean[-1]` ainda oscila quando a janela nao basta para
+                #    assentar (subamortecido), e ai a reta sai do patamar.
+                # E derivavel do meta (`params.K` x `step_amplitude`), entao o
+                # estrato fica localizavel sem chave nova no contrato.
+                val = float(spec.K * spec.step_amplitude)
+            else:
+                val = ylim[0] + d["frac"] * (ylim[1] - ylim[0])
             ax.axhline(
                 val, color=d["color"], linestyle=d["line_style"],
-                linewidth=d["line_width"], alpha=d["alpha"], zorder=1,
+                linewidth=d["line_width"], alpha=d["alpha"],
+                zorder=d.get("zorder", 1),
             )
         else:
             val = xlim[0] + d["frac"] * (xlim[1] - xlim[0])
             ax.axvline(
                 val, color=d["color"], linestyle=d["line_style"],
-                linewidth=d["line_width"], alpha=d["alpha"], zorder=1,
+                linewidth=d["line_width"], alpha=d["alpha"],
+                zorder=d.get("zorder", 1),
             )
 
     if style.has_grid:
@@ -434,7 +570,9 @@ def render_sample(
 # --------------------------------------------------------------------------
 
 
-def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True) -> dict:
+def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
+                    reta_no_patamar: bool = False,
+                    janela_assentada: bool = False) -> dict:
     """Sorteia sistema+estilo com streams independentes, renderiza e devolve o meta."""
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
@@ -444,13 +582,25 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True) -> d
 
     spec = sample_system(rng_sys)
     style = sample_style(rng_style)  # nao ve o spec: anti-vazamento estrutural
+    if janela_assentada:
+        # Janela longa o bastante para o PATAMAR ficar visivel. Eixo separado de
+        # `reta_no_patamar` de proposito: sao dois fenomenos distintos e o
+        # estrato OOD e a combinacao dos dois. Separados, dao ablacao (a reta
+        # sozinha? a janela sozinha?) e permitem controle pareado no teste —
+        # com os dois no mesmo parametro, a extensao muda a geometria da curva
+        # e nenhum diferencial pixel a pixel e possivel.
+        # Nao mexe no meta: a janela ja e observavel em `t_window`.
+        t_dom = dominant_time_constant(spec.order, spec.tau, spec.wn, spec.zeta)
+        spec = replace(spec, t_end=float(max(spec.t_end,
+                                             spec.theta + _T_DOM_ESTRATO * t_dom)))
     return render_sample(spec, style, out_dir, add_noise=add_noise, rng=rng_noise,
-                         seed=int(seed))
+                         seed=int(seed), reta_no_patamar=reta_no_patamar)
 
 
 def _generate_one(args: tuple) -> str:
-    out_dir, seed, add_noise = args
-    generate_sample(out_dir, seed, add_noise=add_noise)
+    out_dir, seed, add_noise, reta, janela = args
+    generate_sample(out_dir, seed, add_noise=add_noise, reta_no_patamar=reta,
+                    janela_assentada=janela)
     return str(out_dir)
 
 
@@ -460,12 +610,15 @@ def generate_dataset(
     seed: int = 0,
     workers: int | None = None,
     add_noise: bool = True,
+    reta_no_patamar: bool = False,
+    janela_assentada: bool = False,
 ) -> list[str]:
     """Gera n amostras em paralelo. Resultado independe do numero de workers."""
     root = Path(out_dir)
     root.mkdir(parents=True, exist_ok=True)
     jobs = [
-        (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise))
+        (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise),
+         bool(reta_no_patamar), bool(janela_assentada))
         for i in range(int(n))
     ]
     if workers is not None and workers <= 1:

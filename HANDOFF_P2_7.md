@@ -1897,3 +1897,920 @@ espessura.
    mudou o custo de falhar (perde-se a escala, não a resposta).
 2. **2.5 a 1,5 p.p.** — a poda fecharia (100 %) ao custo do 2.3; decisão mantida de
    não fazer. Fechar sem essa troca exige reduzir os misreads de OCR na origem.
+
+## 33. Ruling 54 — OOD de aquisição: a Decisão E é a resposta robusta, e a fronteira é a ROTAÇÃO
+
+**Este NÃO é um caso real.** Não há figura real no repositório (`img.py` é outro
+gerador matplotlib). É o eixo mais próximo que se constrói sem uma: degradações de
+**aquisição** que o gerador nunca produz — JPEG, reescala, rotação, ruído de
+sensor. O espaço do gerador varia dpi, grade, legenda, traço, cor, fundo,
+marcador, anotações e SNR, mas nada disso.
+
+Dado bruto: `reports/part2_ood_aquisicao.json`, `part2_ood_adimensional.json`.
+120 amostras × 10 degradações; a tabela de ζ restrita às 58 de 2ª ordem.
+
+### 33.1 A calibração desaba; a estrutura e o nível adimensional não
+
+| degradação | calibração ok | ordem ok | adimensional sai |
+|---|---|---|---|
+| original | 78,3 % | 90,0 % | 53 % |
+| JPEG q=90 | 75,0 % | 90,0 % | 53 % |
+| JPEG q=60 | 55,0 % | 91,7 % | 48 % |
+| JPEG q=30 | 45,0 % | 90,8 % | 46 % |
+| reescala 0,5× | 65,8 % | 90,0 % | 50 % |
+| reescala 0,33× | 38,3 % | 89,2 % | 51 % |
+| **rotação 0,5°** | **3,3 %** | 93,3 % | 48 % |
+| **rotação 2°** | **0,0 %** | 88,3 % | 50 % |
+| **ruído σ=8** | **5,0 %** | 86,7 % | 45 % |
+| JPEG60 + 0,5× + rot 1° | **0,0 %** | 90,0 % | 50 % |
+
+**Meio grau de rotação leva a calibração de 78,3 % a 3,3 %.** Causa:
+`detect_plot_bbox` e `detect_tick_pixels` supõem moldura alinhada aos eixos, e
+projeção por linha/coluna não sobrevive a inclinação. Ruído σ=8 faz o mesmo com a
+limiarização de tinta (5,0 %).
+
+Enquanto isso a **ordem acerta 86,7–93,3 % em TODAS as degradações**, inclusive
+rotação de 2° e a combinada.
+
+### 33.2 E o ζ adimensional continua CERTO, não só saindo
+
+Disponibilidade não é acurácia. Restrito às 58 amostras de 2ª ordem:
+
+| degradação | adim sai | **MAPE ζ adim** | p95 |
+|---|---|---|---|
+| original | 94,8 % | **2,55 %** | 32,6 % |
+| JPEG q=30 | 87,9 % | **3,13 %** | 71,6 % |
+| reescala 0,33× | 91,4 % | **3,24 %** | 54,4 % |
+| **rotação 0,5°** | 93,1 % | **2,89 %** | 65,6 % |
+| **ruído σ=8** | 79,3 % | **2,60 %** | 51,0 % |
+| JPEG60 + 0,5× + rot 1° | 91,4 % | 5,84 % | 83,2 % |
+| **rotação 2°** | 89,7 % | **14,48 %** | 99,9 % |
+
+**A previsão do `PLANO §1.7` se confirma quantitativamente:** *"no conjunto OOD é
+onde o OCR tem mais chance de falhar e onde a resposta adimensional é
+provavelmente a única robusta"*. Em rotação de 0,5° a calibração entrega 3,3 % das
+amostras e o adimensional entrega 93,1 % **com acurácia intacta** (2,89 % contra
+2,55 % da linha de base).
+
+**A fronteira é a rotação, e o mecanismo é claro.** 2° quebra o adimensional
+(14,48 %, 5,7× pior) porque rotação distorce a **forma** da curva, e ζ vem da razão
+de *overshoot*, que é forma. JPEG, ruído e reescala degradam a máscara sem torcer a
+geometria; rotação torce. Até ~1° a degradação é tolerável (5,84 % na combinada).
+
+**Ressalva: o p95 é alto em todas as condições** (32,6 % já na linha de base). A
+mediana é robusta, a cauda não — consistente com o p95 de 43,82 % que o caminho
+físico já apresentava (Ruling 44).
+
+### 33.3 Consequências
+
+1. **A Decisão E deixou de ser conveniência e passou a ser a característica que
+   sustenta o sistema fora da distribuição.** É argumento de monografia com número:
+   a resposta adimensional é a única que sobrevive a aquisição degradada.
+2. **A calibração tem uma fragilidade não documentada até aqui: rotação.** Meio
+   grau — imperceptível a olho, comum em qualquer digitalização — a derruba
+   quase por completo. Nenhum critério da Parte 2 mede isso, e o gerador não
+   produz o estrato. Candidato natural a critério novo ou a estrato do gerador.
+3. **O caso REAL continua pendente** e depende de uma figura fornecida (Ogata,
+   Nise, print de planilha, gráfico de artigo). A previsão testável, a partir
+   destes números: a calibração provavelmente falha por desalinhamento e o ζ sai
+   pelo nível adimensional com erro na casa de 3 %, desde que a figura esteja
+   dentro de ~1° do alinhamento.
+
+## 34. Ruling 55 — CASO REAL: uma imagem encontrou dois defeitos que 300 sintéticas não
+
+Imagem: `resposta_degrau.png` (842×569), produzida fora do gerador do projeto.
+Verdade declarada: `num = [ωn²]`, `den = [1, 2ζωn, ωn²]` com **ζ = 0,5 e ωn = 2,0**;
+degrau unitário, janela 10 s, θ = 0. Segunda ordem subamortecida, *overshoot*
+observado ~16,4 % (que corresponde exatamente a ζ = 0,5: 16,3 %).
+
+### 34.1 O pipeline como está FALHOU
+
+```
+ok=False   order='fopdt'   reason='calibration_failed'
+physical      = None
+dimensionless = {zeta: None, wn_T: None, tau_T: 0.0632, theta_T: 0.0530, K_yrange: 0.7732}
+```
+
+A calibração reprovar era previsto (Ruling 54) e a Decisão E cobriu. **O erro
+inaceitável é a ORDEM:** primeira ordem para uma curva com *overshoot* visível.
+Com ordem errada, ζ e ωₙ·T saem nulos e a resposta é inútil.
+
+### 34.2 Defeito 1 — a máscara da U-Net
+
+Sobreposição da máscara sobre a imagem mostra três problemas:
+
+- **traça a curva corretamente até t ≈ 6,2** e **perde os últimos 38 % da janela**
+  — exatamente onde a curva azul passa a COINCIDIR com a reta vermelha tracejada
+  de referência em y = 1,0;
+- **captura a reta de referência** no trecho t ≈ 1,2 a 3;
+- **captura glifos de texto**: a polilinha vai de y = 21 a 551, fora da moldura
+  (39 a 503) — pegou título e rótulo do eixo x.
+
+Trocando apenas a máscara, com o MESMO estágio D:
+
+| máscara | ordem | ζ | ωₙ |
+|---|---|---|---|
+| **verdade** | second | **0,5000** | **2,000** |
+| U-Net (pipeline) | **fopdt ❌** | — | — |
+| extrator clássico do projeto | second ✅ | 0,3847 | 2,173 |
+| cor azul isolada | second ✅ | 0,4000 | 2,179 |
+
+**A falha de ordem é da máscara, não do estágio D.**
+
+**Contaminação adicional — parágrafo RETRATADO, ver §35.2.** A redação original
+dizia que a **legenda** contamina 37 colunas com dois ramos azuis (exemplo em
+x=536). Aquelas 37 colunas estavam numa máscara de **limiar de cor** que construí
+para diagnosticar, **não na máscara da U-Net**, e atribuí o mecanismo ao objeto
+errado. Na máscara da U-Net são **44** colunas multi-bloco, todas em x=[81,389] —
+na parte ASCENDENTE da curva —, e a amostra de linha da legenda (25 px de tinta em
+y≈453) não contamina nenhuma delas. A ambiguidade multi-bloco é real e o
+mecanismo de desambiguação é necessário (§35.1); o **exemplo** estava errado.
+Desambiguando por continuidade, o `nrmse` cai de 0,0826 para **0,0316** — este
+número foi medido na máscara por cor e continua valendo para ela.
+
+### 34.3 Defeito 2 — o estimador de repouso da Decisão E (meu)
+
+Mesmo com máscara limpa e colunas multi-bloco desambiguadas — **não** "legenda
+desambiguada", como esta linha dizia; ver a retratação do §34.2 e o §35.2 —,
+ζ = 0,4372 contra 0,5 (**12,6 %**).
+Causa: `_FRAC_REPOUSO = 0.08` estima o nível de repouso pela **mediana das 8 %
+primeiras colunas**, supondo prefixo plano por tempo morto. Aqui **θ = 0**: a curva
+sobe desde t = 0 e em t = 0,8 já vale ~0,28, então a "mediana do repouso" fica em
+~0,1. Isso subestima o patamar em **3,8 %**, e 3,8 % no patamar viram **12,6 % em ζ**,
+porque ζ vem da razão de *overshoot* (o ajuste implica 21,7 % contra 16,4 % reais).
+
+| estimador do repouso | ζ | erro | ωₙ | erro | nrmse |
+|---|---|---|---|---|---|
+| mediana dos 8 % (ATUAL) | 0,4372 | 12,6 % | 2,2015 | 10,1 % | 0,0316 |
+| mediana dos 3 % | 0,4903 | 1,9 % | 2,0452 | 2,3 % | 0,0048 |
+| **primeiras 3 colunas** | **0,5018** | **0,4 %** | **2,0377** | **1,9 %** | **0,0029** |
+| percentil 99 (extremo robusto) | 0,4954 | 0,9 % | 2,0245 | 1,2 % | 0,0028 |
+
+**Por que o sintético nunca pegou isso:** o gerador sorteia θ e quase sempre
+positivo, então o prefixo plano existe e o viés não aparece.
+
+### 34.4 A resposta que o sistema É capaz de dar
+
+Com moldura respeitada, colunas multi-bloco desambiguadas (**não** "legenda
+desambiguada" — §34.2 retratado, §35.2) e repouso estimado corretamente:
+
+> **ζ = 0,5018** (erro **0,4 %**) · **ωₙ = 2,0377** (erro **1,9 %**) ·
+> *overshoot* implicado 16,2 % contra 16,4 % observados · `nrmse` **0,0029**
+
+`nrmse` equivalente ao do sintético (~0,0035). **A capacidade existe; falharam dois
+elos consertáveis.**
+
+### 34.5 O terceiro problema, NÃO consertável nos mesmos termos
+
+A perda da cauda (t > 6,2) acontece onde a curva coincide com a reta de referência.
+O extrator clássico atravessa esse trecho (737 pontos, largura inteira); a U-Net
+não. Não há tinta nas colunas perdidas, então nenhuma regra de polilinha recupera:
+é limitação da máscara.
+
+**E o gerador não produz o estrato.** `dataset/randomize.py:317-332` sorteia 1 a 3
+distratores com `frac ~ U(0.03, 0.97)` — retas de span completo, mas em posição
+uniforme e "sem relação com o rótulo". Uma reta de referência **no patamar** (o
+caso real corriqueiro: *setpoint* marcado) tem probabilidade baixa de sair por
+acaso. Enquanto o estrato não existir, a falha não é mensurável nem treinável.
+
+## 35. Ruling 56 — as correções do caso real: o que fechou, o que a suíte NÃO media, e o que fica aberto
+
+O §34 (Ruling 55) registrou dois defeitos que uma única imagem real expôs e que
+300 sintéticas não. Os dois estão fechados. Esta seção registra o que os fechou,
+uma correção ao meu próprio diagnóstico do §34.2, um **ponto cego de medição** que
+a rodada revelou e que é o achado mais transferível do bloco, um **erro de método**
+que vale para o TCC inteiro, e os itens que ficam abertos.
+
+Toda medição abaixo vem acompanhada da **população**: o `n` e se é o corpus
+inteiro ou o subconjunto **sem calibração**. Omitir isso foi exatamente o erro que
+custou uma rodada de correção (§35.4).
+
+### 35.1 Os dois defeitos e o que os fechou
+
+**Defeito 1 — a ORDEM (`fopdt` onde a curva tem *overshoot* visível).** Fechado
+por duas mudanças em `identify/polyline.py`:
+
+1. **recorte da polilinha à moldura do gráfico** (`mask_to_polyline(mask, bbox=)`,
+   chamado de `identify/pipeline.py`): a máscara da U-Net capturava glifos de
+   título e de rótulo de eixo, e a polilinha ia de y=21 a y=551 contra uma moldura
+   de 39 a 503;
+2. **desambiguação de colunas com mais de um bloco de tinta**: a coluna passa a
+   seguir o bloco mais próximo do ponto anterior, em vez da mediana de todas as
+   linhas com tinta, com portão de 3× a espessura mediana e **reset da referência
+   após vão largo** (o mesmo fator de 3×).
+
+Efeito medido no corpus sintético (n=300): `2.1` (erro perpendicular da máscara
+predita) vai de **0,800/1,699 px** para **0,802/1,529 px** — a mediana é estável e
+o p95 MELHORA 0,17 px. `2.2-piso` (máscara verdadeira) fica em 0,614/1,135 →
+0,615/1,137 px, ou seja neutro, como esperado: a máscara verdadeira tem só 2,4% de
+colunas multi-bloco contra 22,3% da predita, então a desambiguação atua onde o 2.1
+mede e quase não atua onde o 2.2 mede. `2.7[traco=:]` — o estrato pontilhado, com
+43% das colunas sem tinta, que era o risco do reset — fica em **0,956 px**,
+idêntico à linha de base.
+
+**Defeito 2 — ζ e ωₙ.** Precisou de **duas** correções em `identify/pipeline.py`,
+e só a primeira estava prevista:
+
+*(a) nível de repouso.* `_FRAC_REPOUSO = 0.08` (mediana das 8% primeiras colunas)
+virou `_N_REPOUSO = 5` colunas fixas, em `_nivel_de_repouso()`. A varredura está
+em `reports/part2_repouso_varredura.md`; a coluna "REAL" é o caso real (**n=1**) e
+as duas seguintes são o subconjunto **sem calibração e de 2ª ordem** das 300
+primeiras de `data/test` (**n=33**):
+
+| estimador do repouso | ζ real (n=1) | erro | MAPE ζ sint. (n=33) | ordem ok (n=33) |
+|---|---|---|---|---|
+| mediana de 8% da largura (anterior) | 0,4851 | 3,0% | 2,92% | 97,0% |
+| mediana de 3% da largura | 0,5045 | 0,9% | 3,02% | 100,0% |
+| **mediana de 5 colunas (ESCOLHIDO)** | **0,5057** | **1,1%** | **1,34%** | **100,0%** |
+| mediana de 3 colunas | 0,5061 | 1,2% | 2,72% | 100,0% |
+| percentil 99 | 0,5052 | 1,0% | 3,64% | 100,0% |
+
+O critério de escolha foi o do plano, nas três alíneas: melhora no real, **não
+piora** no sintético, e é o único que ganha nas duas populações ao mesmo tempo — a
+mediana de 3% ganha 0,2 p.p. no real e perde 0,1 p.p. no sintético.
+
+*(b) SEGUNDA CAUSA RAIZ, descoberta durante a medição e não prevista no plano —
+a normalização do tempo.* `_serie_normalizada` normalizava `t` pela **extensão
+observada da polilinha** (`x[-1] − x[0]`). No caso real a curva assentada se
+sobrepõe à reta de referência tracejada e a máscara não separa as duas, de modo
+que **~38% da largura fica sem tinta detectada**: a polilinha cobre só **0,617**
+da moldura. Normalizar por uma janela truncada **comprime o tempo e infla ωₙ na
+mesma proporção** — erro de ωₙ de **37,7%** (n=1). Normalizar pela largura da
+**moldura** leva esse erro a **1,0%** (n=1).
+
+A mudança NÃO é incondicional. No corpus sintético a moldura **não é** a janela de
+dados: ela é de **+2,2% a +11,7%** mais larga (mediana +6,9%; n=179, as sem
+calibração com polilinha ≥ 10 pontos e moldura válida), por margem do matplotlib
+(`x_margin_lo`/`x_margin_hi`, que o próprio `sample_style` sorteia). Usar a
+moldura sempre injetaria essa margem como viés sistemático onde a extensão
+observada já é a melhor referência. Ficou **condicionada à truncagem detectada**,
+por `_COBERTURA_MIN_MOLDURA = 0.75`; a origem de `t` passa a vir do mesmo
+referencial que a escala (`bbox_px[0]` quando a moldura é usada), senão o
+deslocamento vaza como viés ADITIVO em θ (mediana 3,1%, p95 5,5%, máx 11,4% da
+largura da moldura, n=179).
+
+Resultado no critério: **`2.6-adim[zeta]` vai de +1,53 p.p. (real 2,78%) para
++0,89 p.p. (real 2,08%)**, com as amostras comparáveis subindo de 141/300 para
+**143/300** (31 → 33 sem calibração). No caso real, os dois testes de
+`tests/part2/test_caso_real.py` passam: ordem `second`, ζ e ωₙ dentro da
+tolerância.
+
+**Sobre a folga do limiar, com o número certo.** A cobertura das 179 sem
+calibração vai de **0,7713** (`sample_00639`, fopdt) a 0,9873, mediana 0,9332, e
+**nenhuma** cai abaixo de 0,75 — o ramo da moldura não dispara em nenhuma amostra
+do sintético. A folga do limiar até o mínimo observado é de **2,1 p.p.**, não os
+~13 p.p. que a primeira rodada documentou (aquilo vinha de olhar só as 75 de 2ª
+ordem). Para baixo a folga é confortável: o caso real está em 0,617.
+
+### 35.2 CORREÇÃO ao §34.2 — a legenda não era o mecanismo, e o erro é meu
+
+O §34.2 atribuía a contaminação da máscara à **legenda**, com "37 colunas com dois
+ramos azuis". Está errado, e o erro é de diagnóstico meu, não do código.
+
+As 37 colunas estavam numa máscara de **limiar de COR** que construí para
+diagnosticar, **não na máscara da U-Net**. Medido na máscara da U-Net: são **44**
+colunas multi-bloco, **todas** em x=[81,389] — a parte ASCENDENTE da curva —, e a
+amostra de linha da legenda tem **25 px de tinta em y≈453**, sem contaminar
+nenhuma coluna daquele intervalo. A U-Net quase não vê a legenda.
+
+Consequências, e a distinção importa:
+
+- **A mudança da Task 3 continua justificada** — a ambiguidade multi-bloco é real
+  (44 colunas), e o ganho está medido no `2.1` p95 (1,699 → 1,529 px, n=300). O
+  mecanismo é a curva passando perto da reta de referência e perto do eixo, não a
+  legenda.
+- **O primeiro teste escrito para ela era vacuoso** e foi substituído. Ele
+  inspecionava x ≥ 485, região onde há **zero** colunas multi-bloco: passava por
+  razão alheia ao que afirmava testar. Foi trocado por dois testes sintéticos e
+  determinísticos, com discriminação provada nas duas direções. Números medidos:
+  com o mecanismo neutralizado, a coluna sob teste erra **40,0 px** contra a
+  tolerância de **2,0 px** do teste; com ele ativo, passa. (O "< 1 px" que esta
+  linha trazia antes não tinha fonte; a tolerância real é 2,0 px.)
+
+O parágrafo do §34.2 foi marcado como retratado no lugar, com remissão para cá.
+
+### 35.3 O PONTO CEGO DE MEDIÇÃO — a suíte inteira passava verde por uma regressão de escala de tempo
+
+Este é o achado mais transferível do bloco, e não é sobre este código.
+
+A revisão da mudança (b) do §35.1 mediu que usar a moldura **sempre** degrada ωₙ.
+Nenhum teste da suíte viu isso, e a razão é estrutural: **não existia critério
+medindo ωₙ no caminho adimensional**. Havia só `2.6-adim[zeta]` — e **ζ é
+invariante à escala do tempo**. Ou seja: o caminho que existe justamente para
+dispensar a calibração media a única grandeza cega ao defeito que a escala de `t`
+produz. Uma regressão de escala passava verde pela suíte inteira, 36 testes.
+
+Foi acrescentado o diagnóstico `2.6-adim[wn_T]` (sem meta, sem `assert` — não há
+limiar decidido; o objetivo é tornar o número visível em toda rodada). E, na
+rodada seguinte, uma SEGUNDA linha, `2.6-adim[wn_T/sem-calib]` (**n=33**), porque
+a primeira versão media **n=143** e **110 dessas passam pelo caminho FÍSICO**, que
+não executa `_serie_normalizada`: o sinal ficava diluído ~7×, visível mas fraco
+demais para alguém notar numa tabela de ~80 linhas.
+
+**Prova de que funciona**, feita em cópia do repositório diferindo da árvore só em
+`_COBERTURA_MIN_MOLDURA = 1.01` (a regressão reintroduzida), e **verificada de
+forma independente por quem revisou**, rodando em vez de replicar:
+
+| linha | produção | com a regressão | move |
+|---|---|---|---|
+| `2.6-adim[wn_T]` (corpus, **n=143**) | +1,04 p.p. (real 1,76%) | +1,82 p.p. (real 2,54%) | **+0,78 p.p.** |
+| `2.6-adim[wn_T/sem-calib]` (**n=33**) | +0,63 p.p. (real 1,35%) | +6,43 p.p. (real 7,15%) | **+5,80 p.p.** |
+
+**Duas razões diferentes, e a distinção importa.** O que mede a FORÇA do
+diagnóstico é a razão dos **deslocamentos**: `5,80 / 0,78 = `**`7,44`** — a linha
+restrita à população certa reage ~7× mais à mesma regressão, que é exatamente o
+fator de diluição que o §35.3 existe para eliminar. A razão dos **MAPE reais** na
+linha sem-calibração é outra coisa: `7,15 % / 1,35 % = `**`5,30`** — é quanto o
+erro em si se multiplica quando a regressão entra. O "fator 5,3" que a review
+anterior atribuiu ao deslocamento era esta segunda razão; ficam as duas
+nomeadas, para ninguém ter de adivinhar qual é qual. Na linha certa a regressão
+aparece como uma multiplicação por 5 do erro; na linha diluída, como
+arredondamento.
+
+**A lição, que é do §2.12 e não deste arquivo:** um critério pode existir, passar,
+e ainda assim não cobrir nada — quando a grandeza que ele mede é *invariante* ao
+modo de falha do caminho que ele deveria vigiar, ou quando a *população* em que
+ele mede é majoritariamente de amostras que não passam por aquele caminho. As duas
+falhas aconteceram aqui, na mesma linha, e a segunda só foi vista porque alguém
+exigiu a prova de sensibilidade.
+
+### 35.4 O erro de MÉTODO — achatar uma distribuição num escalar (§2.12, classe A)
+
+Uma review pediu que `_COBERTURA_MIN_MOLDURA` subisse de 0,75 para o **"ponto de
+empate ≈ 0,872"**, onde as duas referências de escala erram igual. A derivação é
+correta: com `c` = cobertura e `m` = soma das margens do matplotlib, o erro de
+escala é `|c(1+m) − 1|` pela extensão observada e `m` pela moldura, e os dois
+empatam em **c\* = (1−m)/(1+m)**.
+
+O que a medição mostrou é que **`c*` não é um número, é uma distribuição**. Como
+`m` varia por amostra, `c*` varia de **0,7912 a 0,9563** (n=179), e **0,8716 é a
+MEDIANA dela** — era daí que saía o "0,872". Medido com o limiar em 0,872:
+
+- afeta **3 das 179** (coberturas 0,7713, 0,8505, 0,8514 — todas fopdt);
+- **nenhum critério com meta se move** (`2.6-adim[zeta]` e as duas linhas de
+  `wn_T` ficam idênticas dígito a dígito, nas 300 e nas 900: as três afetadas são
+  de 1ª ordem e não entram em métrica de ωₙ/ζ);
+- nas grandezas que elas movem (sem calibração, n=184; aceitas 75 para τ/T e 151
+  para θ/T): τ/T p95 melhora 10,37% → 6,42%, |Δθ/T| p95 **piora** 0,0164 → 0,0181,
+  medianas e `ordem_ok` (85,9%) inalterados.
+
+**Sem ganho líquido medido.** A razão física: o empate modela só a **ESCALA**, e
+trocar de referência move junto a **ORIGEM** de `t`. Quando a truncagem é à
+direita — o regime do caso real — a origem observada já estava correta, e a troca
+importa a margem esquerda como viés aditivo em θ.
+
+E o próprio revisor foi além, retratando a sua ressalva: em **`sample_00828`**,
+que tem `c < c*` e para a qual o modelo do empate **prevê melhora**, o τ medido
+**PIORA de 4,9% para 19,1%**. O erro de escala não é sequer preditivo amostra a
+amostra.
+
+**Decisão: recuar, o limiar fica 0,75**, com o empate, a sua derivação e o seu
+ponto cego (a origem) registrados no comentário do código.
+
+**Registro na taxonomia do §2.12 do `PLANO.md`.** Isto é **classe A** — *a
+grandeza usada para justificar o limiar não é a grandeza que decide o resultado* —
+na forma específica de **achatar uma distribuição num escalar**. É o mesmo erro
+que o IoU cometia no 2.1 (medir espessura de traço e chamar de acurácia), com
+outra roupa: aqui a estatística de resumo de uma distribuição per-amostra foi
+tratada como constante do sistema, e a decisão que ela justificava é tomada
+amostra a amostra. **A forma correta de propor um limiar assim é medir a
+distribuição da grandeza de decisão e o saldo antes/depois no corpus, nunca
+derivar um ponto de equilíbrio médio e adotá-lo.** Vale para o TCC inteiro, não
+para esta linha de código.
+
+### 35.5 Estado da suíte ao fim do bloco
+
+```
+.venv/bin/python -m pytest tests/part2/  ->  2 failed, 34 passed  (556 s)
+```
+
+Rodada em PRIMEIRO PLANO, sem filtros, **depois** de todas as edições — incluindo
+as duas do §35.7-2 —, de modo que o número acima é da árvore final e não de uma
+intermediária. Instantâneo em `reports/part2_strata_pos_caso_real.md`.
+
+As **duas falhas são PRÉ-EXISTENTES** e não são colateral deste bloco: `2.5` em
+**0,885 (n=61)** e `2.9` em **0,797 (n=300)**, as duas de cobertura da calibração
+(`identify/calibrate.py`). Conferidas por `diff` contra
+`git show HEAD:reports/part2_strata.md`: **idênticas dígito a dígito** à linha de
+base commitada. Não foram consertadas aqui — a classe D do §2.12 as mantém em
+aberto por decisão própria.
+
+**A referência da comparação é `git show HEAD:reports/part2_strata.md`**, não o
+`reports/part2_strata_26adim.md` que o plano deste bloco mandava usar: aquele
+arquivo é anterior à revisão de critérios do Ruling 53 (traz `2.1` ainda como IoU
+com alvo ≥ 0,85, `2.2-piso` ainda vertical, `2.5` em 0,721), então diffar contra
+ele mistura o efeito deste bloco com o da revisão de critérios de dois blocos
+atrás. O HEAD é a última linha de base commitada e é a comparação que isola este
+bloco.
+
+O que se moveu em `reports/part2_strata.md`, e por quê:
+
+| critério | antes | agora | causa |
+|---|---|---|---|
+| `2.1` | 0,800 / 1,699 px | 0,802 / 1,529 px | desambiguação multi-bloco (§35.1) |
+| `2.2-piso` | 0,614 / 1,135 px | 0,615 / 1,137 px | ruído; a máscara verdadeira quase não tem multi-bloco |
+| `2.7[traco=-]` | 0,680 px | 0,663 px | idem §35.1 |
+| `2.6-adim-aceitas` | 141/300 (31 s/calib) | 143/300 (33 s/calib) | normalização de `t` recupera 2 amostras |
+| `2.6-adim[zeta]` | +1,53 p.p. | **+0,89 p.p.** | nível de repouso + normalização de `t` |
+| `2.6-adim[wn_T]` | *não existia* | +1,04 p.p. (n=143) | §35.3 |
+| `2.6-adim[wn_T/sem-calib]` | *não existia* | +0,63 p.p. (n=33) | §35.3 |
+| `2.6[K,tau,theta]`, `2.6-classico[*]` | — | ±0,2 p.p. | mesma causa: as duas mudanças de polilinha |
+| `2.8` (latência por imagem) | 176 / 261 ms | 184 / 270 ms | jitter, alvo < 500 ms |
+| `G3b.4` (latência do extrator clássico) | 13,4 / 36,5 ms | 13,3 / 33,9 ms | jitter, alvo < 200 ms |
+
+As duas linhas de latência são do instantâneo da rodada completa
+(`reports/part2_strata_pos_caso_real.md`); rodadas escopadas posteriores as
+movem alguns ms por jitter de máquina, sem tocar em nenhum alvo.
+
+A Parte 1 foi rodada porque este bloco tocou `dataset/generator.py`,
+`dataset/randomize.py` e `tests/test_part1.py` (o estrato novo, abaixo):
+
+```
+.venv/bin/python -m pytest tests/test_part1.py tests/test_leakage.py -q
+  ->  33 passed (130 s)
+```
+
+Nenhuma falha, inclusive nas duas guardas que o campo `has_reference_line` podia
+quebrar (`test_meta_contract` e `test_1_4b`).
+
+### 35.6 O estrato novo do gerador, e o que ele NÃO conserta
+
+`dataset/generator.py` ganhou o argumento de render `reta_no_patamar`, que desenha
+uma **reta de referência tracejada NO patamar** — o caso real corriqueiro
+(*setpoint* marcado) que o sorteio de distratores só produzia por acaso, e que é o
+caso difícil, porque o tracejado fragmenta em blocos por coluna. `RenderStyle`
+ganhou o campo `has_reference_line` (default `False`, **não sorteado**), presente
+em `to_meta()`, o que mantém de pé as duas guardas que o campo poderia quebrar:
+`test_meta_contract` (`_RENDER_KEYS` continua **conjunto fechado** comparado com
+`==`, só cresceu um membro) e a guarda anti-vazamento de `sample_style`.
+
+**A perda de cauda sob reta coincidente (§34.5) CONTINUA NÃO CONSERTADA.** O
+estrato torna o **objeto** gerável, não a conserta: não há tinta nas colunas
+perdidas, então nenhuma regra de polilinha as recupera — é limitação da máscara, e
+fechá-la exige retreinar a U-Net com o estrato, que é bloco próprio. O que este
+bloco fez foi **tornar o dano contornável a jusante**: a normalização de `t` pela
+moldura (§35.1b) faz o pipeline dar a resposta certa *apesar* da cauda perdida,
+com cobertura de 0,617 — **no caso real, e só nele**.
+
+> **CORREÇÃO (rodada pós-review final, §35.8.3).** Onde este parágrafo dizia que o
+> estrato torna a perda de cauda "mensurável", estava **errado por antecipação**:
+> media-se o objeto, não o fenômeno. A reta sintética **não** faz a U-Net perder a
+> curva assentada — em 30 seeds o ramo da moldura não dispara uma única vez e a
+> cobertura até **sobe**. Os números estão na §35.8.3. Nada aqui valida a
+> normalização pela moldura; a validação dela continua sendo de `n = 1`.
+
+### 35.7 O que fica ABERTO
+
+1. **`identify/polyline.py` — a coluna logo depois de um vão largo.** Ela pode
+   errar **~80 px mesmo com o reset ativo**, por empate de distância entre blocos
+   resolvido pela ordem da lista (o `min` estável do Python escolhe o *topmost*).
+   Peso maior do que parece: a Task 4 mediu que **"vão largo com objeto
+   concorrente por perto" é o regime REAL deste código** — os ~38% de largura sem
+   tinta do caso real são exatamente isso —, não hipótese de laboratório. E um
+   erro grande numa coluna vira o `anterior` da coluna seguinte: há **risco de
+   propagação, NÃO MEDIDO**. Item de acompanhamento com número a levantar.
+2. **`tests/part2/test_part2.py` — o acoplamento invertido: CORRIGIDO, e agora
+   COM GUARDA PERMANENTE — que cobre a invariante, não o arquivo.**
+   O bloco `2.6-adim` inteiro ficava atrás de um `return` antecipado que depende
+   da contagem `aceitas` do caminho **FÍSICO**. O acoplamento era invertido:
+   quanto pior a calibração, mais o diagnóstico que existe justamente para cobrir
+   a falta dela desaparecia — e desaparecia **sem** registrar "n insuficiente",
+   ou seja, silencioso no pior momento possível, reabrindo o ponto cego do §35.3.
+   O `return` virou `if/else`, o `assert` do 2.6 ficou condicionado a `pior is not
+   None`, e nada mais mudou. Discriminação provada nas duas direções em cópia do
+   repositório com `N_EVAL = 30` (`aceitas = 24 < 100`): com o `return`, **0**
+   linhas `2.6-adim` no relatório; com o `if/else`, **3** —
+   `2.6-adim[zeta]` e `2.6-adim[wn_T]` registrando "n insuficiente" em vez de
+   sumirem, e `2.6-adim[wn_T/sem-calib]` medindo de verdade (−0,21 p.p., n=3).
+   Comportamento na árvore de produção **inalterado** (`aceitas = 214`).
+   O mesmo modo de falha existia **um nível abaixo**, e foi corrigido junto: o
+   `record_p2("2.6-adim-aceitas", ...)` — a **única** linha do bloco adimensional
+   que carrega o `n` e o tamanho do subconjunto sem calibração — estava dentro do
+   `if aceitas_adim >= 100:` sem par no `else`, e sumia em silêncio com `n` baixo.
+   Foi movido para fora do portão. Provado na mesma cópia: agora aparece como
+   `16/30 (3 sem calibração)`, e o `3` bate com o `n=3` da linha `sem-calib`.
+   **A guarda.** O padrão reincidiu duas vezes no mesmo arquivo no mesmo dia, as
+   duas provadas fora da suíte e as duas desfazíveis sem que nada acusasse — e é
+   o mesmo padrão que produziu o ponto cego do §35.3. Por isso ganhou teste
+   permanente: `tests/part2/test_instrumentacao.py`, que sustenta UMA invariante —
+   **nenhum critério declarado desaparece do relatório por causa de um portão de
+   `n`; se o `n` for insuficiente, a linha aparece dizendo isso, com o `n` real.**
+   Ele recorta por AST a região de relatório de `test_2_6_degradacao_vs_oraculo`
+   (tudo depois do laço de medição) e a executa duas vezes com **acumuladores
+   injetados**, `n` alto e `n` baixo, contra um `record_p2` dublê. Não carrega o
+   modelo, não lê `data/`, não roda o pipeline: **2 passed em 0,02 s**.
+   Discriminação provada em cópia, nos dois modos de falha reais deste bloco — com
+   o `return` reintroduzido acusa os quatro ids do bloco adimensional; com o
+   `2.6-adim-aceitas` devolvido para dentro do portão acusa aquele um; restaurada
+   a cópia, diff vazio contra a árvore e volta a passar.
+   **O que a guarda NÃO cobre, e é o que fica aberto:** ela vigia a *região de
+   relatório* de UMA função (`test_2_6_degradacao_vs_oraculo`), que é onde as duas
+   reincidências aconteceram. Os outros portões numéricos de `test_part2.py`
+   (linhas 644, 671, 685, 761) foram conferidos um a um e **todos** registram em
+   vez de sumir, mas essa conferência é de hoje e não tem teste que a mantenha;
+   um portão novo em OUTRA função nasceria sem guarda. E nada aqui vigia o
+   **conteúdo** dos critérios — só a presença deles.
+3. **A guarda de round-trip `test_1_4b` nunca exercita `reta_no_patamar=True`.**
+   Ela reconstrói o estilo **a partir da seed**, e `reta_no_patamar` é argumento
+   de *render*: não sai da seed, então o round-trip sempre reconstruiria `False`.
+   Cobrir exige (a) uma fixture com o estrato e (b) o teste ler
+   `m["render"]["has_reference_line"]` e aplicá-lo ao estilo reconstruído, no
+   mesmo padrão que ele já usa para `snr_db` (`tests/test_leakage.py:293`). O
+   split OOD que criaria essa fixture **não foi gerado neste bloco**, então o item
+   fica aberto tal como estava. Mitigação existente: `test_estrato_referencia.py`
+   confere a chave, e o caminho padrão (todo o resto do corpus) continua coberto.
+4. **Limpezas menores já catalogadas e não feitas** (fora do escopo, nenhuma com
+   evidência de morder hoje): `_nivel_de_repouso` com série vazia; `np.median` em
+   vez de `nanmedian`; `any(bbox_px)` duplicado; `bbox` invertido/degenerado zera
+   a máscara e falha seguro, mas **silenciosamente**; `dentro.size == 0` em
+   `polyline.py` é código morto.
+
+5. **A folga de `_COBERTURA_MIN_MOLDURA = 0.75` só está examinada de UM lado.**
+   Para baixo é confortável (caso real em 0,617). Para cima é de **2,1 p.p.**: o
+   mínimo do corpus sintético é 0,7713 (`sample_00639`, fopdt, n=179). Uma amostra
+   que caia entre 0,75 e 0,77 passa a usar a moldura **sem nunca ter sido
+   examinada** — nenhuma existe hoje, e é o número mais frágil do bloco. O lado de
+   cima do limiar mantém o comportamento pré-bloco, então o risco não examinado é
+   só o dessa faixa estreita.
+
+6. **Validação externa com `n = 1`.** Duas decisões de projeto — o estimador de
+   repouso (`_N_REPOUSO = 5`) e o condicionamento da moldura — estão ancoradas em
+   **uma única imagem real**. O corpus sintético diz que nenhuma das duas piora
+   nada; ele **não** diz que elas generalizam para *outras* imagens reais, porque
+   o modo de falha que as motivou (curva coincidente com reta de referência, θ = 0)
+   é justamente o que o gerador não produzia. O `n=1` está escrito em toda linha
+   que vem dela, mas a defesa vai querer mais de uma imagem antes de chamar isto
+   de validação externa. É o item mais barato de fechar dos seis: são imagens, não
+   código.
+
+7. **`2.6-adim[wn_T/sem-calib]` continua sem meta, com `n = 33`.** O §35.3 prova
+   que ele detecta uma regressão **grande** (fator 7,44 de deslocamento). Não há
+   evidência de que detecte uma pequena, e `n = 33` não sustenta limiar. Decidir
+   uma meta para ele — e portanto transformá-lo de diagnóstico em critério — é
+   trabalho de bloco próprio.
+
+8. **Calibrar o estrato `reta_no_patamar` até que ele reproduza a TRUNCAGEM.**
+   Hoje ele simula o objeto (reta tracejada no patamar) e **não** o fenômeno
+   (fusão da máscara → polilinha truncada): em 30 seeds a cobertura mediana é
+   0,9403 e nenhuma amostra cruza `_COBERTURA_MIN_MOLDURA` (§35.8.3). Enquanto
+   isso valer, o estrato **não** pode ser citado como validação da normalização
+   pela moldura. Alavancas, todas em `dataset/generator.py` (hoje `#d62728`,
+   1,5 pt, `zorder=1`, **abaixo** da curva): aproximar a cor da reta da cor da
+   curva, engrossar o traço, e/ou subir a reta no `zorder` para **acima** da
+   curva. **Critério de aceitação, objetivo:** *a cobertura mediana do estrato
+   tem de cair abaixo de 0,75* — hoje 0,94. Só depois disso faz sentido gerar
+   `data/ood_referencia` e medir `2.6-adim` ali, como o plano previa.
+   **Não executado nesta rodada de propósito** — é trabalho novo, e mexer no
+   gerador é mexer no rótulo: qualquer alavanca acima tem de ser reconferida
+   contra a invariante de que `mask.png` é byte-idêntico entre
+   `reta_no_patamar=False` e `True` na mesma seed. Enquanto não fechar, a
+   grandeza que o estrato **de fato** degrada é a ordem, e essa passou a ser
+   medida (`2.12-ordem`, §35.8.2).
+
+9. **Ponto cego da guarda de planura: o corte profundo que RECOMEÇA plano.**
+   `_PLANURA_MAX_FRAC` verifica que as primeiras colunas observadas estão
+   paradas, que é a condição de que `_nivel_de_repouso` precisa. Ela **não**
+   distingue "parado no repouso" de "parado no patamar assentado": um corte à
+   esquerda profundo o bastante para que a série remanescente comece já
+   assentada tem planura ~0 e passa. Medido em 82 séries determinísticas: ocorre
+   3 vezes, sempre com cobertura ≤ 0,45 (o caso real é 0,617), com erro de ζ de
+   0,49 %, 6,43 % e **20,33 %**. O segundo facet óbvio do mesmo invariante —
+   exigir que o nível lido seja o extremo de `y` — foi testado e **não fecha** o
+   buraco (contra-sinal −0,0000 nos três). Fechar exige distinguir repouso de
+   patamar sem proxy geométrico, e isso é trabalho de bloco próprio; o
+   §35.9.1 explica por que NÃO se fecha isso com mais um limiar de geometria.
+   Nenhuma amostra de nenhuma das duas populações reais está nesse regime hoje.
+
+### 35.8 Rodada pós-review final — três itens
+
+A review final da branch aprovou **sem bloqueantes**. Esta rodada fecha os três
+itens que ela motivou. Numeração: 35.8.1 é o achado C3 da review, 35.8.2 é a
+resposta à sua Pergunta 3 (o próximo ponto cego) e 35.8.3 é a correção de
+honestidade que a Pergunta 2 exigiu.
+
+#### 35.8.1 C3 — a Task 4 se contradizia nos extremos, e agora VERIFICA o lado
+
+> **REVERTIDO EM PARTE — leia a §35.9.1 antes de citar esta subseção.** O
+> diagnóstico do defeito e a decisão de RECUSAR continuam válidos. O que caiu foi
+> a CONDIÇÃO: `_FALTA_ESQ_MAX_FRAC = 0.15`, o proxy geométrico descrito abaixo,
+> foi substituído pelo invariante direto de PLANURA das primeiras colunas. O
+> limiar do proxy estava no lugar errado da curva de dano — admitia 68 % de erro
+> em ζ logo antes de si. Os números do proxy ficam abaixo como registro do que
+> foi feito e desfeito, não como descrição do código atual.
+
+**O defeito.** As duas metades da Task 4 supunham lados opostos e nenhuma
+verificava o seu. `_nivel_de_repouso` lê as **5 primeiras colunas observadas** e
+supõe a curva parada ali; `_COBERTURA_MIN_MOLDURA` dispara em **qualquer**
+truncagem, porque a condição é a cobertura TOTAL (`span_observado /
+span_moldura`), que não distingue de que lado falta tinta. Numa truncagem à
+**esquerda** — a U-Net perdendo o trecho plano inicial, plausível pelo mesmo modo
+de falha do patamar no caso real — a origem passava a vir de `bbox_px[0]`,
+correta, mas as 5 primeiras colunas observadas já estavam **na subida**: o defeito
+de 12,6 % em ζ do §34.3, reintroduzido pelo outro remédio da mesma task. A
+docstring escrevia a suposição ("quando a truncagem é à DIREITA, o regime do caso
+real") e o código não a asseverava.
+
+**A correção.** `identify/pipeline.py` ganhou `_FALTA_ESQ_MAX_FRAC = 0.15` e
+condiciona pelo **lado**:
+
+| regime | condição verificada | saída |
+|---|---|---|
+| sem truncagem | cobertura ≥ 0,75 | extensão e origem OBSERVADAS (como antes) |
+| truncagem à DIREITA | cobertura < 0,75 **e** falta à esquerda ≤ 0,15 | escala e origem da MOLDURA (o caso real) |
+| truncagem à ESQUERDA ou simétrica | cobertura < 0,75 **e** falta à esquerda > 0,15 | **RECUSA** — `(None, None)`, e o bloco `dimensionless` sai vazio |
+
+**Por que 0,15 (medido, população escrita).** O deslocamento à esquerda não é zero
+nem sem truncagem: a moldura inclui a margem do matplotlib. Medido nas **300
+primeiras de `data/test`** com a cadeia de produção (U-Net + calibração +
+polilinha recortada à moldura), **n = 299** com moldura válida e polilinha ≥ 10
+pontos:
+
+| grandeza | mín. | mediana | p95 | máx. |
+|---|---|---|---|---|
+| cobertura (n=299) | 0,8388 | 0,9315 | — | 0,9756 |
+| `(x[0]−bbox[0])/largura` (n=299) | 0,0024 | 0,0335 | 0,0553 | **0,1227** |
+| `(x[0]−bbox[0])/largura`, sem calibração (n=60) | 0,0024 | 0,0301 | 0,0559 | 0,0569 |
+
+Abaixo de 0,75: **0/299** — o ramo continua sem disparar no sintético, e o
+comportamento do corpus é bit a bit o anterior. 0,15 fica **2,2 p.p. acima** do
+maior deslocamento de margem observado. No caso real o deslocamento é
+`1/746 = 0,0013` (`bbox=(75,39,821,503)`, `x[0]=76`, `x[-1]=536`), três ordens de
+grandeza abaixo do limiar: o regime da direita continua valendo lá.
+
+**Por que RECUSAR, e não cair no comportamento anterior — a escolha foi medida.**
+27 séries de 2ª ordem determinísticas (ζ ∈ {0,3; 0,5; 0,7} × ωₙ ∈ {1; 2; 4} rad/s
+× corte de 30/40/50 % da janela pela esquerda), rasterizadas na moldura do caso
+real, com o nível de repouso lido nas 5 primeiras colunas **já na subida**:
+
+| saída candidata | ajustes que convergem | MAPE de ζ mediano | máx. |
+|---|---|---|---|
+| trocar pela moldura (comportamento atual) | 8/27 | **27,6 %** | 80,0 % |
+| manter extensão observada | 6/27 | **14,2 %** | 51,1 % |
+| recusar (escolhida) | — | sem número | — |
+
+Qualquer das duas alternativas é **pior que o defeito de 12,6 % que a Task 4
+corrigiu** e muito além da tolerância de 5 % do caso real, e as duas falham em
+converger na maioria das amostras. Um número errado que ninguém distingue de um
+certo é pior que nenhum, e o contrato do `dimensionless` já sabe sair vazio
+(`_vazio_adimensional`) — critério 2.11 honrado pela estrutura.
+
+**Teste, com discriminação nas duas direções.**
+`tests/part2/test_truncagem_lateral.py`, 6 testes, **0,8 s**, máscaras sintéticas
+determinísticas passando pelo `mask_to_polyline` de produção — sem rede, sem
+`data/`, porque o defeito é geométrico. Cobre os três regimes da tabela, mais a
+geometria do caso real (n=1, sem carregar a imagem) e o piso do limiar contra o
+maior deslocamento de margem medido. Contra uma cópia em `/tmp` com a condição de
+lado removida (o código anterior à correção): **2 failed, 4 passed** — falham
+exatamente `test_truncagem_a_esquerda_recusa_a_serie` e
+`test_truncagem_simetrica_recusa_a_serie`. Na árvore corrigida: **6 passed**.
+
+#### 35.8.2 O próximo ponto cego: θ (a ORIGEM de `t`) e o acerto de ORDEM
+
+**O argumento.** O §35.3 fechou a **escala** de `t` acrescentando
+`2.6-adim[wn_T]` e `2.6-adim[wn_T/sem-calib]`. Mas `_serie_normalizada` produz
+**dois** parâmetros de referência de tempo — escala **e origem** — e a suíte
+vigiava só um. Quem pega a origem é **θ**: ζ é invariante às duas, ωₙ·T só à
+escala. E essa origem já valeu ~25 % de erro em θ (fix round 1, B1), achada por
+**revisor humano, não por teste**. O segundo buraco: **nenhum** `record_p2` da
+suíte media acerto de **ordem** — ela entrava só como *filtro* de aceitação, que é
+a forma clássica do ponto cego (uma regressão de ordem não piora mediana nenhuma:
+ela **encolhe** a amostra, e as que somem são as difíceis, então as medianas que
+restam até melhoram).
+
+**O que entrou** em `tests/part2/test_part2.py`, no molde exato do par de ωₙ —
+diagnóstico **sem meta de aprovação**, população escrita em toda linha, e nenhum
+registro atrás de portão de `n` sem par no `else`:
+
+| id | medido na árvore corrigida (300 primeiras de `data/test`) |
+|---|---|
+| `2.6-adim[theta_T]` | **+0,13 p.p.** (oráculo 0,03 %, real 0,16 %, n=267) |
+| `2.6-adim[theta_T/sem-calib]` | **+0,21 p.p.** (oráculo 0,04 %, real 0,25 %, n=53) |
+| `2.12-ordem` | **91,3 %** (274/300, n=300) |
+| `2.12-ordem[sem-calib]` | **90,2 %** (55/61, n=61) |
+
+Métrica de θ: **NMAE sobre a janela** (`|Δθ|/T`, ×100), a convenção da Parte 1 —
+não MAPE, porque θ pode ser 0 e a razão relativa explode. `theta_T` já é θ/T,
+então a diferença absoluta é o erro em pontos percentuais **de T**.
+
+**A guarda de instrumentação acompanhou.** `tests/part2/test_instrumentacao.py`
+**quebrou ruidosamente** com `NameError: name 'aceitas_thT_adim' is not defined`
+ao recortar a região de relatório — que é exatamente o modo de falha previsto na
+docstring dela ("ancora na forma da função"). O dublê `_acumuladores` ganhou os
+oito acumuladores novos; nenhuma lógica de guarda mudou. Depois: **2 passed**, e
+agora são as **quatro** linhas novas que ela prova não sumirem com `n` baixo.
+
+**Prova de discriminação — e o achado que veio junto.** O teste que a review
+propôs (reverter `origem = bbox_px[0]` para `x[0]` e ver a linha de θ mexer)
+**não move dígito nenhum**:
+
+| configuração | `2.6-adim[theta_T]` | `.../sem-calib` |
+|---|---|---|
+| produção | +0,13 (n=267) | +0,21 (n=53) |
+| origem revertida para `x[0]` | +0,13 | +0,21 |
+
+**O motivo é estrutural e vale registrar: no corpus sintético o ramo da moldura
+NUNCA dispara** (cobertura mínima 0,8388 contra limiar 0,75), então
+`origem = bbox_px[0]` é código que o corpus **não executa**. A linha de θ não é
+cega — o corpus é que não tem o que mostrar ali. É a mesma constatação da §35.8.3
+por outro caminho, e reforça o item 6 do §35.7 (validação externa de `n = 1`).
+
+Com o ramo **vivo** (moldura incondicional, isolando a origem), a linha responde:
+
+| configuração | `wn_T` | `wn_T/sem-calib` | `theta_T` | `theta_T/sem-calib` |
+|---|---|---|---|---|
+| produção | +1,04 | +0,63 | +0,13 | +0,21 |
+| moldura incondicional, origem `bbox[0]` | +1,82 | +6,43 | +0,19 | **+1,76** |
+| moldura incondicional, origem `x[0]` (defeito B1) | +1,82 | +6,43 | +0,18 | **+1,23** |
+| origem deslocada +3,35 % da moldura | +1,04 | +0,63 | +0,21 | **+3,24** |
+
+Leitura: as linhas de ωₙ **não distinguem** origem certa de origem errada (+1,82 e
++6,43 nas duas), e as de θ distinguem — 0,53 p.p. de diferença na linha sensível.
+E numa regressão de origem pura (+3,35 % da largura da moldura, que é a **mediana
+medida** do deslocamento no corpus) a linha `theta_T/sem-calib` salta de **+0,21
+para +3,24 p.p., fator 15**, com ζ e ωₙ inalterados dígito a dígito. O par
+corpus/sem-calib repete a lição do §35.3: a linha do corpus mexe 0,08 p.p.
+(diluída por 214 amostras que passam pelo caminho físico), a das sem calibração
+mexe 3,03 p.p.
+
+**Controle positivo da linha de ordem** (que as configurações acima não movem, e
+com razão — ordem não depende de escala nem de origem): mesmo corpus, trocando a
+U-Net pelo extrator clássico, `2.12-ordem` cai de **91,3 % (274/300) para 78,3 %
+(235/300)** e `2.12-ordem[sem-calib]` de 90,2 % para 80,3 %. A linha enxerga uma
+degradação de ordem de 13 p.p. que **nenhum critério do relatório registrava**.
+
+#### 35.8.3 O estrato simula o OBJETO, não o FENÔMENO — e o que ele degrada de verdade
+
+Este item é de honestidade do registro, e desmente por medição uma frase que
+estava a caminho do TCC.
+
+**1. O estrato NÃO valida a normalização pela moldura.** A review mediu 30 seeds
+com e sem a reta de referência, rodando U-Net, calibração e polilinha, e olhou a
+**cobertura**, que é a grandeza que decide o ramo da Task 4:
+
+| corpus | mín. | mediana | abaixo de 0,75 |
+|---|---|---|---|
+| sem a reta (n=27 com moldura) | 0,8924 | 0,9281 | **0/27** |
+| com a reta do estrato (n=27) | 0,9045 | 0,9403 | **0/27** |
+| caso real (n=1) | **0,6166** | — | **1/1** |
+
+O ramo `_COBERTURA_MIN_MOLDURA` **não dispara uma única vez** no estrato novo, e a
+cobertura até **sobe** de leve com a reta. A reta sintética não faz a U-Net perder
+a curva assentada: no caso real faltam 285 dos 746 px de moldura à direita. O
+estrato simula o **objeto** (reta tracejada no patamar) e não o **fenômeno**
+(fusão da máscara → polilinha truncada), que é o que a correção da Task 4
+endereça. A §35.6 foi corrigida onde dizia o contrário.
+
+**2. A normalização pela moldura tem validação externa de `n = 1`.** A tabela
+acima é o número que sustenta a frase: o único caso em que o ramo dispara é a
+imagem real. Nada no corpus sintético — nem o estrato novo — o exercita. Ver
+§35.7-6, e a §35.8.2 chega à mesma conclusão pela via do diagnóstico.
+
+**3. O estrato degrada de verdade, mas OUTRA grandeza — e ela agora é medida.**
+Nas mesmas 30 seeds, a reta faz **uma** amostra trocar a ordem certa pela errada:
+**seed 21, `second` → `fopdt`, com a calibração OK e cobertura 0,937**. Numa
+sondagem anterior a **seed 2024** fez o mesmo, e ali as colunas multi-bloco
+saltaram de **0 para 30**. É estrato **legítimo**, com degradação **reprodutível**
+— só que a grandeza que ele degrada é a **ordem**, que até esta rodada não tinha
+`record_p2` nenhum medindo e agora tem (`2.12-ordem`, §35.8.2). O caminho de
+fechar o estrato como validação da moldura está no §35.7-8, com critério de
+aceitação objetivo: **cobertura mediana abaixo de 0,75**, hoje 0,94.
+
+### 35.9 Rodada final — a reversão do limiar, e o fechamento da instrumentação
+
+A re-review aprovou a rodada pós-review sem bloqueantes e validou a substituição
+da prova do θ. Motivou quatro itens; o primeiro **reverte uma decisão já
+arquivada**, e é o mais importante dos quatro.
+
+#### 35.9.1 REVERSÃO — `_FALTA_ESQ_MAX_FRAC = 0.15` estava no lugar errado da curva de dano
+
+**O que estava escrito, e por que era o argumento errado.** A §35.8.1 condicionou
+a troca de referência de tempo por um **proxy geométrico**: só trocar quando
+`(x[0] − bbox_px[0]) / largura da moldura ≤ 0,15`. A ressalva registrada na época
+dizia que a fragilidade era "a mesma do 0,75 — falta de dados na faixa
+intermediária". **Isso foi arquivado como limite epistêmico e estava errado.** A
+diferença entre os dois limiares é de natureza, não de grau:
+
+- o **0,75** fica ENTRE duas populações medidas (0,7713 do corpus, 0,617 do caso
+  real) e o erro cresce suavemente ao redor;
+- o **0,15** tinha 68 % de erro de ζ de um lado e **nenhuma amostra** do outro.
+
+Não era falta de dados na faixa intermediária: era limiar posto no lugar errado.
+Medido com corte à direita de 30-40 %, variando o corte à esquerda:
+
+| falta à esquerda | cobertura | decisão do 0,15 | erro de ζ |
+|---|---|---|---|
+| 0,0402 | 0,64 | aceita | 0,1 % |
+| 0,0590 | 0,62 | aceita | 4,3 % |
+| 0,0858 | 0,60 | aceita | 19,6 % |
+| 0,1139 | 0,57 | aceita | 45,7 % |
+| **0,1327** | 0,55 | **aceita** | **68,0 %** |
+| 0,1501 | 0,53 | RECUSA | — |
+
+Imediatamente **antes** do limiar, 68 % — **cinco vezes** o defeito de 12,6 % que
+a Task 4 corrigiu, e pior que os 27,6 % que motivaram a recusa do outro lado.
+
+**O erro de MÉTODO, que vale mais que o número — e é o SEGUNDO caso dele neste
+bloco.** O 0,15 veio do deslocamento máximo de margem do matplotlib (0,1227,
+n=299), medido num corpus cuja **cobertura mínima é 0,8388**: nenhuma daquelas
+299 amostras entra neste ramo. A constante foi calibrada sobre uma estatística de
+uma população que **não é a que ela governa** — protegendo contra um falso
+positivo que ali não pode ocorrer, enquanto o falso negativo, que ocorre, chegava
+a 68 %. É o mesmo erro que o §35.3 já tinha catalogado na medição: o diagnóstico
+de ωₙ nasceu diluído 7× por ser medido no corpus (n=143) em vez do subconjunto
+que o caminho de fato serve (n=33). **Duas vezes no mesmo bloco, nas duas pontas
+— na constante e no diagnóstico.** É o padrão que a próxima pessoa precisa
+reconhecer: *antes de calibrar um limiar, pergunte se a população em que ele foi
+medido é a população em que ele vai decidir.*
+
+**O conserto: proxy fora, invariante direto dentro.** `_PLANURA_MAX_FRAC = 0.03`
+exige que as `_N_REPOUSO` primeiras colunas observadas sejam **planas** —
+dispersão de `y` ali ≤ 3 % da faixa total de `y`. É literalmente a condição que
+`_nivel_de_repouso` precisa, é independente da margem, e — ao contrário do
+proxy — é **transferível entre as populações**, porque a truncagem à direita não
+altera as primeiras colunas. Apertar o proxy para 0,02 (a outra proposta) só
+moveria o corte na mesma curva ruim e manteria o proxy.
+
+**Os dois lados do novo limiar, medidos.**
+
+*(a) Teto de dano* — 82 séries de 2ª ordem determinísticas (ζ ∈ {0,3; 0,5; 0,7} ×
+ωₙ ∈ {1; 2; 4} rad/s × corte à esquerda de 0 a 28 % em passos de 2 %, corte à
+direita fixo em 35 %):
+
+| decisão | n | erro de ζ mediano | p90 | máx. |
+|---|---|---|---|---|
+| **aceitas** (planura ≤ 0,03) | 21 | **0,49 %** | 6,43 % | 20,33 %¹ |
+| recusadas (planura > 0,03) | 61 | **28,77 %** | — | 99,86 % |
+
+¹ o único ponto acima de 13 % entre as aceitas é o ponto cego do §35.7-9.
+
+A varredura fina em ζ=0,5 / ωₙ=2 é monótona e é a curva de dano indexada pela
+grandeza que o código usa: planura 0,0064 → 0,08 %; 0,0423 → 4,25 %; 0,0613 →
+13,09 %; 0,0860 → 27,34 %; 0,1171 → 45,44 %; 0,1587 → 67,82 %.
+
+*(b) Piso de legitimidade* — a planura não é zero nem sem truncagem nenhuma (com
+θ = 0 e ωₙ alto a curva já se move dentro de 5 colunas). Medida nas 300 primeiras
+de `data/test` com a cadeia de produção, **n = 299**: mediana 0,0044, p95 0,0316,
+p99 0,0485, máximo 0,0722; sem calibração (n=60) máximo 0,0483. Acima de 0,03:
+**19/299 = 6,4 %** (e 5/60 = 8,3 % sem calibração) — ou seja, 0,03 fica em ~p94 e
+não recusa uma série pela movimentação normal de início de curva. Com 0,02 seriam
+12,7 %, e o p90 do dano nem melhora (5,36 % contra 6,43 %). Caso real (n=1):
+planura **0,0039**, ~8× de folga, e é a única amostra que de fato usa este ramo.
+
+**Nenhuma decisão mudou nas duas populações reais.** Corpus: cobertura mínima
+0,8388 > 0,75, o ramo continua sem disparar, e a rodada completa da suíte
+confirmou — `reports/part2_strata.md` não moveu nenhum critério de acurácia. Caso
+real: cobertura 0,617 e planura 0,0039, continua no ramo da moldura, e
+`test_caso_real.py` passa.
+
+**Ponto cego, medido e registrado (§35.7-9).** Um corte à esquerda tão profundo
+que a série remanescente **recomeça plana** — já no patamar assentado — tem
+planura ~0 e passa. Ocorre 3 vezes nas 82 séries, todas com cobertura ≤ 0,45 (o
+caso real é 0,617), com erro de ζ de 0,49 %, 6,43 % e 20,33 %. Testei um segundo
+facet do mesmo invariante — exigir que o nível lido seja o **extremo** de `y`
+(desvio de um sinal só) — e **não fecha**: nesses três casos o desvio já é de um
+sinal só (contra-sinal −0,0000). Fica aberto, com o número escrito, em vez de
+fechado com um proxy novo.
+
+**Discriminação, três direções.** `tests/part2/test_truncagem_lateral.py` (6
+testes, 0,8 s, máscaras determinísticas sem rede) falha contra o código original
+do C3 (sem guarda nenhuma) — 2 failed, 4 passed — e falha **também contra o proxy
+0,15 revertido** — 2 failed, 4 passed —, porque o caso de 68 % que o proxy
+aceitava é justamente o que ele agora recusa. Na árvore corrigida, 6 passed. O
+teste `test_limiar_da_esquerda_acima_da_margem_do_matplotlib`, cuja premissa não
+se sustentava, foi substituído por
+`test_limiar_de_planura_esta_entre_as_duas_populacoes_medidas`, que assevera os
+dois lados na grandeza que o código de fato usa.
+
+#### 35.9.2 A guarda de instrumentação passou a cobrir o que vigia
+
+Dois buracos da rodada anterior, os dois em `tests/part2/test_instrumentacao.py`:
+
+1. **As linhas novas entraram só no teste de PRESENÇA.**
+   `test_linha_de_n_insuficiente_carrega_o_n_real` continuava cobrando o `n` real
+   apenas dos ids antigos; que as novas o carregavam foi **conferido à mão** — que
+   é exatamente o padrão que esta guarda existe para fechar. Agora as seis linhas
+   com portão de `n` estão na lista, e as quatro linhas `sem-calib` são cobradas
+   em laço. Discriminação: apagando só o `n=` da linha de θ numa cópia, a guarda
+   acusa — `2.6-adim[theta_T] não diz o `n` real com n baixo` (antes: passava).
+2. **O piso `len(ids) >= 4` não crescia com os ids.** Com 12 critérios
+   declarados, oito poderiam ser apagados sem a guarda reclamar. Virou
+   `N_CRITERIOS_LITERAIS = 12`, constante de módulo, atualizada à mão quando um
+   critério entra ou sai de propósito. Discriminação: apagando o par do
+   `K_yrange` numa cópia, a guarda acusa `declara 10 critérios literais, menos que
+   os 12 correntes` (antes: 10 ≥ 4, passava em silêncio).
+
+#### 35.9.3 O terceiro eixo: `2.6-adim[K_yrange]`
+
+Depois da **escala** de `t` (§35.3) e da **origem** de `t` (§35.8.2), o terceiro
+eixo do mesmo padrão — e os dois primeiros já morderam. `K_yrange` é a única das
+seis grandezas do bloco `dimensionless` sensível à escala de **y**, e nada a
+vigiava: `2.6[K]` é do caminho FÍSICO, que só existe quando a calibração fecha.
+Entrou no molde dos irmãos (corpus + sem-calibração, diagnóstico sem meta,
+população em toda linha, sob a guarda). Verdade: `K_alvo / ptp(série verdadeira)`,
+as duas do meta. Métrica: MAPE relativo — `K_yrange` de um degrau vale
+~1/(1+overshoot) e não passa por zero, ao contrário de θ, que por isso usa NMAE.
+
+Com ele, o bloco `dimensionless` do PLANO §1.7 tem **quatro** das seis grandezas
+sob diagnóstico (`zeta`, `wn_T`, `theta_T`, `K_yrange`); ficam de fora `tau_T` e
+`theta_tau`, que são redundantes com as medidas (τ/T e θ/τ derivam das mesmas
+escalas já vigiadas).

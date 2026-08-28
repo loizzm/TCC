@@ -34,22 +34,34 @@ class MaskDataset(Dataset):
     # caixa com cobertura parcial não empurra a rede a prever confiança
     # alta ali (limitando a inflação de área do limiar 0/32 pela raiz, não
     # por um corte arbitrário).
-    def __init__(self, root: str | list[str], size: int = 512):
+    def __init__(self, root: str | list[str], size: int = 512, in_ch: int = 1):
         roots = [root] if isinstance(root, str) else list(root)
         self.dirs = [d for r in roots for d in sorted(Path(r).glob("sample_*"))]
         self.size = size
+        self.in_ch = int(in_ch)
 
     def __len__(self) -> int:
         return len(self.dirs)
 
     def __getitem__(self, i: int):
+        # `in_ch=3` entrega RGB. A conversao para cinza e DESTRUTIVA: projeta
+        # R^3 em R^1, e dois objetos de luminancia igual viram o MESMO byte —
+        # medido nas duas imagens reais do Ruling 55, curva (44,160,44) e reta
+        # de referencia (230,61,61) dao ambas 112. Com 1 canal a tarefa
+        # "separe a curva da reta" nao e dificil, e impossivel. O caminho de
+        # 1 canal fica identico ao anterior.
         m = load_sample(self.dirs[i])
-        w = np.array([0.299, 0.587, 0.114], dtype=np.float32)
-        gray = (m["image"].astype(np.float32) @ w).round().astype(np.uint8)
-        x, _ = letterbox(gray, self.size)
+        if self.in_ch == 3:
+            ent = np.ascontiguousarray(m["image"][..., :3])
+            x, _ = letterbox(ent, self.size)
+            xt = torch.from_numpy(x.astype(np.float32) / 255.0).permute(2, 0, 1)
+        else:
+            w = np.array([0.299, 0.587, 0.114], dtype=np.float32)
+            gray = (m["image"].astype(np.float32) @ w).round().astype(np.uint8)
+            x, _ = letterbox(gray, self.size)
+            xt = torch.from_numpy(x.astype(np.float32) / 255.0)[None]
         y, _ = letterbox(m["mask"], self.size)
-        return (torch.from_numpy(x.astype(np.float32) / 255.0)[None],
-                torch.from_numpy(y.astype(np.float32) / 255.0)[None])
+        return xt, torch.from_numpy(y.astype(np.float32) / 255.0)[None]
 
 
 def iou(logits, target, thr: float = 0.5) -> float:
@@ -74,6 +86,13 @@ def main() -> None:
     ap.add_argument("--out", default="models/unet_stageA.pt")
     # Hipotese (a) do Ruling 10 (HANDOFF_P2_3): capacidade da rede. `base=16`
     # e o que as cinco rodadas usaram; 24 e 32 sao as alternativas medidas la.
+    ap.add_argument("--val-dir", action="append", default=None,
+                    help="repeticoes acumulam. Default: data/val. Incluir o "
+                         "estrato aqui faz a selecao do melhor checkpoint "
+                         "levar em conta o fenomeno que ele reproduz.")
+    ap.add_argument("--in-ch", type=int, default=1, choices=(1, 3),
+                    help="1 = cinza (comportamento anterior); 3 = RGB. Ver "
+                         "MaskDataset.__getitem__ para o porque.")
     ap.add_argument("--base", type=int, default=16,
                     help="canais da primeira camada da UNet (16, 24, 32)")
     # Hipotese (b) do Ruling 10: tamanho do dataset. Aceita mais de um
@@ -106,15 +125,15 @@ def main() -> None:
     torch.manual_seed(20260817)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     train_dirs = a.train_dir or ["data/train"]
-    ds_tr = MaskDataset(train_dirs, a.size)
+    ds_tr = MaskDataset(train_dirs, a.size, in_ch=a.in_ch)
     passos = a.batches_per_epoch or (len(ds_tr) // a.batch)
     print(f"treino: {len(ds_tr)} amostras de {train_dirs}  base={a.base}  "
           f"{passos} passos/epoca", flush=True)
     tr = DataLoader(ds_tr, batch_size=a.batch,
                     shuffle=True, num_workers=4, drop_last=True)
-    va = DataLoader(MaskDataset("data/val", a.size), batch_size=a.batch,
+    va = DataLoader(MaskDataset(a.val_dir or ["data/val"], a.size, in_ch=a.in_ch), batch_size=a.batch,
                     num_workers=2)
-    model = UNet(base=a.base).to(a.device)
+    model = UNet(base=a.base, in_ch=a.in_ch).to(a.device)
     n_par = sum(p.numel() for p in model.parameters())
     print(f"parametros: {n_par}", flush=True)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr)

@@ -20,7 +20,7 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | G3b.1[n_distractors=2] | IoU clássico — n_distractors=2 | diagnóstico | 0.7153 (n=92) | ❓ |
 | G3b.1[n_distractors=3] | IoU clássico — n_distractors=3 | diagnóstico | 0.6727 (n=92) | ❓ |
 | G3b.2 | Sem reta de span completo na máscara | 0 violações | 0 | ✅ |
-| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 13.2 ms, p95 33.5 ms | ✅ |
+| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 13.3 ms, p95 33.9 ms | ✅ |
 | A.0 | Parâmetros da U-Net | ~1,2 M (PLANO) | 1.94 M | ❓ |
 | 2.3 | Erro relativo de sx, sy | < 1% em ≥ 95% | 0.958 (n=239) | ✅ |
 | 2.4 | Taxa de rejeição (diagnóstico — unificado no 2.9) | sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52) | 0.203 | ❓ |
@@ -40,47 +40,41 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | 2.2[traco=--] | RMSE da polilinha — traco=-- | ≤ 2 px | 1.52 px (n=72) | ✅ |
 | 2.2[traco=-.] | RMSE da polilinha — traco=-. | ≤ 2 px | 1.61 px (n=67) | ✅ |
 | 2.2[traco=:] | RMSE da polilinha — traco=: | ≤ 2 px | 1.81 px (n=67) | ✅ |
-| 2.1 | Erro perpendicular da máscara (U-Net) | ≤ 1.0 px mediana, ≤ 2.0 px p95 | 0.807 px / 2.077 px (n=300) | ❌ |
-| 2.1-iou | IoU da máscara (diagnóstico — ver Ruling 50) | sem alvo: mede espessura de traço, não acurácia | 0.6481 | ❓ |
-| 2.7[fundo_escuro=False] | Erro perpendicular — fundo_escuro=False | ≤ 1.0 px mediana | 0.790 px (n=173) | ✅ |
-| 2.7-iou[fundo_escuro=False] | IoU — fundo_escuro=False (diagnóstico) | sem alvo (Ruling 50) | 0.6202 (n=173) | ❓ |
-| 2.7[fundo_escuro=True] | Erro perpendicular — fundo_escuro=True | ≤ 1.0 px mediana | 0.839 px (n=127) | ✅ |
-| 2.7-iou[fundo_escuro=True] | IoU — fundo_escuro=True (diagnóstico) | sem alvo (Ruling 50) | 0.6675 (n=127) | ❓ |
-| 2.7[grade=False] | Erro perpendicular — grade=False | ≤ 1.0 px mediana | 0.797 px (n=150) | ✅ |
-| 2.7-iou[grade=False] | IoU — grade=False (diagnóstico) | sem alvo (Ruling 50) | 0.6417 (n=150) | ❓ |
-| 2.7[grade=True] | Erro perpendicular — grade=True | ≤ 1.0 px mediana | 0.820 px (n=150) | ✅ |
-| 2.7-iou[grade=True] | IoU — grade=True (diagnóstico) | sem alvo (Ruling 50) | 0.6555 (n=150) | ❓ |
-| 2.7[legenda=False] | Erro perpendicular — legenda=False | ≤ 1.0 px mediana | 0.777 px (n=155) | ✅ |
-| 2.7-iou[legenda=False] | IoU — legenda=False (diagnóstico) | sem alvo (Ruling 50) | 0.6682 (n=155) | ❓ |
-| 2.7[legenda=True] | Erro perpendicular — legenda=True | ≤ 1.0 px mediana | 0.846 px (n=145) | ✅ |
-| 2.7-iou[legenda=True] | IoU — legenda=True (diagnóstico) | sem alvo (Ruling 50) | 0.6117 (n=145) | ❓ |
-| 2.7[traco=-] | Erro perpendicular — traco=- | ≤ 1.0 px mediana | 0.679 px (n=94) | ✅ |
-| 2.7-iou[traco=-] | IoU — traco=- (diagnóstico) | sem alvo (Ruling 50) | 0.7056 (n=94) | ❓ |
-| 2.7[traco=--] | Erro perpendicular — traco=-- | ≤ 1.0 px mediana | 0.782 px (n=72) | ✅ |
-| 2.7-iou[traco=--] | IoU — traco=-- (diagnóstico) | sem alvo (Ruling 50) | 0.6696 (n=72) | ❓ |
-| 2.7[traco=-.] | Erro perpendicular — traco=-. | ≤ 1.0 px mediana | 0.823 px (n=67) | ✅ |
-| 2.7-iou[traco=-.] | IoU — traco=-. (diagnóstico) | sem alvo (Ruling 50) | 0.6356 (n=67) | ❓ |
-| 2.7[traco=:] | Erro perpendicular — traco=: | ≤ 1.0 px mediana | 0.983 px (n=67) | ✅ |
-| 2.7-iou[traco=:] | IoU — traco=: (diagnóstico) | sem alvo (Ruling 50) | 0.5256 (n=67) | ❓ |
-| 2.10 | IoU mediana: U-Net vs. extrator clássico | sem alvo | U-Net=0.6481  clássico=0.7153 | ❓ |
-| 2.8 | Latência por imagem | < 500 ms | mediana 185 ms, p95 273 ms | ✅ |
-| 2.6-aceitas | Amostras comparáveis (mesma ordem, ambos convergem) | diagnóstico | 212/300 | ❓ |
+| 2.1 | Erro perpendicular da máscara (U-Net) | ≤ 1.0 px mediana, ≤ 2.0 px p95 | 0.802 px / 1.529 px (n=300) | ✅ |
+| 2.1-iou | IoU da máscara (diagnóstico — ver Ruling 50) | sem alvo: mede espessura de traço, não acurácia | 0.6478 | ❓ |
+| 2.7[fundo_escuro=False] | Erro perpendicular — fundo_escuro=False | ≤ 1.0 px mediana | 0.792 px (n=173) | ✅ |
+| 2.7-iou[fundo_escuro=False] | IoU — fundo_escuro=False (diagnóstico) | sem alvo (Ruling 50) | 0.6330 (n=173) | ❓ |
+| 2.7[fundo_escuro=True] | Erro perpendicular — fundo_escuro=True | ≤ 1.0 px mediana | 0.812 px (n=127) | ✅ |
+| 2.7-iou[fundo_escuro=True] | IoU — fundo_escuro=True (diagnóstico) | sem alvo (Ruling 50) | 0.6741 (n=127) | ❓ |
+| 2.7[grade=False] | Erro perpendicular — grade=False | ≤ 1.0 px mediana | 0.792 px (n=150) | ✅ |
+| 2.7-iou[grade=False] | IoU — grade=False (diagnóstico) | sem alvo (Ruling 50) | 0.6449 (n=150) | ❓ |
+| 2.7[grade=True] | Erro perpendicular — grade=True | ≤ 1.0 px mediana | 0.806 px (n=150) | ✅ |
+| 2.7-iou[grade=True] | IoU — grade=True (diagnóstico) | sem alvo (Ruling 50) | 0.6583 (n=150) | ❓ |
+| 2.7[legenda=False] | Erro perpendicular — legenda=False | ≤ 1.0 px mediana | 0.794 px (n=155) | ✅ |
+| 2.7-iou[legenda=False] | IoU — legenda=False (diagnóstico) | sem alvo (Ruling 50) | 0.6748 (n=155) | ❓ |
+| 2.7[legenda=True] | Erro perpendicular — legenda=True | ≤ 1.0 px mediana | 0.807 px (n=145) | ✅ |
+| 2.7-iou[legenda=True] | IoU — legenda=True (diagnóstico) | sem alvo (Ruling 50) | 0.6164 (n=145) | ❓ |
+| 2.7[traco=-] | Erro perpendicular — traco=- | ≤ 1.0 px mediana | 0.663 px (n=94) | ✅ |
+| 2.7-iou[traco=-] | IoU — traco=- (diagnóstico) | sem alvo (Ruling 50) | 0.7099 (n=94) | ❓ |
+| 2.7[traco=--] | Erro perpendicular — traco=-- | ≤ 1.0 px mediana | 0.751 px (n=72) | ✅ |
+| 2.7-iou[traco=--] | IoU — traco=-- (diagnóstico) | sem alvo (Ruling 50) | 0.6753 (n=72) | ❓ |
+| 2.7[traco=-.] | Erro perpendicular — traco=-. | ≤ 1.0 px mediana | 0.808 px (n=67) | ✅ |
+| 2.7-iou[traco=-.] | IoU — traco=-. (diagnóstico) | sem alvo (Ruling 50) | 0.6435 (n=67) | ❓ |
+| 2.7[traco=:] | Erro perpendicular — traco=: | ≤ 1.0 px mediana | 0.956 px (n=67) | ✅ |
+| 2.7-iou[traco=:] | IoU — traco=: (diagnóstico) | sem alvo (Ruling 50) | 0.5317 (n=67) | ❓ |
+| 2.10 | IoU mediana: U-Net vs. extrator clássico | sem alvo | U-Net=0.6478  clássico=0.7153 | ❓ |
+| 2.8 | Latência por imagem | < 500 ms | mediana 184 ms, p95 270 ms | ✅ |
+| 2.6-aceitas | Amostras comparáveis (mesma ordem, ambos convergem) | diagnóstico | 214/300 | ❓ |
 | 2.6[K] | ΔMAPE — K | ≤ 3 p.p. | +0.19 p.p. (oráculo 0.10%, real 0.29%) | ✅ |
-| 2.6[tau] | ΔMAPE — tau | ≤ 3 p.p. | +0.12 p.p. (oráculo 0.22%, real 0.34%) | ✅ |
+| 2.6[tau] | ΔMAPE — tau | ≤ 3 p.p. | +0.31 p.p. (oráculo 0.21%, real 0.51%) | ✅ |
 | 2.6[theta] | ΔMAPE — theta | ≤ 3 p.p. | +0.27 p.p. (oráculo 0.06%, real 0.33%) | ✅ |
-| 2.6[wn] | ΔMAPE — wn | ≤ 3 p.p. | +1.13 p.p. (oráculo 0.70%, real 1.83%) | ✅ |
-| 2.6[zeta] | ΔMAPE — zeta | ≤ 3 p.p. | +1.25 p.p. (oráculo 1.38%, real 2.63%) | ✅ |
-| 2.6 | Degradação end-to-end (pior parâmetro) | ≤ 3 p.p. | +1.25 p.p. (n=212) | ✅ |
-| 2.6-adim-aceitas | Amostras comparáveis no nível adimensional (dispensa calibração) | diagnóstico | 144/300 (33 sem calibração) | ❓ |
-| 2.6-adim[zeta] | ΔMAPE adimensional — zeta | ≤ 3 p.p. | +1.21 p.p. (oráculo 1.18%, real 2.39%) | ✅ |
-| 2.6-adim[wn_T] | ΔMAPE adimensional — ωₙ·T (diagnóstico) | diagnóstico | +2.36 p.p. (oráculo 0.71%, real 3.07%, n=144) | ❓ |
-| 2.6-adim[wn_T/sem-calib] | ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico) | diagnóstico | +6.99 p.p. (oráculo 0.72%, real 7.72%, n=33) | ❓ |
-| 2.6-adim[theta_T] | Δ(NMAE/T) adimensional — θ/T (diagnóstico) | diagnóstico | +0.20 p.p. (oráculo 0.03%, real 0.23%, n=265) | ❓ |
-| 2.6-adim[theta_T/sem-calib] | Δ(NMAE/T) adimensional — θ/T, só sem calibração (diagnóstico) | diagnóstico | +1.79 p.p. (oráculo 0.03%, real 1.81%, n=53) | ❓ |
-| 2.6-adim[K_yrange] | ΔMAPE adimensional — K/faixa de y (diagnóstico) | diagnóstico | +0.84 p.p. (oráculo 0.12%, real 0.95%, n=265) | ❓ |
-| 2.6-adim[K_yrange/sem-calib] | ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico) | diagnóstico | +2.09 p.p. (oráculo 0.21%, real 2.30%, n=53) | ❓ |
-| 2.12-ordem | Acerto de ordem (diagnóstico) | diagnóstico | 91.3% (274/300, n=300) | ❓ |
-| 2.12-ordem[sem-calib] | Acerto de ordem, só sem calibração (diagnóstico) | diagnóstico | 91.8% (56/61, n=61) | ❓ |
+| 2.6[wn] | ΔMAPE — wn | ≤ 3 p.p. | +0.82 p.p. (oráculo 0.71%, real 1.54%) | ✅ |
+| 2.6[zeta] | ΔMAPE — zeta | ≤ 3 p.p. | +0.99 p.p. (oráculo 1.40%, real 2.40%) | ✅ |
+| 2.6 | Degradação end-to-end (pior parâmetro) | ≤ 3 p.p. | +0.99 p.p. (n=214) | ✅ |
+| 2.6-adim-aceitas | Amostras comparáveis no nível adimensional (dispensa calibração) | diagnóstico | 143/300 (33 sem calibração) | ❓ |
+| 2.6-adim[zeta] | ΔMAPE adimensional — zeta | ≤ 3 p.p. | +0.89 p.p. (oráculo 1.19%, real 2.08%) | ✅ |
+| 2.6-adim[wn_T] | ΔMAPE adimensional — ωₙ·T (diagnóstico) | diagnóstico | +1.04 p.p. (oráculo 0.72%, real 1.76%, n=143) | ❓ |
+| 2.6-adim[wn_T/sem-calib] | ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico) | diagnóstico | +0.63 p.p. (oráculo 0.72%, real 1.35%, n=33) | ❓ |
 | 2.6-classico-aceitas | Amostras comparáveis (extrator clássico) | diagnóstico | 181/300 | ❓ |
 | 2.6-classico[K] | ΔMAPE (clássico) — K | diagnóstico | +0.43 p.p. (oráculo 0.11%, real 0.54%) | ✅ |
 | 2.6-classico[tau] | ΔMAPE (clássico) — tau | diagnóstico | +0.58 p.p. (oráculo 0.23%, real 0.82%) | ✅ |

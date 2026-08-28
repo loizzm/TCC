@@ -204,6 +204,12 @@ class RenderStyle:
     # sinal
     snr_db: float = 40.0
     quantization_levels: int = 0
+    # estrato OOD opt-in (Ruling 55 §34.5): campo de RENDER, NAO e sorteado
+    # aqui. `sample_style` nunca o toca (fica sempre no default False) —
+    # e' `render_sample` (dataset/generator.py) que o marca via
+    # `dataclasses.replace` quando `reta_no_patamar=True`. Mantem a
+    # assinatura de `sample_style` em `["rng"]` (tests/test_part1.py:1115).
+    has_reference_line: bool = False
 
     # -- derivados --------------------------------------------------------
     @property
@@ -246,6 +252,7 @@ class RenderStyle:
             "n_spines": int(self.n_spines),
             "snr_db": float(self.snr_db),
             "quantization_levels": int(self.quantization_levels),
+            "has_reference_line": bool(self.has_reference_line),
         }
 
 

@@ -125,6 +125,47 @@ def _merge_close(vals: list[float], tol: float = 8.0) -> list[float]:
     return out
 
 
+def _sem_paralela(faixa: np.ndarray, eixo_do_tick: int) -> np.ndarray:
+    """Remove da faixa o que for PARALELO ao eixo, preservando o tick.
+
+    Um tick e perpendicular ao eixo e LOCALIZADO na coordenada do eixo. Uma
+    linha paralela — tipicamente a grade coincidindo com o proprio spine —
+    contribui IGUALMENTE para todas as posicoes, entao e a mediana ao longo do
+    eixo, e subtrai-la a anula sem tocar no tick.
+
+    Por que isso existe: a faixa de DENTRO era a fonte de quase todas as
+    deteccoes falsas. Medido em `data/test` (n=895, eixo x): 7 espurios
+    medianos com as duas faixas, 1 usando so a de fora. E nas tres imagens
+    reais do bloco a faixa de dentro devolvia 70, 69 e 68 deteccoes para ~6, 7
+    e 9 ticks verdadeiros — uma a cada ~9 px ao longo de toda a largura, o
+    padrao de uma grade PONTILHADA sobre a borda. O corpus nunca reproduz isso
+    porque `y_margin_lo` empurra o `ylim` para baixo do minimo dos dados, e a
+    grade de y=0 nunca cai sobre o spine; nas imagens reais o `ylim` comeca em
+    0 e cai exatamente ali.
+
+    Nao se resolve usando so a faixa de fora: isso perde os ticks de direcao
+    "in" inteiramente (medido no Bloco 2, ~1/3 das amostras com recall ~0).
+
+    Efeito medido (eixo x, n=895): espurios medianos 7 -> 3, recall mediano
+    100 % nos dois, recall p10 40 % -> 30,5 %. Nas imagens reais: 70 -> 5,
+    69 -> 6, 68 -> 8.
+
+    NAO ESTA EM USO, E O MOTIVO E O RESULTADO. Aplicada em `detect_tick_pixels`,
+    a correcao NAO MOVEU NADA a jusante: `ok` 716/900, `ok_x` 789, `ok_y` 796 e
+    55 falsos positivos, digito a digito iguais aos de antes, e as tres imagens
+    reais tambem inalteradas. Os ticks espurios ja eram inofensivos — os
+    recortes que eles geram sao descartados pelo filtro `_NUM_RE` do OCR. Como
+    ha custo medido (recall p10 40 % -> 30,5 %) e beneficio zero, a aplicacao
+    foi revertida. Fica aqui documentada para que ninguem gaste a mesma
+    investigacao: melhorar a PRECISAO da deteccao de ticks nao destrava a
+    calibracao. O gargalo e o RECALL DO OCR.
+    """
+    if faixa.size == 0:
+        return faixa
+    return np.clip(faixa - np.median(faixa, axis=eixo_do_tick, keepdims=True),
+                   0.0, None)
+
+
 def detect_tick_pixels(gray: np.ndarray, bbox: tuple[int, int, int, int]) -> dict[str, list[float]]:
     """Ticks maiores por picos de tinta na faixa ao redor da moldura.
 
@@ -156,6 +197,12 @@ def detect_tick_pixels(gray: np.ndarray, bbox: tuple[int, int, int, int]) -> dic
     faixa_y_fora = tinta[ya:yb, max(x0 - TICK_BAND, 0):max(x0, 1)]
     faixa_y_dentro = tinta[ya:yb, x0 + 1:min(x0 + 1 + TICK_BAND, x1 + 1)]
 
+    # A faixa de DENTRO passa por `_sem_paralela`: e nela que a grade sobre o
+    # spine aparece, e ela e paralela ao eixo. A de FORA nao precisa — ali nao
+    # ha grade, e o que existe (rotulos) fica alem de TICK_BAND.
+    # Para os ticks em x a faixa e (linhas, colunas) e a estrutura paralela e
+    # constante ao longo das COLUNAS -> mediana no eixo 1. Para os ticks em y a
+    # faixa e transposta em papel, e a mediana vai no eixo 0.
     px = []
     if faixa_x_fora.size:
         px += [xa + p for p in _peaks(faixa_x_fora.sum(axis=0), TICK_PROM)]
@@ -472,6 +519,17 @@ class Calibration:
     n_pairs_y: int = 0
     ok: bool = False
     reason: str = ""
+    # Estado POR EIXO. `ok` continua sendo `ok_x and ok_y`, entao todo
+    # consumidor antigo se comporta igual. O ganho e para quem precisa de um
+    # eixo so: o X sozinho da a JANELA em segundos, e com ela `wn` e `theta`
+    # saem em unidade fisica sem o eixo Y. Medido em data/test (n=900):
+    #   exigindo os dois (comportamento de hoje) .... 81,3%
+    #   eixo X sozinho .............................. 89,3%
+    #   eixo Y sozinho .............................. 89,1%
+    # Nas tres imagens reais do bloco, duas tem X aprovado e Y reprovado — ou
+    # seja, `wn` fisico estava disponivel e era descartado.
+    ok_x: bool = False
+    ok_y: bool = False
 
 
 # Consistência interna (PLANO): ticks equiespaçados em valor E em pixel.
@@ -541,25 +599,35 @@ def calibrate(image_rgb: np.ndarray) -> Calibration:
         return Calibration(reason="bbox_not_found")
     ticks = detect_tick_pixels(gray, bbox)
     pares = read_tick_labels(gray, bbox, ticks)
-    if len(pares["x"]) < RANSAC_MIN or len(pares["y"]) < RANSAC_MIN:
-        return Calibration(bbox_px=bbox, n_pairs_x=len(pares["x"]),
-                           n_pairs_y=len(pares["y"]), reason="ocr_insuficiente")
-    fx = fit_axis_affine(pares["x"])
-    fy = fit_axis_affine(pares["y"])
-    if fx is None or fy is None:
-        return Calibration(bbox_px=bbox, reason="ransac_failed")
-    sx, ox, nx = fx
-    sy, oy, ny = fy
-    inl_x = _inliers(pares["x"], sx, ox)
-    inl_y = _inliers(pares["y"], sy, oy)
-    if not (_equiespacados(inl_x, SPACING_TOL) and _equiespacados(inl_y, SPACING_TOL)):
-        return Calibration(bbox_px=bbox, n_pairs_x=nx, n_pairs_y=ny,
-                           reason="calibration_failed")
-    if not (np.isfinite(sx) and np.isfinite(sy)) or sx <= 0 or sy >= 0:
-        # sy < 0 é estrutural: o eixo y da imagem cresce para baixo.
-        return Calibration(bbox_px=bbox, reason="sinal_de_escala_invalido")
+
+    def _um_eixo(eixo: str) -> tuple[float, float, int, bool, str]:
+        """Resolve UM eixo. Devolve (s, o, n_inliers, ok, motivo)."""
+        p = pares[eixo]
+        if len(p) < RANSAC_MIN:
+            return float("nan"), float("nan"), len(p), False, "ocr_insuficiente"
+        f = fit_axis_affine(p)
+        if f is None:
+            return float("nan"), float("nan"), len(p), False, "ransac_failed"
+        s_, o_, n_ = f
+        if not _equiespacados(_inliers(p, s_, o_), SPACING_TOL):
+            return s_, o_, n_, False, "calibration_failed"
+        # Sinal: x cresce para a direita; y da IMAGEM cresce para BAIXO, entao
+        # a escala do eixo y tem de ser negativa. E estrutural, nao tolerancia.
+        if not np.isfinite(s_) or (s_ <= 0 if eixo == "x" else s_ >= 0):
+            return s_, o_, n_, False, "sinal_de_escala_invalido"
+        return s_, o_, n_, True, ""
+
+    sx, ox, nx, ok_x, motivo_x = _um_eixo("x")
+    sy, oy, ny, ok_y, motivo_y = _um_eixo("y")
+    if not (ok_x and ok_y):
+        # `reason` mantem a semantica antiga: o motivo da falha, com o eixo X
+        # tendo precedencia por ser o que destrava a janela temporal.
+        return Calibration(sx=sx, ox=ox, sy=sy, oy=oy, bbox_px=bbox,
+                           n_pairs_x=nx, n_pairs_y=ny, ok=False,
+                           reason=motivo_x or motivo_y,
+                           ok_x=ok_x, ok_y=ok_y)
     return Calibration(sx=sx, ox=ox, sy=sy, oy=oy, bbox_px=bbox,
-                       n_pairs_x=nx, n_pairs_y=ny, ok=True)
+                       n_pairs_x=nx, n_pairs_y=ny, ok=True, ok_x=True, ok_y=True)
 
 
 def px_to_data(cal: Calibration, x_px: np.ndarray, y_px: np.ndarray):

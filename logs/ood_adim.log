@@ -1,0 +1,10 @@
+n=120 amostras, 58 de 2a ordem (tem zeta)
+
+degradacao              adim sai  ordem ok  MAPE zeta adim      p95
+  original                94.8%     94.8%           2.55%    32.6%   n=55
+  JPEG q=30               87.9%     87.9%           3.13%    71.6%   n=51
+  reescala 0.33x          91.4%     91.4%           3.24%    54.4%   n=53
+  rotacao 0.5 grau        93.1%     93.1%           2.89%    65.6%   n=54
+  rotacao 2 graus         89.7%     89.7%          14.48%    99.9%   n=52
+  ruido sigma=8           79.3%     79.3%           2.60%    51.0%   n=46
+  JPEG60+0.5x+rot1        91.4%     91.4%           5.84%    83.2%   n=53

@@ -1,0 +1,142 @@
+...........................FF...F...........                             [100%]
+=================================== FAILURES ===================================
+____________________ test_2_4_2_5_rejeicao_por_consistencia ____________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_4_2_5_rejeicao_por_consistencia(test_samples):
+        from identify.calibrate import calibrate
+        from tests.part2.conftest import ESCALA_TOL
+    
+        rejeitadas, erro_se_aceitasse = 0, []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            a = m["axis_affine"]
+            if cal.ok:
+                continue
+            rejeitadas += 1
+            e = _erro_de_escala_sem_guarda(m["image"], a)
+            erro_se_aceitasse.append(e)
+    
+        # 2.4 APOSENTADO como critério (PLANO §2.4, HANDOFF_P2_7 Ruling 52):
+        # `rejeitadas/total` é exatamente `1 - cobertura` do 2.9 — a MESMA grandeza,
+        # com limiar diferente (< 5% de rejeição x >= 90% de cobertura). O 2.4
+        # subsumia o 2.9 e dava peso duplo a uma medição. Fica como diagnóstico; o
+        # veredito de cobertura é do 2.9.
+        taxa = rejeitadas / len(test_samples)
+        record_p2("2.4", "Taxa de rejeição (diagnóstico — unificado no 2.9)",
+                  "sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52)",
+                  f"{taxa:.3f}", None)
+    
+        if rejeitadas < 5:
+            record_p2("2.5", "Rejeições corretas", "≥ 90% (n insuficiente)",
+                      f"n={rejeitadas} < 5 — não asseverável", None)
+            return
+    
+        # 2.5 com o limiar ALINHADO ao do 2.3 (Ruling 52). Antes usava 5% enquanto o
+        # 2.3 usava 1%, e as amostras na faixa intermediária eram simultaneamente
+        # "não deviam ter sido rejeitadas" (2.5) e "ruins o bastante para estragar o
+        # 2.3" — nenhum subconjunto satisfazia os dois.
+        corretas = float(np.mean([e > ESCALA_TOL for e in erro_se_aceitasse]))
+        record_p2("2.5", "Rejeições corretas",
+                  f"≥ 90% (erro > {ESCALA_TOL:.0%}, alinhado ao 2.3)",
+                  f"{corretas:.3f} (n={rejeitadas})", corretas >= 0.90)
+>       assert corretas >= 0.90
+E       assert 0.8852459016393442 >= 0.9
+
+tests/part2/test_part2.py:255: AssertionError
+_______________________ test_2_9_cobertura_da_calibracao _______________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_9_cobertura_da_calibracao(test_samples):
+        from identify.calibrate import calibrate
+    
+        por_dpi: dict[str, list[bool]] = {}
+        todos = []
+        for m in test_samples:
+            cal = calibrate(m["image"])
+            todos.append(cal.ok)
+            dpi = int(m["render"]["dpi"])
+            faixa = "60-99" if dpi < 100 else ("100-149" if dpi < 150 else "150-200")
+            por_dpi.setdefault(faixa, []).append(cal.ok)
+        cobertura = float(np.mean(todos))
+        record_p2("2.9", "Cobertura da calibração (ok=True)", "≥ 90% global",
+                  f"{cobertura:.3f} (n={len(todos)})", cobertura >= 0.90)
+        for faixa, vs in sorted(por_dpi.items()):
+            record_p2(f"2.9[dpi={faixa}]", f"Cobertura — dpi {faixa}",
+                      "diagnóstico, sem alvo por estrato",
+                      f"{float(np.mean(vs)):.3f} (n={len(vs)})", None)
+>       assert cobertura >= 0.90, f"cobertura da calibração: {cobertura:.1%}"
+E       AssertionError: cobertura da calibração: 79.7%
+E       assert 0.7966666666666666 >= 0.9
+
+tests/part2/test_part2.py:276: AssertionError
+_____________________ test_2_1_erro_geometrico_da_mascara ______________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_1_erro_geometrico_da_mascara(test_samples):
+        """Portão 2.1 REVISADO (PLANO §2.1, HANDOFF_P2_7 Ruling 50).
+    
+        Media IoU de máscara até o Bloco 7. Numa curva fina a área é dominada pela
+        espessura do traço: IoU correlaciona +0,860 com a tinta por coluna e -0,879
+        com a razão de espessura, contra só +0,284 com o deslocamento real. Em todas
+        as faixas de espessura o erro de centerline é 1,00 px CONSTANTE enquanto o
+        IoU vai de 0,468 a 0,782 — a métrica lia a largura de linha que o gerador
+        sorteia. Dice não ajudaria: é `2*IoU/(1+IoU)` por identidade exata.
+    
+        O IoU continua REPORTADO como diagnóstico, sem alvo, para preservar a
+        comparabilidade com as rodadas 3 a 6.
+        """
+        import torch
+        from identify.extract import load_model, predict_mask
+        from identify.polyline import mask_to_polyline
+        from tests.part2.conftest import (PERP_MED_MAX, PERP_P95_MAX,
+                                          erro_perpendicular)
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        ious, meds, p95s = [], [], []
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            inter = float(np.logical_and(pred, alvo).sum())
+            union = float(np.logical_or(pred, alvo).sum())
+            ious.append(inter / max(union, 1.0))
+            xq, yq = mask_to_polyline((pred * 255).astype(np.uint8))
+            e = erro_perpendicular(xq, yq, m)
+            if e is not None:
+                # RMSE por amostra, a MESMA estatística de que o limiar foi derivado
+                # (Ruling 50: 0,800 px medido -> +0,127 p.p. em ζ). Usar a mediana por
+                # amostra aqui deixaria o critério mais frouxo que a justificativa.
+                meds.append(e["rmse"]); p95s.append(e["p95"])
+    
+        med = float(np.median(meds)); p95 = float(np.percentile(meds, 95))
+        record_p2("2.1", "Erro perpendicular da máscara (U-Net)",
+                  f"≤ {PERP_MED_MAX:.1f} px mediana, ≤ {PERP_P95_MAX:.1f} px p95",
+                  f"{med:.3f} px / {p95:.3f} px (n={len(meds)})",
+                  med <= PERP_MED_MAX and p95 <= PERP_P95_MAX)
+        record_p2("2.1-iou", "IoU da máscara (diagnóstico — ver Ruling 50)",
+                  "sem alvo: mede espessura de traço, não acurácia",
+                  f"{float(np.median(ious)):.4f}", None)
+>       assert med <= PERP_MED_MAX and p95 <= PERP_P95_MAX
+E       assert (0.8068478837943764 <= 1.0 and 2.0770986387697032 <= 2.0)
+
+tests/part2/test_part2.py:458: AssertionError
+============================= slowest 10 durations =============================
+138.21s call     tests/part2/test_part2.py::test_2_11_saida_adimensional_sempre_presente
+93.74s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+91.95s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+69.13s call     tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia
+54.39s call     tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao
+51.34s call     tests/part2/test_part2.py::test_2_3_erro_das_escalas
+25.67s call     tests/part2/test_part2.py::test_2_8_latencia_por_imagem
+12.41s call     tests/part2/test_part2.py::test_2_7_iou_por_estrato
+12.14s call     tests/part2/test_part2.py::test_2_1_erro_geometrico_da_mascara
+11.79s call     tests/part2/test_part2.py::test_2_2_polilinha_contra_mascara_verdadeira
+=========================== short test summary info ============================
+FAILED tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia - as...
+FAILED tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao - Assertio...
+FAILED tests/part2/test_part2.py::test_2_1_erro_geometrico_da_mascara - asser...
+3 failed, 41 passed in 600.47s (0:10:00)
