@@ -349,6 +349,8 @@ def render_sample(
     *,
     seed: int | None = None,
     reta_no_patamar: bool = False,
+    anotacao_com_seta: bool = False,
+    banda_de_acomodacao: bool = False,
 ) -> dict:
     """Escreve image.png, mask.png e meta.json em out_dir. Devolve o dict do meta."""
     out = Path(out_dir)
@@ -361,7 +363,9 @@ def render_sample(
     # e o dono desse objeto, e mutar um argumento e efeito colateral
     # observavel para quem chamou. `has_reference_line` e campo de RENDER
     # (dataset/randomize.py), nao sorteado por `sample_style`.
-    style = replace(style, has_reference_line=bool(reta_no_patamar))
+    style = replace(style, has_reference_line=bool(reta_no_patamar),
+                    has_annotation_arrow=bool(anotacao_com_seta),
+                    has_settling_band=bool(banda_de_acomodacao))
 
     t = np.linspace(spec.t_start, spec.t_end, N_SERIES)
     y_clean = step_response(spec, t)
@@ -479,6 +483,50 @@ def render_sample(
         ax.text(fx, fy, text, transform=ax.transAxes, color=style.axes_color,
                 fontsize=style.font_size * 0.8, zorder=5)
 
+    if banda_de_acomodacao:
+        # Banda de +-5 % em torno do SETPOINT comandado, atravessando a
+        # figura inteira — o "criterio de acomodacao" que graficos de controle
+        # marcam. Ancorada em `K * degrau` pelas MESMAS tres razoes do
+        # `no_patamar` acima (e o que o grafico real marca; `y_draw[-1]` e
+        # ruidoso; `y_clean[-1]` ainda oscila quando a janela nao assenta).
+        # Cor de LUMINANCIA COLIDENTE com a da curva e `alpha` alto: uma banda
+        # de cor qualquer nao muda o byte que a U-Net recebe, e o §34.5 ja
+        # mediu que distrator sem colisao nao degrada nada (Spearman colisao x
+        # IoU = -0,006, p = 0,86).
+        alvo = float(spec.K * spec.step_amplitude)
+        meia = 0.05 * abs(alvo) if abs(alvo) > 1e-9 else 0.05 * (ylim[1] - ylim[0])
+        ax.axhspan(alvo - meia, alvo + meia,
+                   color=_cor_colidente(style.line_color), alpha=0.55, zorder=2,
+                   linewidth=0.0)
+
+    if anotacao_com_seta:
+        # Caixa de texto ligada por SETA ao pico da curva. A seta e' o objeto
+        # que importa: e um segmento de reta espesso saindo da curva para
+        # fora dela, e e por ele que a mascara foge (medido na imagem externa
+        # que motivou este estrato — a polilinha subia pela seta e depois
+        # pulava para a legenda). O texto sozinho ja existia em
+        # `style.annotations` e nunca degradou nada.
+        k = int(np.argmax(np.abs(y_draw - float(y_draw[0]))))
+        tp, yp = float(t[k]), float(y_draw[k])
+        # A caixa fica DIAGONALMENTE acima e a direita do pico, dentro da
+        # moldura: e a posicao que o matplotlib produz com `xytext` em coords
+        # de dados e a que o caso real exibe.
+        dx = 0.18 * (xlim[1] - xlim[0])
+        dy = 0.20 * (ylim[1] - ylim[0])
+        cx = min(tp + dx, xlim[1] - 0.02 * (xlim[1] - xlim[0]))
+        cy = min(yp + dy, ylim[1] - 0.05 * (ylim[1] - ylim[0]))
+        cor = _cor_colidente(style.line_color)
+        ax.annotate(
+            f"Pico: {yp:.3f}\nem t={tp:.2f}",
+            xy=(tp, yp), xytext=(cx, cy),
+            fontsize=style.font_size * 0.8, color=style.axes_color,
+            bbox={"boxstyle": "round", "facecolor": style.bg_color,
+                  "edgecolor": style.axes_color},
+            arrowprops={"arrowstyle": "->", "color": cor,
+                        "linewidth": max(2.0, style.line_width * 1.5)},
+            zorder=6,
+        )
+
     fig.canvas.draw()
     buf = np.asarray(fig.canvas.buffer_rgba())
     h_px, w_px = int(buf.shape[0]), int(buf.shape[1])
@@ -572,7 +620,9 @@ def render_sample(
 
 def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
                     reta_no_patamar: bool = False,
-                    janela_assentada: bool = False) -> dict:
+                    janela_assentada: bool = False,
+                    anotacao_com_seta: bool = False,
+                    banda_de_acomodacao: bool = False) -> dict:
     """Sorteia sistema+estilo com streams independentes, renderiza e devolve o meta."""
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
@@ -594,13 +644,16 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
         spec = replace(spec, t_end=float(max(spec.t_end,
                                              spec.theta + _T_DOM_ESTRATO * t_dom)))
     return render_sample(spec, style, out_dir, add_noise=add_noise, rng=rng_noise,
-                         seed=int(seed), reta_no_patamar=reta_no_patamar)
+                         seed=int(seed), reta_no_patamar=reta_no_patamar,
+                         anotacao_com_seta=anotacao_com_seta,
+                         banda_de_acomodacao=banda_de_acomodacao)
 
 
 def _generate_one(args: tuple) -> str:
-    out_dir, seed, add_noise, reta, janela = args
+    out_dir, seed, add_noise, reta, janela, seta, banda = args
     generate_sample(out_dir, seed, add_noise=add_noise, reta_no_patamar=reta,
-                    janela_assentada=janela)
+                    janela_assentada=janela, anotacao_com_seta=seta,
+                    banda_de_acomodacao=banda)
     return str(out_dir)
 
 
@@ -612,13 +665,16 @@ def generate_dataset(
     add_noise: bool = True,
     reta_no_patamar: bool = False,
     janela_assentada: bool = False,
+    anotacao_com_seta: bool = False,
+    banda_de_acomodacao: bool = False,
 ) -> list[str]:
     """Gera n amostras em paralelo. Resultado independe do numero de workers."""
     root = Path(out_dir)
     root.mkdir(parents=True, exist_ok=True)
     jobs = [
         (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise),
-         bool(reta_no_patamar), bool(janela_assentada))
+         bool(reta_no_patamar), bool(janela_assentada),
+         bool(anotacao_com_seta), bool(banda_de_acomodacao))
         for i in range(int(n))
     ]
     if workers is not None and workers <= 1:

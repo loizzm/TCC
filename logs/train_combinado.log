@@ -1,0 +1,28 @@
+treino: 9450 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta']  base=24  1181 passos/epoca
+parametros: 4368073
+epoca 00  IoU_val=0.3853  lr=3.00e-04  565s
+epoca 01  IoU_val=0.6811  lr=3.00e-04  555s
+epoca 02  IoU_val=0.6984  lr=3.00e-04  557s
+epoca 03  IoU_val=0.7007  lr=3.00e-04  573s
+epoca 04  IoU_val=0.7286  lr=3.00e-04  568s
+epoca 05  IoU_val=0.7157  lr=3.00e-04  572s
+epoca 06  IoU_val=0.7222  lr=1.50e-04 (LR reduzido)  570s
+epoca 07  IoU_val=0.7433  lr=1.50e-04  572s
+epoca 08  IoU_val=0.7346  lr=1.50e-04  562s
+epoca 09  IoU_val=0.7374  lr=7.50e-05 (LR reduzido)  564s
+epoca 10  IoU_val=0.7451  lr=7.50e-05  564s
+epoca 11  IoU_val=0.7469  lr=3.75e-05 (LR reduzido)  561s
+epoca 12  IoU_val=0.7470  lr=3.75e-05  558s
+epoca 13  IoU_val=0.7496  lr=1.87e-05 (LR reduzido)  576s
+epoca 14  IoU_val=0.7473  lr=1.87e-05  604s
+epoca 15  IoU_val=0.7488  lr=9.37e-06 (LR reduzido)  565s
+epoca 16  IoU_val=0.7488  lr=9.37e-06  553s
+epoca 17  IoU_val=0.7484  lr=4.69e-06 (LR reduzido)  552s
+epoca 18  IoU_val=0.7494  lr=4.69e-06  552s
+epoca 19  IoU_val=0.7487  lr=2.34e-06 (LR reduzido)  552s
+epoca 20  IoU_val=0.7505  lr=2.34e-06  552s
+epoca 21  IoU_val=0.7497  lr=1.17e-06 (LR reduzido)  553s
+epoca 22  IoU_val=0.7504  lr=1.17e-06  553s
+epoca 23  IoU_val=0.7500  lr=5.86e-07 (LR reduzido)  553s
+epoca 24  IoU_val=0.7505  lr=5.86e-07  553s
+melhor IoU_val=0.7505 -> models/unet_stageA_combinado.pt

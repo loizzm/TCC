@@ -375,6 +375,96 @@ def _fisico_parcial(dim: dict, cal) -> dict:
     return out
 
 
+# --- guardas de PLAUSIBILIDADE da resposta (Ruling 59, §37.11) ---------------
+#
+# As duas existem para o mesmo fim: impedir que a pipeline devolva numero
+# fisico CONFIANTE quando a serie extraida nao sustenta nenhum. Pela Decisao E
+# a saida honesta nesse caso e nenhuma das duas camadas, com `reason` nomeando
+# o motivo — e nao um ajuste que "convergiu".
+
+_NRMSE_MAX = 0.13
+# Resíduo normalizado acima do qual o ajuste não descreve a série. Escolhido
+# no percentil 98 do corpus (`data/test`, n=837 com físico e verdade
+# comparável, p98 = 0,1286). Medido contra o erro real da identificação
+# (erro relativo máximo em K, tau, wn, zeta contra o meta):
+#   Spearman nrmse x erro = +0,386 (p = 4,5e-31)
+#   rejeita 17 amostras: 15 delas de fato ruins (erro > 20 %) -> precisão 88,2 %
+#   custo: 2 identificações boas perdidas em 837 (0,24 %)
+# Não pega tudo (recall 19 %), e não precisa: a função dela é recusar o
+# absurdo, não auditar o aceitável.
+#
+# ANTES desta guarda foi testada e REFUTADA outra, sobre a descontinuidade da
+# máscara (maior buraco entre colunas com tinta). Ela parecia óbvia numa
+# imagem externa que erra (buraco de 19,3 % contra 5,5 % da segunda pior das
+# outras sete), e NÃO SOBREVIVE ao corpus: Spearman buraco x erro = +0,020
+# (p = 0,57), densidade x erro = +0,003 (p = 0,93), e o maior buraco do
+# corpus (20,9 %) é MAIOR que o da imagem que erra. O motivo é estrutural e
+# vale registrar: o corpus não contém o modo de falha que aquela guarda
+# existia para pegar, então ele só media o custo dela, nunca o benefício.
+# Ver §37.11.
+
+_UNDERSHOOT_MAX = 0.08
+# Fração da faixa de y percorrida no sentido CONTRÁRIO antes de a resposta
+# arrancar. É a assinatura de fase não-mínima (zero no semiplano direito),
+# que NÃO pertence à família de modelos do Estágio D — nem FOPDT nem 2ª ordem
+# sem zero representam resposta inversa, então o ajuste devolve um sistema
+# plausível e estruturalmente errado.
+# RECALIBRADO na promoção do modelo base 32 (§37.14). O limiar era 0,10,
+# medido com o modelo anterior, e a promoção o furou: a máscara melhor captura
+# mais faixa de y, que é o DENOMINADOR desta métrica, e a mesma imagem de fase
+# não-mínima caiu de 0,143 para 0,0916 — passando raspando por baixo do limiar
+# e virando resposta confiante e errada (`fopdt`, tau=0,485). É a prova
+# concreta do risco que a versão anterior deste comentário já declarava: um
+# limiar calibrado contra UM exemplo positivo não sobrevive a mudanças a
+# montante.
+# Remedido no corpus com o modelo base 32 (n=900), o custo tem um PLATÔ:
+#   limiar 0,070 -> 6/900 (0,67 %)
+#   limiar 0,075 a 0,090 -> 4/900 (0,44 %)   <- platô, custo idêntico
+#   limiar 0,100 -> 2/900 (0,22 %), mas NÃO pega a imagem de fase não-mínima
+# 0,08 fica no MEIO do platô de propósito: não é escolha na beira de um
+# precipício, e deixa 14 % de folga sobre o 0,0916 observado.
+# ATENÇÃO ao que CONTINUA sem medição: o gerador não produz fase não-mínima,
+# então o corpus dá só o CUSTO. O benefício segue apoiado em n=1, e este
+# episódio mostra o que isso custa — qualquer mudança no Estágio A exige
+# remedir este número.
+
+
+def _undershoot(y: np.ndarray, frac_alvo: float = 0.10) -> float:
+    """Excursão contrária à do degrau ANTES de a resposta arrancar.
+
+    O recorte inicial é o que separa fase não-mínima de oscilação: uma
+    primeira versão olhava a série inteira contra o "valor final", e marcava
+    0,147 numa imagem de zeta = 0 cuja identificação estava CERTA (wn a
+    0,001 % do verdadeiro) — porque a série não assenta e o valor final caía
+    num ponto qualquer da oscilação. Com o recorte, aquela imagem cai para
+    0,004 e a de fase não-mínima fica em 0,143.
+    """
+    y = np.asarray(y, dtype=float)
+    if y.size < 10:
+        return 0.0
+    y0 = _nivel_de_repouso(y)
+    faixa = float(np.ptp(y))
+    if not np.isfinite(faixa) or faixa < 1e-12:
+        return 0.0
+    d = np.sign(float(np.median(y[y.size // 2:])) - y0)
+    if d == 0:
+        return 0.0
+    subiu = np.flatnonzero((y - y0) * d > frac_alvo * faixa)
+    fim = int(subiu[0]) if subiu.size else y.size
+    if fim < 2:
+        return 0.0
+    return max(float(np.max((y0 - y[:fim]) * d)), 0.0) / faixa
+
+
+def _implausivel(y: np.ndarray, nrmse: float) -> str:
+    """Motivo pelo qual a resposta não é confiável, ou "" se ela é."""
+    if _undershoot(y) > _UNDERSHOOT_MAX:
+        return "resposta_inversa"
+    if not np.isfinite(nrmse) or nrmse > _NRMSE_MAX:
+        return "ajuste_inconsistente"
+    return ""
+
+
 def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                         extractor=None) -> dict:
     """Imagem -> parâmetros. Nunca levanta: falha vira ok=False.
@@ -447,6 +537,12 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         ordem = np.argsort(t)
         t, y = t[ordem], y[ordem]
         fit = identify(t, y)
+        mau = _implausivel(y, fit.nrmse) if fit.success else ""
+        if mau:
+            # A serie nao sustenta resposta nenhuma: nem fisica nem
+            # adimensional. Devolver so o adimensional aqui seria trocar um
+            # numero errado por outro — os dois saem do MESMO ajuste.
+            return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
         dim = (_adimensional(fit.params, float(t[-1] - t[0]), float(np.ptp(y)))
                if fit.success else _vazio_adimensional())
         return _saida(fit.order, fit.params, bool(fit.success),
@@ -463,6 +559,9 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         return _saida("", {}, False, cal.reason,
                       _vazio_adimensional(), cal, x_px.size)
     g = identify(tn, yn)
+    mau = _implausivel(yn, g.nrmse) if g.success else ""
+    if mau:
+        return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
     dim = _adimensional(g.params, 1.0, 1.0) if g.success else _vazio_adimensional()
     # `order` É adimensional — o PLANO §1.7 lista a estrutura como não dependente
     # de calibração —, então sai preenchido mesmo sem nível físico. Já `params`

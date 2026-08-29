@@ -1,0 +1,45 @@
+
+=== ATUAL  (models/unet_stageA.pt)
+  CRITERIO 2.1 = 0.807 px / 2.077 px  ->  REPROVA   (IoU diag 0.6481)
+  data/val_reta            IoU=0.5648  p95=2.000 px
+  data/val_banda_seta      IoU=0.3938  p95=10.124 px
+  data/val_reta_banda      IoU=0.4891  p95=3.606 px
+  imagens externas:
+    caso_real_2ordem.png     True                          zeta=0.502 wn=2.021 tau=--   | verdade: zeta=0.5 wn=2.0
+    Figure_11.png            True                          zeta=-- wn=-- tau=0.195   | verdade: 1a ordem
+    Figure_12.png            True                          zeta=0.001 wn=4.000 tau=--   | verdade: zeta=0 wn=4
+    Figure_122.png           True                          zeta=-- wn=-- tau=0.335   | verdade: 1a ordem
+    Figure_15.png            True                          zeta=-- wn=-- tau=1.981   | verdade: 1a ordem tau~2
+    Figure_16.png            False  ajuste_inconsistente   zeta=-- wn=-- tau=--   | verdade: zeta=0.6 wn~10
+    Figure_21.png            True                          zeta=0.200 wn=5.034 tau=--   | verdade: zeta=0.2 wn=5
+    Figure_22.png            False  resposta_inversa       zeta=-- wn=-- tau=--   | verdade: fase nao-minima
+
+=== bandaseta  (models/unet_stageA_bandaseta.pt)
+  CRITERIO 2.1 = 0.788 px / 1.582 px  ->  PASSA   (IoU diag 0.6476)
+  data/val_reta            IoU=0.5679  p95=2.000 px
+  data/val_banda_seta      IoU=0.5945  p95=1.414 px
+  data/val_reta_banda      IoU=0.5449  p95=2.236 px
+  imagens externas:
+    caso_real_2ordem.png     False  ajuste_inconsistente   zeta=-- wn=-- tau=--   | verdade: zeta=0.5 wn=2.0
+    Figure_11.png            True                          zeta=-- wn=-- tau=0.196   | verdade: 1a ordem
+    Figure_12.png            True                          zeta=0.007 wn=4.004 tau=--   | verdade: zeta=0 wn=4
+    Figure_122.png           True                          zeta=-- wn=-- tau=0.335   | verdade: 1a ordem
+    Figure_15.png            True                          zeta=-- wn=-- tau=1.984   | verdade: 1a ordem tau~2
+    Figure_16.png            True                          zeta=0.616 wn=10.222 tau=--   | verdade: zeta=0.6 wn~10
+    Figure_21.png            True                          zeta=0.200 wn=5.035 tau=--   | verdade: zeta=0.2 wn=5
+    Figure_22.png            False  resposta_inversa       zeta=-- wn=-- tau=--   | verdade: fase nao-minima
+
+=== combinado  (models/unet_stageA_combinado.pt)
+  CRITERIO 2.1 = 0.799 px / 1.430 px  ->  PASSA   (IoU diag 0.6495)
+  data/val_reta            IoU=0.5743  p95=2.000 px
+  data/val_banda_seta      IoU=0.5993  p95=1.414 px
+  data/val_reta_banda      IoU=0.5782  p95=2.000 px
+  imagens externas:
+    caso_real_2ordem.png     True                          zeta=0.534 wn=2.079 tau=--   | verdade: zeta=0.5 wn=2.0
+    Figure_11.png            True                          zeta=-- wn=-- tau=0.195   | verdade: 1a ordem
+    Figure_12.png            True                          zeta=0.009 wn=4.004 tau=--   | verdade: zeta=0 wn=4
+    Figure_122.png           True                          zeta=-- wn=-- tau=0.335   | verdade: 1a ordem
+    Figure_15.png            True                          zeta=-- wn=-- tau=1.979   | verdade: 1a ordem tau~2
+    Figure_16.png            False  ajuste_inconsistente   zeta=-- wn=-- tau=--   | verdade: zeta=0.6 wn~10
+    Figure_21.png            True                          zeta=0.200 wn=5.034 tau=--   | verdade: zeta=0.2 wn=5
+    Figure_22.png            False  resposta_inversa       zeta=-- wn=-- tau=--   | verdade: fase nao-minima

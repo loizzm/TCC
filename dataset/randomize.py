@@ -210,6 +210,14 @@ class RenderStyle:
     # `dataclasses.replace` quando `reta_no_patamar=True`. Mantem a
     # assinatura de `sample_style` em `["rng"]` (tests/test_part1.py:1115).
     has_reference_line: bool = False
+    # Estrato OOD opt-in (Ruling 60, §37.12). Mesmas regras do
+    # `has_reference_line`: campo de RENDER, `sample_style` nunca toca, e o
+    # `render_sample` marca via `replace`. Sao DOIS campos e nao um porque sao
+    # dois fenomenos separaveis — a caixa com seta desvia a mascara para uma
+    # estrutura ACIMA da curva; a banda sombreada apaga o contraste no
+    # patamar. Separados dao ablacao; juntos reproduzem o caso real.
+    has_annotation_arrow: bool = False
+    has_settling_band: bool = False
 
     # -- derivados --------------------------------------------------------
     @property
@@ -253,6 +261,8 @@ class RenderStyle:
             "snr_db": float(self.snr_db),
             "quantization_levels": int(self.quantization_levels),
             "has_reference_line": bool(self.has_reference_line),
+            "has_annotation_arrow": bool(self.has_annotation_arrow),
+            "has_settling_band": bool(self.has_settling_band),
         }
 
 

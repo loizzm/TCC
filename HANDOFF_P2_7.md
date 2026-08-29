@@ -2814,3 +2814,530 @@ Com ele, o bloco `dimensionless` do PLANO §1.7 tem **quatro** das seis grandeza
 sob diagnóstico (`zeta`, `wn_T`, `theta_T`, `K_yrange`); ficam de fora `tau_T` e
 `theta_tau`, que são redundantes com as medidas (τ/T e θ/τ derivam das mesmas
 escalas já vigiadas).
+
+---
+
+## 36. Ruling 57 — o critério 2.9: quatro hipóteses testadas, três refutadas, e a ordem dos próximos passos
+
+O 2.9 (cobertura da calibração, alvo ≥ 90%) está reprovado em **0,797** há vários
+blocos. Este bloco investigou por quê, com três imagens reais de matplotlib como
+casos de teste externos. O resultado útil é sobretudo **negativo**: quase tudo o
+que parecia promissor não sobrevive à medição, e vale estar escrito para que
+ninguém repita as mesmas quatro investigações.
+
+### 36.1 RETRATAÇÃO — "o gargalo é recall do OCR" saiu de um teste circular
+
+A conclusão registrada no fim do bloco anterior — que completar os rótulos não
+lidos fazia o gate aprovar os seis eixos das três imagens — **está errada como
+evidência**. No teste, os pixels dos rótulos faltantes foram gerados a partir do
+PRÓPRIO ajuste afim, ou seja caíam perfeitamente sobre a reta. O gate passava por
+construção; o teste não tinha como falhar.
+
+Refeito de forma não circular (completar um valor faltante SÓ quando existe blob
+de texto no pixel previsto, tolerância de 6 px): **716 → 715 amostras**. Efeito
+nulo. A retratação não anula o resto da análise, mas troca o mecanismo: mais
+rótulos ajudam, e não por preencher lacunas — ver §36.2.
+
+Lição de método, a terceira deste bloco do mesmo tipo (ver §35.4 e §35.9.1):
+quando o experimento constrói a evidência a partir do modelo que ele deveria
+testar, o resultado é tautologia. O sinal de alerta aqui era simples e foi
+ignorado: o teste não tinha um caso em que pudesse falhar.
+
+### 36.2 A anatomia real, em três camadas medidas
+
+Corpus `data/test`, n=895 com moldura detectada.
+
+**Camada 1 — segmentação de blobs de texto: NÃO é o problema.**
+`_text_blobs` acha o que precisa. Perda total de 56 rótulos no eixo x e 13 no y
+sobre 895 amostras; recall de segmentação mediano de 100%. Descartada como
+suspeita.
+
+**Camada 2 — leitura (Tesseract + `_NUM_RE`): perda real, mas não é o gargalo.**
+Recall no nível do rótulo: **86,9% em x e 80,0% em y**. O padrão é
+contraintuitivo e diagnóstico — o recall SOBE com o comprimento da string:
+
+| forma do número | exemplo | lidos/total | recall |
+|---|---|---|---|
+| decimal, 1 casa | `0.2` | 2133/2704 | **78,9%** |
+| inteiro, 1 dígito | `5` | 2725/3261 | 83,6% |
+| decimal, 2 casas | `0.25` | 1010/1190 | 84,9% |
+| decimal, 3 casas | `0.125` | 75/84 | 89,3% |
+| inteiro, 2 dígitos | `10` | 1017/1124 | 90,5% |
+| inteiro, 3 dígitos | `100` | 203/217 | **93,5%** |
+
+É comportamento conhecido do Tesseract com `--psm 7`: o motor LSTM é de LINHA de
+texto e um numeral isolado e curto quase não lhe dá contexto. Rótulo de eixo é
+exatamente o pior caso dele. Note que isto não é ajustável por parâmetro — é a
+natureza do modelo escolhido.
+
+**Camada 3 — EMPARELHAMENTO: é aqui que o gate morre.**
+Comparando o pixel atribuído a cada rótulo lido com o pixel verdadeiro do tick
+(do meta):
+
+| eixo/forma | n | mediana do erro | **desvio padrão** |
+|---|---|---|---|
+| x / inteiro 1 díg | 1324 | +0,58 px | **26,54 px** |
+| x / decimal 1 casa | 903 | +0,46 px | **10,94 px** |
+| x / inteiro 2 díg | 879 | +0,57 px | **19,87 px** |
+| x / decimal 2 casas | 439 | +0,37 px | 0,73 px |
+| x / inteiro 3 díg | 203 | +0,66 px | 0,83 px |
+| y / inteiro 1 díg | 1428 | +0,80 px | **25,54 px** |
+| y / decimal 2 casas | 571 | +0,81 px | 0,47 px |
+
+Mediana excelente (sub-pixel) e desvio de 10 a 27 px nas formas CURTAS. Isso não
+é imprecisão de centroide: é **valor lido corretamente e atribuído ao pixel de
+OUTRO rótulo**. Afeta 5,7% dos rótulos de x e 1,4% dos de y com |erro| > 2 px.
+
+Consequência sobre o gate: com 4 ou 5 pares e um deles grosseiramente
+deslocado, o RANSAC não tem massa para identificá-lo como outlier, e
+`_equiespacados` lê o conjunto resultante como não equiespaçado. É por isso que
+mais rótulos ajudam — dão ao RANSAC dados para **rejeitar o par ruim** —, e não
+porque preenchem lacunas.
+
+### 36.3 As três hipóteses refutadas
+
+**(a) Melhorar a PRECISÃO da detecção de ticks.** A detecção tem precisão
+péssima: 5 ticks verdadeiros, 10 detectados, 7 falsos; e nas imagens reais 68 a
+70 detecções, causadas por grade pontilhada coincidente com o spine (o corpus
+nunca reproduz isso porque `y_margin_lo` desloca o `ylim`). Implementado um
+discriminador que anula estrutura paralela ao eixo: espúrios 7 → 3 no corpus e
+70 → 5 nas reais. **`ok`, `ok_x`, `ok_y` e falsos positivos ficaram dígito a
+dígito iguais.** Os espúrios já eram inofensivos — os recortes que geram são
+descartados pelo `_NUM_RE`. Revertido por ter custo (recall p10 40% → 30,5%) e
+benefício zero. A função fica documentada em `_sem_paralela`, sem uso, como
+registro.
+
+**(b) Ancorar o rótulo lido na marca de tick mais próxima.** Parecia o conserto
+direto do defeito da camada 3. Medido:
+
+| variante | ok | ok_x | ok_y | falsos+ |
+|---|---|---|---|---|
+| atual | **79,6%** | 87,7% | 88,4% | 55 (7,7%) |
+| snap, tol 4 px | 73,6% | 85,0% | 84,3% | 58 (8,8%) |
+| snap, tol 8 px | 67,6% | 80,6% | 81,3% | 73 (12,0%) |
+| snap, tol 15 px | 66,8% | 80,4% | 80,7% | 73 (12,1%) |
+| filtra, tol 8 px | 77,6% | 87,2% | 85,0% | **48 (6,9%)** |
+| filtra, tol 15 px | 77,1% | 86,9% | 85,3% | 53 (7,6%) |
+
+Encostar (`snap`) piora nos dois eixos, e monotonamente com a tolerância. Causa:
+com 7 marcas espúrias por amostra, o snap desloca rótulos BONS para marcas
+falsas. Não dá para usar a detecção de ticks como referência de POSIÇÃO enquanto
+a precisão dela for essa — e (a) mostrou que consertar a precisão não paga.
+
+**Achado lateral que vale seguir, mas para OUTRO critério.** Descartar o par sem
+marca por perto (`filtra`, tol 8 px) é a ÚNICA variante testada em todo o bloco
+que REDUZ falso positivo: 55 → 48, de 7,7% para 6,9% das aceitas. Custa 18
+amostras de cobertura (716 → 698), então é ruim para o 2.9. Mas o critério **2.5**
+(rejeições corretas, ≥ 90%, hoje **0,885 ❌**) mede precisamente a precisão da
+rejeição, e está reprovado por pouco. Vale medir o 2.5 sob `filtra` antes de
+descartar a variante — é a primeira pista de melhora daquele critério que
+aparece neste bloco, e o trade cobertura-por-precisão que aqui é ruim pode ser
+exatamente o desejado lá. Registrado como item próprio porque a tentação é
+descartar a variante pelo veredito do 2.9 e perder a pista do 2.5.
+
+**(c) Completar a rede de valores.** Refutado em §36.1.
+
+### 36.4 A hipótese que sobreviveu, e por que é a mais forte
+
+**Prior de origem: o primeiro tick do eixo x é ZERO em 900 de 900 amostras** — e
+nas três imagens reais também.
+
+Isso reformula o problema. Hoje a calibração exige QUATRO pares mutuamente
+consistentes, e é a exigência de consistência que o emparelhamento errado da
+camada 3 destrói. Com a origem conhecida, **um** par lido determina a escala. Um
+par ruim deixa de contaminar uma consistência que não é mais exigida.
+
+Prior secundário, aplicável ao mundo real mas NÃO validável no corpus: os
+locators do matplotlib com defaults produzem passo `1, 2, 2.5, 5 × 10^k`. Medido
+no gerador, só **41,3%** dos eixos x têm passo "bonito", porque ele sorteia
+contagens de bins; as três imagens reais têm passo 2, 1 e 0,5 — todos bonitos.
+É mais uma divergência gerador-vs-real, da mesma família das do §35: o prior é
+forte no alvo e o corpus não permite medi-lo.
+
+### 36.5 PRÓXIMOS PASSOS, em ordem de valor medido
+
+**1. Prior de origem + um rótulo (fazer primeiro).**
+Trocar "quatro pares consistentes" por "um par + âncora conhecida" no eixo x.
+Ataca a camada 3 pela raiz em vez de tentar consertar o emparelhamento. Precisa
+de guarda própria — a candidata natural é redundância entre pares lidos,
+aceitando a escala que mais deles corroborarem, em vez de exigir que todos
+concordem. Critério de aceitação a fixar ANTES de implementar, e tem de incluir
+falso positivo: qualquer coisa que suba cobertura sem medir falso positivo
+repete o erro de §36.3(b). Teto esperado bem acima dos 84,8% que a varredura de
+24 variantes do `_equiespacados` mediu.
+
+**2. Classificador de dígitos treinado no gerador.**
+Ataca a camada 2 (80-87%) e, por consequência, dá massa ao RANSAC para rejeitar
+o par ruim da camada 3. O gerador CONHECE o texto exato que renderiza, então os
+rótulos de treino são gratuitos e exatos — a mesma jogada que já funcionou no
+Estágio A. Substitui o Tesseract no ponto em que ele é estruturalmente ruim
+(numeral curto isolado), sem depender de parâmetro nenhum dele. Custo: um treino
+a mais. Fazer DEPOIS do item 1, porque o item 1 pode tornar o recall menos
+crítico e mudar o alvo.
+
+**3. Prior de passo bonito.**
+Restringe as leituras a uma grade candidata pequena e permite rejeitar leitura
+inconsistente sem exigir consistência entre pares. **Bloqueado pelo gerador**:
+com 41,3% de passo bonito no corpus não há como validar. Exige primeiro alinhar
+os locators do gerador ao comportamento default do matplotlib — o que, note, é
+um conserto de FIDELIDADE do corpus e não do pipeline, e provavelmente melhora
+outras coisas junto.
+
+**4. Medir o critério 2.5 sob a variante `filtra` (barato, e independente dos
+itens acima).**
+Único caminho medido neste bloco que reduz falso positivo (55 → 48). Ruim para o
+2.9, possivelmente bom para o 2.5, que está reprovado em 0,885 e cuja métrica é
+justamente a precisão da rejeição. Custo: uma rodada da suíte. Ver §36.3(b).
+
+**5. O que NÃO fazer: continuar ajustando `_equiespacados`.**
+Já varridas 24 variantes (limiar 0,05 a 0,15 × unidade por `min(d)` ou por rede
+de mínimos quadrados × checar pixel+valor ou só valor). Toda variante que sobe
+cobertura sobe falso positivo, ~1,3 falso positivo por ponto percentual, e o
+máximo alcançável é **84,8% a 10,6% de falso positivo** — abaixo da meta de 90%.
+O gate não está mal calibrado; está mal condicionado por receber poucos pontos, e
+isso se resolve acima dele.
+
+### 36.6 Limite que atravessa tudo isto
+
+Validação externa é **n=3**. As três imagens já expuseram defeitos que 900
+amostras sintéticas nunca produziram (§35 e §36.3(a)), o que é o argumento a
+favor de validar fora do próprio gerador — e simultaneamente o limite: várias
+decisões deste bloco se apoiam nessas três. Ampliar o acervo externo continua
+sendo o passo de maior alavancagem para o TCC inteiro, e não só para o 2.9.
+
+---
+
+## 37. Ruling 58 — a camada que faltava: os blobs de rótulo fundiam com as MARCAS de tick
+
+Executando o item 1 do §36.5 (prior de origem), a porta de verificação do
+prior reprovou — e a investigação do porquê encontrou um defeito uma camada
+ABAIXO de tudo que o §36 mediu. O conserto sobe cobertura e desce falso
+positivo ao mesmo tempo, o que nenhuma das quatro hipóteses do §36 conseguiu.
+
+### 37.1 Como o defeito apareceu
+
+O critério de aceitação do item 1 foi fixado ANTES de implementar (exigência
+do próprio §36.5) com quatro portas, a primeira delas:
+
+> O blob mais externo da faixa de rótulos tem de coincidir com o pixel
+> verdadeiro do primeiro tick a <= 3 px em >= 99% das amostras. Se não
+> coincidir, a âncora não existe e o item cai ANTES de qualquer implementação.
+
+Medido, n=895: **76,1% no eixo x e 75,5% no y**. Reprovada.
+
+O prior em si é sólido — verificado direto no `meta.ticks`, o primeiro tick
+do eixo x vale 0 em **900/900**, e (achado novo, que o §36.4 não tinha visto)
+o menor tick do eixo y vale 0 em **896/900 = 99,56%**. O que falhava era
+LOCALIZAR o pixel desse tick. Nos piores casos havia 1 ou 2 blobs no MEIO do
+eixo e nenhum rótulo detectado; numa amostra o OCR leu literalmente
+`"1020304050"` — os cinco rótulos colados num texto só.
+
+### 37.2 A causa
+
+A faixa de rótulos do eixo x começa em `y1 + 1`, colada na moldura. As
+MARCAS de tick apontam para fora, então **elas estão dentro da faixa**: são
+traços de ~1 px espaçados de ~15,7 px, nas 3 primeiras linhas.
+
+Com `BLOB_DILATE_X = 8` (dilatação de ±8 px, ou seja 16 px de alcance) as
+marcas se costuram umas nas outras numa barra horizontal contínua; com
+`BLOB_DILATE_Y = 2` essa barra encosta nos rótulos logo abaixo. Resultado:
+**um blob só**, cobrindo o eixo inteiro, cujo centro é o meio do eixo.
+
+E isso não é um defeito cosmético, porque `read_tick_labels` usa
+**o centro do blob COMO O PIXEL DO TICK**. Blob fundido = posição errada em
+TODO par daquela amostra. O mesmo vale no eixo y, onde as marcas ficam na
+borda direita da faixa.
+
+Um segundo defeito, independente, saiu da mesma investigação: a faixa do x
+ia de `x0` a `x1` exatos, e o rótulo do primeiro tick fica a poucos px de
+`x0` quando a margem do eixo é pequena (o gerador sorteia 1% a 6%). Metade
+do texto caía fora e o centro do blob escorregava para a direita.
+
+### 37.3 O conserto e o que ele mede
+
+Três mudanças em `identify/calibrate.py`, todas em `read_tick_labels` e
+`_text_blobs`:
+
+1. `BLOB_DILATE_X` de **8 para 3** px.
+2. Zerar a banda de tinta encostada na moldura antes de dilatar —
+   `TICK_GAP` px, a MESMA constante que o `_candidatos` já aparava do
+   recorte do OCR. A intenção existia no código; faltava aplicá-la à busca
+   por blob. Aparar o recorte conserta o texto que o tesseract vê, não a
+   POSIÇÃO do blob.
+3. Folga na faixa: **20 px lateral no x** (devolve o rótulo decepado) e
+   **2 px vertical no y**. A folga do y tem de ser pequena pelo motivo
+   oposto: esticar a faixa do y para baixo de `y1` captura o topo do rótulo
+   "0" do eixo x, que vira blob espúrio abaixo do último tick — justo onde a
+   leitura do y começa (medido: folga 12 px derruba o y de 99,8% para 97,2%).
+
+Medido em `data/test` (n=900), baseline gerado pelo MESMO script com a
+configuração de hoje — comparação cache-com-cache, e o baseline reproduz o
+§36.3 dígito a dígito (716 aceitas, 55 falso+):
+
+| | hoje | com o conserto |
+|---|---|---|
+| âncora x a <= 3 px | 76,09% | **99,89%** |
+| âncora y a <= 3 px | 75,53% | **99,89%** |
+| `ok` | 79,56% (716) | **91,78% (826)** |
+| falso positivo | 55 (7,68% das aceitas) | **20 (2,42%)** |
+| `ok_x` | 87,67% | 94,56% |
+| falso positivo em x | 57 (7,22%) | **7 (0,82%)** |
+| `ok_y` | 88,44% | 94,89% |
+| `calibration_failed` | 76 | **8** |
+| `sinal_invalido` | 19 | 3 |
+
+Falso positivo = escala aceita com erro relativo >= 1% contra o
+`axis_affine` do meta — a mesma TOL_ESC das varreduras do §36.3.
+
+**É o único ajuste medido em todo este bloco que sobe cobertura E desce
+falso positivo.** Todas as 24 variantes de `_equiespacados` do §36.5(5)
+trocavam uma coisa pela outra, a ~1,3 falso positivo por ponto percentual.
+
+### 37.4 O que isto corrige no §36
+
+- **O §36.2 está incompleto.** A anatomia em três camadas (moldura ->
+  OCR -> emparelhamento) não nomeia a camada de BLOBS, que fica entre a
+  moldura e o OCR e alimenta as duas seguintes. Os 80-87% de "recall do
+  OCR" da camada 2 foram medidos com essa camada quebrada.
+- **O §36.4 apontou a hipótese errada.** Ele culpou a exigência de
+  consistência entre quatro pares. A consistência estava certa: ela
+  rejeitava, corretamente, amostras cujas posições de blob eram lixo. Com a
+  entrada consertada, `calibration_failed` cai de 76 para 8 sem tocar em
+  uma linha do gate.
+- **O §36.3(a) fica explicado.** O discriminador `_sem_paralela` reduziu
+  espúrios de tick sem mover `ok` em um dígito. Faz sentido: as marcas de
+  tick nunca foram usadas como posição — o blob é que era. Consertar a
+  detecção de marcas não podia mesmo mudar nada.
+- **O §36.3(b) fica sob suspeita, não refutado.** O experimento de `snap`
+  encostava rótulos em marcas de tick usando posições de blob fundidas dos
+  dois lados. A conclusão ("não usar ticks como referência de posição")
+  continua de pé pela precisão das marcas, mas os números teriam de ser
+  refeitos para valer como medida.
+
+### 37.5 Verificação na imagem real
+
+A fixture `caso_real_2ordem.png` passa de `ok=False` (`calibration_failed`
+no eixo y) para **`ok=True`**. Os pares lidos no eixo x vão de 4 para 6, e
+os dois que apareceram são **`0.0` e `10.0`** — exatamente o primeiro e o
+último, os dois que a borda da faixa decepava. O corte lateral se confirma
+fora do gerador.
+
+Limite: das três imagens externas do §35/§36, só esta sobreviveu em disco;
+as outras duas foram coladas na conversa e não viraram fixture. A porta 4
+do critério (nenhum eixo hoje aprovado pode reprovar) foi verificada em
+n=1, não em n=3. **Salvar as três como fixtures é dívida aberta**, e o §36.6
+já dizia que ampliar o acervo externo é a maior alavanca do TCC.
+
+### 37.6 O que isto faz com os próximos passos do §36.5
+
+- **Item 1 (prior de origem): NÃO implementado, e agora é opcional.** O
+  prior foi validado (100% no x, 99,56% no y) e a âncora ficou utilizável
+  (99,89% nos dois eixos), mas o conserto de blob sozinho já entrega mais
+  do que o item prometia. O prior continua valendo como duas coisas
+  distintas, a medir separadas: **validador** (rejeitar ajuste cujo zero
+  implícito caia longe do primeiro blob — ataca falso positivo, logo o
+  critério 2.5) e **âncora** (ajustar com um par só — ataca cobertura).
+- **Item 2 (classificador de dígitos): remedir antes de dimensionar.** O
+  recall de 80-87% que o justificava foi medido sob a camada quebrada.
+- **Item 3 (passo bonito): sem mudança**, continua bloqueado pelo gerador.
+- **Item 4 (2.5 sob `filtra`): reavaliar.** O falso positivo caiu de 55
+  para 20 por outro caminho; o trade que a variante `filtra` oferecia pode
+  ter deixado de valer a pena.
+- **Item 5 (não mexer em `_equiespacados`): confirmado com mais força.** O
+  gate nunca foi o problema; ele estava recebendo lixo.
+
+### 37.7 A lição de método
+
+O item 1 foi para a fila em primeiro lugar por ser a hipótese mais forte do
+§36. Ele não foi implementado — o que produziu o resultado foi a PORTA de
+verificação dele, fixada antes por exigência do próprio §36.5, e a decisão
+de investigar por que ela reprovou em vez de descartar o item. Uma porta de
+aceitação que reprova é informação sobre o sistema, não sobre a hipótese.
+
+### 37.8 Suíte completa: os dois critérios travados fecharam
+
+`pytest tests/part2 -q` → **1 falha, 43 passam** (eram 4 falhas), 382 s.
+
+| critério | alvo | antes | depois |
+|---|---|---|---|
+| **2.9** cobertura da calibração | ≥ 90% | 0,797 ❌ | **0,923 ✅** (n=300) |
+| **2.5** rejeições corretas | ≥ 90% | 0,885 ❌ | **0,957 ✅** (n=23) |
+| 2.3 erro relativo de sx, sy | < 1% em ≥ 95% | ✅ | 0,989 ✅ (n=277) |
+| 2.4 taxa de rejeição (diagnóstico) | 1 − cobertura do 2.9 | 0,203 | 0,077 |
+| 2.11 bloco `dimensionless` | 100% | ✅ | 300/300 ✅ |
+| **2.1** erro perpendicular da máscara | ≤ 1,0 px med / ≤ 2,0 px p95 | 0,807 / 2,077 ❌ | 0,807 / 2,077 ❌ |
+
+O 2.9 estava reprovado **desde o Bloco 5** e resistiu às 24 variantes de
+`_equiespacados` do §36.5(5), ao `snap` e ao `_sem_paralela` do §36.3. O 2.5
+nunca tinha tido sequer uma pista de melhora antes do §36.3(b) — e fechou
+por um caminho diferente do que aquela pista sugeria: não por rejeitar mais,
+e sim por deixar de produzir a leitura ruim que precisava ser rejeitada.
+
+O 2.1 é a máscara da U-Net, que este conserto não toca; segue reprovado com
+os MESMOS 0,807 / 2,077 px do §35, herdados da promoção do modelo RGB. Fica
+como o único critério aberto da Parte 2, e precisa de decisão própria:
+investigar a cauda do modelo ou revisar o alvo de 2,0 px.
+
+O estrato mais fraco do 2.9 passa a ser `dpi 60-99` (0,800, n=85), contra
+0,974 e 0,970 nos dpi maiores — o que é coerente com a causa consertada,
+porque em dpi baixo o rótulo tem menos pixels e a banda de marcas pesa mais
+na faixa.
+
+### 37.9 Ruling 59a — colapso do lote de OCR (achado por imagem externa)
+
+`_ocr_numeros_lote` monta todos os recortes num mosaico e chama o tesseract
+com `--psm 7`. Quando a análise de LAYOUT decide que aquilo não é uma linha
+de texto, ele **não levanta exceção**: devolve zero palavras, e o lote inteiro
+vira `None` de uma vez. A amostra fica sem nenhum par nos DOIS eixos.
+
+Não é previsível pelo tamanho. Medido numa imagem externa, variando só o
+tamanho do lote sobre os MESMOS recortes: 14 → 11 lidos, 16 → **0**,
+18 → **0**, 20 → 17, 21 → **0**.
+
+Custo, medido em `data/test` (amostras com zero pares em ambos os eixos):
+**16 antes**, 12 depois do conserto de blobs do §37.3. Ou seja: pré-existente,
+e o conserto de blobs não o criou — mudou o conjunto de recortes e caiu num
+caso ruim. Para a imagem externa foi regressão do §37.3 (o HEAD lia 7 pares
+em x, a versão nova lia 0), e está registrado como tal.
+
+Conserto: teto de `_LOTE_MAX = 12` recortes por mosaico (o dano fica preso a
+um bloco) mais releitura individual de qualquer bloco que colapse. O custo do
+recuo só existe no caminho raro.
+
+| | antes do §37.3 | com §37.3 | com §37.3 + teto |
+|---|---|---|---|
+| `ok` | 79,56% | 91,78% | **93,00%** |
+| falso positivo | 55 | 20 | 20 |
+| `ok_x` | 87,67% | 94,56% | 95,67% |
+| `ok_y` | 88,44% | 94,89% | 96,22% |
+
+### 37.10 Ruling 59b — dois fundos na figura (achado por imagem externa)
+
+O fundo era estimado pela mediana do quadro inteiro, o que assume um fundo
+só. O `generator.py:200-202` garante isso; o matplotlib real não — um
+`ax.set_facecolor()` diferente do `figure.facecolor` é comum em tema escuro.
+
+Quando a área de dados é a MAIOR das duas regiões, a mediana cai no fundo DOS
+EIXOS e a moldura inteira da figura passa a contar como tinta. Medido numa
+imagem externa de tema escuro (figura 43, eixos 30, mediana 30):
+`detect_plot_bbox` devolveu **(0, 0, 799, 460)** — o quadro inteiro — em vez
+de (100, 55, 720, 410). Faixas de rótulo vazias, zero pares, calibração
+física perdida.
+
+Conserto: `_fundo()` = **moda da borda** da imagem. A borda é fundo da FIGURA
+por construção. Com um fundo só, moda da borda e mediana coincidem:
+verificado idêntico nas 900 amostras, e o bbox saiu igual em **900/900**.
+
+### 37.11 Ruling 59c — guardas de plausibilidade: uma refutada, duas implementadas
+
+**REFUTADA: descontinuidade da máscara.** Parecia óbvia — na imagem externa
+que erra, o maior buraco entre colunas com tinta é 19,3%, contra 5,5% da
+segunda pior das outras sete. Medida no corpus (n=837 com físico e verdade
+comparável), NÃO sobrevive:
+
+| sinal | Spearman contra o erro da identificação | p |
+|---|---|---|
+| maior buraco | **+0,020** | 0,57 |
+| densidade de colunas | +0,003 | 0,93 |
+
+E o maior buraco do próprio corpus (20,9%) é MAIOR que o da imagem que erra.
+Em qualquer limiar a guarda pega no máximo 3 de 79 identificações ruins.
+
+**O motivo é estrutural e é a lição desta subseção**: o corpus não contém o
+modo de falha que essa guarda existia para pegar, então ele media só o CUSTO
+dela, nunca o benefício. A ordem "guarda primeiro, estrato depois" estava
+errada — o estrato do §37.12 é PRÉ-REQUISITO para validar essa guarda, não um
+passo posterior. Registrado porque a separação em n=8 era convincente e n=895
+a desmente.
+
+**IMPLEMENTADA: resíduo do ajuste (`_NRMSE_MAX = 0.13`).** Escapa do problema
+acima por não depender do modo de falha — depende de o ajuste ficar ruim
+quando a série é lixo, e disso o corpus tem 79 exemplos.
+
+| | valor |
+|---|---|
+| Spearman `nrmse` × erro | **+0,386** (p = 4,5e-31) |
+| limiar (p98 do corpus) | 0,1286 → arredondado para 0,13 |
+| rejeita | 17 de 837 |
+| precisão | **88,2%** (15 das 17 de fato ruins) |
+| custo | 2 boas perdidas em 837 (0,24%) |
+| recall | 19% — recusa o absurdo, não audita o aceitável |
+
+**IMPLEMENTADA: resposta inversa (`_UNDERSHOOT_MAX = 0.10`).** Fase não-mínima
+não pertence à família de modelos do Estágio D: nem FOPDT nem 2ª ordem sem
+zero representam resposta inversa, então o ajuste devolve um sistema plausível
+e estruturalmente errado.
+
+A primeira definição da métrica tinha FALSO POSITIVO: olhava a série inteira
+contra o "valor final" e marcava 0,147 numa imagem externa de ζ=0 cuja
+identificação estava CERTA (ωₙ a 0,001% do verdadeiro) — porque a série não
+assenta e o valor final caía num ponto qualquer da oscilação. Redefinida pela
+física (a excursão contrária só conta ANTES de a resposta arrancar), aquela
+imagem cai para 0,004 e a de fase não-mínima fica em 0,143.
+
+Custo no corpus: **2 de 900 (0,22%)**. **ATENÇÃO ao que NÃO está medido**: o
+gerador não produz fase não-mínima, então o corpus dá só o custo. O benefício
+está apoiado em n=1.
+
+**Efeito nas oito imagens externas**: as seis corretas ficam intactas; as duas
+que respondiam errado com `ok=true` passam a recusar com motivo nomeado —
+`ajuste_inconsistente` e `resposta_inversa`. Suíte: 1 falha, 43 passam (só o
+2.1, inalterado).
+
+### 37.12 Ruling 60 — estrato OOD novo: banda de acomodação e anotação com seta
+
+Dois campos de RENDER opt-in, `has_settling_band` e `has_annotation_arrow`,
+seguindo exatamente o padrão do `has_reference_line` (§34.5): `sample_style`
+nunca os toca, `render_sample` os marca por `replace`, e o caminho padrão foi
+verificado **byte a byte idêntico**.
+
+São DOIS campos e não um porque são fenômenos separáveis, e separados dão
+ablação. Ablação pareada, n=60 seeds, `janela_assentada=True` em todos os
+braços para a geometria ser comparável:
+
+| braço | IoU mediana | IoU p10 | Δ vs base | p (Wilcoxon) |
+|---|---|---|---|---|
+| base | 0,6121 | 0,3959 | — | — |
+| só banda | 0,5352 | 0,1980 | −0,0629 | 2,6e-10 |
+| só seta | 0,4969 | 0,3041 | −0,1130 | 1,6e-11 |
+| **banda+seta** | **0,4381** | **0,1866** | **−0,1898** | 1,6e-11 |
+
+A IoU cai **31% em mediana** com os dois juntos, e o efeito é aditivo. É o
+oposto da primeira tentativa do §35, onde o estrato não movia a métrica e o
+retreino teria sido desperdício: este reproduz o fenômeno.
+
+**A seta pesa quase o dobro da banda**, o que confirma o diagnóstico da imagem
+externa — o que desvia a máscara é um segmento espesso SAINDO da curva, não a
+sombra no patamar. Texto sem seta já existia em `style.annotations` e nunca
+degradou nada.
+
+**Limite honesto do que este estrato prova.** O erro de identificação quase
+não se move (mediana 0,0079 → 0,0175; o p90 até melhora). A máscara piora
+muito e a resposta final quase não piora, porque a polilinha e o ajuste
+absorvem o estrago. A imagem externa mostra que existe um regime em que não
+absorvem, mas o corpus, mesmo com o estrato, ainda não o alcança. **O estrato
+prova que o Estágio A sofre, não que o Estágio D quebra.**
+
+### 37.13 Placar das imagens externas ao fim do bloco
+
+Oito imagens, seis identificadas corretamente, duas recusadas com motivo:
+
+| imagem | verdade | resultado |
+|---|---|---|
+| caso_real_2ordem | ζ=0,5 ωₙ=2 | 0,502 / 2,021 ✅ |
+| Figure_21 | ζ=0,2 ωₙ=5 | 0,200 / 5,034 ✅ |
+| Figure_12 | ζ=0 ωₙ=4 | 0,001 / 4,000 ✅ (ζ no piso) |
+| Figure_15 | 1ª ordem τ≈2 | τ=1,981 ✅ |
+| Figure_11 | 1ª ordem τ≈0,2 | τ=0,195 ✅ |
+| Figure_122 | 1ª ordem τ≈0,34 | τ=0,335 ✅ |
+| Figure_16 | ζ=0,6 ωₙ≈10 | recusa `ajuste_inconsistente` |
+| Figure_22 | fase não-mínima | recusa `resposta_inversa` |
+
+**Dívida aberta e prioritária: nenhuma delas é fixture.** Só a primeira está
+versionada; as outras sete vieram por conversa e vivem em `/home/loizm/`. Sete
+das oito não protegem nada em regressão. Somando ao §37.5, esta é a tarefa de
+maior alavancagem que resta.
+
+Item conhecido, não corrigido: o `ZETA_BOUNDS` de `classical.py:44` tem piso
+`1e-3`, então ζ=0 verdadeiro sai como 0,001. Não é medição, é o limite da
+caixa de parâmetros.

@@ -899,7 +899,8 @@ _RENDER_KEYS = {"dpi", "size_px", "has_grid", "has_legend", "line_width",
                 "line_style", "line_color", "bg_color", "has_marker",
                 "has_title", "has_xlabel", "has_ylabel", "n_annotations",
                 "n_distractors", "n_spines", "snr_db", "quantization_levels",
-                "has_reference_line"}
+                "has_reference_line", "has_annotation_arrow",
+                "has_settling_band"}
 
 
 def test_meta_contract(clean_dataset, noisy_dataset):
