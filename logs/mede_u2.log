@@ -1,0 +1,12 @@
+  200/900
+  400/900
+  600/900
+  800/900
+
+n=900 mediana=0.0063 p90=0.0304 p99=0.0677 p99.9=0.1465 max=0.2706
+  limiar 0.05: rejeita  29/900 = 3.22% do corpus BOM
+  limiar 0.06: rejeita  14/900 = 1.56% do corpus BOM
+  limiar 0.08: rejeita   4/900 = 0.44% do corpus BOM
+  limiar 0.10: rejeita   2/900 = 0.22% do corpus BOM
+  limiar 0.12: rejeita   2/900 = 0.22% do corpus BOM
+  limiar 0.14: rejeita   1/900 = 0.11% do corpus BOM

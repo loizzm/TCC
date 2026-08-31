@@ -204,6 +204,20 @@ class RenderStyle:
     # sinal
     snr_db: float = 40.0
     quantization_levels: int = 0
+    # estrato OOD opt-in (Ruling 55 §34.5): campo de RENDER, NAO e sorteado
+    # aqui. `sample_style` nunca o toca (fica sempre no default False) —
+    # e' `render_sample` (dataset/generator.py) que o marca via
+    # `dataclasses.replace` quando `reta_no_patamar=True`. Mantem a
+    # assinatura de `sample_style` em `["rng"]` (tests/test_part1.py:1115).
+    has_reference_line: bool = False
+    # Estrato OOD opt-in (Ruling 60, §37.12). Mesmas regras do
+    # `has_reference_line`: campo de RENDER, `sample_style` nunca toca, e o
+    # `render_sample` marca via `replace`. Sao DOIS campos e nao um porque sao
+    # dois fenomenos separaveis — a caixa com seta desvia a mascara para uma
+    # estrutura ACIMA da curva; a banda sombreada apaga o contraste no
+    # patamar. Separados dao ablacao; juntos reproduzem o caso real.
+    has_annotation_arrow: bool = False
+    has_settling_band: bool = False
 
     # -- derivados --------------------------------------------------------
     @property
@@ -246,6 +260,9 @@ class RenderStyle:
             "n_spines": int(self.n_spines),
             "snr_db": float(self.snr_db),
             "quantization_levels": int(self.quantization_levels),
+            "has_reference_line": bool(self.has_reference_line),
+            "has_annotation_arrow": bool(self.has_annotation_arrow),
+            "has_settling_band": bool(self.has_settling_band),
         }
 
 
@@ -290,6 +307,18 @@ def sample_style(rng: np.random.Generator) -> RenderStyle:
 
     x_margin_lo = float(rng.uniform(0.01, 0.06))
     x_margin_hi = float(rng.uniform(0.01, 0.06))
+    # BURACO CONHECIDO do envelope de treino (HANDOFF_P2_7 §39.3). O piso de
+    # 0,03 garante que a curva NUNCA fique a menos de 3 % do span do eixo y da
+    # moldura inferior — e `plt.ylim(0, ...)`, que e o caso normal de um grafico
+    # de controle real (repouso em zero), poe a curva a ~0,9 %. Medido nas tres
+    # imagens do `rg.py`, a cobertura da mascara do Estagio A tem um DEGRAU em
+    # ~2 % do span: a 5 px da moldura sai 0/150 colunas, a 7 px sai 107/150.
+    # Refutadas por ablacao como causa: a banda cinza do distrator, a cor do
+    # traco e a PLANURA do trecho (ondular +-1 px na mesma altura nao recupera
+    # nada — isso e o defeito B do §39.3, que e outro). E fora da distribuicao,
+    # nao bug: so retreino com um estrato de margem inferior quase nula fecha.
+    # NAO mudar este sorteio sem retreinar — `tests/part2/test_caso_real_rg.py`
+    # guarda a premissa dos dois lados.
     y_margin_lo = float(rng.uniform(0.03, 0.15))
     y_margin_hi = float(rng.uniform(0.03, 0.15))
 

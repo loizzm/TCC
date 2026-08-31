@@ -23,3 +23,13 @@ data/
 # Checkpoints dos pilotos de triagem (3 epocas, ~49 MB): nao sao modelos
 # utilizaveis, e os numeros deles estao em HANDOFF_P2_6.md §3.3
 models/piloto_*.pt
+
+# Checkpoint de treino INTERROMPIDO (5 epocas de 25, run morto por travamento):
+# mesma razao dos `piloto_*` acima — nao e modelo utilizavel, e os numeros das
+# 5 epocas ficam em logs/train_base32_interrompido.log
+models/*_interrompido.pt
+
+# Copia de seguranca local do checkpoint anterior a uma promocao. O conteudo
+# ja esta no historico (`git show <commit>:models/unet_stageA.pt`), entao
+# versiona-la so duplicaria o arquivo na arvore.
+models/*_backup.pt

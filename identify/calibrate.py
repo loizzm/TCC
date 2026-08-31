@@ -38,6 +38,31 @@ SPINE_MIN_FILL = 0.90   # fração mínima de pixels de tinta dentro do próprio
 MIN_BBOX_PX = 8         # bbox menor que isso é considerado ruído, não moldura
 
 
+def _fundo(gray: np.ndarray) -> float:
+    """Nível de fundo da figura: a MODA DA BORDA da imagem, não a mediana.
+
+    A mediana do quadro inteiro assume que só existe um fundo. O
+    `dataset/generator.py:200-202` garante isso — o fundo dos eixos é sempre
+    igual ao fundo da figura — mas o matplotlib do mundo real não: um
+    `ax.set_facecolor()` diferente do `figure.facecolor` é comum em tema
+    escuro. Quando a área de dados é a MAIOR das duas regiões, a mediana cai
+    no fundo DOS EIXOS, e aí a moldura inteira da figura passa a contar como
+    tinta: `detect_plot_bbox` aceita a última linha da imagem como spine
+    inferior e devolve o quadro inteiro. Medido numa imagem externa de tema
+    escuro (fundo da figura 43, dos eixos 30, mediana global 30): bbox
+    (0, 0, 799, 460) em vez de (100, 55, 720, 410), zero rótulos lidos nos
+    dois eixos, calibração física perdida.
+
+    A borda da imagem é fundo da FIGURA por construção — é o que sobra fora
+    de tudo. Com um fundo só, moda da borda e mediana coincidem: verificado
+    idêntico nas 900 amostras de `data/test`, e o bbox saiu igual em 900/900.
+    Ver §37.10.
+    """
+    b = np.concatenate([gray[0], gray[-1], gray[:, 0], gray[:, -1]])
+    valores, contagens = np.unique(b, return_counts=True)
+    return float(valores[int(np.argmax(contagens))])
+
+
 def _ink_mask(gray: np.ndarray, bg: float) -> np.ndarray:
     return np.abs(gray.astype(np.float32) - bg) > INK_THR
 
@@ -51,7 +76,7 @@ def detect_plot_bbox(gray: np.ndarray) -> tuple[int, int, int, int] | None:
     esquerdo, sempre presente) — sua extensão vertical já dá y0 e y1.
     """
     h, w = gray.shape
-    bg = float(np.median(gray))
+    bg = _fundo(gray)
     ink = _ink_mask(gray, bg)
 
     row_counts = ink.sum(axis=1)
@@ -125,6 +150,47 @@ def _merge_close(vals: list[float], tol: float = 8.0) -> list[float]:
     return out
 
 
+def _sem_paralela(faixa: np.ndarray, eixo_do_tick: int) -> np.ndarray:
+    """Remove da faixa o que for PARALELO ao eixo, preservando o tick.
+
+    Um tick e perpendicular ao eixo e LOCALIZADO na coordenada do eixo. Uma
+    linha paralela — tipicamente a grade coincidindo com o proprio spine —
+    contribui IGUALMENTE para todas as posicoes, entao e a mediana ao longo do
+    eixo, e subtrai-la a anula sem tocar no tick.
+
+    Por que isso existe: a faixa de DENTRO era a fonte de quase todas as
+    deteccoes falsas. Medido em `data/test` (n=895, eixo x): 7 espurios
+    medianos com as duas faixas, 1 usando so a de fora. E nas tres imagens
+    reais do bloco a faixa de dentro devolvia 70, 69 e 68 deteccoes para ~6, 7
+    e 9 ticks verdadeiros — uma a cada ~9 px ao longo de toda a largura, o
+    padrao de uma grade PONTILHADA sobre a borda. O corpus nunca reproduz isso
+    porque `y_margin_lo` empurra o `ylim` para baixo do minimo dos dados, e a
+    grade de y=0 nunca cai sobre o spine; nas imagens reais o `ylim` comeca em
+    0 e cai exatamente ali.
+
+    Nao se resolve usando so a faixa de fora: isso perde os ticks de direcao
+    "in" inteiramente (medido no Bloco 2, ~1/3 das amostras com recall ~0).
+
+    Efeito medido (eixo x, n=895): espurios medianos 7 -> 3, recall mediano
+    100 % nos dois, recall p10 40 % -> 30,5 %. Nas imagens reais: 70 -> 5,
+    69 -> 6, 68 -> 8.
+
+    NAO ESTA EM USO, E O MOTIVO E O RESULTADO. Aplicada em `detect_tick_pixels`,
+    a correcao NAO MOVEU NADA a jusante: `ok` 716/900, `ok_x` 789, `ok_y` 796 e
+    55 falsos positivos, digito a digito iguais aos de antes, e as tres imagens
+    reais tambem inalteradas. Os ticks espurios ja eram inofensivos — os
+    recortes que eles geram sao descartados pelo filtro `_NUM_RE` do OCR. Como
+    ha custo medido (recall p10 40 % -> 30,5 %) e beneficio zero, a aplicacao
+    foi revertida. Fica aqui documentada para que ninguem gaste a mesma
+    investigacao: melhorar a PRECISAO da deteccao de ticks nao destrava a
+    calibracao. O gargalo e o RECALL DO OCR.
+    """
+    if faixa.size == 0:
+        return faixa
+    return np.clip(faixa - np.median(faixa, axis=eixo_do_tick, keepdims=True),
+                   0.0, None)
+
+
 def detect_tick_pixels(gray: np.ndarray, bbox: tuple[int, int, int, int]) -> dict[str, list[float]]:
     """Ticks maiores por picos de tinta na faixa ao redor da moldura.
 
@@ -140,7 +206,7 @@ def detect_tick_pixels(gray: np.ndarray, bbox: tuple[int, int, int, int]) -> dic
     x0, y0, x1, y1 = bbox
     h, w = gray.shape
     g = gray.astype(np.float32)
-    fundo = float(np.median(g))
+    fundo = _fundo(g)
     tinta = np.abs(g - fundo)
 
     # As pontas da faixa (perto de x0/x1 para os ticks em x, perto de y0/y1
@@ -156,6 +222,12 @@ def detect_tick_pixels(gray: np.ndarray, bbox: tuple[int, int, int, int]) -> dic
     faixa_y_fora = tinta[ya:yb, max(x0 - TICK_BAND, 0):max(x0, 1)]
     faixa_y_dentro = tinta[ya:yb, x0 + 1:min(x0 + 1 + TICK_BAND, x1 + 1)]
 
+    # A faixa de DENTRO passa por `_sem_paralela`: e nela que a grade sobre o
+    # spine aparece, e ela e paralela ao eixo. A de FORA nao precisa — ali nao
+    # ha grade, e o que existe (rotulos) fica alem de TICK_BAND.
+    # Para os ticks em x a faixa e (linhas, colunas) e a estrutura paralela e
+    # constante ao longo das COLUNAS -> mediana no eixo 1. Para os ticks em y a
+    # faixa e transposta em papel, e a mediana vai no eixo 0.
     px = []
     if faixa_x_fora.size:
         px += [xa + p for p in _peaks(faixa_x_fora.sum(axis=0), TICK_PROM)]
@@ -222,7 +294,45 @@ def _texto_para_numero(txt: str) -> float | None:
         return None
 
 
+_LOTE_MAX = 12         # recortes por mosaico. O tesseract com `--psm 7` decide
+                       # se o mosaico É uma linha de texto, e essa decisão é do
+                       # LAYOUT: quando ela dá errado ele devolve NADA, e o lote
+                       # inteiro vira None junto. Medido numa imagem externa
+                       # (2ª ordem, zeta=0,2, com marcadores), variando só o
+                       # tamanho do lote sobre os MESMOS recortes: 14 -> 11 lidos,
+                       # 16 -> 0, 18 -> 0, 20 -> 17, 21 -> 0. Não é monotônico
+                       # no tamanho e não dá para prever pelo conteúdo, então o
+                       # lote é limitado (dano fica preso a um bloco) E cada
+                       # bloco que colapsa é relido um a um. Custo do teto: uma
+                       # invocação a mais (~52 ms) a cada 12 recortes.
+
+
 def _ocr_numeros_lote(crops: list[np.ndarray]) -> list[float | None]:
+    """Lê N recortes numéricos em lotes, com recuo individual por lote.
+
+    O colapso do lote é a falha mais cara desta função porque é TUDO OU NADA:
+    o tesseract não levanta exceção, devolve zero palavras, e a amostra fica
+    sem nenhum par nos DOIS eixos. Medido em `data/test` (n=895), amostras com
+    zero pares em ambos os eixos: 16 antes deste recuo. Ver §37.9.
+    """
+    n = len(crops)
+    if n == 0:
+        return []
+    out: list[float | None] = [None] * n
+    for ini in range(0, n, _LOTE_MAX):
+        bloco = crops[ini:ini + _LOTE_MAX]
+        r = _ocr_um_mosaico(bloco)
+        uteis = sum(1 for c in bloco
+                    if c is not None and c.size and c.shape[0] >= 1 and c.shape[1] >= 1)
+        if uteis >= 2 and all(v is None for v in r):
+            # o mosaico colapsou: relê um a um. Só acontece quando o lote
+            # inteiro falhou, entao o custo nao entra no caminho comum.
+            r = [_ocr_number(c) if (c is not None and c.size) else None for c in bloco]
+        out[ini:ini + len(r)] = r
+    return out
+
+
+def _ocr_um_mosaico(crops: list[np.ndarray]) -> list[float | None]:
     """Lê N recortes numéricos em UMA invocação do tesseract.
 
     Motivo (HANDOFF_P2_7 Ruling 31): o custo do tesseract aqui é partida de
@@ -308,20 +418,56 @@ TICK_GAP = 8       # px mais próximos da moldura, excluídos da busca de blob:
                     # é onde uma MARCA de tick (se existir) fica, e ela se
                     # funde com o dígito vizinho pela dilatação, confundindo
                     # o OCR (medido: "7.5" virava "75:" com a marca colada)
-BLOB_DILATE_X = 8  # px: funde dígitos/sinal/ponto do MESMO número num só blob
+BLOB_DILATE_X = 3  # px: funde dígitos/sinal/ponto do MESMO número num só blob
 BLOB_DILATE_Y = 2  # px: mantém rótulos de LINHAS diferentes (eixo y) separados
+# Folga lateral da faixa de rótulos, em px. A faixa do eixo x ia de `x0` a
+# `x1` exatos, e o rótulo do PRIMEIRO tick fica a poucos px de `x0` quando a
+# margem do eixo é pequena (o gerador sorteia 1% a 6%): metade do texto caía
+# fora do recorte e o centro do blob escorregava para a direita. Medido, no
+# corpus de teste (n=895), o acerto da posição do primeiro tick a <= 3 px:
+#   sem folga ..... 88,5%     folga 12 px ... 99,2%     folga 20 px ... 99,9%
+# A folga do eixo y é vertical e tem de ser PEQUENA pelo motivo oposto:
+# estender a faixa do y para baixo de `y1` captura o topo do rótulo "0" do
+# eixo x, que vira um blob espúrio ABAIXO do último tick — justo onde a
+# leitura do eixo y começa (medido: folga 12 px derruba o y de 99,8% para
+# 97,2%).
+FOLGA_FAIXA_X = 20
+FOLGA_FAIXA_Y = 2
 MIN_BLOB_AREA = 4  # blob menor que isso é ruído de antialiasing, não texto
 
 
-def _text_blobs(strip: np.ndarray, fundo: float) -> list[tuple[int, int, int, int]]:
+def _text_blobs(strip: np.ndarray, fundo: float,
+                corta_topo: int = 0, corta_direita: int = 0) -> list[tuple[int, int, int, int]]:
     """Componentes conexas prováveis de rótulo de texto num recorte.
 
     Dilata antes de rotular para fundir caracteres do MESMO número num só
     blob (`BLOB_DILATE_X`) sem fundir rótulos de ticks vizinhos entre si
     (`BLOB_DILATE_Y` pequeno mantém linhas do eixo y separadas). Devolve
     bboxes locais (x0, y0, x1, y1) dentro de `strip`, um por blob.
+
+    `corta_topo` / `corta_direita` ZERAM a banda de tinta encostada na
+    moldura antes de dilatar. Ela contém as MARCAS de tick, não texto: as
+    marcas apontam para fora e a faixa de rótulos começa colada na moldura.
+    São traços de ~1 px espaçados de ~15 px, então uma dilatação horizontal
+    de 8 px (o valor antigo) costurava todas numa barra só, e a dilatação
+    vertical grudava essa barra nos rótulos logo abaixo: a imagem inteira
+    virava UM blob, cujo centro é o meio do eixo. Como `read_tick_labels`
+    usa o centro do blob COMO O PIXEL DO TICK, todo par saía com posição
+    errada — e o `_equiespacados` os reprovava, corretamente. Medido no
+    corpus (n=895 com moldura), cortando a banda e com `BLOB_DILATE_X = 3`:
+      posição do 1º tick a <= 3 px .... x 76,1% -> 99,9%   y 75,5% -> 99,9%
+      calibração aceita (`ok`) ......... 79,6% -> 91,8%
+      falso positivo (escala errada) ... 55 -> 20 (7,7% -> 2,4% das aceitas)
+    É o único ajuste medido neste bloco que sobe cobertura E desce falso
+    positivo ao mesmo tempo. Ver §37 do HANDOFF_P2_7.md.
     """
     ink = (np.abs(strip.astype(np.float32) - fundo) > INK_THR).astype(np.uint8)
+    if corta_topo or corta_direita:
+        ink = ink.copy()
+        if corta_topo:
+            ink[:corta_topo] = 0
+        if corta_direita and ink.shape[1] > corta_direita:
+            ink[:, -corta_direita:] = 0
     if not ink.any():
         return []
     kernel = np.ones((2 * BLOB_DILATE_Y + 1, 2 * BLOB_DILATE_X + 1), np.uint8)
@@ -335,6 +481,66 @@ def _text_blobs(strip: np.ndarray, fundo: float) -> list[tuple[int, int, int, in
         bw, bh = int(stats[k, cv2.CC_STAT_WIDTH]), int(stats[k, cv2.CC_STAT_HEIGHT])
         boxes.append((x, y, x + bw, y + bh))
     return boxes
+
+
+def _centros_y_corrigidos(blobs: list[tuple[int, int, int, int]],
+                          altura_strip: int) -> dict[tuple[int, int, int, int], float]:
+    """Centro vertical de cada blob de rótulo do eixo y, sem o viés da borda.
+
+    A faixa de rótulos do eixo y é recortada de `y0 - FOLGA_FAIXA_Y` a
+    `y1 + 1 + FOLGA_FAIXA_Y`, e `FOLGA_FAIXA_Y` vale 2 px — pequeno DE
+    PROPÓSITO, porque estender a faixa para baixo captura o topo do rótulo "0"
+    do eixo x (medido: folga 12 px derruba o y de 99,8 % para 97,2 %; ver o
+    comentário da constante). O efeito colateral é que, quando o gráfico não
+    deixa margem entre a curva e a moldura, os rótulos do PRIMEIRO e do ÚLTIMO
+    tick ficam com o glifo cortado pela borda do recorte — e o centro da caixa
+    do blob, que é o pixel do tick, escorrega PARA DENTRO.
+
+    Medido na imagem real do `rg.py` (`plt.ylim(0, 1.8)`, rótulos a ~2 px da
+    moldura): blobs interiores com 14 px de altura, os dois extremos com 11 px,
+    centro deslocado 1,5 px para dentro em cada ponta. Os espaçamentos em pixel
+    saíam `[33.5, 35, 35, 71, 35, 35, 35, 33.5]` com os NOVE rótulos lidos
+    corretamente, e `_equiespacados` reprovava o eixo.
+
+    A correção usa só informação que já está na mão: um blob que encosta na
+    borda E é mais curto que a mediana dos que não encostam foi cortado, e o
+    centro verdadeiro dele está a meia altura MEDIANA da ponta que sobreviveu.
+    Blob de altura normal encostando na borda não foi cortado — foi desenhado
+    ali — e fica intacto.
+
+    Medido no corpus (`data/test`, n=900): 35 amostras em 895 (3,9 %) têm ao
+    menos um rótulo do y cortado; a correção não perde NENHUMA calibração e
+    derruba de 14 para 13 os falsos positivos de escala do eixo y. O corpus
+    mede sobretudo o CUSTO desta guarda, que é zero: o gerador sorteia
+    `y_margin_lo ~ U(0.03, 0.15)` e por isso quase nunca encosta o rótulo
+    extremo na moldura — a geometria que produz o defeito é a de
+    `plt.ylim(0, ...)`, que só as imagens externas trazem.
+    """
+    centros = {b: (b[1] + b[3]) / 2.0 for b in blobs}
+    livres = [b for b in blobs if b[1] > 0 and b[3] < altura_strip - 1]
+    if not livres:
+        return centros
+    h_med = float(np.median([b[3] - b[1] for b in livres]))
+    for b in blobs:
+        alt = b[3] - b[1]
+        if alt >= h_med - 1.0:
+            continue                              # altura normal: não foi cortado
+        if alt < h_med / 2.0:
+            continue
+            # Mais curto que METADE da mediana não é rótulo cortado: a faixa
+            # do eixo y também contém o RÓTULO DO EIXO (texto girado, ~74 px
+            # de altura contra 14 px de um número), e num gráfico com poucos
+            # ticks ele pode dominar a mediana dos blobs livres. Nesse caso
+            # `h_med` não representa altura de número nenhum, e corrigir por
+            # ela deslocaria o tick para longe. Um glifo cortado pela borda
+            # perde parte da altura, não quase toda — abaixo de metade a
+            # premissa não vale e o comportamento antigo (centro da caixa)
+            # é o mais seguro.
+        if b[1] <= 0:                             # cortado em cima
+            centros[b] = b[3] - h_med / 2.0
+        elif b[3] >= altura_strip - 1:            # cortado embaixo
+            centros[b] = b[1] + h_med / 2.0
+    return centros
 
 
 def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
@@ -358,7 +564,7 @@ def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
     """
     x0, y0, x1, y1 = bbox
     h, w = gray.shape
-    fundo = float(np.median(gray))
+    fundo = _fundo(gray)
     pares: dict[str, list[tuple[float, float]]] = {"x": [], "y": []}
 
     def _candidatos(strip, bx0, by0, bx1, by1, trim_top, trim_right):
@@ -379,21 +585,35 @@ def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
             cands.append(strip[max(by0 - pad, 0):by1 + pad, max(bx0 - pad, 0):bx1 - TICK_GAP])
         return cands
 
-    faixa_x = gray[min(y1 + 1, h - 1):min(y1 + 1 + MARGIN_X_H, h), x0:x1 + 1]
-    faixa_y = gray[y0:y1 + 1, max(x0 - MARGIN_Y_W, 0):x0]
+    fx_esq = max(x0 - FOLGA_FAIXA_X, 0)
+    fy_topo = max(y0 - FOLGA_FAIXA_Y, 0)
+    faixa_x = gray[min(y1 + 1, h - 1):min(y1 + 1 + MARGIN_X_H, h),
+                   fx_esq:min(x1 + 1 + FOLGA_FAIXA_X, w)]
+    faixa_y = gray[fy_topo:min(y1 + 1 + FOLGA_FAIXA_Y, h),
+                   max(x0 - MARGIN_Y_W, 0):x0]
     fy_w = faixa_y.shape[1]
 
     crops: list[np.ndarray] = []
     # (eixo, posicao_px, indices dos candidatos em ordem de precedencia)
     plano: list[tuple[str, float, list[int]]] = []
-    for bx0, by0, bx1, by1 in _text_blobs(faixa_x, fundo):
+    # `corta_topo`/`corta_direita` valem TICK_GAP: é a mesma banda que o
+    # `_candidatos` já aparava do recorte do OCR. O que faltava era aparar
+    # também da busca por BLOB — a poda do recorte conserta o texto que o
+    # tesseract vê, mas não a POSIÇÃO do blob, que é o que vira o pixel do
+    # tick. O recorte segue sendo tirado da faixa ORIGINAL, com a marca
+    # dentro: cortar a banda serve para separar os blobs, não para
+    # esconder pixel do OCR.
+    for bx0, by0, bx1, by1 in _text_blobs(faixa_x, fundo, corta_topo=TICK_GAP):
         cs = _candidatos(faixa_x, bx0, by0, bx1, by1, by0 <= 1, False)
-        plano.append(("x", x0 + (bx0 + bx1) / 2.0,
+        plano.append(("x", fx_esq + (bx0 + bx1) / 2.0,
                       list(range(len(crops), len(crops) + len(cs)))))
         crops.extend(cs)
-    for bx0, by0, bx1, by1 in _text_blobs(faixa_y, fundo):
+    blobs_y = _text_blobs(faixa_y, fundo, corta_direita=TICK_GAP)
+    centros_y = _centros_y_corrigidos(blobs_y, faixa_y.shape[0])
+    for b in blobs_y:
+        bx0, by0, bx1, by1 = b
         cs = _candidatos(faixa_y, bx0, by0, bx1, by1, False, bx1 >= fy_w - 1)
-        plano.append(("y", y0 + (by0 + by1) / 2.0,
+        plano.append(("y", fy_topo + centros_y[b],
                       list(range(len(crops), len(crops) + len(cs)))))
         crops.extend(cs)
 
@@ -472,6 +692,17 @@ class Calibration:
     n_pairs_y: int = 0
     ok: bool = False
     reason: str = ""
+    # Estado POR EIXO. `ok` continua sendo `ok_x and ok_y`, entao todo
+    # consumidor antigo se comporta igual. O ganho e para quem precisa de um
+    # eixo so: o X sozinho da a JANELA em segundos, e com ela `wn` e `theta`
+    # saem em unidade fisica sem o eixo Y. Medido em data/test (n=900):
+    #   exigindo os dois (comportamento de hoje) .... 81,3%
+    #   eixo X sozinho .............................. 89,3%
+    #   eixo Y sozinho .............................. 89,1%
+    # Nas tres imagens reais do bloco, duas tem X aprovado e Y reprovado — ou
+    # seja, `wn` fisico estava disponivel e era descartado.
+    ok_x: bool = False
+    ok_y: bool = False
 
 
 # Consistência interna (PLANO): ticks equiespaçados em valor E em pixel.
@@ -489,10 +720,22 @@ def _equiespacados(pares: list[tuple[float, float]], tol: float) -> bool:
     correto — medido: essa era a causa de quase toda reprovação por
     `calibration_failed` no Bloco 2 (não OCR errado, e sim OCR incompleto).
     Aqui, cada diferença consecutiva precisa ser próxima de um múltiplo
-    INTEIRO do menor espaçamento observado — cobre tanto "sem lacuna" (razão
+    INTEIRO do espaçamento unitário — cobre tanto "sem lacuna" (razão
     1) quanto "faltou N ticks nesse trecho" (razão N+1), e ainda reprova um
     valor lido errado (razão longe de qualquer inteiro). Ver Ruling no
     HANDOFF_P2_2.md.
+
+    A UNIDADE sai de um ajuste de mínimos quadrados sobre TODAS as diferenças,
+    não do MENOR delas. `min(d)` é o estimador menos robusto possível: basta
+    UMA diferença medida curta para que todas as outras razões subam junto e a
+    checagem reprove leitura correta. Foi o que aconteceu na imagem real do
+    `rg.py` — o rótulo extremo do eixo y com o glifo cortado pela borda do
+    recorte (ver `_centros_y_corrigidos`) dava `min(d) = 33.5` contra o
+    espaçamento real de 35, inflando toda razão em 4,5 %: a lacuna de um
+    rótulo virava razão 2,1194 e o erro `|2,1194 - 2| / 2 = 0,0597` estourava
+    `SPACING_TOL = 0,05`. Com a unidade ajustada (34,91) o mesmo conjunto
+    passa com folga (erro máximo 0,0403), e o corpus (n=900) não perde
+    NENHUMA calibração — aceita uma a mais no eixo y, sem falso positivo novo.
     """
     if len(pares) < 3:
         return True                       # 2 pontos não têm o que violar
@@ -502,7 +745,13 @@ def _equiespacados(pares: list[tuple[float, float]], tol: float) -> bool:
         d = np.diff(a)
         if d.size == 0 or float(np.min(d)) < 1e-9:
             return False
-        unit = float(np.min(d))
+        # `min(d)` só como CHUTE para descobrir quantos ticks cabem em cada
+        # lacuna; a unidade em si vem do ajuste sobre essas multiplicidades.
+        n = np.maximum(np.round(d / float(np.min(d))), 1.0)
+        den = float(n @ n)
+        unit = float(d @ n) / den if den > 0 else float(np.min(d))
+        if unit < 1e-9:
+            return False
         razao = d / unit
         n = np.round(razao)
         if np.any(n < 1):
@@ -541,25 +790,35 @@ def calibrate(image_rgb: np.ndarray) -> Calibration:
         return Calibration(reason="bbox_not_found")
     ticks = detect_tick_pixels(gray, bbox)
     pares = read_tick_labels(gray, bbox, ticks)
-    if len(pares["x"]) < RANSAC_MIN or len(pares["y"]) < RANSAC_MIN:
-        return Calibration(bbox_px=bbox, n_pairs_x=len(pares["x"]),
-                           n_pairs_y=len(pares["y"]), reason="ocr_insuficiente")
-    fx = fit_axis_affine(pares["x"])
-    fy = fit_axis_affine(pares["y"])
-    if fx is None or fy is None:
-        return Calibration(bbox_px=bbox, reason="ransac_failed")
-    sx, ox, nx = fx
-    sy, oy, ny = fy
-    inl_x = _inliers(pares["x"], sx, ox)
-    inl_y = _inliers(pares["y"], sy, oy)
-    if not (_equiespacados(inl_x, SPACING_TOL) and _equiespacados(inl_y, SPACING_TOL)):
-        return Calibration(bbox_px=bbox, n_pairs_x=nx, n_pairs_y=ny,
-                           reason="calibration_failed")
-    if not (np.isfinite(sx) and np.isfinite(sy)) or sx <= 0 or sy >= 0:
-        # sy < 0 é estrutural: o eixo y da imagem cresce para baixo.
-        return Calibration(bbox_px=bbox, reason="sinal_de_escala_invalido")
+
+    def _um_eixo(eixo: str) -> tuple[float, float, int, bool, str]:
+        """Resolve UM eixo. Devolve (s, o, n_inliers, ok, motivo)."""
+        p = pares[eixo]
+        if len(p) < RANSAC_MIN:
+            return float("nan"), float("nan"), len(p), False, "ocr_insuficiente"
+        f = fit_axis_affine(p)
+        if f is None:
+            return float("nan"), float("nan"), len(p), False, "ransac_failed"
+        s_, o_, n_ = f
+        if not _equiespacados(_inliers(p, s_, o_), SPACING_TOL):
+            return s_, o_, n_, False, "calibration_failed"
+        # Sinal: x cresce para a direita; y da IMAGEM cresce para BAIXO, entao
+        # a escala do eixo y tem de ser negativa. E estrutural, nao tolerancia.
+        if not np.isfinite(s_) or (s_ <= 0 if eixo == "x" else s_ >= 0):
+            return s_, o_, n_, False, "sinal_de_escala_invalido"
+        return s_, o_, n_, True, ""
+
+    sx, ox, nx, ok_x, motivo_x = _um_eixo("x")
+    sy, oy, ny, ok_y, motivo_y = _um_eixo("y")
+    if not (ok_x and ok_y):
+        # `reason` mantem a semantica antiga: o motivo da falha, com o eixo X
+        # tendo precedencia por ser o que destrava a janela temporal.
+        return Calibration(sx=sx, ox=ox, sy=sy, oy=oy, bbox_px=bbox,
+                           n_pairs_x=nx, n_pairs_y=ny, ok=False,
+                           reason=motivo_x or motivo_y,
+                           ok_x=ok_x, ok_y=ok_y)
     return Calibration(sx=sx, ox=ox, sy=sy, oy=oy, bbox_px=bbox,
-                       n_pairs_x=nx, n_pairs_y=ny, ok=True)
+                       n_pairs_x=nx, n_pairs_y=ny, ok=True, ok_x=True, ok_y=True)
 
 
 def px_to_data(cal: Calibration, x_px: np.ndarray, y_px: np.ndarray):

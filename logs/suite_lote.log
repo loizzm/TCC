@@ -1,0 +1,68 @@
+................................F...........                             [100%]
+=================================== FAILURES ===================================
+_____________________ test_2_1_erro_geometrico_da_mascara ______________________
+
+test_samples = [{'schema_version': 1, 'sample_id': 'sample_00000', 'seed': 3000009, 'order': 'fopdt', ...}, {'schema_version': 1, 'sa...order': 'fopdt', ...}, {'schema_version': 1, 'sample_id': 'sample_00005', 'seed': 3000014, 'order': 'fopdt', ...}, ...]
+
+    def test_2_1_erro_geometrico_da_mascara(test_samples):
+        """Portão 2.1 REVISADO (PLANO §2.1, HANDOFF_P2_7 Ruling 50).
+    
+        Media IoU de máscara até o Bloco 7. Numa curva fina a área é dominada pela
+        espessura do traço: IoU correlaciona +0,860 com a tinta por coluna e -0,879
+        com a razão de espessura, contra só +0,284 com o deslocamento real. Em todas
+        as faixas de espessura o erro de centerline é 1,00 px CONSTANTE enquanto o
+        IoU vai de 0,468 a 0,782 — a métrica lia a largura de linha que o gerador
+        sorteia. Dice não ajudaria: é `2*IoU/(1+IoU)` por identidade exata.
+    
+        O IoU continua REPORTADO como diagnóstico, sem alvo, para preservar a
+        comparabilidade com as rodadas 3 a 6.
+        """
+        import torch
+        from identify.extract import load_model, predict_mask
+        from identify.polyline import mask_to_polyline
+        from tests.part2.conftest import (PERP_MED_MAX, PERP_P95_MAX,
+                                          erro_perpendicular)
+    
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+        model = load_model("models/unet_stageA.pt", dev)
+        ious, meds, p95s = [], [], []
+        for m in test_samples:
+            pred = predict_mask(model, m["image"], dev) > 127
+            alvo = m["mask"] > 127
+            inter = float(np.logical_and(pred, alvo).sum())
+            union = float(np.logical_or(pred, alvo).sum())
+            ious.append(inter / max(union, 1.0))
+            xq, yq = mask_to_polyline((pred * 255).astype(np.uint8))
+            e = erro_perpendicular(xq, yq, m)
+            if e is not None:
+                # RMSE por amostra, a MESMA estatística de que o limiar foi derivado
+                # (Ruling 50: 0,800 px medido -> +0,127 p.p. em ζ). Usar a mediana por
+                # amostra aqui deixaria o critério mais frouxo que a justificativa.
+                meds.append(e["rmse"]); p95s.append(e["p95"])
+    
+        med = float(np.median(meds)); p95 = float(np.percentile(meds, 95))
+        record_p2("2.1", "Erro perpendicular da máscara (U-Net)",
+                  f"≤ {PERP_MED_MAX:.1f} px mediana, ≤ {PERP_P95_MAX:.1f} px p95",
+                  f"{med:.3f} px / {p95:.3f} px (n={len(meds)})",
+                  med <= PERP_MED_MAX and p95 <= PERP_P95_MAX)
+        record_p2("2.1-iou", "IoU da máscara (diagnóstico — ver Ruling 50)",
+                  "sem alvo: mede espessura de traço, não acurácia",
+                  f"{float(np.median(ious)):.4f}", None)
+>       assert med <= PERP_MED_MAX and p95 <= PERP_P95_MAX
+E       assert (0.8068478837943764 <= 1.0 and 2.0770986387697032 <= 2.0)
+
+tests/part2/test_part2.py:458: AssertionError
+============================= slowest 10 durations =============================
+90.49s call     tests/part2/test_part2.py::test_2_11_saida_adimensional_sempre_presente
+74.73s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+73.15s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+47.80s call     tests/part2/test_part2.py::test_2_3_erro_das_escalas
+36.45s call     tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia
+33.13s call     tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao
+19.75s call     tests/part2/test_part2.py::test_2_8_latencia_por_imagem
+12.44s call     tests/part2/test_part2.py::test_2_2_polilinha_contra_mascara_verdadeira
+12.36s call     tests/part2/test_part2.py::test_2_7_iou_por_estrato
+12.29s call     tests/part2/test_part2.py::test_2_1_erro_geometrico_da_mascara
+=========================== short test summary info ============================
+FAILED tests/part2/test_part2.py::test_2_1_erro_geometrico_da_mascara - asser...
+1 failed, 43 passed in 457.45s (0:07:37)

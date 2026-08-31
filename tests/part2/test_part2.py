@@ -557,6 +557,71 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
     err_real_adim: list[float] = []
     aceitas_adim = 0
     sem_calib_adim = 0
+    # ωₙ adimensional (ω_n·T), diagnóstico (fix round 1, B3): não existia
+    # nenhum critério `2.6-adim[wn]` — só `2.6-adim[zeta]`, e ζ é invariante à
+    # escala de `t`. Isso deixou uma regressão de escala de `t` passar verde
+    # pela suíte inteira. `T_true` vem de `t_window` (janela REAL da série, sem
+    # a margem do matplotlib que `plot_bbox_px`/a moldura incluem) — é o mesmo
+    # `T` que `_adimensional` usaria se a calibração fechasse. Sem meta de
+    # aprovação de propósito: o pedido é só tornar o número visível.
+    #
+    # Os acumuladores são DOIS (fix round 2, C4). O caminho que este
+    # diagnóstico vigia — `_serie_normalizada` — só roda quando a calibração
+    # FALHA, e essas são minoria aqui (medido: 33 das 143 aceitas). Medir só o
+    # corpus dilui o sinal ~7×: reintroduzindo a moldura incondicional, a linha
+    # do corpus se move +0,78 p.p. (+1,04 -> +1,82) e a das sem calibração
+    # +5,80 p.p. (+0,63 -> +6,43). A linha do corpus fica porque é a que se
+    # compara com `2.6-adim[zeta]`; a das sem calibração é a que denuncia.
+    err_orac_wnT_adim: list[float] = []
+    err_real_wnT_adim: list[float] = []
+    aceitas_wnT_adim = 0
+    err_orac_wnT_sc: list[float] = []
+    err_real_wnT_sc: list[float] = []
+    # θ adimensional (θ/T), diagnóstico (revisão final, §6). MESMO padrão e
+    # MESMO motivo do bloco de ωₙ acima, um eixo ao lado: `_serie_normalizada`
+    # produz DOIS parâmetros de referência de tempo — escala E origem — e até
+    # aqui a suíte vigiava só a escala. ζ é invariante às duas, ωₙ·T só pega a
+    # escala; quem pega a ORIGEM é θ. Medido pela revisão: reverter
+    # `origem = bbox_px[0]` para `x[0]` em `identify/pipeline.py` deixa a suíte
+    # inteira verde — o mesmo ponto cego do Ruling 67, no mesmo arquivo. E não é
+    # hipotético: essa origem já valeu ~25 % de erro em θ (fix round 1, B1),
+    # achada por revisor humano e não por teste.
+    #
+    # A métrica é a da Parte 1 para θ (NMAE sobre a janela, tests/conftest.py),
+    # não MAPE: θ pode ser 0 e a razão relativa explode. Aqui a janela é T, e
+    # `theta_T` JÁ é θ/T, então a diferença absoluta ×100 é o erro em % de T.
+    # Dois acumuladores pelo mesmo motivo do ωₙ (fix round 2, C4): o caminho
+    # vigiado só roda sem calibração, e medir só o corpus dilui o sinal ~7×.
+    # Sem meta de aprovação: o pedido é tornar o número visível.
+    err_orac_thT_adim: list[float] = []
+    err_real_thT_adim: list[float] = []
+    aceitas_thT_adim = 0
+    err_orac_thT_sc: list[float] = []
+    err_real_thT_sc: list[float] = []
+    # Acerto de ORDEM (revisão final, §6). `order` é saída ADIMENSIONAL por
+    # contrato (PLANO §1.7) e o PRIMEIRO dos dois defeitos que a imagem real
+    # expôs era ordem errada — mas nenhum `record_p2` da suíte media ordem: ela
+    # entrava só como FILTRO de aceitação dos blocos acima. Essa é a forma
+    # clássica do ponto cego: uma regressão de ordem não piora mediana nenhuma,
+    # ela ENCOLHE a amostra, e as que somem são as difíceis, então as medianas
+    # que restam até melhoram. Já em movimento sem ninguém ver:
+    # `2.6-classico-aceitas` caiu 183 -> 181 neste bloco, e o estrato da reta de
+    # referência vira a ordem de 1 em 30 amostras (HANDOFF_P2_7 §35.6).
+    ordem_ok = 0
+    ordem_ok_sc = 0
+    ordem_n_sc = 0
+    # K adimensional (K/faixa de y), diagnóstico (re-review, R-5). TERCEIRO
+    # eixo do mesmo padrão, depois da escala e da origem de `t` — e os dois
+    # primeiros já morderam. `K_yrange` é a única das seis grandezas do bloco
+    # `dimensionless` sensível à escala de **y**, e nada a vigiava: `2.6[K]` é
+    # do caminho FÍSICO, que só existe quando a calibração fecha. A verdade é
+    # `K_alvo / ptp(série verdadeira)`, as duas do meta, na mesma unidade em
+    # que o oráculo é avaliado. Sem meta de aprovação, como os irmãos.
+    err_orac_Kyr_adim: list[float] = []
+    err_real_Kyr_adim: list[float] = []
+    aceitas_Kyr_adim = 0
+    err_orac_Kyr_sc: list[float] = []
+    err_real_Kyr_sc: list[float] = []
     for m in test_samples:
         alvo = m["params"]
         t_dom = meta_t_dom(m)
@@ -575,6 +640,62 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
             esc = max(abs(alvo["zeta"]), 1e-12)
             err_real_adim.append(abs(z_adim - alvo["zeta"]) / esc * 100.0)
             err_orac_adim.append(abs(o.params["zeta"] - alvo["zeta"]) / esc * 100.0)
+
+        wnT_adim = (r.get("dimensionless") or {}).get("wn_T")
+        twin = m.get("t_window")
+        if (o.success and o.order == m["order"] and r["order"] == m["order"]
+                and wnT_adim is not None and alvo.get("wn") is not None
+                and o.params.get("wn") is not None and twin):
+            t_true = float(twin[1] - twin[0])
+            if t_true > 0:
+                aceitas_wnT_adim += 1
+                wnT_alvo = alvo["wn"] * t_true
+                esc_wn = max(abs(wnT_alvo), 1e-12)
+                err_real_wnT_adim.append(abs(wnT_adim - wnT_alvo) / esc_wn * 100.0)
+                err_orac_wnT_adim.append(
+                    abs(o.params["wn"] * t_true - wnT_alvo) / esc_wn * 100.0)
+                if not r["calibration"]["ok"]:
+                    err_real_wnT_sc.append(err_real_wnT_adim[-1])
+                    err_orac_wnT_sc.append(err_orac_wnT_adim[-1])
+
+        thT_adim = (r.get("dimensionless") or {}).get("theta_T")
+        if (o.success and o.order == m["order"] and r["order"] == m["order"]
+                and thT_adim is not None and alvo.get("theta") is not None
+                and o.params.get("theta") is not None and twin):
+            t_true = float(twin[1] - twin[0])
+            if t_true > 0:
+                aceitas_thT_adim += 1
+                thT_alvo = float(alvo["theta"]) / t_true
+                err_real_thT_adim.append(abs(thT_adim - thT_alvo) * 100.0)
+                err_orac_thT_adim.append(
+                    abs(o.params["theta"] / t_true - thT_alvo) * 100.0)
+                if not r["calibration"]["ok"]:
+                    err_real_thT_sc.append(err_real_thT_adim[-1])
+                    err_orac_thT_sc.append(err_orac_thT_adim[-1])
+
+        Kyr_adim = (r.get("dimensionless") or {}).get("K_yrange")
+        faixa_true = float(np.ptp(np.asarray(m["series"]["y"], dtype=float)))
+        if (o.success and o.order == m["order"] and r["order"] == m["order"]
+                and Kyr_adim is not None and alvo.get("K") is not None
+                and o.params.get("K") is not None and faixa_true > 0):
+            aceitas_Kyr_adim += 1
+            Kyr_alvo = float(alvo["K"]) / faixa_true
+            esc_K = max(abs(Kyr_alvo), 1e-12)
+            err_real_Kyr_adim.append(abs(Kyr_adim - Kyr_alvo) / esc_K * 100.0)
+            err_orac_Kyr_adim.append(
+                abs(o.params["K"] / faixa_true - Kyr_alvo) / esc_K * 100.0)
+            if not r["calibration"]["ok"]:
+                err_real_Kyr_sc.append(err_real_Kyr_adim[-1])
+                err_orac_Kyr_sc.append(err_orac_Kyr_adim[-1])
+
+        # Ordem: sobre TODAS as amostras, sem filtro nenhum — é justamente o
+        # filtro dos blocos acima que se quer medir aqui.
+        if r["order"] == m["order"]:
+            ordem_ok += 1
+        if not r["calibration"]["ok"]:
+            ordem_n_sc += 1
+            if r["order"] == m["order"]:
+                ordem_ok_sc += 1
 
         if not (o.success and r["ok"] and r["order"] == m["order"]
                 and o.order == m["order"]):
@@ -596,30 +717,43 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
 
     record_p2("2.6-aceitas", "Amostras comparáveis (mesma ordem, ambos convergem)",
               "diagnóstico", f"{aceitas}/{len(test_samples)}", None)
+    # O `n` insuficiente do caminho FÍSICO suspende só o veredito do 2.6 — NÃO
+    # pode encerrar a função. Até a Task 6 do bloco do caso real havia aqui um
+    # `return`, e o acoplamento era invertido: os blocos adimensionais abaixo
+    # existem justamente para medir o que NÃO depende da calibração, e sumiam
+    # do relatório exatamente quando a calibração piorava — sem sequer registrar
+    # "n insuficiente". Era o ponto cego do Ruling 67 reabrindo em silêncio.
+    piores: list[tuple[str, float]] = []
+    pior: float | None = None
     if aceitas < 100:
         record_p2("2.6", "Degradação end-to-end (pior parâmetro)",
                   "≤ 3 p.p. (n insuficiente)", f"n={aceitas} < 100 — não asseverável", None)
-        return
-    piores = []
-    for k in sorted(set(err_oraculo) & set(err_real)):
-        d = float(np.median(err_real[k])) - float(np.median(err_oraculo[k]))
-        piores.append((k, d))
-        record_p2(f"2.6[{k}]", f"ΔMAPE — {k}", "≤ 3 p.p.",
-                  f"{d:+.2f} p.p. (oráculo {np.median(err_oraculo[k]):.2f}%, "
-                  f"real {np.median(err_real[k]):.2f}%)", d <= 3.0)
-    pior = max(d for _, d in piores)
-    record_p2("2.6", "Degradação end-to-end (pior parâmetro)", "≤ 3 p.p.",
-              f"{pior:+.2f} p.p. (n={aceitas})", pior <= 3.0)
+    else:
+        for k in sorted(set(err_oraculo) & set(err_real)):
+            d = float(np.median(err_real[k])) - float(np.median(err_oraculo[k]))
+            piores.append((k, d))
+            record_p2(f"2.6[{k}]", f"ΔMAPE — {k}", "≤ 3 p.p.",
+                      f"{d:+.2f} p.p. (oráculo {np.median(err_oraculo[k]):.2f}%, "
+                      f"real {np.median(err_real[k]):.2f}%)", d <= 3.0)
+        pior = max(d for _, d in piores)
+        record_p2("2.6", "Degradação end-to-end (pior parâmetro)", "≤ 3 p.p.",
+                  f"{pior:+.2f} p.p. (n={aceitas})", pior <= 3.0)
 
     # --- nível adimensional: ζ sem depender de calibração (Decisão E) ---------
     d_adim = None
+    # A CONTAGEM vai SEMPRE, fora do portão de `n`: esta é a única linha do bloco
+    # adimensional que carrega o `n` e o tamanho do subconjunto sem calibração, e
+    # dentro do `if` ela sumiria em silêncio com `n` baixo — o mesmo modo de falha
+    # que o `return` do 2.6 causava um nível acima (§35.7-2 do HANDOFF_P2_7).
+    # Um diagnóstico que desaparece quando a população encolhe é pior que
+    # nenhum: quem compara duas rodadas não vê que a base mudou.
+    record_p2("2.6-adim-aceitas",
+              "Amostras comparáveis no nível adimensional (dispensa calibração)",
+              "diagnóstico",
+              f"{aceitas_adim}/{len(test_samples)} "
+              f"({sem_calib_adim} sem calibração)", None)
     if aceitas_adim >= 100:
         d_adim = float(np.median(err_real_adim)) - float(np.median(err_orac_adim))
-        record_p2("2.6-adim-aceitas",
-                  "Amostras comparáveis no nível adimensional (dispensa calibração)",
-                  "diagnóstico",
-                  f"{aceitas_adim}/{len(test_samples)} "
-                  f"({sem_calib_adim} sem calibração)", None)
         record_p2("2.6-adim[zeta]", "ΔMAPE adimensional — zeta", "≤ 3 p.p.",
                   f"{d_adim:+.2f} p.p. (oráculo {np.median(err_orac_adim):.2f}%, "
                   f"real {np.median(err_real_adim):.2f}%)", d_adim <= 3.0)
@@ -628,7 +762,131 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
                   "≤ 3 p.p. (n insuficiente)",
                   f"n={aceitas_adim} < 100 — não asseverável", None)
 
-    assert pior <= 3.0, f"pior degradação: {piores}"
+    # ωₙ adimensional (ω_n·T) — diagnóstico, SEM meta de aprovação (fix round
+    # 1, B3): o ponto cego que deixou a regressão de escala de `t` do B2
+    # passar era não medir ωₙ aqui, só ζ (invariante à escala). Ainda não há
+    # limiar decidido para este número — só torná-lo visível.
+    if aceitas_wnT_adim >= 100:
+        d_wnT_adim = float(np.median(err_real_wnT_adim)) - float(np.median(err_orac_wnT_adim))
+        record_p2("2.6-adim[wn_T]", "ΔMAPE adimensional — ωₙ·T (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_wnT_adim:+.2f} p.p. (oráculo {np.median(err_orac_wnT_adim):.2f}%, "
+                  f"real {np.median(err_real_wnT_adim):.2f}%, n={aceitas_wnT_adim})", None)
+    else:
+        record_p2("2.6-adim[wn_T]", "ΔMAPE adimensional — ωₙ·T (diagnóstico)",
+                  "diagnóstico (n insuficiente)",
+                  f"n={aceitas_wnT_adim} < 100 — não asseverável", None)
+
+    # A MESMA grandeza restrita às amostras SEM CALIBRAÇÃO (fix round 2, C4).
+    # Esta é a linha sensível: é o único subconjunto em que `_serie_normalizada`
+    # roda, e por isso a única em que uma regressão de escala de `t` aparece com
+    # tamanho suficiente para alguém notar numa tabela de ~80 linhas. Sem
+    # exigência de n ≥ 100 (o subconjunto é pequeno por construção — a
+    # calibração falha em ~20 % das amostras): o `n` vai escrito na medição, e
+    # quem for comparar duas rodadas compara também o `n`.
+    if err_real_wnT_sc:
+        d_wnT_sc = float(np.median(err_real_wnT_sc)) - float(np.median(err_orac_wnT_sc))
+        record_p2("2.6-adim[wn_T/sem-calib]",
+                  "ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_wnT_sc:+.2f} p.p. (oráculo {np.median(err_orac_wnT_sc):.2f}%, "
+                  f"real {np.median(err_real_wnT_sc):.2f}%, n={len(err_real_wnT_sc)})", None)
+    else:
+        record_p2("2.6-adim[wn_T/sem-calib]",
+                  "ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico)",
+                  "diagnóstico (sem amostras)", "n=0", None)
+
+    # θ adimensional (θ/T) — diagnóstico, SEM meta de aprovação (revisão final,
+    # §6). Fecha a ORIGEM de `t`, o eixo irmão da escala que o par `wn_T` acima
+    # fechou. Erro em pontos percentuais DA JANELA (NMAE/T), convenção da Parte
+    # 1 para θ; o "Δ" é a diferença de medianas real − oráculo, como nos demais.
+    if aceitas_thT_adim >= 100:
+        d_thT_adim = (float(np.median(err_real_thT_adim))
+                      - float(np.median(err_orac_thT_adim)))
+        record_p2("2.6-adim[theta_T]", "Δ(NMAE/T) adimensional — θ/T (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_thT_adim:+.2f} p.p. (oráculo {np.median(err_orac_thT_adim):.2f}%, "
+                  f"real {np.median(err_real_thT_adim):.2f}%, n={aceitas_thT_adim})", None)
+    else:
+        record_p2("2.6-adim[theta_T]", "Δ(NMAE/T) adimensional — θ/T (diagnóstico)",
+                  "diagnóstico (n insuficiente)",
+                  f"n={aceitas_thT_adim} < 100 — não asseverável", None)
+
+    # A MESMA grandeza restrita às amostras SEM CALIBRAÇÃO — a linha sensível,
+    # pelo mesmo motivo do `wn_T/sem-calib`: é o único subconjunto em que
+    # `_serie_normalizada` roda, e por isso o único em que uma regressão de
+    # ORIGEM de `t` aparece sem diluição. Sem exigência de n ≥ 100 (o
+    # subconjunto é pequeno por construção): o `n` vai escrito na medição.
+    if err_real_thT_sc:
+        d_thT_sc = (float(np.median(err_real_thT_sc))
+                    - float(np.median(err_orac_thT_sc)))
+        record_p2("2.6-adim[theta_T/sem-calib]",
+                  "Δ(NMAE/T) adimensional — θ/T, só sem calibração (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_thT_sc:+.2f} p.p. (oráculo {np.median(err_orac_thT_sc):.2f}%, "
+                  f"real {np.median(err_real_thT_sc):.2f}%, n={len(err_real_thT_sc)})", None)
+    else:
+        record_p2("2.6-adim[theta_T/sem-calib]",
+                  "Δ(NMAE/T) adimensional — θ/T, só sem calibração (diagnóstico)",
+                  "diagnóstico (sem amostras)", "n=0", None)
+
+    # K adimensional (K/faixa de y) — diagnóstico, SEM meta (re-review, R-5).
+    # Fecha a escala de **y**, o terceiro eixo depois da escala e da origem de
+    # `t`. MAPE relativo: `K_yrange` de um degrau vale ~1/(1+overshoot) e não
+    # passa por zero, então a razão relativa é bem definida aqui (ao contrário
+    # de θ, que pode ser 0 e por isso usa NMAE).
+    if aceitas_Kyr_adim >= 100:
+        d_Kyr_adim = (float(np.median(err_real_Kyr_adim))
+                      - float(np.median(err_orac_Kyr_adim)))
+        record_p2("2.6-adim[K_yrange]", "ΔMAPE adimensional — K/faixa de y (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_Kyr_adim:+.2f} p.p. (oráculo {np.median(err_orac_Kyr_adim):.2f}%, "
+                  f"real {np.median(err_real_Kyr_adim):.2f}%, n={aceitas_Kyr_adim})", None)
+    else:
+        record_p2("2.6-adim[K_yrange]", "ΔMAPE adimensional — K/faixa de y (diagnóstico)",
+                  "diagnóstico (n insuficiente)",
+                  f"n={aceitas_Kyr_adim} < 100 — não asseverável", None)
+
+    # A MESMA grandeza restrita às amostras SEM CALIBRAÇÃO, pelo mesmo motivo
+    # dos irmãos: é o único subconjunto em que `_serie_normalizada` roda, e por
+    # isso o único em que uma regressão de escala de `y` aparece sem diluição.
+    if err_real_Kyr_sc:
+        d_Kyr_sc = (float(np.median(err_real_Kyr_sc))
+                    - float(np.median(err_orac_Kyr_sc)))
+        record_p2("2.6-adim[K_yrange/sem-calib]",
+                  "ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico)",
+                  "diagnóstico",
+                  f"{d_Kyr_sc:+.2f} p.p. (oráculo {np.median(err_orac_Kyr_sc):.2f}%, "
+                  f"real {np.median(err_real_Kyr_sc):.2f}%, n={len(err_real_Kyr_sc)})", None)
+    else:
+        record_p2("2.6-adim[K_yrange/sem-calib]",
+                  "ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico)",
+                  "diagnóstico (sem amostras)", "n=0", None)
+
+    # --- acerto de ORDEM (revisão final, §6) ----------------------------------
+    # Diagnóstico, sem meta: não há limiar decidido, e o pedido é o mesmo dos
+    # blocos acima — tornar visível um número que hoje só existe como filtro.
+    # Sem portão de `n`: a população é o corpus inteiro e vai escrita.
+    n_total = len(test_samples)
+    if n_total:
+        record_p2("2.12-ordem", "Acerto de ordem (diagnóstico)", "diagnóstico",
+                  f"{100.0 * ordem_ok / n_total:.1f}% "
+                  f"({ordem_ok}/{n_total}, n={n_total})", None)
+    else:
+        record_p2("2.12-ordem", "Acerto de ordem (diagnóstico)",
+                  "diagnóstico (sem amostras)", "n=0", None)
+    if ordem_n_sc:
+        record_p2("2.12-ordem[sem-calib]",
+                  "Acerto de ordem, só sem calibração (diagnóstico)", "diagnóstico",
+                  f"{100.0 * ordem_ok_sc / ordem_n_sc:.1f}% "
+                  f"({ordem_ok_sc}/{ordem_n_sc}, n={ordem_n_sc})", None)
+    else:
+        record_p2("2.12-ordem[sem-calib]",
+                  "Acerto de ordem, só sem calibração (diagnóstico)",
+                  "diagnóstico (sem amostras)", "n=0", None)
+
+    if pior is not None:
+        assert pior <= 3.0, f"pior degradação: {piores}"
     if d_adim is not None:
         assert d_adim <= 3.0, f"degradação adimensional de zeta: {d_adim:+.2f} p.p."
 

@@ -1,0 +1,26 @@
+
+=== ATUAL  (models/unet_stageA.pt)
+  data/test            n=300  IoU=0.6481  perp mediana=0.000px  p95=1.000px
+  estrato banda+seta   n=300  IoU=0.3938  perp mediana=1.000px  p95=10.124px
+  imagens externas:
+    caso_real_2ordem.png     ok=True                          zeta=0.502 wn=2.021 tau=--
+    Figure_11.png            ok=True                          zeta=-- wn=-- tau=0.195
+    Figure_12.png            ok=True                          zeta=0.001 wn=4.000 tau=--
+    Figure_122.png           ok=True                          zeta=-- wn=-- tau=0.335
+    Figure_15.png            ok=True                          zeta=-- wn=-- tau=1.981
+    Figure_16.png            ok=False  ajuste_inconsistente   zeta=-- wn=-- tau=--
+    Figure_21.png            ok=True                          zeta=0.200 wn=5.034 tau=--
+    Figure_22.png            ok=False  resposta_inversa       zeta=-- wn=-- tau=--
+
+=== NOVO  (models/unet_stageA_bandaseta.pt)
+  data/test            n=300  IoU=0.6476  perp mediana=0.000px  p95=1.000px
+  estrato banda+seta   n=300  IoU=0.5945  perp mediana=0.000px  p95=1.414px
+  imagens externas:
+    caso_real_2ordem.png     ok=False  ajuste_inconsistente   zeta=-- wn=-- tau=--
+    Figure_11.png            ok=True                          zeta=-- wn=-- tau=0.196
+    Figure_12.png            ok=True                          zeta=0.007 wn=4.004 tau=--
+    Figure_122.png           ok=True                          zeta=-- wn=-- tau=0.335
+    Figure_15.png            ok=True                          zeta=-- wn=-- tau=1.984
+    Figure_16.png            ok=True                          zeta=0.616 wn=10.222 tau=--
+    Figure_21.png            ok=True                          zeta=0.200 wn=5.035 tau=--
+    Figure_22.png            ok=False  resposta_inversa       zeta=-- wn=-- tau=--

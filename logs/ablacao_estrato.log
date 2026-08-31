@@ -1,0 +1,14 @@
+  15/60 seeds
+  30/60 seeds
+  45/60 seeds
+  60/60 seeds
+
+braco         IoU med  IoU p10  erro med  erro p90  rejeitadas
+base           0.6121   0.3959    0.0079    0.1147       6/60
+so banda       0.5352   0.1980    0.0093    0.1134       6/60
+so seta        0.4969   0.3041    0.0247    0.1045       5/60
+banda+seta     0.4381   0.1866    0.0175    0.0988       6/60
+
+Wilcoxon IoU base vs so banda    : delta mediano=-0.0629 p=2.6e-10
+Wilcoxon IoU base vs so seta     : delta mediano=-0.1130 p=1.6e-11
+Wilcoxon IoU base vs banda+seta  : delta mediano=-0.1898 p=1.6e-11

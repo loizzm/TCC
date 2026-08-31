@@ -1,0 +1,13 @@
+n=120 amostras x 10 degradacoes
+
+degradacao                calib ok  ordem ok   adim  MAPE zeta   MAPE K
+  original                  78.3%     90.0%    53%      2.66%    0.25%
+  JPEG q=90                 75.0%     90.0%    53%      2.75%    0.44%
+  JPEG q=60                 55.0%     91.7%    48%      4.19%    0.36%
+  JPEG q=30                 45.0%     90.8%    46%      3.26%    0.52%
+  reescala 0.5x             65.8%     90.0%    50%      2.68%    0.33%
+  reescala 0.33x            38.3%     89.2%    51%      1.48%    0.92%
+  rotacao 0.5 grau           3.3%     93.3%    48%      7.09%   25.15%
+  rotacao 2 graus            0.0%     88.3%    50%          —        —
+  ruido sigma=8              5.0%     86.7%    45%     25.74%    2.25%
+  JPEG60 + 0.5x + rot 1      0.0%     90.0%    50%          —        —

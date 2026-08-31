@@ -2,34 +2,28 @@
 
 Relatório gerado automaticamente por `tests/` (`pytest_sessionfinish` em `tests/conftest.py`). Não editar à mão.
 
+> **ATENÇÃO — relatório parcial.** A sessão rodou com seleção de testes (`paths ['tests/test_part1.py', 'tests/part2/']`), então nem todos os critérios foram medidos. Regenere com `.venv/bin/python -m pytest -q` sem filtros antes de citar estes números na monografia.
+
 - Amostras renderizadas por conjunto: **600** (`clean`, `add_noise=False`; `noisy`, SNR fixo = 20 dB) — RULING Q, elevado de 300 para 600 por poder estatístico do portão; nenhum limiar foi alterado
 - Sorteios sem renderização (critérios 1.3 e 1.4a): **20000**
 - Estrato assertado nos critérios 1.1/1.2 (RULING C): `w = (t_end - θ)/T_dom ≥ 3`
 - Workers: 16
-- Tempo total da suíte: **681.5 s**
+- Tempo total da suíte: **554.1 s**
 
 ## 1. Critérios de aceitação
 
 | # | critério | alvo | medido | veredito |
 |---|---|---|---|---|
 | **1.1** | Pipeline-oráculo, série limpa (estrato `w ≥ 3`) | MAPE < 1% em K, τ, θ, ωn, ζ | K 0.0000%, τ 0.0000%, θ 0.0000%, ωn 0.0000%, ζ 0.0000% — pior = zeta (0.0000%), n = 181 | **PASSA** |
-| **1.2** | Pipeline com ruído SNR = 20 dB (estrato `w ≥ 3`) | MAPE < 5% (ωn/ζ só em ζ < 1,6 — RULING N) | K 0.385%, τ 0.979%, θ 1.568%, ωn (ζ<1.6) 3.111%, ζ (ζ<1.6) 3.557% — pior = ζ (ζ<1.6) (3.557%); n = 158 (ζ<1.6: n = 44) | **PASSA** |
-| **1.2b** | RULING N — 2ª ordem com ζ ≥ 1,6 (ωn/ζ não identificáveis) | MAPE(K) < 5%, MAPE(T_lento) < 5%, NRMSE recon. < 0,05 | K = 0.351%, T_lento = 1.798%, NRMSE = 2.731e-03 (n = 32) | **PASSA** |
+| **1.2** | Pipeline com ruído SNR = 20 dB (estrato `w ≥ 3`) | MAPE < 5% (ωn/ζ só em ζ < 1,6 — RULING N) | K 0.384%, τ 0.979%, θ 1.613%, ωn (ζ<1.6) 3.111%, ζ (ζ<1.6) 3.557% — pior = ζ (ζ<1.6) (3.557%); n = 158 (ζ<1.6: n = 44) | **PASSA** |
+| **1.2b** | RULING N — 2ª ordem com ζ ≥ 1,6 (ωn/ζ não identificáveis) | MAPE(K) < 5%, MAPE(T_lento) < 5%, NRMSE recon. < 0,05 | K = 0.349%, T_lento = 1.798%, NRMSE = 2.731e-03 (n = 32) | **PASSA** |
 | **1.2c** | RULING N na população dedicada (n = 256 em `w ≥ 3`) | ζ < 1,6: MAPE(ωn), MAPE(ζ) < 5%; ζ ≥ 1,6: MAPE(K), MAPE(T_lento) < 5% e NRMSE recon. < 0,05 | ζ<1,6 (n = 122): ωn = 3.259%, ζ = 3.789% \| ζ≥1,6 (n = 134): K = 0.307%, T_lento = 1.479%, NRMSE = 2.513e-03 | **PASSA** |
-| **1.3** | Vazamento: GBM só com atributos de `render` prevendo `order` | acurácia de teste ≤ 0.55 | 0.4985 (classe majoritária = 0.5045, n_teste = 6000) | **PASSA** |
-| **1.3b** | Réplica de 1.3 no dataset renderizado (n = 600) | sem alvo: n pequeno demais para separar 0,55 do acaso | acurácia de teste = 0.4944 (n_teste = 180) | **medido** |
-| **1.4a** | Spearman render × parâmetro no sorteio (n = 20000) | \|ρ\| < 0.05 em todos os 161 pares; nenhum significativo após Bonferroni | max \|ρ\| = 0.0194 (has_legend × wn); pares significativos = 0 | **PASSA** |
-| **1.4b-clean** | Spearman render × parâmetro no dataset renderizado `clean` (n = 600) | p de permutação > 0.001 (literal do RULING G: \|ρ\| < 0.2) | max \|ρ\| = 0.1133 (aspect × tau), p = 0.9633 | **PASSA** |
-| **1.4b-noisy** | Spearman render × parâmetro no dataset renderizado `noisy` (n = 600) | p de permutação > 0.001 (literal do RULING G: \|ρ\| < 0.2) | max \|ρ\| = 0.1762 (dpi × tau), p = 0.1292 | **PASSA** |
-| **1.4c** | Round-trip exato: bloco `render` do meta == estilo sorteado | igualdade exata em todas as amostras (falso positivo zero) | 1200 amostras verificadas, todas idênticas | **PASSA** |
-| **1.4d** | Cor da tinta na `image.png` == `render.line_color` (nível de pixel) | erro de canal = 0 em todas as amostras com cor modal dominante (`mode_frac ≥ 0.50`) | 0 violações em 900 amostras (300 excluídas por traço fino); erro máximo = 0 | **PASSA** |
-| **1.4e** | Retas de span completo na área de dados × distratores declarados | nenhuma amostra sem grade com mais retas que `render.n_distractors` | 0 violações em 585 amostras sem grade; excesso máximo = 0 | **PASSA** |
 | **1.5** | Máscara reprojetada pela `axis_affine` × `series` | RMSE do viés normal < 1.5 px; \|viés vertical\| < 0.3 px (sólida s/ marcador) | RMSE = 0.1649 px (0.0298 px sem marcador); viés vertical = +0.0027 px; cobertura = 0.492 px (máx) | **PASSA** |
 | **1.5c** | Controle negativo do critério 1.5 | deslocar a afim em 3 px deve piorar o RMSE ≥ 10× | 0.1649 px → 2.2293 px (13.5×) | **PASSA** |
 | **1.6** | Determinismo bit-a-bit (mesma seed ⇒ mesmos bytes) | sha256 idêntico de image.png e mask.png + meta.json idêntico | 5 seeds × 2 gerações: todos idênticos | **PASSA** |
-| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 3.30 s para 200 amostras ⇒ 1.65 min | **PASSA** |
+| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 3.49 s para 200 amostras ⇒ 1.75 min | **PASSA** |
 | **B** | Baselines clássicos × `identify` (FOPDT limpo, `w ≥ 3`) | sem alvo: comparação da monografia | MAPE(τ): identify = 0.0000% vs melhor baseline = 0.0491% | **medido** |
-| **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.627% (n = 442) | **medido** |
+| **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.622% (n = 442) | **medido** |
 | **G** | `_estimate_gain` em janela truncada (`w < 3`, FOPDT limpo) | MAPE < 1.0% e cobertura = 100%; controle positivo: o atalho max(y) erra ≥ 10.0% no mesmo estrato | MAPE = 0.0000% (n = 191, cobertura 1.000) vs max(y) = 30.48% | **PASSA** |
 | **R** | RULING S — máscara não degenerada (curva atravessa a janela) | extensão horizontal ≥ 0.93·projeção de `t_window`; ≥ 40 px acesos; ≤ 10% da imagem | cobertura: mín 0.9594, p1 0.9894, mediana 1.0021, máx 1.0486 — 0/1200 abaixo de 0.93; mín de px acesos = 171; fração máxima = 0.0731 | **PASSA** |
 
@@ -83,22 +77,22 @@ Erro por parâmetro, estratificado pela largura da janela `w`. `K`, `τ`, `ωn`,
 
 | estrato | n | n fopdt / second | K (MAPE) | τ (MAPE) | θ (NMAE/T_dom) | θ (MAPE, secund.) | ωn (MAPE) | ζ (MAPE) |
 |---|---|---|---|---|---|---|---|---|
-| `w>=3` | 158 | 82 / 76 | 0.385% | 0.979% | 1.568% | 9.577% | 26.121% | 25.430% |
-| `w<3` | 442 | 224 / 218 | 127.627% | 3.461% | 0.907% | 5.848% | 23.734% | 62.556% |
-| `todos` | 600 | 306 / 294 | 94.120% | 2.796% | 1.081% | 6.830% | 24.351% | 52.958% |
+| `w>=3` | 158 | 82 / 76 | 0.384% | 0.979% | 1.613% | 8.531% | 26.121% | 25.430% |
+| `w<3` | 442 | 224 / 218 | 127.622% | 3.461% | 0.978% | 6.197% | 23.734% | 62.556% |
+| `todos` | 600 | 306 / 294 | 94.116% | 2.796% | 1.146% | 6.812% | 24.351% | 52.958% |
 
 Mediana do mesmo erro (mostra quanto do MAPE vem de poucas amostras patológicas — decisivo no estrato truncado):
 
 | estrato | n | K | τ | θ (/T_dom) | ωn | ζ |
 |---|---|---|---|---|---|---|
-| `w>=3` | 158 | 0.213% | 0.816% | 0.733% | 4.996% | 5.208% |
-| `w<3` | 442 | 1.809% | 2.417% | 0.462% | 7.707% | 14.939% |
-| `todos` | 600 | 1.036% | 1.819% | 0.520% | 7.056% | 11.621% |
+| `w>=3` | 158 | 0.210% | 0.816% | 0.702% | 4.996% | 5.208% |
+| `w<3` | 442 | 1.740% | 2.417% | 0.462% | 7.707% | 14.939% |
+| `todos` | 600 | 1.038% | 1.819% | 0.520% | 7.056% | 11.621% |
 
-- Acurácia de seleção de estrutura por AIC (`identify`): **0.888** (533/600)
+- Acurácia de seleção de estrutura por AIC (`identify`): **0.878** (527/600)
 - `K` e `θ` vêm de `identify()` (o pipeline real, todas as amostras). `τ`, `ωn` e `ζ` são específicos da estrutura e por isso vêm de `identify_both()` com a ordem verdadeira imposta — assim nenhuma amostra é descartada e o número não pode ser inflado por seleção de estrutura.
 
-**Estrato truncado (RULING C).** Com `w < 3` a curva é cortada antes do regime permanente e o ganho deixa de ser identificável: MAPE(K) = 127.6% contra mediana de 1.809%. A distância entre média e mediana diz que o erro vem de poucas amostras em que a extrapolação do patamar diverge, não de uma degradação uniforme. Isso é **limite de informação da janela**, não do método, e por isso é reportado sem assertiva — é resultado da monografia.
+**Estrato truncado (RULING C).** Com `w < 3` a curva é cortada antes do regime permanente e o ganho deixa de ser identificável: MAPE(K) = 127.6% contra mediana de 1.740%. A distância entre média e mediana diz que o erro vem de poucas amostras em que a extrapolação do patamar diverge, não de uma degradação uniforme. Isso é **limite de informação da janela**, não do método, e por isso é reportado sem assertiva — é resultado da monografia.
 
 ## 3. Não-identificabilidade prática em 2ª ordem (RULING N)
 
@@ -121,131 +115,6 @@ População dedicada de **872** séries de 2ª ordem a 20 dB (das quais **256** 
 Leitura: no estrato `w ≥ 3`, onde a janela contém informação suficiente, ωn e ζ erram dezenas de por cento na faixa superamortecida enquanto `K` e a constante do polo lento continuam corretos, e o erro de `T_lento` **melhora** com ζ — direção oposta à de ωn/ζ. A correlação → +1 entre os dois erros é a assinatura de deslizamento ao longo de uma curva de nível onde a dinâmica observável é a mesma. É limite de informação, não deficiência do estimador (a auditoria com partida no oráculo já descartou essa hipótese).
 
 O bloco `todos` inclui as janelas truncadas (`w < 3`), onde nem `K` é identificável; ele está aqui para contraste, e não é a evidência do RULING N — a leitura acima vale para o bloco `w ≥ 3`.
-
-## 4. Vazamento de rótulo
-
-### 4.1 (1.3) Classificador treinado só com atributos de `render`
-
-| conjunto | n treino | n teste | acurácia teste | baseline (classe majoritária) | alvo |
-|---|---|---|---|---|---|
-| sorteio puro (n = 20000) | 14000 | 6000 | **0.4985** | 0.5045 | ≤ 0.55 |
-
-Um `GradientBoostingClassifier` que só vê atributos visuais não consegue prever a ordem da planta: a acurácia fica no acaso. É a contraprova direta do defeito do gerador legado `img.py`.
-
-Importâncias mais altas (todas irrelevantes na prática):
-
-| atributo | importância |
-|---|---|
-| line_width | 0.1524 |
-| snr_db | 0.1167 |
-| aspect | 0.1053 |
-| height_px | 0.1000 |
-| width_px | 0.0942 |
-| dpi | 0.0728 |
-| line_b | 0.0582 |
-| line_g | 0.0570 |
-
-### 4.2 (1.4a) Spearman no nível de sorteio — assertiva forte
-
-n = 20000, 161 pares (atributo de `render` × parâmetro). Limiar |ρ| < 0.05, mais teste de significância com correção de Bonferroni sobre todos os pares (RULING G).
-
-- **max |ρ| = 0.0194** no par `has_legend × wn`
-- média de |ρ| = 0.0060
-- menor p-valor = 3.100e-02; limiar de Bonferroni = 3.106e-04; pares significativos: **0**
-
-Dez maiores |ρ|:
-
-| atributo de render | parâmetro | ρ | p |
-|---|---|---|---|
-| has_legend | wn | 0.0194 | 0.051 |
-| n_annotations | wn | 0.0191 | 0.055 |
-| quantization_levels | wn | -0.0177 | 0.076 |
-| has_xlabel | zeta | 0.0170 | 0.088 |
-| bg_g | zeta | 0.0157 | 0.114 |
-| dpi | is_second | -0.0153 | 0.031 |
-| bg_r | is_second | -0.0150 | 0.034 |
-| aspect | tau | -0.0144 | 0.151 |
-| n_annotations | theta | -0.0143 | 0.043 |
-| bg_b | tau | -0.0140 | 0.163 |
-
-Com n = 20000 o erro padrão de ρ é ≈ 0,007: um ρ verdadeiro de 0,05 seria detectado com folga. Esta é a medida que de fato decide se o estilo visual carrega o rótulo.
-
-### 4.3 (1.4b) Spearman no dataset renderizado — `clean`
-
-n = 600, 161 pares. O bloco `render` do meta é byte-a-byte o estilo sorteado (verificado por round-trip exato), então esta medida é a **mesma variável aleatória** da 4.2, só que com n = 600 em vez de 20000.
-
-- **max |ρ| = 0.1133** no par `aspect × tau`  (literal do RULING G: |ρ| < 0.20 → dentro)
-- média de |ρ| = 0.0353
-- **p de permutação = 0.9633** (4000 réplicas; limiar do portão: p > 0.001)
-- nulo de permutação de `max |ρ|`: mediana 0.1472, p99 0.2185, p99,9 0.2508
-- **sob independência perfeita, o limiar literal de 0,20 é excedido em 3% das réplicas** — ele não separa vazamento de acaso neste tamanho de amostra.
-
-Dez maiores |ρ|:
-
-| atributo de render | parâmetro | ρ | p |
-|---|---|---|---|
-| aspect | tau | 0.1133 | 0.0527 |
-| width_px | tau | 0.1133 | 0.0527 |
-| bg_g | wn | -0.1057 | 0.0645 |
-| snr_db | wn | 0.1011 | 0.0769 |
-| quantization_levels | w_window | -0.0933 | 0.0222 |
-| width_px | K | -0.0910 | 0.0257 |
-| quantization_levels | wn | 0.0862 | 0.1318 |
-| aspect | w_window | 0.0856 | 0.0360 |
-| bg_r | wn | -0.0824 | 0.1496 |
-| aspect | theta | 0.0822 | 0.0442 |
-
-### 4.4 (1.4b) Spearman no dataset renderizado — `noisy`
-
-n = 600, 154 pares. O bloco `render` do meta é byte-a-byte o estilo sorteado (verificado por round-trip exato), então esta medida é a **mesma variável aleatória** da 4.2, só que com n = 600 em vez de 20000.
-
-- **max |ρ| = 0.1762** no par `dpi × tau`  (literal do RULING G: |ρ| < 0.20 → dentro)
-- média de |ρ| = 0.0370
-- **p de permutação = 0.1292** (4000 réplicas; limiar do portão: p > 0.001)
-- nulo de permutação de `max |ρ|`: mediana 0.1463, p99 0.2190, p99,9 0.2524
-- **sob independência perfeita, o limiar literal de 0,20 é excedido em 3% das réplicas** — ele não separa vazamento de acaso neste tamanho de amostra.
-
-Dez maiores |ρ|:
-
-| atributo de render | parâmetro | ρ | p |
-|---|---|---|---|
-| dpi | tau | 0.1762 | 0.0020 |
-| line_style | wn | 0.1207 | 0.0387 |
-| line_style | zeta | -0.1136 | 0.0518 |
-| has_marker | zeta | 0.1031 | 0.0774 |
-| line_style | tau | 0.1027 | 0.0728 |
-| n_annotations | tau | -0.0985 | 0.0853 |
-| dpi | w_window | 0.0915 | 0.0249 |
-| quantization_levels | wn | 0.0864 | 0.1396 |
-| has_title | zeta | 0.0857 | 0.1427 |
-| aspect | is_second | 0.0829 | 0.0424 |
-
-### 4.5 Por que a assertiva de 1.4b não é o limiar literal (RULING O)
-
-O RULING G fixou |ρ| < 0,20 raciocinando sobre o erro padrão de **um par** com n = 300. O estatístico que 1.4b de fato assere é o **máximo sobre ~161 pares**, e `τ`, `ωn` e `ζ` só existem em cerca de metade das amostras — o que derruba o n efetivo desses pares pela metade. Medindo o nulo por permutação do próprio conjunto:
-
-| tamanho de amostra | mediana de max \|ρ\| sob H₀ | p95 / p99 | P(max \|ρ\| ≥ 0,20) sob H₀ |
-|---|---|---|---|
-| n = 300 (2000 réplicas) | 0.2076 | 0.2713 | **60%** |
-| n = 600 (4000 réplicas) | 0.1472 | 0.2185 | **3%** |
-
-Com n = 300, o limiar literal é excedido em **60% das réplicas sob independência perfeita** — ele reprova o gerador correto na maioria das vezes. É a mesma patologia que o RULING G identificou no alvo original de 0,05 do PLANO, um nível abaixo. Por isso a assertiva do portão é o teste de permutação (`p > 1e-3`), que é o nulo correto para uma estatística de máximo, somado ao round-trip exato do bloco `render` (§4.6), que tem poder real e falso positivo zero. O valor literal continua **medido e reportado** acima.
-
-### 4.6 (1.4c) Round-trip exato do bloco `render`
-
-Para cada uma das **1200** amostras renderizadas, o estilo é re-derivado a partir de `meta["seed"]` (mesmo `SeedSequence.spawn(3)`) e exige-se `style.to_meta() == meta["render"]` e `spec == meta["params"]`, com igualdade exata. Todas passaram.
-
-Esta é a verificação anti-vazamento com **poder real sobre o caminho de renderização**: se qualquer etapa entre o sorteio e o meta.json alterasse um atributo visual em função do sistema, a igualdade quebraria. Ao contrário de uma correlação com n finito, aqui a taxa de falso positivo é zero e a de falso negativo também. Somada à §4.2 (n = 20000, que limita qualquer ρ verdadeiro a < 0,05), ela é o que de fato sustenta a alegação de ausência de vazamento.
-
-### 4.7 (1.4d, 1.4e) Vazamento no nível de pixel — o que o meta não vê
-
-Os critérios 1.3 e 1.4a–c leem o bloco `render` do meta; nenhum deles abre a `image.png`. O **teste de mutação** (HANDOFF §3.5) mostrou que isso deixava passar exatamente a forma do defeito do `img.py`: um vazamento que vive só nos pixels. Dois mutantes atravessaram a suíte com 30 passed — cor da curva escolhida por `order` sem tocar no meta, e `axhline(K)`/`axvline(θ)` redesenhados na figura. Os dois critérios abaixo fecham esses buracos.
-
-**1.4d — cor da tinta.** A cor modal dos pixels acesos da máscara, lida na `image.png`, tem de ser exatamente `render.line_color`. Assertado nas **900** de 1200 amostras com cor modal dominante (`mode_frac ≥ 0,50`); nas 25.0% restantes não há pixel de interior puro — traço no piso de 1,5 px, ou curva muito recortada pelo ruído — e a moda é mistura de anti-aliasing. Medido: **0 violações**, erro máximo de canal = 0. No gerador mutante que escolhe a cor por `order`, 279/279 violações, com erro mediano de 144 níveis: separação total.
-
-**1.4e — retas não declaradas.** Toda reta que atravessa a área de dados de ponta a ponta tem de estar no orçamento de `render.n_distractors`. Assertado nas **585** amostras sem grade (615 com grade ficam fora: as linhas da grade também são retas de span completo e o `render` não declara quantas). Medido: **0 violações**, excesso máximo = 0. No gerador mutante que redesenha `axhline(K)`/`axvline(θ)`, 143/157 (91,1%) — como a assertiva é sobre o conjunto, a detecção é certa.
-
-O critério é o do contrato §2: todo elemento visual tem de estar declarado no estilo, e o estilo por construção não vê o rótulo. Os dois limiares foram fixados **depois** de medir o teto atingível (916 amostras sem grade para o 1.4e, entre os conjuntos de aceitação e um lote independente), como manda o padrão dos RULINGS O/R/S — e cada condição do 1.4e existe por um falso positivo medido, documentado na docstring de `_spanning_rows`.
 
 ## 5. (1.5) Consistência entre `mask.png` e `axis_affine`
 
@@ -353,7 +222,7 @@ Cada seed foi gerada duas vezes, em diretórios distintos; os hashes são dos do
 
 | n medido | workers | tempo (s) | s/amostra | extrapolado p/ 6000 (min) | alvo |
 |---|---|---|---|---|---|
-| 200 | 16 | 3.30 | 0.0165 | **1.65** | < 15 min (folga 2× sobre os 30 min do PLANO) |
+| 200 | 16 | 3.49 | 0.0175 | **1.75** | < 15 min (folga 2× sobre os 30 min do PLANO) |
 
 ## 8. Baselines clássicos × `identify` (mesmas séries limpas, FOPDT)
 

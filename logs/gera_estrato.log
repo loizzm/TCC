@@ -1,0 +1,5 @@
+data/train_banda_seta: 1000 amostras em 10s
+data/train_banda: 250 amostras em 2s
+data/train_seta: 250 amostras em 3s
+data/val_banda_seta: 300 amostras em 3s
+pronto

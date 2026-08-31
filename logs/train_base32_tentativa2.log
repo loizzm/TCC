@@ -1,0 +1,4 @@
+treino: 9450 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta']  base=32  1575 passos/epoca
+parametros: 7763041
+epoca 00  IoU_val=0.6493  lr=3.00e-04  778s
+epoca 01  IoU_val=0.6997  lr=3.00e-04  702s

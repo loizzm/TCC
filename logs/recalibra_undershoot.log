@@ -1,0 +1,17 @@
+  200/900
+  400/900
+  600/900
+  800/900
+
+corpus com base32: n=900 mediana=0.0065 p90=0.0309 p99=0.0632 p99.9=0.1326 max=0.1818
+
+Figure_22 (fase nao-minima, unico exemplo positivo) = 0.0916
+
+  limiar    rejeita do corpus BOM    pega a Figure_22?
+   0.050         30/900 =   3.33%                 SIM
+   0.060         16/900 =   1.78%                 SIM
+   0.070          6/900 =   0.67%                 SIM
+   0.075          4/900 =   0.44%                 SIM
+   0.080          4/900 =   0.44%                 SIM
+   0.090          4/900 =   0.44%                 SIM
+   0.100          2/900 =   0.22%                 nao

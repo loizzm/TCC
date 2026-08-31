@@ -1,0 +1,4 @@
+n=300  alvo: <= 1.0 px mediana, <= 2.0 px p95
+
+ATUAL: 2.1 = 0.807 px / 2.077 px  REPROVA   | IoU diagnostico = 0.6481  (n=300)
+NOVO : 2.1 = 0.788 px / 1.582 px  PASSA   | IoU diagnostico = 0.6476  (n=300)

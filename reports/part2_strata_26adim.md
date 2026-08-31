@@ -1,6 +1,38 @@
 # Parte 2 — Estratificação e critérios
 
+> ## ⚠ INSTANTÂNEO HISTÓRICO — ESTADO ANTIGO DOS CRITÉRIOS. NÃO É REFERÊNCIA CORRENTE.
+>
+> **De quando é:** commit `7964230` (2026-08-26), a rodada em que o ζ adimensional
+> entrou no critério 2.6 (`HANDOFF_P2_7.md` §25, Ruling 47). Guardado como registro
+> daquele momento.
+>
+> **Estado dos critérios AQUI dentro:** é **anterior à revisão de critérios do
+> Ruling 53** (`HANDOFF_P2_7.md` §32, `PLANO.md` §2.12). Nesta tabela o `2.1` ainda
+> é **IoU com alvo ≥ 0,85** e reprova; o `2.2-piso` ainda é **diferença VERTICAL**
+> com alvo ≤ 2/5 px e reprova; o `2.4` ainda tem alvo próprio; o `2.5` está em
+> **0,721** contra um limiar de rejeição de 5 %, não de 1 %.
+>
+> **O que mudou depois:** o Ruling 53 trocou IoU e diferença vertical por **erro
+> perpendicular** (classe A do §2.12 — as métricas antigas mediam espessura de traço
+> e declividade do render, não acurácia), unificou o `2.4` no `2.9` (classe B) e
+> alinhou `2.3`/`2.5` no mesmo τ = 1 % (classe C). IoU e vertical continuam na tabela
+> corrente, mas como **diagnóstico sem alvo** (`2.1-iou`, `2.2-piso-vertical`).
+>
+> **Referência corrente:** `reports/part2_strata.md` (regenerado a cada rodada da
+> suíte) e, para o antes/depois do bloco do caso real,
+> `reports/part2_strata_pos_caso_real.md`. Para isolar o efeito de UM bloco, a
+> comparação certa é contra `git show HEAD:reports/part2_strata.md`.
+>
+> **Por que este aviso existe:** o plano do bloco do caso real mandava diffar a
+> rodada nova contra ESTE arquivo, e a expectativa que ele declarava ("mudanças
+> apenas em `2.6-adim[zeta]`") era inalcançável — não por regressão, mas porque a
+> referência é de duas revisões de critério atrás e o diff devolve ~60 linhas da
+> revisão, não do bloco. Registrado em `HANDOFF_P2_7.md` §35.5.
+
 Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em `tests/part2/conftest.py`). Não editar à mão.
+
+*(O aviso acima foi acrescentado à mão, deliberadamente: este arquivo saiu do
+gerador e depois foi congelado como registro histórico — não é regenerado.)*
 
 | Critério | Nome | Alvo | Medido | Veredito |
 |---|---|---|---|---|

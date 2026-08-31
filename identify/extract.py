@@ -26,12 +26,14 @@ class LetterboxInfo:
     size: int
 
 
-def letterbox(gray: np.ndarray, size: int = 512) -> tuple[np.ndarray, LetterboxInfo]:
-    h, w = gray.shape
+def letterbox(img: np.ndarray, size: int = 512) -> tuple[np.ndarray, LetterboxInfo]:
+    """Aceita 2D (cinza) e 3D (H, W, C). O caminho 2D e byte a byte o de antes."""
+    h, w = img.shape[:2]
     s = size / max(h, w)
     nw, nh = max(1, int(round(w * s))), max(1, int(round(h * s)))
-    resized = cv2.resize(gray, (nw, nh), interpolation=cv2.INTER_AREA)
-    out = np.zeros((size, size), dtype=gray.dtype)
+    resized = cv2.resize(img, (nw, nh), interpolation=cv2.INTER_AREA)
+    forma = (size, size) if img.ndim == 2 else (size, size, img.shape[2])
+    out = np.zeros(forma, dtype=img.dtype)
     px, py = (size - nw) // 2, (size - nh) // 2
     out[py:py + nh, px:px + nw] = resized
     return out, LetterboxInfo(px, py, nw, nh, w, h, size)
@@ -56,11 +58,12 @@ def _block(cin: int, cout: int) -> nn.Sequential:
 class UNet(nn.Module):
     """4 níveis, base 16 canais. Saída = logits, mesma resolução da entrada."""
 
-    def __init__(self, base: int = 16, levels: int = 4):
+    def __init__(self, base: int = 16, levels: int = 4, in_ch: int = 1):
         super().__init__()
+        self.in_ch = int(in_ch)
         chs = [base * 2 ** i for i in range(levels + 1)]
         self.enc = nn.ModuleList()
-        cin = 1
+        cin = self.in_ch
         for c in chs[:-1]:
             self.enc.append(_block(cin, c))
             cin = c
@@ -102,7 +105,10 @@ def load_model(path: str | Path, device: str = "cpu") -> UNet:
     state = torch.load(path, map_location=device)
     base = int(state["enc.0.0.weight"].shape[0])
     levels = sum(1 for k in state if k.startswith("enc.") and k.endswith(".0.weight"))
-    model = UNet(base=base, levels=levels)
+    # `in_ch` tambem sai do checkpoint: um modelo de 1 canal (cinza) e um de 3
+    # (RGB) convivem, e trocar de um para o outro nao exige mexer no chamador.
+    in_ch = int(state["enc.0.0.weight"].shape[1])
+    model = UNet(base=base, levels=levels, in_ch=in_ch)
     model.load_state_dict(state)
     model.to(device).eval()
     return model
@@ -111,10 +117,23 @@ def load_model(path: str | Path, device: str = "cpu") -> UNet:
 @torch.no_grad()
 def predict_mask(model: UNet, image_rgb: np.ndarray,
                  device: str = "cpu", thr: float = 0.5) -> np.ndarray:
-    w = np.array([0.299, 0.587, 0.114], dtype=np.float32)
-    gray = (image_rgb.astype(np.float32) @ w).round().astype(np.uint8)
-    small, info = letterbox(gray)
-    x = torch.from_numpy(small.astype(np.float32) / 255.0)[None, None].to(device)
+    # A conversao para cinza e DESTRUTIVA: `0.299R + 0.587G + 0.114B` projeta
+    # R^3 em R^1, e dois objetos de luminancia igual chegam a rede como o MESMO
+    # byte. Medido nas duas imagens reais do Ruling 55: curva (44,160,44) e reta
+    # de referencia (230,61,61) viram ambas 112 — separar uma da outra deixa de
+    # ser dificil e passa a ser impossivel. Um modelo de 3 canais recebe RGB e
+    # nao perde essa informacao. O caminho de 1 canal fica byte a byte igual ao
+    # anterior, para que os checkpoints existentes nao mudem de resultado.
+    if getattr(model, "in_ch", 1) == 3:
+        entrada = np.ascontiguousarray(image_rgb[..., :3])
+        small, info = letterbox(entrada)
+        x = torch.from_numpy(small.astype(np.float32) / 255.0)
+        x = x.permute(2, 0, 1)[None].to(device)
+    else:
+        w = np.array([0.299, 0.587, 0.114], dtype=np.float32)
+        gray = (image_rgb.astype(np.float32) @ w).round().astype(np.uint8)
+        small, info = letterbox(gray)
+        x = torch.from_numpy(small.astype(np.float32) / 255.0)[None, None].to(device)
     p = torch.sigmoid(model(x))[0, 0].cpu().numpy()
     m512 = np.where(p >= thr, 255, 0).astype(np.uint8)
     return unletterbox(m512, info)

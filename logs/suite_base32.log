@@ -1,0 +1,13 @@
+.....................................................................    [100%]
+============================= slowest 10 durations =============================
+82.62s call     tests/part2/test_part2.py::test_2_11_saida_adimensional_sempre_presente
+66.71s call     tests/part2/test_part2.py::test_2_6_degradacao_vs_oraculo
+64.63s call     tests/part2/test_part2.py::test_2_6_diagnostico_extrator_classico
+30.73s call     tests/part2/test_part2.py::test_2_4_2_5_rejeicao_por_consistencia
+29.13s call     tests/part2/test_part2.py::test_2_9_cobertura_da_calibracao
+28.61s call     tests/part2/test_part2.py::test_2_3_erro_das_escalas
+19.96s setup    tests/test_part1.py::test_1_5_mask_matches_affine
+17.87s call     tests/part2/test_part2.py::test_2_8_latencia_por_imagem
+14.42s setup    tests/test_part1.py::test_1_2_oracle_pipeline_noisy
+13.55s setup    tests/test_part1.py::test_1_1_oracle_pipeline_clean
+69 passed in 452.22s (0:07:32)
