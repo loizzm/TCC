@@ -20,7 +20,7 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | G3b.1[n_distractors=2] | IoU clássico — n_distractors=2 | diagnóstico | 0.7153 (n=92) | ❓ |
 | G3b.1[n_distractors=3] | IoU clássico — n_distractors=3 | diagnóstico | 0.6727 (n=92) | ❓ |
 | G3b.2 | Sem reta de span completo na máscara | 0 violações | 0 | ✅ |
-| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 12.2 ms, p95 29.0 ms | ✅ |
+| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 14.2 ms, p95 34.8 ms | ✅ |
 | A.0 | Parâmetros da U-Net | ~1,2 M (PLANO) | 1.94 M | ❓ |
 | 2.3 | Erro relativo de sx, sy | < 1% em ≥ 95% | 0.986 (n=280) | ✅ |
 | 2.4 | Taxa de rejeição (diagnóstico — unificado no 2.9) | sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52) | 0.067 | ❓ |
@@ -63,29 +63,29 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | 2.7[traco=:] | Erro perpendicular — traco=: | ≤ 1.0 px mediana | 0.981 px (n=67) | ✅ |
 | 2.7-iou[traco=:] | IoU — traco=: (diagnóstico) | sem alvo (Ruling 50) | 0.5264 (n=67) | ❓ |
 | 2.10 | IoU mediana: U-Net vs. extrator clássico | sem alvo | U-Net=0.6482  clássico=0.7153 | ❓ |
-| 2.8 | Latência por imagem | < 500 ms | mediana 160 ms, p95 298 ms | ✅ |
-| 2.6-aceitas | Amostras comparáveis (mesma ordem, ambos convergem) | diagnóstico | 240/300 | ❓ |
-| 2.6[K] | ΔMAPE — K | ≤ 3 p.p. | +0.16 p.p. (oráculo 0.12%, real 0.29%) | ✅ |
+| 2.8 | Latência por imagem | < 500 ms | mediana 210 ms, p95 349 ms | ✅ |
+| 2.6-aceitas | Amostras comparáveis (mesma ordem, ambos convergem) | diagnóstico | 254/300 | ❓ |
+| 2.6[K] | ΔMAPE — K | ≤ 3 p.p. | +0.16 p.p. (oráculo 0.12%, real 0.28%) | ✅ |
 | 2.6[tau] | ΔMAPE — tau | ≤ 3 p.p. | +0.21 p.p. (oráculo 0.23%, real 0.44%) | ✅ |
-| 2.6[theta] | ΔMAPE — theta | ≤ 3 p.p. | +0.23 p.p. (oráculo 0.06%, real 0.29%) | ✅ |
-| 2.6[wn] | ΔMAPE — wn | ≤ 3 p.p. | +1.06 p.p. (oráculo 0.73%, real 1.80%) | ✅ |
-| 2.6[zeta] | ΔMAPE — zeta | ≤ 3 p.p. | +1.67 p.p. (oráculo 1.17%, real 2.85%) | ✅ |
-| 2.6 | Degradação end-to-end (pior parâmetro) | ≤ 3 p.p. | +1.67 p.p. (n=240) | ✅ |
-| 2.6-adim-aceitas | Amostras comparáveis no nível adimensional (dispensa calibração) | diagnóstico | 139/300 (12 sem calibração) | ❓ |
-| 2.6-adim[zeta] | ΔMAPE adimensional — zeta | ≤ 3 p.p. | +1.66 p.p. (oráculo 1.19%, real 2.85%) | ✅ |
-| 2.6-adim[wn_T] | ΔMAPE adimensional — ωₙ·T (diagnóstico) | diagnóstico | +1.65 p.p. (oráculo 0.72%, real 2.37%, n=139) | ❓ |
-| 2.6-adim[wn_T/sem-calib] | ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico) | diagnóstico | +6.60 p.p. (oráculo 0.33%, real 6.93%, n=12) | ❓ |
-| 2.6-adim[theta_T] | Δ(NMAE/T) adimensional — θ/T (diagnóstico) | diagnóstico | +0.11 p.p. (oráculo 0.03%, real 0.14%, n=260) | ❓ |
-| 2.6-adim[theta_T/sem-calib] | Δ(NMAE/T) adimensional — θ/T, só sem calibração (diagnóstico) | diagnóstico | +2.24 p.p. (oráculo 0.02%, real 2.25%, n=20) | ❓ |
-| 2.6-adim[K_yrange] | ΔMAPE adimensional — K/faixa de y (diagnóstico) | diagnóstico | +0.65 p.p. (oráculo 0.11%, real 0.77%, n=260) | ❓ |
-| 2.6-adim[K_yrange/sem-calib] | ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico) | diagnóstico | +0.82 p.p. (oráculo 0.07%, real 0.89%, n=20) | ❓ |
-| 2.12-ordem | Acerto de ordem (diagnóstico) | diagnóstico | 89.0% (267/300, n=300) | ❓ |
-| 2.12-ordem[sem-calib] | Acerto de ordem, só sem calibração (diagnóstico) | diagnóstico | 100.0% (20/20, n=20) | ❓ |
-| 2.6-classico-aceitas | Amostras comparáveis (extrator clássico) | diagnóstico | 185/300 | ❓ |
-| 2.6-classico[K] | ΔMAPE (clássico) — K | diagnóstico | +0.33 p.p. (oráculo 0.18%, real 0.50%) | ✅ |
-| 2.6-classico[tau] | ΔMAPE (clássico) — tau | diagnóstico | +0.55 p.p. (oráculo 0.27%, real 0.82%) | ✅ |
-| 2.6-classico[theta] | ΔMAPE (clássico) — theta | diagnóstico | +0.47 p.p. (oráculo 0.06%, real 0.54%) | ✅ |
-| 2.6-classico[wn] | ΔMAPE (clássico) — wn | diagnóstico | +0.98 p.p. (oráculo 0.73%, real 1.71%) | ✅ |
-| 2.6-classico[zeta] | ΔMAPE (clássico) — zeta | diagnóstico | +0.96 p.p. (oráculo 1.56%, real 2.52%) | ✅ |
-| 2.6-classico | Degradação end-to-end (extrator clássico, pior parâmetro) | diagnóstico | +0.98 p.p. (n=185) | ✅ |
+| 2.6[theta] | ΔMAPE — theta | ≤ 3 p.p. | +0.21 p.p. (oráculo 0.06%, real 0.27%) | ✅ |
+| 2.6[wn] | ΔMAPE — wn | ≤ 3 p.p. | +1.00 p.p. (oráculo 0.65%, real 1.66%) | ✅ |
+| 2.6[zeta] | ΔMAPE — zeta | ≤ 3 p.p. | +1.63 p.p. (oráculo 1.09%, real 2.72%) | ✅ |
+| 2.6 | Degradação end-to-end (pior parâmetro) | ≤ 3 p.p. | +1.63 p.p. (n=254) | ✅ |
+| 2.6-adim-aceitas | Amostras comparáveis no nível adimensional (dispensa calibração) | diagnóstico | 133/300 (11 sem calibração) | ❓ |
+| 2.6-adim[zeta] | ΔMAPE adimensional — zeta | ≤ 3 p.p. | +1.59 p.p. (oráculo 1.09%, real 2.68%) | ✅ |
+| 2.6-adim[wn_T] | ΔMAPE adimensional — ωₙ·T (diagnóstico) | diagnóstico | +1.41 p.p. (oráculo 0.64%, real 2.05%, n=133) | ❓ |
+| 2.6-adim[wn_T/sem-calib] | ΔMAPE adimensional — ωₙ·T, só sem calibração (diagnóstico) | diagnóstico | +6.30 p.p. (oráculo 0.30%, real 6.60%, n=11) | ❓ |
+| 2.6-adim[theta_T] | Δ(NMAE/T) adimensional — θ/T (diagnóstico) | diagnóstico | +0.11 p.p. (oráculo 0.03%, real 0.14%, n=273) | ❓ |
+| 2.6-adim[theta_T/sem-calib] | Δ(NMAE/T) adimensional — θ/T, só sem calibração (diagnóstico) | diagnóstico | +2.18 p.p. (oráculo 0.02%, real 2.20%, n=19) | ❓ |
+| 2.6-adim[K_yrange] | ΔMAPE adimensional — K/faixa de y (diagnóstico) | diagnóstico | +0.64 p.p. (oráculo 0.11%, real 0.76%, n=273) | ❓ |
+| 2.6-adim[K_yrange/sem-calib] | ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico) | diagnóstico | +0.87 p.p. (oráculo 0.08%, real 0.95%, n=19) | ❓ |
+| 2.12-ordem | Acerto de ordem (diagnóstico) | diagnóstico | 92.3% (277/300, n=300) | ❓ |
+| 2.12-ordem[sem-calib] | Acerto de ordem, só sem calibração (diagnóstico) | diagnóstico | 95.0% (19/20, n=20) | ❓ |
+| 2.6-classico-aceitas | Amostras comparáveis (extrator clássico) | diagnóstico | 195/300 | ❓ |
+| 2.6-classico[K] | ΔMAPE (clássico) — K | diagnóstico | +0.30 p.p. (oráculo 0.16%, real 0.46%) | ✅ |
+| 2.6-classico[tau] | ΔMAPE (clássico) — tau | diagnóstico | +0.56 p.p. (oráculo 0.26%, real 0.82%) | ✅ |
+| 2.6-classico[theta] | ΔMAPE (clássico) — theta | diagnóstico | +0.46 p.p. (oráculo 0.06%, real 0.52%) | ✅ |
+| 2.6-classico[wn] | ΔMAPE (clássico) — wn | diagnóstico | +0.98 p.p. (oráculo 0.65%, real 1.63%) | ✅ |
+| 2.6-classico[zeta] | ΔMAPE (clássico) — zeta | diagnóstico | +1.05 p.p. (oráculo 1.47%, real 2.52%) | ✅ |
+| 2.6-classico | Degradação end-to-end (extrator clássico, pior parâmetro) | diagnóstico | +1.05 p.p. (n=195) | ✅ |
 

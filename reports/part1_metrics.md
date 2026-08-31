@@ -2,28 +2,28 @@
 
 Relatório gerado automaticamente por `tests/` (`pytest_sessionfinish` em `tests/conftest.py`). Não editar à mão.
 
-> **ATENÇÃO — relatório parcial.** A sessão rodou com seleção de testes (`paths ['tests/part2', 'tests/test_part1.py']`), então nem todos os critérios foram medidos. Regenere com `.venv/bin/python -m pytest -q` sem filtros antes de citar estes números na monografia.
+> **ATENÇÃO — relatório parcial.** A sessão rodou com seleção de testes (`paths ['tests/test_part1.py', 'tests/part2/']`), então nem todos os critérios foram medidos. Regenere com `.venv/bin/python -m pytest -q` sem filtros antes de citar estes números na monografia.
 
 - Amostras renderizadas por conjunto: **600** (`clean`, `add_noise=False`; `noisy`, SNR fixo = 20 dB) — RULING Q, elevado de 300 para 600 por poder estatístico do portão; nenhum limiar foi alterado
 - Sorteios sem renderização (critérios 1.3 e 1.4a): **20000**
 - Estrato assertado nos critérios 1.1/1.2 (RULING C): `w = (t_end - θ)/T_dom ≥ 3`
 - Workers: 16
-- Tempo total da suíte: **452.2 s**
+- Tempo total da suíte: **554.1 s**
 
 ## 1. Critérios de aceitação
 
 | # | critério | alvo | medido | veredito |
 |---|---|---|---|---|
 | **1.1** | Pipeline-oráculo, série limpa (estrato `w ≥ 3`) | MAPE < 1% em K, τ, θ, ωn, ζ | K 0.0000%, τ 0.0000%, θ 0.0000%, ωn 0.0000%, ζ 0.0000% — pior = zeta (0.0000%), n = 181 | **PASSA** |
-| **1.2** | Pipeline com ruído SNR = 20 dB (estrato `w ≥ 3`) | MAPE < 5% (ωn/ζ só em ζ < 1,6 — RULING N) | K 0.385%, τ 0.979%, θ 1.568%, ωn (ζ<1.6) 3.111%, ζ (ζ<1.6) 3.557% — pior = ζ (ζ<1.6) (3.557%); n = 158 (ζ<1.6: n = 44) | **PASSA** |
-| **1.2b** | RULING N — 2ª ordem com ζ ≥ 1,6 (ωn/ζ não identificáveis) | MAPE(K) < 5%, MAPE(T_lento) < 5%, NRMSE recon. < 0,05 | K = 0.351%, T_lento = 1.798%, NRMSE = 2.731e-03 (n = 32) | **PASSA** |
+| **1.2** | Pipeline com ruído SNR = 20 dB (estrato `w ≥ 3`) | MAPE < 5% (ωn/ζ só em ζ < 1,6 — RULING N) | K 0.384%, τ 0.979%, θ 1.613%, ωn (ζ<1.6) 3.111%, ζ (ζ<1.6) 3.557% — pior = ζ (ζ<1.6) (3.557%); n = 158 (ζ<1.6: n = 44) | **PASSA** |
+| **1.2b** | RULING N — 2ª ordem com ζ ≥ 1,6 (ωn/ζ não identificáveis) | MAPE(K) < 5%, MAPE(T_lento) < 5%, NRMSE recon. < 0,05 | K = 0.349%, T_lento = 1.798%, NRMSE = 2.731e-03 (n = 32) | **PASSA** |
 | **1.2c** | RULING N na população dedicada (n = 256 em `w ≥ 3`) | ζ < 1,6: MAPE(ωn), MAPE(ζ) < 5%; ζ ≥ 1,6: MAPE(K), MAPE(T_lento) < 5% e NRMSE recon. < 0,05 | ζ<1,6 (n = 122): ωn = 3.259%, ζ = 3.789% \| ζ≥1,6 (n = 134): K = 0.307%, T_lento = 1.479%, NRMSE = 2.513e-03 | **PASSA** |
 | **1.5** | Máscara reprojetada pela `axis_affine` × `series` | RMSE do viés normal < 1.5 px; \|viés vertical\| < 0.3 px (sólida s/ marcador) | RMSE = 0.1649 px (0.0298 px sem marcador); viés vertical = +0.0027 px; cobertura = 0.492 px (máx) | **PASSA** |
 | **1.5c** | Controle negativo do critério 1.5 | deslocar a afim em 3 px deve piorar o RMSE ≥ 10× | 0.1649 px → 2.2293 px (13.5×) | **PASSA** |
 | **1.6** | Determinismo bit-a-bit (mesma seed ⇒ mesmos bytes) | sha256 idêntico de image.png e mask.png + meta.json idêntico | 5 seeds × 2 gerações: todos idênticos | **PASSA** |
-| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 2.01 s para 200 amostras ⇒ 1.00 min | **PASSA** |
+| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 3.49 s para 200 amostras ⇒ 1.75 min | **PASSA** |
 | **B** | Baselines clássicos × `identify` (FOPDT limpo, `w ≥ 3`) | sem alvo: comparação da monografia | MAPE(τ): identify = 0.0000% vs melhor baseline = 0.0491% | **medido** |
-| **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.627% (n = 442) | **medido** |
+| **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.622% (n = 442) | **medido** |
 | **G** | `_estimate_gain` em janela truncada (`w < 3`, FOPDT limpo) | MAPE < 1.0% e cobertura = 100%; controle positivo: o atalho max(y) erra ≥ 10.0% no mesmo estrato | MAPE = 0.0000% (n = 191, cobertura 1.000) vs max(y) = 30.48% | **PASSA** |
 | **R** | RULING S — máscara não degenerada (curva atravessa a janela) | extensão horizontal ≥ 0.93·projeção de `t_window`; ≥ 40 px acesos; ≤ 10% da imagem | cobertura: mín 0.9594, p1 0.9894, mediana 1.0021, máx 1.0486 — 0/1200 abaixo de 0.93; mín de px acesos = 171; fração máxima = 0.0731 | **PASSA** |
 
@@ -77,22 +77,22 @@ Erro por parâmetro, estratificado pela largura da janela `w`. `K`, `τ`, `ωn`,
 
 | estrato | n | n fopdt / second | K (MAPE) | τ (MAPE) | θ (NMAE/T_dom) | θ (MAPE, secund.) | ωn (MAPE) | ζ (MAPE) |
 |---|---|---|---|---|---|---|---|---|
-| `w>=3` | 158 | 82 / 76 | 0.385% | 0.979% | 1.568% | 9.577% | 26.121% | 25.430% |
-| `w<3` | 442 | 224 / 218 | 127.627% | 3.461% | 0.907% | 5.848% | 23.734% | 62.556% |
-| `todos` | 600 | 306 / 294 | 94.120% | 2.796% | 1.081% | 6.830% | 24.351% | 52.958% |
+| `w>=3` | 158 | 82 / 76 | 0.384% | 0.979% | 1.613% | 8.531% | 26.121% | 25.430% |
+| `w<3` | 442 | 224 / 218 | 127.622% | 3.461% | 0.978% | 6.197% | 23.734% | 62.556% |
+| `todos` | 600 | 306 / 294 | 94.116% | 2.796% | 1.146% | 6.812% | 24.351% | 52.958% |
 
 Mediana do mesmo erro (mostra quanto do MAPE vem de poucas amostras patológicas — decisivo no estrato truncado):
 
 | estrato | n | K | τ | θ (/T_dom) | ωn | ζ |
 |---|---|---|---|---|---|---|
-| `w>=3` | 158 | 0.213% | 0.816% | 0.733% | 4.996% | 5.208% |
-| `w<3` | 442 | 1.809% | 2.417% | 0.462% | 7.707% | 14.939% |
-| `todos` | 600 | 1.036% | 1.819% | 0.520% | 7.056% | 11.621% |
+| `w>=3` | 158 | 0.210% | 0.816% | 0.702% | 4.996% | 5.208% |
+| `w<3` | 442 | 1.740% | 2.417% | 0.462% | 7.707% | 14.939% |
+| `todos` | 600 | 1.038% | 1.819% | 0.520% | 7.056% | 11.621% |
 
-- Acurácia de seleção de estrutura por AIC (`identify`): **0.888** (533/600)
+- Acurácia de seleção de estrutura por AIC (`identify`): **0.878** (527/600)
 - `K` e `θ` vêm de `identify()` (o pipeline real, todas as amostras). `τ`, `ωn` e `ζ` são específicos da estrutura e por isso vêm de `identify_both()` com a ordem verdadeira imposta — assim nenhuma amostra é descartada e o número não pode ser inflado por seleção de estrutura.
 
-**Estrato truncado (RULING C).** Com `w < 3` a curva é cortada antes do regime permanente e o ganho deixa de ser identificável: MAPE(K) = 127.6% contra mediana de 1.809%. A distância entre média e mediana diz que o erro vem de poucas amostras em que a extrapolação do patamar diverge, não de uma degradação uniforme. Isso é **limite de informação da janela**, não do método, e por isso é reportado sem assertiva — é resultado da monografia.
+**Estrato truncado (RULING C).** Com `w < 3` a curva é cortada antes do regime permanente e o ganho deixa de ser identificável: MAPE(K) = 127.6% contra mediana de 1.740%. A distância entre média e mediana diz que o erro vem de poucas amostras em que a extrapolação do patamar diverge, não de uma degradação uniforme. Isso é **limite de informação da janela**, não do método, e por isso é reportado sem assertiva — é resultado da monografia.
 
 ## 3. Não-identificabilidade prática em 2ª ordem (RULING N)
 
@@ -222,7 +222,7 @@ Cada seed foi gerada duas vezes, em diretórios distintos; os hashes são dos do
 
 | n medido | workers | tempo (s) | s/amostra | extrapolado p/ 6000 (min) | alvo |
 |---|---|---|---|---|---|
-| 200 | 16 | 2.01 | 0.0100 | **1.00** | < 15 min (folga 2× sobre os 30 min do PLANO) |
+| 200 | 16 | 3.49 | 0.0175 | **1.75** | < 15 min (folga 2× sobre os 30 min do PLANO) |
 
 ## 8. Baselines clássicos × `identify` (mesmas séries limpas, FOPDT)
 

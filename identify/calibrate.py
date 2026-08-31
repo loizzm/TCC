@@ -483,6 +483,66 @@ def _text_blobs(strip: np.ndarray, fundo: float,
     return boxes
 
 
+def _centros_y_corrigidos(blobs: list[tuple[int, int, int, int]],
+                          altura_strip: int) -> dict[tuple[int, int, int, int], float]:
+    """Centro vertical de cada blob de rótulo do eixo y, sem o viés da borda.
+
+    A faixa de rótulos do eixo y é recortada de `y0 - FOLGA_FAIXA_Y` a
+    `y1 + 1 + FOLGA_FAIXA_Y`, e `FOLGA_FAIXA_Y` vale 2 px — pequeno DE
+    PROPÓSITO, porque estender a faixa para baixo captura o topo do rótulo "0"
+    do eixo x (medido: folga 12 px derruba o y de 99,8 % para 97,2 %; ver o
+    comentário da constante). O efeito colateral é que, quando o gráfico não
+    deixa margem entre a curva e a moldura, os rótulos do PRIMEIRO e do ÚLTIMO
+    tick ficam com o glifo cortado pela borda do recorte — e o centro da caixa
+    do blob, que é o pixel do tick, escorrega PARA DENTRO.
+
+    Medido na imagem real do `rg.py` (`plt.ylim(0, 1.8)`, rótulos a ~2 px da
+    moldura): blobs interiores com 14 px de altura, os dois extremos com 11 px,
+    centro deslocado 1,5 px para dentro em cada ponta. Os espaçamentos em pixel
+    saíam `[33.5, 35, 35, 71, 35, 35, 35, 33.5]` com os NOVE rótulos lidos
+    corretamente, e `_equiespacados` reprovava o eixo.
+
+    A correção usa só informação que já está na mão: um blob que encosta na
+    borda E é mais curto que a mediana dos que não encostam foi cortado, e o
+    centro verdadeiro dele está a meia altura MEDIANA da ponta que sobreviveu.
+    Blob de altura normal encostando na borda não foi cortado — foi desenhado
+    ali — e fica intacto.
+
+    Medido no corpus (`data/test`, n=900): 35 amostras em 895 (3,9 %) têm ao
+    menos um rótulo do y cortado; a correção não perde NENHUMA calibração e
+    derruba de 14 para 13 os falsos positivos de escala do eixo y. O corpus
+    mede sobretudo o CUSTO desta guarda, que é zero: o gerador sorteia
+    `y_margin_lo ~ U(0.03, 0.15)` e por isso quase nunca encosta o rótulo
+    extremo na moldura — a geometria que produz o defeito é a de
+    `plt.ylim(0, ...)`, que só as imagens externas trazem.
+    """
+    centros = {b: (b[1] + b[3]) / 2.0 for b in blobs}
+    livres = [b for b in blobs if b[1] > 0 and b[3] < altura_strip - 1]
+    if not livres:
+        return centros
+    h_med = float(np.median([b[3] - b[1] for b in livres]))
+    for b in blobs:
+        alt = b[3] - b[1]
+        if alt >= h_med - 1.0:
+            continue                              # altura normal: não foi cortado
+        if alt < h_med / 2.0:
+            continue
+            # Mais curto que METADE da mediana não é rótulo cortado: a faixa
+            # do eixo y também contém o RÓTULO DO EIXO (texto girado, ~74 px
+            # de altura contra 14 px de um número), e num gráfico com poucos
+            # ticks ele pode dominar a mediana dos blobs livres. Nesse caso
+            # `h_med` não representa altura de número nenhum, e corrigir por
+            # ela deslocaria o tick para longe. Um glifo cortado pela borda
+            # perde parte da altura, não quase toda — abaixo de metade a
+            # premissa não vale e o comportamento antigo (centro da caixa)
+            # é o mais seguro.
+        if b[1] <= 0:                             # cortado em cima
+            centros[b] = b[3] - h_med / 2.0
+        elif b[3] >= altura_strip - 1:            # cortado embaixo
+            centros[b] = b[1] + h_med / 2.0
+    return centros
+
+
 def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
                      ticks: dict[str, list[float]]) -> dict[str, list[tuple[float, float]]]:
     """Lê os rótulos numéricos nas margens dos eixos. Pares (pixel, valor) lidos.
@@ -548,9 +608,12 @@ def read_tick_labels(gray: np.ndarray, bbox: tuple[int, int, int, int],
         plano.append(("x", fx_esq + (bx0 + bx1) / 2.0,
                       list(range(len(crops), len(crops) + len(cs)))))
         crops.extend(cs)
-    for bx0, by0, bx1, by1 in _text_blobs(faixa_y, fundo, corta_direita=TICK_GAP):
+    blobs_y = _text_blobs(faixa_y, fundo, corta_direita=TICK_GAP)
+    centros_y = _centros_y_corrigidos(blobs_y, faixa_y.shape[0])
+    for b in blobs_y:
+        bx0, by0, bx1, by1 = b
         cs = _candidatos(faixa_y, bx0, by0, bx1, by1, False, bx1 >= fy_w - 1)
-        plano.append(("y", fy_topo + (by0 + by1) / 2.0,
+        plano.append(("y", fy_topo + centros_y[b],
                       list(range(len(crops), len(crops) + len(cs)))))
         crops.extend(cs)
 
@@ -657,10 +720,22 @@ def _equiespacados(pares: list[tuple[float, float]], tol: float) -> bool:
     correto — medido: essa era a causa de quase toda reprovação por
     `calibration_failed` no Bloco 2 (não OCR errado, e sim OCR incompleto).
     Aqui, cada diferença consecutiva precisa ser próxima de um múltiplo
-    INTEIRO do menor espaçamento observado — cobre tanto "sem lacuna" (razão
+    INTEIRO do espaçamento unitário — cobre tanto "sem lacuna" (razão
     1) quanto "faltou N ticks nesse trecho" (razão N+1), e ainda reprova um
     valor lido errado (razão longe de qualquer inteiro). Ver Ruling no
     HANDOFF_P2_2.md.
+
+    A UNIDADE sai de um ajuste de mínimos quadrados sobre TODAS as diferenças,
+    não do MENOR delas. `min(d)` é o estimador menos robusto possível: basta
+    UMA diferença medida curta para que todas as outras razões subam junto e a
+    checagem reprove leitura correta. Foi o que aconteceu na imagem real do
+    `rg.py` — o rótulo extremo do eixo y com o glifo cortado pela borda do
+    recorte (ver `_centros_y_corrigidos`) dava `min(d) = 33.5` contra o
+    espaçamento real de 35, inflando toda razão em 4,5 %: a lacuna de um
+    rótulo virava razão 2,1194 e o erro `|2,1194 - 2| / 2 = 0,0597` estourava
+    `SPACING_TOL = 0,05`. Com a unidade ajustada (34,91) o mesmo conjunto
+    passa com folga (erro máximo 0,0403), e o corpus (n=900) não perde
+    NENHUMA calibração — aceita uma a mais no eixo y, sem falso positivo novo.
     """
     if len(pares) < 3:
         return True                       # 2 pontos não têm o que violar
@@ -670,7 +745,13 @@ def _equiespacados(pares: list[tuple[float, float]], tol: float) -> bool:
         d = np.diff(a)
         if d.size == 0 or float(np.min(d)) < 1e-9:
             return False
-        unit = float(np.min(d))
+        # `min(d)` só como CHUTE para descobrir quantos ticks cabem em cada
+        # lacuna; a unidade em si vem do ajuste sobre essas multiplicidades.
+        n = np.maximum(np.round(d / float(np.min(d))), 1.0)
+        den = float(n @ n)
+        unit = float(d @ n) / den if den > 0 else float(np.min(d))
+        if unit < 1e-9:
+            return False
         razao = d / unit
         n = np.round(razao)
         if np.any(n < 1):

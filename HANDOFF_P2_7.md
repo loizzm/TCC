@@ -3341,3 +3341,458 @@ maior alavancagem que resta.
 Item conhecido, não corrigido: o `ZETA_BOUNDS` de `classical.py:44` tem piso
 `1e-3`, então ζ=0 verdadeiro sai como 0,001. Não é medição, é o limite da
 caixa de parâmetros.
+
+---
+
+## 38. Ruling 61 — o que treze imagens externas mediram DEPOIS da promoção do base 32
+
+O §37.13 fechou com oito imagens. Cinco outras vieram depois, escolhidas para
+sondar os limites declarados em vez de repetir o caso fácil. Duas delas
+encontraram buracos que as guardas do §37.11 não cobrem, e um deles tem
+conserto barato porque o sinal já existe no código e não está sendo lido.
+
+### 38.1 Placar das treze
+
+| imagem | verdade declarada | resultado | veredito |
+|---|---|---|---|
+| caso_real_2ordem | ζ=0,5 ωₙ=2 | 0,500 / 2,019 | ✅ |
+| Figure_11 | 1ª ordem | τ=0,195 | ✅ |
+| Figure_12 | ζ=0 ωₙ=4 | 0,006 / 4,004 | ✅ (ζ no piso) |
+| Figure_122 | 1ª ordem | τ=0,336 | ✅ |
+| Figure_15 | 1ª ordem τ≈2 | τ=1,983 | ✅ |
+| Figure_16 | ζ=0,6 ωₙ≈10 | 0,604 / 10,124 | ✅ |
+| Figure_21 | ζ=0,2 ωₙ=5 | 0,200 / 5,034 | ✅ |
+| Figure_22 | fase não-mínima | recusa `resposta_inversa` | ✅ |
+| Figure_f1 | FOPDT K=2 θ=2 | K=2,0275 θ=1,9690 | ✅ |
+| Figure_f2 | 2ª ordem θ=1,5 K=1 | K=1,0007 θ=1,4922 | ✅ |
+| **Figure_f3** | **2ª ordem crítica θ=3 K=1,5** | **`fopdt`** | ❌ ordem |
+| **Figure_222** | duas curvas sobrepostas | `fopdt` sem sinalizar | ⚠️ |
+| **Figure_322** | instável, polo em s=+1,5 | `second` sem sentido | ❌ |
+
+### 38.2 Figure_f3 — não é bug, é identificabilidade
+
+Uma 2ª ordem CRITICAMENTE amortecida (ζ=1) com atraso foi classificada como
+FOPDT. O mecanismo, medido:
+
+| | fopdt | second |
+|---|---|---|
+| nrmse | 0,03308 | 0,03284 |
+| SSE | 1,8078 | 1,7815 |
+| AIC | −3395,4 | **−3402,0** |
+| θ | 3,1782 (5,9 % de erro) | **3,0486 (1,6 %)** |
+| ζ | — | 1,44 (verdade 1,0) |
+
+O ajuste de 2ª ordem é melhor em SSE E em AIC, e recupera θ com 1,6 % contra
+5,9 %. Mesmo assim o teste de ordem o rejeita:
+
+```
+razão SSE₁/SSE₂ = 1,0148  ->  ln = 0,01465
+n_eff = 21,0
+ganho = 21,0 × 0,01465 = 0,308     contra limiar 2,0
+```
+
+A 2ª ordem é só **1,5 % melhor em SSE**. Isso não é artefato de extração — é a
+natureza do problema: com ζ ≥ 1 e atraso na janela, as duas estruturas
+produzem curvas quase idênticas. Nem uma máscara perfeita criaria a informação
+que falta. É o mesmo fenômeno que o PLANO §1.3 já quantificou (100 % de acerto
+em ζ < 1,6; 42,4 % em ζ ≥ 2,2) e que o critério 2.12 mede em 91,3 %.
+
+Note que a 2ª ordem também não recupera ζ=1 — ela devolve 1,44, uma família
+superamortecida diferente que passa pelos mesmos pontos. Escolher a estrutura
+certa não teria dado o parâmetro certo.
+
+**O defeito não é a escolha, é o silêncio.** A pipeline afirma `fopdt` com
+`ok=true` e sem nenhum aviso de que a evidência era de 0,308 contra 2,0.
+
+### 38.3 Figure_222 — duas curvas no mesmo quadro
+
+A figura tem DUAS curvas (2ª ordem real e aproximação de 1ª ordem) desenhadas
+quase sobrepostas, o que é o assunto do próprio gráfico. A pipeline devolveu
+`fopdt`, K=0,9867, τ=1,21 — concordando com a APROXIMAÇÃO, não com o sistema
+real.
+
+A resposta é defensável para o dado visível, mas duas coisas ficam sem
+sinalização:
+
+- **Múltiplas curvas é escopo congelado** (PLANO §1.4) e a pipeline não avisa
+  que viu mais de uma. Ela mescla as componentes e segue.
+- O `nrmse` de **0,08727** é o mais alto entre todas as imagens aceitas — 2,7×
+  o segundo pior. Alto o bastante para ser sintoma, baixo o bastante para não
+  disparar o limiar de 0,13.
+
+### 38.4 Figure_322 — instável, e a saída é sem sentido com `ok=true`
+
+Exponencial divergente (polo em s=+1,5). Saída:
+
+```
+K    = 1e+04     <- TETO exato de K_BOUNDS
+zeta = 0.001     <- PISO exato de ZETA_BOUNDS
+wn   = 0.1071
+nrmse = 0.03182  <- excelente
+```
+
+Os dois parâmetros estão cravados em **extremos opostos da caixa**. O modelo
+não representa divergência, então o otimizador aproxima a exponencial crescente
+com o primeiro quarto de período de uma senoide quase não amortecida de ganho
+gigantesco. O ajuste ENCAIXA bem no trecho visível — por isso o resíduo é
+baixo e a guarda do §37.11 não dispara.
+
+O candidato FOPDT também tem K no teto (1e+04, τ=62,98), então os DOIS
+ajustes bateram na parede. Isso não é coincidência: nenhum membro da família
+consegue crescer sem limite, e a única forma de chegar perto é ganho infinito.
+
+### 38.5 O sinal grátis que o sistema ignora
+
+**Parâmetro cravado na borda da caixa não é medição — é o otimizador
+desistindo.** A informação já existe (`K_BOUNDS`, `WN_BOUNDS`, `ZETA_BOUNDS`,
+`TAU_BOUNDS` em `classical.py:41-44`) e custa uma comparação exata, sem limiar
+calibrado contra corpus.
+
+Verificado nas treze imagens: só a Figure_322 tem parâmetro na borda **na
+estrutura escolhida**. Mas há uma armadilha medida:
+
+- a **Figure_12** (ζ=0 verdadeiro) encosta no piso do ζ **legitimamente** —
+  uma guarda ingênua sobre ζ a rejeitaria, e ela está certa;
+- na **Figure_222**, o ajuste de 2ª ordem REJEITADO tem ζ=10 (teto), o que
+  mostra que borda aparece também em candidatos que não viram saída.
+
+Então o critério não pode ser "algum parâmetro na borda". Precisa ser mais
+fino — a hipótese a testar é **K na borda**, que não tem caso legítimo à
+vista, possivelmente combinado com ζ na borda.
+
+### 38.6 PRÓXIMOS PASSOS, em ordem
+
+**1. Guarda de parâmetro na borda (fazer primeiro).**
+Ataca a Figure_322, que é a pior saída possível: quatro números sem sentido
+com `ok=true`. Critério de aceitação a fixar ANTES de implementar, e a
+primeira pergunta a responder é o CUSTO: quantas das 900 amostras do corpus
+têm algum parâmetro na borda na estrutura escolhida? Se for perto de zero, a
+guarda é quase de graça; se for muito, não serve. Medir separado para K, τ,
+ωₙ e ζ — a Figure_12 já prova que ζ tem caso legítimo no piso e K, até agora,
+não tem nenhum.
+
+**2. Sinalização de ordem ambígua.**
+Ataca a Figure_f3. Quando o ganho do teste de ordem fica muito abaixo do
+limiar, a evidência para a estrutura mais complexa não existe — e hoje a
+pipeline escolhe a mais simples em silêncio. Uma faixa de indecisão marcaria
+`ordem_incerta` e entregaria os parâmetros das DUAS estruturas, deixando a
+escolha para quem tem o contexto físico. Validar contra o critério 2.12
+(acurácia de ordem, 91,3 %): a guarda não pode derrubá-lo.
+
+**3. Detecção de múltiplas curvas.**
+Ataca a Figure_222. Escopo congelado no PLANO §1.4, então o objetivo NÃO é
+identificar duas curvas — é **recusar** em vez de mesclar em silêncio. Sinal
+candidato: componentes conexas com extensão horizontal comparável à da
+moldura, em número maior que um, após o filtro de retas de span completo.
+
+**4. Medir a latência com o base 32 (critério 3.11).**
+O alvo é < 2 s em CPU e o modelo cresceu 78 %. Não foi remedido depois da
+promoção. É barato e pode exigir decisão.
+
+**5. Salvar as treze imagens como fixtures.**
+Continua sendo a dívida de maior alavancagem, e cresceu: agora são treze
+imagens e uma versionada. Ver §37.13.
+
+### 38.7 Ferramenta nova
+
+`identificar.py` na raiz — casca de linha de comando sobre
+`identify_from_image`, sem lógica própria de propósito. Traduz os códigos de
+recusa para português corrente, mostra o bloco adimensional com instrução de
+uso quando a calibração falha, e aceita `--classico` (dispensa torch e GPU),
+`--json` e várias imagens de uma vez.
+
+### 38.8 O que as treze dizem sobre o envelope
+
+Das cinco imagens novas, três estão DENTRO do envelope declarado (f1, f2, 222)
+e duas FORA (f3 no limite de identificabilidade, 322 francamente fora). O
+placar dentro do envelope é 3/3 quando a estrutura é distinguível; fora dele, a
+pipeline erra em silêncio nos dois casos.
+
+Isso reforça o que o §37 já registrava: **o sistema não tem detector para a
+maior parte do que está fora da família**. Hoje há guarda para resposta inversa
+e para resíduo alto. Não há para instável, para ordem superior, para ganho
+negativo, para zero no semiplano esquerdo, nem para múltiplas curvas — e a
+Figure_322 mostra que resíduo baixo não é garantia de nada quando o otimizador
+tem uma caixa grande para fugir.
+
+---
+
+## 39. Ruling 62 — os três sistemas do `rg.py`: dois defeitos consertados e um que exige RETREINO
+
+Três imagens novas, produzidas por `rg.py` (script do próprio autor, versionado
+na raiz), com a verdade declarada na função de transferência — não há
+estimativa envolvida em nenhum número deste ruling.
+
+| sistema | verdade | antes | depois |
+|---|---|---|---|
+| 1 — FOPDT dominado pelo atraso | K=5, τ=1, θ=4 | `second`, ζ=2,44 ❌ | `fopdt`, K=5,01 τ=0,997 θ=3,99 ✅ |
+| 2 — 2ª ordem superamortecida | K=2, ωₙ=2, ζ=1,5, θ=2 | ✅ | ✅ (controle negativo) |
+| 3 — 2ª ordem subamortecida | K=1, ωₙ=5, ζ=0,15, θ=1 | sem K (`calibration_failed`) ❌ | K=0,994 ωₙ=4,99 ζ=0,150 θ=1,000 ✅ |
+
+As três estão agora em `tests/fixtures/caso_real_rg_*.png`, com
+`tests/part2/test_caso_real_rg.py` — paga uma parte da dívida do §38.6 item 5.
+
+**O que as três têm em comum, e por que o corpus não as encontrou.** `rg.py` usa
+`plt.ylim(0, ...)`. Isso encosta duas coisas na moldura inferior: a CURVA no
+patamar de repouso (2 a 3 px, ~0,9 % do span do eixo y) e o RÓTULO extremo do
+eixo y. O gerador sorteia `y_margin_lo ~ U(0.03, 0.15)` e **nunca desce abaixo
+de 3 %** — a geometria inteira está fora da distribuição de treino e fora da
+distribuição de teste. Uma causa, três defeitos.
+
+### 39.1 Sistema 3 — o eixo y era reprovado com os nove rótulos lidos CERTOS
+
+O OCR leu 1,8 / 1,6 / 1,4 / 1,2 / 0,8 / 0,6 / 0,4 / 0,2 / 0,0 — todos corretos.
+Quem reprovou foi `_equiespacados`, por um artefato geométrico do recorte:
+
+```
+blob y=[  0, 11) altura=11  centro=51.5   <- COLADO NO TOPO DO STRIP (glifo cortado)
+blob y=[ 32, 46) altura=14  centro=85.0
+...  (todos os interiores: altura 14)
+blob y=[313,324) altura=11  centro=364.5  <- COLADO NA BASE (glifo cortado)
+```
+
+`FOLGA_FAIXA_Y = 2` é pequeno de propósito (§37: estender para baixo captura o
+rótulo "0" do eixo x). O efeito colateral só aparece quando o rótulo extremo
+encosta na moldura: o strip decepa 3 px de cada ponta e o centróide — que É o
+pixel do tick — entra 1,5 px. Espaçamentos: `[33.5, 35, 35, 71, 35, 35, 35, 33.5]`.
+`_equiespacados` usava `unit = min(d)` = 33,5, o valor enviesado, inflando toda
+razão em 4,5 %; a lacuna do rótulo "1.0" (não lido) virava razão 2,1194 e o erro
+`|2,1194−2|/2 = 0,0597` estourava `SPACING_TOL = 0,05`. **Reprovado por 1,2 ponto
+percentual.** O Sistema 1 passava raspando no mesmo defeito (erro 0,045).
+
+Duas correções, medidas separadamente no corpus (n=900):
+
+| variante | ok | ok_y | FP_y | perdidas |
+|---|---|---|---|---|
+| base | 837 | 866 | 14 | — |
+| `FOLGA_FAIXA_Y` 2→8 | 836 | 866 | 13 | **1** |
+| C: unidade robusta em `_equiespacados` | 837 | **867** | 14 | 0 |
+| D: `_centros_y_corrigidos` | 837 | 866 | **13** | 0 |
+| **C+D (adotada)** | 837 | **867** | **13** | **0** |
+
+Aumentar a folga foi **testado e descartado**: perde uma amostra e não ganha
+nenhuma. D é a correção de causa — reconstrói o centro do blob cortado pela
+meia-altura mediana dos não cortados, e recupera `sy = −0,005690` contra
+`−0,005717`, que é a inclinação dos rótulos INTERIORES, os não enviesados. C é
+defesa em profundidade: `min(d)` é o estimador menos robusto possível para uma
+unidade de espaçamento.
+
+Incidência do defeito no corpus: 35 amostras em 895 (3,9 %) têm rótulo do y
+cortado. O corpus mede o CUSTO (zero) e quase não mede o BENEFÍCIO — pelo mesmo
+motivo do §37.11: ele não contém a geometria que produz a falha.
+
+### 39.2 Sistema 1 — a ordem era decidida por DOIS pixels
+
+O ajuste FOPDT acerta tudo (K=5,0203, τ=0,9966, θ=3,9942, NRMSE=0,0020) e mesmo
+assim perdia:
+
+```
+SSE1/SSE2 = 1,174   n_eff = 131   ganho = 21,0  >  limiar 2,0  ->  SECOND
+polos do SECOND: −1,0061 e −21,9623
+   τ_dominante = 0,994 s (= o τ verdadeiro)
+   τ_rápido    = 0,0455 s = 2,35 amostras = 3,6 px
+```
+
+Onde estava esse ganho de 17 %:
+
+```
+t=[3,4)s   n=  2   ganho = +0,006544   (+107,5 % do total)
+t=[4,5)s   n= 52   ganho = −0,000826   ( −13,6 %)
+t=[5,12)s  ...     no líquido NEGATIVO
+```
+
+**Dois pontos, de 406.** O polo extra tem constante de tempo de 3,6 px — a
+espessura do próprio traço no canto do degrau. A 2ª ordem não achou dinâmica;
+ajustou o antialiasing. As guardas do §37.11 não pegam isso por construção:
+`_NRMSE_MAX = 0,13` contra NRMSE de 0,0019.
+
+`_polo_rapido_e_artefato` (novo, em `classical.py`): se o escolhido é 2ª ordem
+**superamortecida** e um trecho CONTÍGUO de 3 % da série responde por ≥ 100 % da
+vantagem de SSE, devolve FOPDT. O limiar 1,0 é estrutural, não calibrado — quer
+dizer "fora do trecho o 2ª ordem perde". Só o TAMANHO do trecho saiu de medição.
+
+**Contíguo importa, e foi medido.** A primeira versão usava os pontos de maior
+ganho onde quer que estivessem, e custava caro no caminho ORÁCULO, que nem tem
+render — era a guarda pegando picos de ruído. Um canto rasterizado é um acidente
+LOCAL; ruído de aquisição é disperso por construção:
+
+| estatístico | imagem (n=837) | oráculo 20 dB (n=300) |
+|---|---|---|
+| sem guarda | 88,89 % | 88,3 % |
+| top 1 % DISPERSO > 1 | 92,23 % | **85,7 %** (−2,6 p.p.) |
+| trecho CONTÍGUO 3 % > 1 | **92,95 %** | 87,7 % (−0,6 p.p.) |
+
+Varredura do tamanho do trecho (o único número escolhido por medição):
+
+| frac | imagem | custo | oráculo 20 dB |
+|---|---|---|---|
+| 0,005 | 90,08 % | −1 | — |
+| 0,01 | 91,64 % | −3 | 88,0 % |
+| 0,02 | 92,71 % | −6 | 87,3 % |
+| **0,03** | **92,95 %** | **−7** | **87,7 %** |
+| 0,05 | 92,95 % | −9 | 87,7 % |
+| 0,08 | 91,64 % | −23 | 86,7 % |
+
+0,03 e 0,05 empatam; 0,03 leva por ter o menor custo do platô e ser a janela
+mais curta — trecho menor é afirmação mais forte de localidade.
+
+**A restrição a ζ > 1 é estrutural.** Com polos complexos não existe polo rápido
+separado a descartar: a oscilação é a assinatura inteira e nenhum FOPDT a
+representa. Rebaixar destruiria o ζ — a grandeza que o nível adimensional da
+Decisão E existe para entregar, e exatamente o que o Sistema 3 recupera. Sem a
+restrição o corpus rebaixaria 1 amostra a mais (e ela é de 1ª ordem, ou seja,
+ganho): a restrição custa quase nada e fecha um modo de falha inteiro. O Sistema
+2 é o controle negativo versionado: estatístico 0,639 contra limiar 1,0.
+
+Custo real das rebaixadas: são 2ª ordens genuinamente superamortecidas (ζ de 2 a
+3,5) cujo polo rápido é quase invisível. Medido nelas, o τ reportado ficou a
+0,1 % / 0,4 % / 0,1 % / 1,5 % do τ dominante verdadeiro e K a menos de 1 %.
+**Perde-se o rótulo, não a física.**
+
+### 39.3 O defeito que SOBROU: são DOIS, e os dois exigem RETREINO
+
+Nenhuma correção em código resolve estes. A U-Net dá `prob <= 0,004` em colunas
+onde há traço colorido, puro e NÃO ocluído, desenhado:
+
+```
+Sistema 1: máscara cobre 406/622 colunas (65,3 %) — falta t=[0, 3,95] s inteiro,
+           o platô do tempo morto: 33 % do gráfico
+Sistema 3: máscara cobre 511/622 colunas (82,2 %) — falta t=[10,37, 12] s,
+           a cauda assentada, e t=[0, 0,46] s, o platô inicial
+Sistema 2: 96,9 % — passa
+```
+
+E é isso que CAUSA o §39.2: sem o platô, o canto em t=4 s do Sistema 1 fica
+apoiado nos dois pontos que decidiam a estrutura.
+
+As duas perdas parecem a mesma coisa e **não são**. A ablação separa:
+
+| ablação (só o trecho perdido move, resto do render idêntico) | Sistema 1 | Sistema 3 |
+|---|---|---|
+| original | 0/200 | 0/85 |
+| ondulação de ±1 px, MESMA altura | **0/200** | **79/85** |
+| 12 px acima da moldura, ainda reto | **98/200** | — (é no meio do gráfico) |
+| ondulação + 12 px acima | 165/200 | — |
+
+#### Defeito A — curva rente à moldura inferior (Sistema 1)
+
+Curva dose-resposta, deslocando só o platô (span do eixo = 318 px):
+
+| distância à moldura | cobertura no platô |
+|---|---|
+| 1 px (0,3 %) | 0 / 150 |
+| 3 px (0,9 %) — **original** | 0 / 150 |
+| 5 px (1,6 %) | 0 / 150 |
+| 7 px (2,2 %) | 107 / 150 |
+| 9 px (2,8 %) | 106 / 150 |
+| 13 px (4,1 %) | 122 / 150 |
+
+**O degrau está em ~2 % do span, logo abaixo do piso de 3 % que o gerador
+sorteia em `y_margin_lo ~ U(0.03, 0.15)`.** Não é limiar mal escolhido nem bug
+de código: é região que não existe no treino. `plt.ylim(0, ...)` — repouso em
+zero, o caso normal de um gráfico de controle real — cai sempre nela.
+
+**Três hipóteses REFUTADAS por ablação**, e vale registrar as três porque as três
+pareciam óbvias:
+
+- a banda cinza do `axvspan` — apagá-la não muda nada, 0/150 -> 0/150. O gerador
+  nem produz banda VERTICAL, só `axhspan`, então era suspeita natural;
+- a COR do traço — recolorir o Sistema 1 para o rosa do Sistema 2 (que funciona)
+  mantém 0/150, e recolorir o Sistema 2 para o ciano mantém 125/150. O
+  checkpoint é RGB, então a hipótese era plausível;
+- a PLANURA do trecho — ondular ±1 px na mesma altura mantém 0/200. É o que
+  separa este defeito do B.
+
+#### Defeito B — trecho perfeitamente RETO e horizontal (Sistema 3)
+
+A cauda assentada some, e a causa não é nenhuma das suspeitas:
+
+| ablação | cobertura da cauda |
+|---|---|
+| original | 0/85 |
+| cinza puro da tracejada apagado | 5/85 |
+| tracejada removida, curva intacta | 7/85 |
+| cauda deslocada 25 px, longe da tracejada | 0/85 |
+| **ondulação de ±1 px na mesma cauda** | **79/85** |
+
+A rede vê amarelo PURO e não ocluído em x=640 e responde 0,047; a probabilidade
+despenca de 0,954 em x=634 para 0,027 em x=636, que é exatamente onde a
+ondulação própria da curva cai abaixo de 1 px. **O que ela suprime é a
+RETIDÃO**, não a oclusão.
+
+A explicação é o próprio treino, e é uma consequência não intencional de um
+critério existente: o G3b.2 ("Sem reta de span completo na máscara") ensina o
+modelo a REJEITAR reta horizontal de span completo, porque distrator é isso. Só
+que uma resposta assentada É uma reta horizontal — e quando a ondulação residual
+fica sub-pixel os dois objetos passam a ser literalmente os mesmos pixels. O
+modelo resolve a ambiguidade suprimindo, e leva a curva junto.
+
+**CORREÇÃO de um erro da primeira versão deste ruling:** eu havia escrito que o
+estrato `reta_no_patamar` (§34.5) era opt-in e que o checkpoint promovido não
+tinha sido treinado com ele. **Está errado.** O `logs/train_base32.log` registra
+o treino com `['data/train', 'data/train_reta', 'data/train_janela',
+'data/train_banda_seta', 'data/train_banda', 'data/train_seta',
+'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta']`
+— o estrato ESTÁ lá. O defeito B sobrevive a ele, e as ablações acima mostram
+por quê: o estrato foi construído para o problema da OCLUSÃO por reta de
+referência, e o que quebra não é a oclusão.
+
+#### O que o retreino precisa
+
+1. **Estrato de margem inferior quase nula — NÃO EXISTE.** `y_margin_lo` sorteado
+   em 0 a 1 % do span, contra o piso atual de 3 %. Ataca o defeito A.
+2. **Estrato de cauda LONGA e assentada — o que existe não basta.** O `train_reta`
+   ataca oclusão, não retidão. O que falta é janela larga o bastante para a
+   resposta assentar de verdade e ficar reta por muitas colunas, com e sem reta
+   de referência em cima. Vale notar que o corpus atual tem 442 de 600 amostras
+   com `w < 3` (janela truncada, §RULING C), ou seja, a maioria **nunca assenta**
+   — o caso que quebra é justamente o sub-representado. Ataca o defeito B.
+3. **Remedir o critério G3b.2 depois.** Ele é o que ensina a suprimir reta, e o
+   defeito B é efeito colateral dele. Retreinar sem remedi-lo pode trocar um
+   defeito por outro: reta de referência voltando para dentro da máscara.
+
+**A fragilidade é INTERMITENTE, e esse é o argumento central para retreino e não
+para guarda.** Os três sistemas têm a curva à MESMA distância da moldura (3, 3 e
+2 px) e o Sistema 2 sobrevive enquanto o Sistema 1 colapsa a zero. Comportamento
+fora da distribuição é assim: não dá para prever qual imagem cai, então não dá
+para consertar com limiar. Precisa de dado.
+
+**Registrado em código, não só aqui.**
+`tests/part2/test_caso_real_rg.py::test_estagio_a_cobre_a_janela_inteira` está
+marcado `xfail(strict=True)` para os Sistemas 1 e 3, com alvo de 90 % de
+cobertura. No dia em que o retreino consertar, o teste vira XPASS e em modo
+estrito **reprova a suíte** — obrigando quem consertou a remover a marca e
+converter o defeito documentado em portão de regressão. É o mecanismo que impede
+esta dívida de sumir do jeito que as oito imagens do §37.13 sumiram. O ponteiro
+para o defeito A está também em `dataset/randomize.py`, na linha do sorteio.
+
+### 39.4 Validação: o que mudou no corpus e o que NÃO mudou
+
+Corpus `data/test` (n=900), antes → depois das duas correções:
+
+| métrica | antes | depois |
+|---|---|---|
+| ordem correta, caminho imagem (n=837) | 88,89 % | **93,0 %** |
+| — plantas de 1ª ordem | 82,6 % | **92,1 %** |
+| — plantas de 2ª ordem | 95,6 % | 93,9 % |
+| erro máximo de parâmetros ≤ 5 % | 60,1 % | **64,5 %** |
+| erro máximo de parâmetros ≤ 10 % | 73,6 % | **78,4 %** |
+| calibração aceita | 93,0 % | 93,0 % |
+| `ok_y` / falso positivo de escala em y | 96,2 % / 14 | **96,3 % / 13** |
+| critério 2.12-ordem | 89,0 % | **92,3 %** |
+| critério 2.6 (degradação, alvo ≤ 3 p.p.) | +1,67 | **+1,63** ✅ |
+
+Suíte de `tests/test_part1.py` + `tests/part2/`: **73 testes passam**, nenhum
+critério mudou de veredito.
+
+**A regressão que existe, declarada.** A acurácia de ordem no caminho ORÁCULO a
+20 dB (diagnóstico da Parte 1) caiu de 0,888 para 0,878 — 6 amostras em 600. É
+o preço do trecho contíguo num caminho que não tem render, e é o que sobrou
+depois de trocar a estatística dispersa (que custava 2,8 p.p.). Fica dentro de
+1 sigma do ruído amostral. Em troca, o caminho da imagem — que é para o que o
+sistema existe — sobe 4,1 p.p.
+
+**A latência NÃO regrediu, apesar do relatório.** O critério 2.8 saiu de 160 ms
+para ~220 ms entre execuções, mas medido em isolamento a guarda custa **35 µs**
+por chamada e a pipeline dá 177 ms com ela contra 180 ms sem ela. O número do
+relatório oscila com a carga da execução do pytest; o alvo é 500 ms.
