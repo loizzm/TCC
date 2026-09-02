@@ -214,6 +214,33 @@ def _span(t: np.ndarray) -> float:
     return s if s > 0 else 1.0
 
 
+def _sinal_do_degrau(y: np.ndarray) -> float:
+    """Direção do degrau: `-1.0` se a resposta DESCE, `+1.0` caso contrário.
+
+    Compara a mediana do último decil com a do primeiro. Decis, e não as
+    primeiras colunas: `pipeline._nivel_de_repouso` lê as 5 primeiras e supõe a
+    curva parada ali — suposição que o próprio `pipeline.py:96-104` documenta
+    como frágil quando o Estágio A perde o trecho plano inicial, que é o
+    defeito §39.3 e acontece justamente nas imagens de ganho negativo.
+
+    Mediana do decil, e não o extremo: numa 2ª ordem subamortecida a curva
+    ULTRAPASSA o patamar, então o extremo e o patamar têm direções que podem
+    divergir. O que interessa é para onde a resposta ASSENTA.
+
+    Empate (série plana) devolve `+1.0`: sem excursão não há sinal a recuperar,
+    e `+1.0` mantém o comportamento anterior byte a byte.
+    """
+    y = np.asarray(y, dtype=float).ravel()
+    if y.size < 4:
+        return 1.0
+    k = max(1, int(round(0.10 * y.size)))
+    inicio = float(np.median(y[:k]))
+    fim = float(np.median(y[-k:]))
+    if not (np.isfinite(inicio) and np.isfinite(fim)):
+        return 1.0
+    return -1.0 if fim < inicio else 1.0
+
+
 def _profiled_sse(basis: np.ndarray, y: np.ndarray, yy: float):
     """Perfila K analiticamente (o modelo é linear em K) e devolve (K, SSE)."""
     bb = np.einsum("...i,...i->...", basis, basis)
