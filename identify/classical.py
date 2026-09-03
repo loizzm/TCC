@@ -217,28 +217,62 @@ def _span(t: np.ndarray) -> float:
 def _sinal_do_degrau(y: np.ndarray) -> float:
     """Direção do degrau: `-1.0` se a resposta DESCE, `+1.0` caso contrário.
 
-    Compara a mediana do último decil com a do primeiro. Decis, e não as
-    primeiras colunas: `pipeline._nivel_de_repouso` lê as 5 primeiras e supõe a
-    curva parada ali — suposição que o próprio `pipeline.py:96-104` documenta
-    como frágil quando o Estágio A perde o trecho plano inicial, que é o
-    defeito §39.3 e acontece justamente nas imagens de ganho negativo.
+    O repouso é o extremo que aparece PRIMEIRO. Se o máximo vem antes do
+    mínimo, a série desceu. É tudo.
 
-    Mediana do decil, e não o extremo: numa 2ª ordem subamortecida a curva
-    ULTRAPASSA o patamar, então o extremo e o patamar têm direções que podem
-    divergir. O que interessa é para onde a resposta ASSENTA.
+    Por que o TEMPO e não o VALOR. Uma resposta ao degrau nunca cruza de volta
+    o nível de onde partiu — o sobressinal de 1ª/2ª ordem nunca ultrapassa
+    100 % do salto, com igualdade só no limite ζ→0. Então o repouso É um dos
+    dois extremos da série, e o que o distingue do sobressinal não é a
+    magnitude, é a ORDEM: o repouso vem antes. Ler a ordem dispensa saber onde
+    a resposta assenta, que é justamente o que uma janela curta esconde.
 
-    Empate (série plana) devolve `+1.0`: sem excursão não há sinal a recuperar,
-    e `+1.0` mantém o comportamento anterior byte a byte.
+    Duas formulações por VALOR foram implementadas, medidas e DESCARTADAS —
+    cada uma quebra numa ponta diferente da série, e as duas quebras são reais:
+
+    1. **Mediana do primeiro decil contra a do último.** Usa o primeiro decil
+       como proxy do repouso, e ele deixa de ser o repouso quando o Estágio A
+       come o platô inicial (§39.3): cai dentro do transitório, que numa
+       subamortecida passa ALÉM do valor final, pelo lado oposto. Errava 8 de
+       44 casos sintéticos (todas as subamortecidas ζ ≤ 0,4 sem cabeça) e era a
+       causa de `Figure_dn2.png` não fechar. Simétrico: espelhava subida
+       também. Ajustar a FRAÇÃO não conserta — a leitura oscila com ela
+       (0,05 → -1; 0,10 → +1; 0,20 → -1; 0,30 → +1 na MESMA imagem).
+    2. **Extremo mais distante da mediana do último decil.** Pressupõe que o
+       último decil é o valor FINAL, e não é quando a janela acaba antes de
+       assentar: numa 2ª ordem muito subamortecida o último decil pousa no
+       ringing, o primeiro pico fica mais longe dele que o repouso, e o pico é
+       eleito repouso. Media 0 erros no sintético mas espelhava 2 das 900
+       séries do oráculo do corpus — todas com K > 0, logo 2 amostras boas
+       destruídas. Aparecia na Parte 1 como MAPE(K) do estrato limpo w<3
+       saindo de 0,000 % para 0,239 %.
+
+    A leitura por ordem temporal mede 0 erros nas duas provas: 44/44 no
+    sintético (ζ e τ varridos, dois sinais, com e sem cabeça) e 0 espelhos
+    indevidos nas 900 do oráculo. É imune a ruído nesta aplicação (0 erros em
+    1600 séries com σ até 0,30 sobre um salto de 2).
+
+    CONTRATO, e o limite medido. Vale enquanto o repouso ainda ESTIVER na
+    série. Cortada a cabeça além dele, o primeiro extremo que sobra é um
+    sobressinal, e a regra inverte — não há estatística barata que recupere
+    isso, porque a direção passa a viver só no envelope decadente, que exige
+    ajuste. Asseverado com xfail estrito em
+    `test_o_limite_do_contrato_quando_o_repouso_sai_da_serie`.
+
+    NÃO reusa `pipeline._nivel_de_repouso`: ele lê as 5 PRIMEIRAS colunas e
+    supõe a curva parada ali — a mesma suposição que o §39.3 quebra, e que o
+    próprio `pipeline.py:96-104` documenta como frágil. Além disso
+    `classical.py` é a camada de baixo e não pode importar `pipeline`.
+
+    Empate (série plana, ou extremos no mesmo índice) devolve `+1.0`: sem
+    excursão não há sinal a recuperar, e `+1.0` mantém o caminho anterior byte
+    a byte.
     """
     y = np.asarray(y, dtype=float).ravel()
+    y = y[np.isfinite(y)]
     if y.size < 4:
         return 1.0
-    k = max(1, int(round(0.10 * y.size)))
-    inicio = float(np.median(y[:k]))
-    fim = float(np.median(y[-k:]))
-    if not (np.isfinite(inicio) and np.isfinite(fim)):
-        return 1.0
-    return -1.0 if fim < inicio else 1.0
+    return -1.0 if int(np.argmax(y)) < int(np.argmin(y)) else 1.0
 
 
 def _profiled_sse(basis: np.ndarray, y: np.ndarray, yy: float):
@@ -917,7 +951,30 @@ def identify(t, y) -> FitResult:
     em que a polilinha extraída é autocorrelacionada. Os campos `.aic` dos dois
     `FitResult` continuam sendo o AIC clássico e NÃO mudaram — `tests/conftest`
     os reporta na Parte 1.
+
+    **Ganho negativo (§40.3).** `K_BOUNDS` é positivo por construção, e alargá-lo
+    poria K=0 dentro da caixa — o modelo degenerado, um mínimo local trivial que
+    hoje não existe. Em vez disso, uma resposta que DESCE é espelhada antes do
+    ajuste e o `K` devolvido troca de sinal. É exatamente equivalente a
+    parametrizar `K = s·|K|`, porque `model_response` é linear em K e a base é
+    livre de sinal — e não toca uma linha da matemática do módulo. `sse`,
+    `nrmse` e `aic` são invariantes ao espelho (dependem de resíduos ao
+    quadrado), então nenhuma métrica precisa de correção.
+
+    Com `s = +1` o caminho é byte a byte o de antes desta mudança, e o teste
+    `test_caminho_positivo_intocado` assevera isso contra `identify_both`.
     """
+    s = _sinal_do_degrau(y)
+    if s < 0.0:
+        r = _identify_ascendente(t, -np.asarray(y, dtype=float))
+        r.params = {k: (-v if (k == "K" and v is not None) else v)
+                    for k, v in r.params.items()}
+        return r
+    return _identify_ascendente(t, y)
+
+
+def _identify_ascendente(t, y) -> FitResult:
+    """O `identify` de sempre, supondo resposta que SOBE. Ver `identify`."""
     r1, r2 = identify_both(t, y)
     if not np.isfinite(r1.aic) and not np.isfinite(r2.aic):
         return r1
