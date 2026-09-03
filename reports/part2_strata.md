@@ -20,7 +20,7 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | G3b.1[n_distractors=2] | IoU clássico — n_distractors=2 | diagnóstico | 0.7153 (n=92) | ❓ |
 | G3b.1[n_distractors=3] | IoU clássico — n_distractors=3 | diagnóstico | 0.6727 (n=92) | ❓ |
 | G3b.2 | Sem reta de span completo na máscara | 0 violações | 0 | ✅ |
-| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 14.2 ms, p95 34.8 ms | ✅ |
+| G3b.4 | Latência do extrator clássico | < 200 ms | mediana 13.3 ms, p95 33.4 ms | ✅ |
 | A.0 | Parâmetros da U-Net | ~1,2 M (PLANO) | 1.94 M | ❓ |
 | 2.3 | Erro relativo de sx, sy | < 1% em ≥ 95% | 0.986 (n=280) | ✅ |
 | 2.4 | Taxa de rejeição (diagnóstico — unificado no 2.9) | sem alvo próprio: é 1 − cobertura do 2.9 (Ruling 52) | 0.067 | ❓ |
@@ -63,7 +63,7 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | 2.7[traco=:] | Erro perpendicular — traco=: | ≤ 1.0 px mediana | 0.981 px (n=67) | ✅ |
 | 2.7-iou[traco=:] | IoU — traco=: (diagnóstico) | sem alvo (Ruling 50) | 0.5264 (n=67) | ❓ |
 | 2.10 | IoU mediana: U-Net vs. extrator clássico | sem alvo | U-Net=0.6482  clássico=0.7153 | ❓ |
-| 2.8 | Latência por imagem | < 500 ms | mediana 210 ms, p95 349 ms | ✅ |
+| 2.8 | Latência por imagem | < 500 ms | mediana 162 ms, p95 300 ms | ✅ |
 | 2.6-aceitas | Amostras comparáveis (mesma ordem, ambos convergem) | diagnóstico | 254/300 | ❓ |
 | 2.6[K] | ΔMAPE — K | ≤ 3 p.p. | +0.16 p.p. (oráculo 0.12%, real 0.28%) | ✅ |
 | 2.6[tau] | ΔMAPE — tau | ≤ 3 p.p. | +0.21 p.p. (oráculo 0.23%, real 0.44%) | ✅ |
@@ -81,11 +81,11 @@ Relatório gerado automaticamente por `tests/part2/` (`pytest_sessionfinish` em 
 | 2.6-adim[K_yrange/sem-calib] | ΔMAPE adimensional — K/faixa de y, só sem calibração (diagnóstico) | diagnóstico | +0.87 p.p. (oráculo 0.08%, real 0.95%, n=19) | ❓ |
 | 2.12-ordem | Acerto de ordem (diagnóstico) | diagnóstico | 92.3% (277/300, n=300) | ❓ |
 | 2.12-ordem[sem-calib] | Acerto de ordem, só sem calibração (diagnóstico) | diagnóstico | 95.0% (19/20, n=20) | ❓ |
-| 2.6-classico-aceitas | Amostras comparáveis (extrator clássico) | diagnóstico | 195/300 | ❓ |
-| 2.6-classico[K] | ΔMAPE (clássico) — K | diagnóstico | +0.30 p.p. (oráculo 0.16%, real 0.46%) | ✅ |
-| 2.6-classico[tau] | ΔMAPE (clássico) — tau | diagnóstico | +0.56 p.p. (oráculo 0.26%, real 0.82%) | ✅ |
+| 2.6-classico-aceitas | Amostras comparáveis (extrator clássico) | diagnóstico | 193/300 | ❓ |
+| 2.6-classico[K] | ΔMAPE (clássico) — K | diagnóstico | +0.30 p.p. (oráculo 0.17%, real 0.46%) | ✅ |
+| 2.6-classico[tau] | ΔMAPE (clássico) — tau | diagnóstico | +0.57 p.p. (oráculo 0.25%, real 0.82%) | ✅ |
 | 2.6-classico[theta] | ΔMAPE (clássico) — theta | diagnóstico | +0.46 p.p. (oráculo 0.06%, real 0.52%) | ✅ |
-| 2.6-classico[wn] | ΔMAPE (clássico) — wn | diagnóstico | +0.98 p.p. (oráculo 0.65%, real 1.63%) | ✅ |
-| 2.6-classico[zeta] | ΔMAPE (clássico) — zeta | diagnóstico | +1.05 p.p. (oráculo 1.47%, real 2.52%) | ✅ |
-| 2.6-classico | Degradação end-to-end (extrator clássico, pior parâmetro) | diagnóstico | +1.05 p.p. (n=195) | ✅ |
+| 2.6-classico[wn] | ΔMAPE (clássico) — wn | diagnóstico | +0.97 p.p. (oráculo 0.66%, real 1.63%) | ✅ |
+| 2.6-classico[zeta] | ΔMAPE (clássico) — zeta | diagnóstico | +0.93 p.p. (oráculo 1.52%, real 2.45%) | ✅ |
+| 2.6-classico | Degradação end-to-end (extrator clássico, pior parâmetro) | diagnóstico | +0.97 p.p. (n=193) | ✅ |
 

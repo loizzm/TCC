@@ -3899,7 +3899,23 @@ com `xfail` estrito.
 
 O critério 1.7 (throughput de geração) oscila entre execuções (3,49 → 3,66 →
 8,83 s para 200 amostras) porque mede carga de máquina, não algoritmo. Não é
-regressão e não deve ser lido como uma.
+regressão e não deve ser lido como uma. O mesmo vale para 2.8 e G3b.4.
+
+**O custo que existe, declarado: o extrator CLÁSSICO.** `2.6-classico-aceitas`
+caiu de 195 para 193 em 300. A causa está medida: sob o extrator clássico
+(Bloco 3b, sem rede), **32 das 295** séries do corpus (10,8 %) são lidas como
+descendentes e portanto espelhadas — todas com K > 0, logo todas indevidamente.
+A U-Net erra 1 em 900; o extrator clássico erra 32 em 295, porque produz máscara
+muito mais suja e série suja confunde qualquer leitura de direção.
+
+O que salva é o modo de falhar: **as 32 são recusadas com
+`ajuste_inconsistente`, nenhuma produz saída física**. O espelho errado não vira
+resposta confiante e errada — a série espelhada não sustenta modelo nenhum e a
+guarda de NRMSE pega. O custo é 2 amostras que passaram de comparáveis a
+recusadas, num caminho que é DIAGNÓSTICO (marcado ❓) e não o de produção.
+
+Nenhum critério com alvo mudou de veredito: 48 ✅ e 36 ❓, antes e depois. O
+caminho da U-Net — 2.6, 2.12, 2.6-adim, 2.9 — não se moveu em nenhum dígito.
 
 ### 40.4 O defeito 4 tem um número agora: a polilinha começa no objeto ERRADO
 
@@ -3927,13 +3943,98 @@ teste falhar e os três `xfail` de recuperação virarem XPASS.
 
 ### 40.5 O que o Bloco 9 NÃO entregou
 
-- **Estrato de ganho negativo no gerador (Tasks 4 e 5 do plano).** O corpus segue
-  com `K = _loguniform(rng, 0.2, 20.0)` e **zero** amostras de ganho negativo:
-  sem treino, sem teste, sem critério. Tudo o que este ruling afirma sobre ganho
-  negativo se apoia em séries sintéticas de teste e em três imagens reais, não
-  no corpus.
+- **Treino.** O estrato de ganho negativo entrou no GERADOR
+  (`generate_sample(..., ganho_negativo=True)`, §40.6) e há portão medindo o
+  Estágio D nele, mas nenhum corpus de treino foi gerado e a U-Net **não viu
+  ganho negativo**. O que o Estágio A faz nessas imagens continua apoiado em
+  três exemplos reais.
 - **`neg_super` (§39.3).** Segue com ωₙ, ζ e θ errados. Exige retreino do
   Estágio A, e o §37.11 já REFUTOU a guarda de cobertura de máscara como remédio
   (Spearman buraco × erro = +0,020, p = 0,57): o maior buraco do corpus é MAIOR
   que o desta imagem. Não repetir esse experimento.
 - **`neg_fopdt` (defeito 4).** Ver §40.4.
+
+### 40.6 O estrato de ganho negativo no gerador, e o portão que ele permitiu
+
+`generate_sample(..., ganho_negativo=True)` — opt-in, no molde do
+`reta_no_patamar` (§34.5), propagado por `_generate_one` e `generate_dataset`.
+Só o SINAL de K muda: `sample_system` continua sorteando K > 0 e `|K|` fica
+idêntico ao do mesmo seed sem o flag, o que torna o estrato comparável AMOSTRA A
+AMOSTRA com o base. Opt-in e não sorteio, porque mexer em `sample_system` moveria
+toda amostra do corpus base e com ela todo número histórico. Verificado hash a
+hash: o corpus base é byte a byte o mesmo. O sinal é aplicado ao SPEC e nunca ao
+estilo — `sample_style` não pode ver o spec (anti-vazamento), e um traço que
+mudasse de cor por causa do sinal ensinaria a rede a ler o sinal do RENDER.
+
+**O alvo de 95 % que o plano tinha escrito estava medindo a coisa errada**, e
+vale registrar por quê. Ele exigia K recuperado a 5 % em ≥ 95 % do estrato. O
+estrato mede 88,3 % — mas o caminho POSITIVO, histórico e sem espelho nenhum,
+mede **90,0 % nos mesmos seeds**. O alvo estava capturando a dificuldade do
+estrato de janela truncada (RULING C: MAPE(K) de 127 % a 20 dB), não o caminho C.
+
+Os três portões que ficaram no lugar dele são mais fortes:
+
+1. **Equivalência exata, série limpa.** O mesmo seed com ganho negativo devolve
+   os mesmos parâmetros do positivo, com K de sinal trocado. Comparação por
+   tolerância relativa (1e-9) e não bit a bit, porque a equivalência é
+   MATEMÁTICA e não numérica: ajustar `-y` e ajustar `y` acumula somas em ordem
+   diferente dentro do `least_squares`, e o desvio medido é ~1,5e-14.
+2. **Recuperação total na série limpa:** 60/60. Alvo abaixo de 100 % aqui
+   esconderia regressão.
+3. **Paridade sob ruído**, e não valor absoluto: o negativo acompanha o positivo
+   dentro de 5 p.p. A diferença de uma amostra em 60 é ESPERADA — o ruído é
+   somado DEPOIS da inversão do sinal, então `-y_negativo = y_limpo - ruído`
+   enquanto `y_positivo = y_limpo + ruído`, e nada obriga realizações diferentes
+   a falharem nas mesmas amostras.
+
+### 40.7 Ruling: o Estágio A PRECISA de retreino para ganho negativo, e a causa é um prior de POSIÇÃO
+
+Experimento pareado, n=150 pares. Mesmo seed com e sem `ganho_negativo`, então
+spec, estilo, janela e |K| são idênticos e a ÚNICA diferença é o sinal —
+qualquer diferença de máscara é atribuível a ele por construção.
+
+| métrica | positivo | negativo | Δ |
+|---|---|---|---|
+| IoU da máscara | 0,6217 (med 0,6471) | 0,5859 (med 0,6005) | −0,036 |
+| cobertura de colunas | 0,9544 (med 0,9789) | 0,8663 (med 0,9062) | −0,088 |
+| **cobertura do PLATÔ** | **0,9317 (med 0,9697)** | **0,5523 (med 0,5826)** | **−0,379** |
+
+Por par: 84 de 150 pioram mais de 0,10 na cobertura do platô, contra 23 de 150
+no IoU. O corpo da curva quase não sofre; **o platô de repouso desaba**.
+
+**A causa não é "curva rente à moldura" (§39.3 defeito A).** `y_margin_lo` e
+`y_margin_hi` saem os dois de `uniform(0.03, 0.15)` em `randomize.py:322-323`, e
+o mesmo seed dá o mesmo estilo — o platô fica igualmente distante da SUA borda
+nos dois sinais. O que muda é QUAL borda: com K > 0 o repouso fica no rodapé,
+com K < 0 fica no topo.
+
+**Também não é planura em si (§39.3 defeito B).** O platô do caminho positivo é
+igualmente plano e sobrevive em 93 % das colunas. Planura dentro da distribuição
+não quebra o Estágio A; planura em posição NUNCA VISTA quebra.
+
+A conclusão é que a U-Net aprendeu um prior de POSIÇÃO VERTICAL: todo o corpus
+tem K > 0, então ela nunca viu platô de repouso na metade de cima do quadro, e o
+critério G3b.2 a treinou para suprimir reta horizontal de span completo. Uma reta
+horizontal no alto do quadro é exatamente o que ela aprendeu a apagar.
+
+**Isto responde a pergunta "precisa retreinar?" e separa as duas metades:**
+
+- **Estágio D: NÃO.** O caminho C é exatamente equivalente ao caso positivo
+  (§40.6, portão de equivalência a 1e-9). Não há nada a aprender.
+- **Estágio A: SIM**, e por um motivo que só dado de treino conserta — prior
+  aprendido de posição não se remedia com guarda nem com pós-processamento.
+
+O estrato do §40.6 é o insumo: `generate_dataset(..., ganho_negativo=True)`
+produz o dado de treino que falta. Nenhum corpus de treino foi gerado ainda.
+
+**Confundimento que fica declarado.** O experimento prova que o SINAL causa a
+perda do platô. Não isola "topo do quadro" como o mecanismo: com degrau negativo
+o repouso está sempre em cima, então sinal e posição estão confundidos neste
+desenho. A ablação que separa os dois é render o caso POSITIVO com o eixo y
+invertido (platô em cima, sinal positivo) — se perder o platô igual, a posição é
+o mecanismo; se não perder, há algo mais ligado ao sinal. Não foi feita.
+
+**E isto refina o §39.3.** Parte do que foi atribuído a "trecho reto" nas imagens
+`neg_sub` e `neg_super` é, na verdade, este prior de posição — as duas são de
+ganho negativo, e o platô que elas perdem está no topo. O retreino do §39.3 e o
+retreino do ganho negativo são provavelmente O MESMO retreino.

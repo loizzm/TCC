@@ -622,7 +622,8 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
                     reta_no_patamar: bool = False,
                     janela_assentada: bool = False,
                     anotacao_com_seta: bool = False,
-                    banda_de_acomodacao: bool = False) -> dict:
+                    banda_de_acomodacao: bool = False,
+                    ganho_negativo: bool = False) -> dict:
     """Sorteia sistema+estilo com streams independentes, renderiza e devolve o meta."""
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
@@ -643,6 +644,26 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
         t_dom = dominant_time_constant(spec.order, spec.tau, spec.wn, spec.zeta)
         spec = replace(spec, t_end=float(max(spec.t_end,
                                              spec.theta + _T_DOM_ESTRATO * t_dom)))
+    if ganho_negativo:
+        # Estrato OOD opt-in (§40.5), molde do `reta_no_patamar` (§34.5). So o
+        # SINAL de K muda: `sample_system` continua sorteando K > 0, e |K| fica
+        # identico ao do mesmo seed sem o flag. Isso e o que torna o estrato
+        # comparavel AMOSTRA A AMOSTRA com o base — a diferenca entre os dois
+        # e o sinal e nada mais, entao qualquer diferenca de resultado e
+        # atribuivel a ele.
+        #
+        # Opt-in, e nao um sorteio dentro de `sample_system`, porque mexer no
+        # sorteio moveria TODA amostra do corpus base, e com ela todo numero
+        # historico da Parte 1 e da Parte 2. O corpus base fica byte a byte
+        # identico e o estrato novo entra ao lado. `test_o_padrao_nao_muda_um_byte`
+        # assevera isso comparando os PNG e o meta.json.
+        #
+        # Aplicado ao SPEC e depois de `sample_style`, nunca ao estilo: o
+        # estilo nao pode ver o spec (anti-vazamento estrutural de
+        # `randomize.py`), e um traco que mudasse de cor ou espessura por causa
+        # do sinal do ganho ensinaria a rede a ler o sinal do RENDER em vez da
+        # forma da curva.
+        spec = replace(spec, K=-spec.K)
     return render_sample(spec, style, out_dir, add_noise=add_noise, rng=rng_noise,
                          seed=int(seed), reta_no_patamar=reta_no_patamar,
                          anotacao_com_seta=anotacao_com_seta,
@@ -650,10 +671,10 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
 
 
 def _generate_one(args: tuple) -> str:
-    out_dir, seed, add_noise, reta, janela, seta, banda = args
+    out_dir, seed, add_noise, reta, janela, seta, banda, kneg = args
     generate_sample(out_dir, seed, add_noise=add_noise, reta_no_patamar=reta,
                     janela_assentada=janela, anotacao_com_seta=seta,
-                    banda_de_acomodacao=banda)
+                    banda_de_acomodacao=banda, ganho_negativo=kneg)
     return str(out_dir)
 
 
@@ -667,6 +688,7 @@ def generate_dataset(
     janela_assentada: bool = False,
     anotacao_com_seta: bool = False,
     banda_de_acomodacao: bool = False,
+    ganho_negativo: bool = False,
 ) -> list[str]:
     """Gera n amostras em paralelo. Resultado independe do numero de workers."""
     root = Path(out_dir)
@@ -674,7 +696,8 @@ def generate_dataset(
     jobs = [
         (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise),
          bool(reta_no_patamar), bool(janela_assentada),
-         bool(anotacao_com_seta), bool(banda_de_acomodacao))
+         bool(anotacao_com_seta), bool(banda_de_acomodacao),
+         bool(ganho_negativo))
         for i in range(int(n))
     ]
     if workers is not None and workers <= 1:
