@@ -3796,3 +3796,144 @@ sistema existe — sobe 4,1 p.p.
 para ~220 ms entre execuções, mas medido em isolamento a guarda custa **35 µs**
 por chamada e a pipeline dá 177 ms com ela contra 180 ms sem ela. O número do
 relatório oscila com a carga da execução do pytest; o alvo é 500 ms.
+
+## 40. Ruling 63 — ganho negativo: o caminho C funciona, e o detector de direção custou TRÊS formulações
+
+Três imagens novas, de `rg_negativo.py` (versionado na raiz, análogo ao `rg.py`
+do §39), com a verdade declarada na função de transferência. Todas com **degrau
+negativo**, que era estruturalmente inexprimível: `K_BOUNDS = (1e-3, 1e4)` trava
+K positivo, o ajuste saía com NRMSE 0,90–0,96, e as recusas eram efeito
+colateral, não detecção. A primeira era rejeitada como `resposta_inversa` —
+diagnóstico FALSO: não é fase não-mínima, é degrau negativo.
+
+| imagem | verdade | antes | depois |
+|---|---|---|---|
+| `neg_sub` | K=−1, ωₙ=5, ζ=0,2, θ=2 | `ajuste_inconsistente` ❌ | K=−0,998 ωₙ=5,002 ζ=0,201 θ=2,005 ✅ |
+| `neg_super` | K=−3, ωₙ=4, ζ=1,25, θ=3,5 | `ajuste_inconsistente` ❌ | K=−2,979 ✅; ωₙ/ζ/θ ❌ (§39.3) |
+| `neg_fopdt` | K=−2, τ=0,5, θ=3 | `resposta_inversa` ❌ | segue recusada ❌ (defeito 4) |
+
+Fixtures em `tests/fixtures/caso_real_neg_*.png`, com
+`tests/part2/test_caso_real_negativo.py`.
+
+### 40.1 O caminho C: espelhar, não alargar a caixa
+
+Alargar `K_BOUNDS` para `(-1e4, 1e4)` foi DESCARTADO por uma razão estrutural,
+não de gosto: põe **K=0 dentro da caixa**, e K=0 é o modelo degenerado (resposta
+plana com τ e θ livres). Cria um mínimo local trivial que hoje não existe, e
+destrói o sinal de borda que o §38.5 quer usar como guarda.
+
+O que entrou: se a resposta DESCE, nega-se `y` antes do Estágio D, ajusta-se com
+o código atual intocado, e o `K` devolvido troca de sinal. É exatamente
+equivalente a parametrizar `K = s·|K|` — `model_response` é linear em K e a base
+é livre de sinal — mas não toca uma linha da matemática do módulo. `sse`, `nrmse`
+e `aic` são invariantes ao espelho, então nenhuma métrica precisa de correção, e
+com `s = +1` o caminho é byte a byte o anterior.
+
+O OCR também precisou de conserto: o matplotlib desenha o menos como U+2212 e o
+tesseract devolve EM DASH. Em `neg_sub`, **8 de 9 rótulos viravam `None`** no
+`_NUM_RE` com os dígitos lidos CERTOS — a imagem saía com 1 par de eixo y em vez
+de 9. `'='` ficou de fora da tabela de normalização de propósito: mapeá-lo seria
+inventar leitura, e o RANSAC descarta o par perdido de graça.
+
+### 40.2 O detector de direção: duas formulações refutadas por medição
+
+Este é o resultado que importa levar adiante, porque as duas primeiras
+formulações eram plausíveis e as duas estavam erradas — **cada uma quebrando
+numa ponta diferente da série**.
+
+**(1) Mediana do primeiro decil contra a do último.** Usa o primeiro decil como
+proxy do nível de REPOUSO. O proxy morre quando o Estágio A come o platô inicial
+(§39.3): o decil cai dentro do transitório, e numa subamortecida o transitório
+passa ALÉM do valor final, pelo lado oposto. Errava **8 de 44** casos sintéticos
+— todas as subamortecidas (ζ ≤ 0,4) sem cabeça — e era a causa de `neg_sub` não
+fechar. O defeito era SIMÉTRICO: com degrau positivo e a mesma cabeça cortada
+devolvia −1, espelhando uma subida. Não era problema de ganho negativo; mordia o
+caminho positivo também.
+
+Ajustar a FRAÇÃO do decil não conserta, e é importante que fique registrado: na
+série sobrevivente o decil pousa onde a oscilação estiver, e a leitura oscila com
+a fração — 0,05 → −1; 0,10 → +1; 0,20 → −1; 0,30 → +1 **na mesma imagem**.
+Sintonizar isso seria calibrar um limiar contra um exemplo, que é o erro que o
+comentário do `_UNDERSHOOT_MAX` já registra como cometido e pago neste projeto.
+
+**(2) Extremo MAIS DISTANTE do valor assentado.** Corrige (1) e media 0 erros no
+sintético. Mas pressupõe que o último decil é o valor FINAL, e não é quando a
+janela acaba antes de assentar: numa 2ª ordem muito subamortecida o último decil
+pousa no ringing, o primeiro pico fica mais longe dele que o repouso, e **o pico
+é eleito repouso**. Espelhava **2 das 900** séries do oráculo do corpus — todas
+com K > 0, logo duas amostras boas destruídas. Aparecia na Parte 1 como MAPE(K)
+do estrato limpo `w<3` saindo de 0,000 % para 0,239 % (`sample_00307`, ζ=0,104;
+`sample_00889`, ζ=0,121).
+
+**(3) O que ficou: o repouso é o extremo que aparece PRIMEIRO.** Se o máximo vem
+antes do mínimo, a série desceu. A informação está no TEMPO, não no valor — uma
+resposta ao degrau nunca cruza de volta o nível de onde partiu (o sobressinal de
+1ª/2ª ordem nunca ultrapassa 100 % do salto, com igualdade só no limite ζ→0),
+então o repouso **é** um dos dois extremos, e o que o distingue do sobressinal é
+a ORDEM. Ler a ordem dispensa saber onde a resposta assenta, que é justamente o
+que uma janela curta esconde.
+
+Medido: **0 erros em 44** no sintético (ζ e τ varridos, dois sinais, com e sem
+cabeça) e **0 espelhos indevidos nas 900** do oráculo — as duas provas que
+derrubaram (1) e (2). Imune a ruído nesta aplicação: 0 erros em 1600 séries com
+σ até 0,30 sobre um salto de 2.
+
+**Contrato e limite, medidos e asseverados.** Vale enquanto o repouso ainda
+ESTIVER na série. Cortada a cabeça além dele, o primeiro extremo que sobra é um
+sobressinal e a regra inverte — a direção passa a viver só no envelope decadente,
+que exige ajuste, e isso é o que `identify` faz, não o que cabe num estimador de
+pré-ajuste. Em ζ=0,2 e θ=2 s: corte em t₀ ≤ 2,2 s lê certo; t₀ ∈ [2,3; 2,7] lê
+errado. Registrado em `test_o_limite_do_contrato_quando_o_repouso_sai_da_serie`
+com `xfail` estrito.
+
+### 40.3 Não-regressão: o caminho positivo não se moveu
+
+| prova | resultado |
+|---|---|
+| `tests/test_part1.py` (portão do Estágio D, oráculo) | 25/25; `part1_metrics.md` sem UMA mudança de acurácia |
+| critério 2.6 (degradação, n=300) | +1,63 p.p. — idêntico ao anterior |
+| critério 2.12-ordem | 92,3 % (277/300) — idêntico |
+| critérios 2.3 / 2.4 / 2.5 / 2.9 (n=900) | idênticos |
+| oráculo do corpus (900 séries, todas K>0) | 0 espelhos indevidos |
+| corpus extraído (900 imagens pelo Estágio A) | 1 espelho, em amostra já rejeitada por `resposta_inversa` antes e depois |
+
+O critério 1.7 (throughput de geração) oscila entre execuções (3,49 → 3,66 →
+8,83 s para 200 amostras) porque mede carga de máquina, não algoritmo. Não é
+regressão e não deve ser lido como uma.
+
+### 40.4 O defeito 4 tem um número agora: a polilinha começa no objeto ERRADO
+
+`neg_fopdt` continua recusada, e a causa é mais funda do que "a polilinha pula um
+pouco". `rg_negativo.py` desenha o degrau de ENTRADA como tracejada branca no
+mesmo quadro, e a série extraída **começa em y = −1,995** — o patamar da entrada.
+O repouso da RESPOSTA (y ≈ 0) só aparece 38 amostras depois.
+
+O dano é anterior ao Estágio D e contamina tudo o que vem depois: o mínimo
+precede o máximo, `_sinal_do_degrau` lê subida, o espelho não dispara, e K trava
+no piso (0,001, NRMSE 0,90). **Nenhum estimador de direção sobrevive a isso, e
+nenhum deveria** — o dado está errado antes de chegar nele.
+
+Isso corrige uma leitura anterior desta mesma sessão, feita com a formulação (2)
+antes de ela ser descartada, de que a física de `neg_fopdt` saía certa por baixo
+(K=−1,997, τ=0,4998, θ=2,998). Aquilo valia para (2), não para o que ficou. A
+evidência de que o caminho C funciona é `neg_sub`, que fecha fim a fim a 0,55 %,
+e o K de `neg_super` a 0,7 % — `neg_fopdt` nunca foi evidência de outra coisa
+além do defeito 4.
+
+Fechar exige distinguir dois objetos de curva no mesmo quadro: envelope novo,
+spec própria. `test_neg_fopdt_a_polilinha_comeca_no_degrau_de_entrada` mede
+`y[0] < −1,5` e a ordem dos extremos, então quem separar os objetos verá esse
+teste falhar e os três `xfail` de recuperação virarem XPASS.
+
+### 40.5 O que o Bloco 9 NÃO entregou
+
+- **Estrato de ganho negativo no gerador (Tasks 4 e 5 do plano).** O corpus segue
+  com `K = _loguniform(rng, 0.2, 20.0)` e **zero** amostras de ganho negativo:
+  sem treino, sem teste, sem critério. Tudo o que este ruling afirma sobre ganho
+  negativo se apoia em séries sintéticas de teste e em três imagens reais, não
+  no corpus.
+- **`neg_super` (§39.3).** Segue com ωₙ, ζ e θ errados. Exige retreino do
+  Estágio A, e o §37.11 já REFUTOU a guarda de cobertura de máscara como remédio
+  (Spearman buraco × erro = +0,020, p = 0,57): o maior buraco do corpus é MAIOR
+  que o desta imagem. Não repetir esse experimento.
+- **`neg_fopdt` (defeito 4).** Ver §40.4.

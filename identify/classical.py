@@ -952,7 +952,7 @@ def identify(t, y) -> FitResult:
     `FitResult` continuam sendo o AIC clássico e NÃO mudaram — `tests/conftest`
     os reporta na Parte 1.
 
-    **Ganho negativo (§40.3).** `K_BOUNDS` é positivo por construção, e alargá-lo
+    **Ganho negativo (§40.1).** `K_BOUNDS` é positivo por construção, e alargá-lo
     poria K=0 dentro da caixa — o modelo degenerado, um mínimo local trivial que
     hoje não existe. Em vez disso, uma resposta que DESCE é espelhada antes do
     ajuste e o `K` devolvido troca de sinal. É exatamente equivalente a

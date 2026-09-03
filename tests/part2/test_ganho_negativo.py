@@ -1,4 +1,4 @@
-"""Caminho C: espelhar a serie descendente (§40.3).
+"""Caminho C: espelhar a serie descendente (§40.1).
 
 O ganho negativo era estruturalmente inexprimivel — `K_BOUNDS = (1e-3, 1e4)`
 trava K positivo e o ajuste saia com NRMSE 0,90-0,96. Espelhar e negar K
