@@ -56,8 +56,31 @@ def test_caso_real_acerta_a_ordem(caso_real):
 
 
 def test_caso_real_recupera_zeta_e_wn(caso_real):
-    """zeta e wn*T pelo nível ADIMENSIONAL — a calibração falha nesta imagem
-    (reta de referência + legenda), e é exatamente o cenário da Decisão E."""
+    """zeta e wn desta imagem, pelo nível FÍSICO.
+
+    HISTÓRICO, e por que este teste mudou de caminho. A primeira versão lia
+    `wn` do bloco ADIMENSIONAL, como `wn_T / T` com `T = 10 s` (a janela lida
+    do eixo x), porque quando o teste foi escrito a calibração FALHAVA nesta
+    imagem (reta de referência + legenda) e o adimensional era a única rota —
+    o cenário da Decisão E. Duas coisas invalidaram aquele caminho:
+
+    1. A calibração passou a FUNCIONAR aqui (`cal.ok == True`), provavelmente
+       com os consertos do §39.1. O bloco físico existe, e é o que o usuário
+       da pipeline recebe — assertar sobre ele é mais forte, não mais fraco.
+    2. `wn_T` é normalizado pelo SPAN DA SÉRIE EXTRAÍDA, não pela janela do
+       eixo. Dividir por `T = 10` supõe que a máscara cobre a janela inteira,
+       o que é uma propriedade de COBERTURA e não de identificação. Medido no
+       retreino do §40.7: o `wn` FÍSICO ficou em 2,0203 (contra 2,0220 do
+       checkpoint anterior, os dois a ~1 % da verdade) enquanto `wn_T` caiu de
+       19,84 para 16,59 — só porque o span da série foi de 9,81 s para 8,21 s.
+       O teste antigo lia isso como 17 % de erro em `wn`, e não havia erro
+       nenhum em `wn`.
+
+    `zeta` continua sendo lido do adimensional de propósito: ele é ADIMENSIONAL
+    de verdade, invariante a escala e a truncagem de janela, então não carrega
+    a suposição de cobertura. A cobertura da máscara nesta imagem tem teste
+    próprio, `test_caso_real_cobre_a_cauda_assentada`.
+    """
     import torch
     from identify.extract import load_model
     from identify.pipeline import identify_from_image
@@ -74,13 +97,50 @@ def test_caso_real_recupera_zeta_e_wn(caso_real):
         f"(erro {e_zeta:.1%}, tolerância {TOL_ZETA:.0%})"
     )
 
-    assert d["wn_T"] is not None, "wn_T ausente"
-    wn = d["wn_T"] / CASO_REAL["T"]
+    assert r["ok"], f"sem bloco físico: reason={r['reason']!r} cal={r['calibration']}"
+    wn = r["params"]["wn"]
+    assert wn is not None, "wn físico ausente"
     e_wn = abs(wn - CASO_REAL["wn"]) / CASO_REAL["wn"]
     assert e_wn <= TOL_WN, (
-        f"wn = {wn:.4f}, esperado {CASO_REAL['wn']:.4f} "
+        f"wn = {wn:.4f} rad/s, esperado {CASO_REAL['wn']:.4f} "
         f"(erro {e_wn:.1%}, tolerância {TOL_WN:.0%})"
     )
+
+
+@pytest.mark.xfail(strict=True, reason=
+                   "o retreino do §40.7 trocou cobertura de cauda por platô no "
+                   "topo. Aqui a cauda assentada fica NO TOPO do quadro com uma "
+                   "reta de referência COINCIDENTE, e a rede passou a suprimi-la: "
+                   "probabilidade mediana 0,0004 nas colunas perdidas (contra "
+                   "0,1811 do checkpoint anterior), então não é limiar, é "
+                   "supressão confiante. Custa 51 das 747 colunas, todas nos dois "
+                   "últimos decis da janela. NÃO afeta o resultado físico (wn a "
+                   "1 % da verdade) nem nenhum critério do corpus — o 2.6 até "
+                   "MELHOROU, de +1,63 para +1,08 p.p. Fica registrado porque a "
+                   "geometria (cauda no topo + reta coincidente) não existe no "
+                   "corpus, e porque onde a curva e a reta coincidem pixel a "
+                   "pixel a tarefa é mal-posta: 'manter a curva, suprimir a reta' "
+                   "não tem resposta única. Se algum dia passar, o limite mudou.")
+def test_caso_real_cobre_a_cauda_assentada(caso_real):
+    """A máscara tem de cobrir a janela inteira, inclusive a cauda assentada.
+
+    Separado do teste de identificação de propósito: cobertura e acurácia são
+    grandezas distintas, e confundi-las foi o que fez a versão anterior de
+    `test_caso_real_recupera_zeta_e_wn` reportar 17 % de erro em `wn` onde o
+    `wn` estava certo.
+    """
+    import torch
+    from identify.calibrate import calibrate
+    from identify.extract import load_model, predict_mask
+
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    model = load_model("models/unet_stageA.pt", dev)
+    cal = calibrate(caso_real)
+    x0, _, x1, _ = cal.bbox_px
+    cols = (predict_mask(model, caso_real, dev) > 127).any(axis=0)
+    dentro = cols[x0:x1 + 1]
+    cobertura = float(dentro.sum() / dentro.size)
+    assert cobertura >= 0.95, f"cobertura de colunas = {cobertura:.3f} (alvo 0,95)"
 
 
 def test_polilinha_segue_o_bloco_mais_proximo_do_ponto_anterior():

@@ -3796,3 +3796,621 @@ sistema existe — sobe 4,1 p.p.
 para ~220 ms entre execuções, mas medido em isolamento a guarda custa **35 µs**
 por chamada e a pipeline dá 177 ms com ela contra 180 ms sem ela. O número do
 relatório oscila com a carga da execução do pytest; o alvo é 500 ms.
+
+## 40. Ruling 63 — ganho negativo: o caminho C funciona, e o detector de direção custou TRÊS formulações
+
+Três imagens novas, de `rg_negativo.py` (versionado na raiz, análogo ao `rg.py`
+do §39), com a verdade declarada na função de transferência. Todas com **degrau
+negativo**, que era estruturalmente inexprimível: `K_BOUNDS = (1e-3, 1e4)` trava
+K positivo, o ajuste saía com NRMSE 0,90–0,96, e as recusas eram efeito
+colateral, não detecção. A primeira era rejeitada como `resposta_inversa` —
+diagnóstico FALSO: não é fase não-mínima, é degrau negativo.
+
+| imagem | verdade | antes | depois |
+|---|---|---|---|
+| `neg_sub` | K=−1, ωₙ=5, ζ=0,2, θ=2 | `ajuste_inconsistente` ❌ | K=−0,998 ωₙ=5,002 ζ=0,201 θ=2,005 ✅ |
+| `neg_super` | K=−3, ωₙ=4, ζ=1,25, θ=3,5 | `ajuste_inconsistente` ❌ | K=−2,979 ✅; ωₙ/ζ/θ ❌ (§39.3) |
+| `neg_fopdt` | K=−2, τ=0,5, θ=3 | `resposta_inversa` ❌ | segue recusada ❌ (defeito 4) |
+
+Fixtures em `tests/fixtures/caso_real_neg_*.png`, com
+`tests/part2/test_caso_real_negativo.py`.
+
+### 40.1 O caminho C: espelhar, não alargar a caixa
+
+Alargar `K_BOUNDS` para `(-1e4, 1e4)` foi DESCARTADO por uma razão estrutural,
+não de gosto: põe **K=0 dentro da caixa**, e K=0 é o modelo degenerado (resposta
+plana com τ e θ livres). Cria um mínimo local trivial que hoje não existe, e
+destrói o sinal de borda que o §38.5 quer usar como guarda.
+
+O que entrou: se a resposta DESCE, nega-se `y` antes do Estágio D, ajusta-se com
+o código atual intocado, e o `K` devolvido troca de sinal. É exatamente
+equivalente a parametrizar `K = s·|K|` — `model_response` é linear em K e a base
+é livre de sinal — mas não toca uma linha da matemática do módulo. `sse`, `nrmse`
+e `aic` são invariantes ao espelho, então nenhuma métrica precisa de correção, e
+com `s = +1` o caminho é byte a byte o anterior.
+
+O OCR também precisou de conserto: o matplotlib desenha o menos como U+2212 e o
+tesseract devolve EM DASH. Em `neg_sub`, **8 de 9 rótulos viravam `None`** no
+`_NUM_RE` com os dígitos lidos CERTOS — a imagem saía com 1 par de eixo y em vez
+de 9. `'='` ficou de fora da tabela de normalização de propósito: mapeá-lo seria
+inventar leitura, e o RANSAC descarta o par perdido de graça.
+
+### 40.2 O detector de direção: duas formulações refutadas por medição
+
+Este é o resultado que importa levar adiante, porque as duas primeiras
+formulações eram plausíveis e as duas estavam erradas — **cada uma quebrando
+numa ponta diferente da série**.
+
+**(1) Mediana do primeiro decil contra a do último.** Usa o primeiro decil como
+proxy do nível de REPOUSO. O proxy morre quando o Estágio A come o platô inicial
+(§39.3): o decil cai dentro do transitório, e numa subamortecida o transitório
+passa ALÉM do valor final, pelo lado oposto. Errava **8 de 44** casos sintéticos
+— todas as subamortecidas (ζ ≤ 0,4) sem cabeça — e era a causa de `neg_sub` não
+fechar. O defeito era SIMÉTRICO: com degrau positivo e a mesma cabeça cortada
+devolvia −1, espelhando uma subida. Não era problema de ganho negativo; mordia o
+caminho positivo também.
+
+Ajustar a FRAÇÃO do decil não conserta, e é importante que fique registrado: na
+série sobrevivente o decil pousa onde a oscilação estiver, e a leitura oscila com
+a fração — 0,05 → −1; 0,10 → +1; 0,20 → −1; 0,30 → +1 **na mesma imagem**.
+Sintonizar isso seria calibrar um limiar contra um exemplo, que é o erro que o
+comentário do `_UNDERSHOOT_MAX` já registra como cometido e pago neste projeto.
+
+**(2) Extremo MAIS DISTANTE do valor assentado.** Corrige (1) e media 0 erros no
+sintético. Mas pressupõe que o último decil é o valor FINAL, e não é quando a
+janela acaba antes de assentar: numa 2ª ordem muito subamortecida o último decil
+pousa no ringing, o primeiro pico fica mais longe dele que o repouso, e **o pico
+é eleito repouso**. Espelhava **2 das 900** séries do oráculo do corpus — todas
+com K > 0, logo duas amostras boas destruídas. Aparecia na Parte 1 como MAPE(K)
+do estrato limpo `w<3` saindo de 0,000 % para 0,239 % (`sample_00307`, ζ=0,104;
+`sample_00889`, ζ=0,121).
+
+**(3) O que ficou: o repouso é o extremo que aparece PRIMEIRO.** Se o máximo vem
+antes do mínimo, a série desceu. A informação está no TEMPO, não no valor — uma
+resposta ao degrau nunca cruza de volta o nível de onde partiu (o sobressinal de
+1ª/2ª ordem nunca ultrapassa 100 % do salto, com igualdade só no limite ζ→0),
+então o repouso **é** um dos dois extremos, e o que o distingue do sobressinal é
+a ORDEM. Ler a ordem dispensa saber onde a resposta assenta, que é justamente o
+que uma janela curta esconde.
+
+Medido: **0 erros em 44** no sintético (ζ e τ varridos, dois sinais, com e sem
+cabeça) e **0 espelhos indevidos nas 900** do oráculo — as duas provas que
+derrubaram (1) e (2). Imune a ruído nesta aplicação: 0 erros em 1600 séries com
+σ até 0,30 sobre um salto de 2.
+
+**Contrato e limite, medidos e asseverados.** Vale enquanto o repouso ainda
+ESTIVER na série. Cortada a cabeça além dele, o primeiro extremo que sobra é um
+sobressinal e a regra inverte — a direção passa a viver só no envelope decadente,
+que exige ajuste, e isso é o que `identify` faz, não o que cabe num estimador de
+pré-ajuste. Em ζ=0,2 e θ=2 s: corte em t₀ ≤ 2,2 s lê certo; t₀ ∈ [2,3; 2,7] lê
+errado. Registrado em `test_o_limite_do_contrato_quando_o_repouso_sai_da_serie`
+com `xfail` estrito.
+
+### 40.3 Não-regressão: o caminho positivo não se moveu
+
+| prova | resultado |
+|---|---|
+| `tests/test_part1.py` (portão do Estágio D, oráculo) | 25/25; `part1_metrics.md` sem UMA mudança de acurácia |
+| critério 2.6 (degradação, n=300) | +1,63 p.p. — idêntico ao anterior |
+| critério 2.12-ordem | 92,3 % (277/300) — idêntico |
+| critérios 2.3 / 2.4 / 2.5 / 2.9 (n=900) | idênticos |
+| oráculo do corpus (900 séries, todas K>0) | 0 espelhos indevidos |
+| corpus extraído (900 imagens pelo Estágio A) | 1 espelho, em amostra já rejeitada por `resposta_inversa` antes e depois |
+
+O critério 1.7 (throughput de geração) oscila entre execuções (3,49 → 3,66 →
+8,83 s para 200 amostras) porque mede carga de máquina, não algoritmo. Não é
+regressão e não deve ser lido como uma. O mesmo vale para 2.8 e G3b.4.
+
+**O custo que existe, declarado: o extrator CLÁSSICO.** `2.6-classico-aceitas`
+caiu de 195 para 193 em 300. A causa está medida: sob o extrator clássico
+(Bloco 3b, sem rede), **32 das 295** séries do corpus (10,8 %) são lidas como
+descendentes e portanto espelhadas — todas com K > 0, logo todas indevidamente.
+A U-Net erra 1 em 900; o extrator clássico erra 32 em 295, porque produz máscara
+muito mais suja e série suja confunde qualquer leitura de direção.
+
+O que salva é o modo de falhar: **as 32 são recusadas com
+`ajuste_inconsistente`, nenhuma produz saída física**. O espelho errado não vira
+resposta confiante e errada — a série espelhada não sustenta modelo nenhum e a
+guarda de NRMSE pega. O custo é 2 amostras que passaram de comparáveis a
+recusadas, num caminho que é DIAGNÓSTICO (marcado ❓) e não o de produção.
+
+Nenhum critério com alvo mudou de veredito: 48 ✅ e 36 ❓, antes e depois. O
+caminho da U-Net — 2.6, 2.12, 2.6-adim, 2.9 — não se moveu em nenhum dígito.
+
+### 40.4 O defeito 4 tem um número agora: a polilinha começa no objeto ERRADO
+
+`neg_fopdt` continua recusada, e a causa é mais funda do que "a polilinha pula um
+pouco". `rg_negativo.py` desenha o degrau de ENTRADA como tracejada branca no
+mesmo quadro, e a série extraída **começa em y = −1,995** — o patamar da entrada.
+O repouso da RESPOSTA (y ≈ 0) só aparece 38 amostras depois.
+
+O dano é anterior ao Estágio D e contamina tudo o que vem depois: o mínimo
+precede o máximo, `_sinal_do_degrau` lê subida, o espelho não dispara, e K trava
+no piso (0,001, NRMSE 0,90). **Nenhum estimador de direção sobrevive a isso, e
+nenhum deveria** — o dado está errado antes de chegar nele.
+
+Isso corrige uma leitura anterior desta mesma sessão, feita com a formulação (2)
+antes de ela ser descartada, de que a física de `neg_fopdt` saía certa por baixo
+(K=−1,997, τ=0,4998, θ=2,998). Aquilo valia para (2), não para o que ficou. A
+evidência de que o caminho C funciona é `neg_sub`, que fecha fim a fim a 0,55 %,
+e o K de `neg_super` a 0,7 % — `neg_fopdt` nunca foi evidência de outra coisa
+além do defeito 4.
+
+Fechar exige distinguir dois objetos de curva no mesmo quadro: envelope novo,
+spec própria. `test_neg_fopdt_a_polilinha_comeca_no_degrau_de_entrada` mede
+`y[0] < −1,5` e a ordem dos extremos, então quem separar os objetos verá esse
+teste falhar e os três `xfail` de recuperação virarem XPASS.
+
+### 40.5 O que o Bloco 9 NÃO entregou
+
+- **Treino.** O estrato de ganho negativo entrou no GERADOR
+  (`generate_sample(..., ganho_negativo=True)`, §40.6) e há portão medindo o
+  Estágio D nele, mas nenhum corpus de treino foi gerado e a U-Net **não viu
+  ganho negativo**. O que o Estágio A faz nessas imagens continua apoiado em
+  três exemplos reais.
+- **`neg_super` (§39.3).** Segue com ωₙ, ζ e θ errados. Exige retreino do
+  Estágio A, e o §37.11 já REFUTOU a guarda de cobertura de máscara como remédio
+  (Spearman buraco × erro = +0,020, p = 0,57): o maior buraco do corpus é MAIOR
+  que o desta imagem. Não repetir esse experimento.
+- **`neg_fopdt` (defeito 4).** Ver §40.4.
+
+### 40.6 O estrato de ganho negativo no gerador, e o portão que ele permitiu
+
+`generate_sample(..., ganho_negativo=True)` — opt-in, no molde do
+`reta_no_patamar` (§34.5), propagado por `_generate_one` e `generate_dataset`.
+Só o SINAL de K muda: `sample_system` continua sorteando K > 0 e `|K|` fica
+idêntico ao do mesmo seed sem o flag, o que torna o estrato comparável AMOSTRA A
+AMOSTRA com o base. Opt-in e não sorteio, porque mexer em `sample_system` moveria
+toda amostra do corpus base e com ela todo número histórico. Verificado hash a
+hash: o corpus base é byte a byte o mesmo. O sinal é aplicado ao SPEC e nunca ao
+estilo — `sample_style` não pode ver o spec (anti-vazamento), e um traço que
+mudasse de cor por causa do sinal ensinaria a rede a ler o sinal do RENDER.
+
+**O alvo de 95 % que o plano tinha escrito estava medindo a coisa errada**, e
+vale registrar por quê. Ele exigia K recuperado a 5 % em ≥ 95 % do estrato. O
+estrato mede 88,3 % — mas o caminho POSITIVO, histórico e sem espelho nenhum,
+mede **90,0 % nos mesmos seeds**. O alvo estava capturando a dificuldade do
+estrato de janela truncada (RULING C: MAPE(K) de 127 % a 20 dB), não o caminho C.
+
+Os três portões que ficaram no lugar dele são mais fortes:
+
+1. **Equivalência exata, série limpa.** O mesmo seed com ganho negativo devolve
+   os mesmos parâmetros do positivo, com K de sinal trocado. Comparação por
+   tolerância relativa (1e-9) e não bit a bit, porque a equivalência é
+   MATEMÁTICA e não numérica: ajustar `-y` e ajustar `y` acumula somas em ordem
+   diferente dentro do `least_squares`, e o desvio medido é ~1,5e-14.
+2. **Recuperação total na série limpa:** 60/60. Alvo abaixo de 100 % aqui
+   esconderia regressão.
+3. **Paridade sob ruído**, e não valor absoluto: o negativo acompanha o positivo
+   dentro de 5 p.p. A diferença de uma amostra em 60 é ESPERADA — o ruído é
+   somado DEPOIS da inversão do sinal, então `-y_negativo = y_limpo - ruído`
+   enquanto `y_positivo = y_limpo + ruído`, e nada obriga realizações diferentes
+   a falharem nas mesmas amostras.
+
+### 40.7 Ruling: o Estágio A PRECISA de retreino para ganho negativo, e a causa é um prior de POSIÇÃO
+
+Experimento pareado, n=150 pares. Mesmo seed com e sem `ganho_negativo`, então
+spec, estilo, janela e |K| são idênticos e a ÚNICA diferença é o sinal —
+qualquer diferença de máscara é atribuível a ele por construção.
+
+| métrica | positivo | negativo | Δ |
+|---|---|---|---|
+| IoU da máscara | 0,6217 (med 0,6471) | 0,5859 (med 0,6005) | −0,036 |
+| cobertura de colunas | 0,9544 (med 0,9789) | 0,8663 (med 0,9062) | −0,088 |
+| **cobertura do PLATÔ** | **0,9317 (med 0,9697)** | **0,5523 (med 0,5826)** | **−0,379** |
+
+Por par: 84 de 150 pioram mais de 0,10 na cobertura do platô, contra 23 de 150
+no IoU. O corpo da curva quase não sofre; **o platô de repouso desaba**.
+
+**A causa não é "curva rente à moldura" (§39.3 defeito A).** `y_margin_lo` e
+`y_margin_hi` saem os dois de `uniform(0.03, 0.15)` em `randomize.py:322-323`, e
+o mesmo seed dá o mesmo estilo — o platô fica igualmente distante da SUA borda
+nos dois sinais. O que muda é QUAL borda: com K > 0 o repouso fica no rodapé,
+com K < 0 fica no topo.
+
+**Também não é planura em si (§39.3 defeito B).** O platô do caminho positivo é
+igualmente plano e sobrevive em 93 % das colunas. Planura dentro da distribuição
+não quebra o Estágio A; planura em posição NUNCA VISTA quebra.
+
+A conclusão é que a U-Net aprendeu um prior de POSIÇÃO VERTICAL: todo o corpus
+tem K > 0, então ela nunca viu platô de repouso na metade de cima do quadro, e o
+critério G3b.2 a treinou para suprimir reta horizontal de span completo. Uma reta
+horizontal no alto do quadro é exatamente o que ela aprendeu a apagar.
+
+**Isto responde a pergunta "precisa retreinar?" e separa as duas metades:**
+
+- **Estágio D: NÃO.** O caminho C é exatamente equivalente ao caso positivo
+  (§40.6, portão de equivalência a 1e-9). Não há nada a aprender.
+- **Estágio A: SIM**, e por um motivo que só dado de treino conserta — prior
+  aprendido de posição não se remedia com guarda nem com pós-processamento.
+
+O estrato do §40.6 é o insumo: `generate_dataset(..., ganho_negativo=True)`
+produz o dado de treino que falta. Nenhum corpus de treino foi gerado ainda.
+
+**Confundimento RESOLVIDO por ablação fatorial 2x2 (n=80 seeds por célula).**
+O eixo y foi invertido monkeypatchando `_axis_limits`, que alimenta tanto a
+figura da imagem quanto a da máscara — a verdade fica consistente. Isso cruza
+SINAL com ORIENTAÇÃO e move o platô independentemente dos dois:
+
+| sinal | eixo | platô em | cob. do platô | cob. de colunas | IoU |
+|---|---|---|---|---|---|
+| K>0 | normal | **rodapé** | **0,9443** | 0,9556 | 0,6245 |
+| K<0 | invertido | **rodapé** | **0,9398** | 0,9538 | 0,6220 |
+| K<0 | normal | **topo** | **0,5274** | 0,8627 | 0,5920 |
+| K>0 | invertido | **topo** | **0,5238** | 0,8572 | 0,5882 |
+
+Os resultados agrupam por POSIÇÃO e ignoram o SINAL. Ganho positivo com eixo
+invertido perde o platô exatamente como ganho negativo (0,5238 contra 0,5274,
+dentro do ruído); ganho negativo com eixo invertido o preserva exatamente como o
+positivo normal (0,9398 contra 0,9443).
+
+**O sinal do ganho é IRRELEVANTE. O que a U-Net não sabe fazer é segmentar platô
+de repouso na metade de cima do quadro, qualquer que seja o sinal.** O ganho
+negativo não é o defeito — é só o que expôs o defeito.
+
+Isso amplia o escopo do problema para além do Bloco 9: qualquer figura de eixo y
+invertido cai nele, mesmo com K > 0, e essa é convenção corrente em parte da
+engenharia. Não há nenhuma amostra assim no corpus.
+
+E dá uma validação INDEPENDENTE para o retreino: treinar com ganho negativo
+(platô no topo) e validar em positivo de eixo invertido (platô no topo, condição
+NUNCA treinada). Se o retreino aprendeu posição em vez de decorar o estrato, as
+duas melhoram juntas.
+
+**E isto refina o §39.3.** Parte do que foi atribuído a "trecho reto" nas imagens
+`neg_sub` e `neg_super` é, na verdade, este prior de posição — as duas são de
+ganho negativo, e o platô que elas perdem está no topo. O retreino do §39.3 e o
+retreino do ganho negativo são provavelmente O MESMO retreino.
+
+### 40.8 O que a VALIDAÇÃO do retreino exige, medido antes de treinar
+
+- **Receita do checkpoint promovido** (`logs/train_base32.log`): 9450 amostras de
+  9 diretórios, `base=32`, 25 épocas, 1575 passos/época, ~703 s/época —
+  **~4,9 h** nesta máquina. Melhor `IoU_val = 0,7551`.
+- **`train_unet.py` não precisa mudar.** `--train-dir` e `--val-dir` são
+  repetíveis e fazem glob de `sample_*`; o estrato novo entra como diretório.
+- **LACUNA CRÍTICA: `data/val` (n=900) é 100 % K > 0, logo 100 % platô no
+  rodapé.** `IoU_val` não mediria NADA do que o retreino pretende consertar, e o
+  early-stopping selecionaria o checkpoint pelo critério errado. Um estrato de
+  validação com platô no topo é pré-requisito, não opcional.
+- **Bases de seed em uso:** 1 (`train`), 2 (`val`), 3 (`test`), 4
+  (`train_extra`), 77–84 e 90001–90003 (estratos). Livres para o estrato novo:
+  90004 em diante. `generate_dataset` deriva `seed·1_000_003 + i`, então bases
+  distintas garantem conjuntos disjuntos — sem vazamento entre treino, validação
+  e teste.
+- **Baseline a bater, já medido** com o checkpoint atual sobre platô no topo:
+  cobertura do platô **0,527**, cobertura de colunas **0,863**, IoU **0,592**.
+  O alvo é chegar perto do que ele já faz no rodapé: 0,944 / 0,956 / 0,625.
+
+### 40.9 O `IoU_val` é CEGO ao defeito do platô — e é ele que seleciona o checkpoint
+
+Medido com o checkpoint promovido (`base=32`, `in_ch=3`, 7 768 947 parâmetros):
+
+| conjunto de validação | n | IoU_val |
+|---|---|---|
+| `data/val` (todo K > 0, platô no rodapé) | 900 | 0,7814 |
+| `data/val_kneg` (todo K < 0, platô no topo) | 300 | **0,7304** |
+| `data/val` + `data/val_kneg` | 1200 | 0,7694 |
+| `data/val` + `data/val_reta` | 1200 | 0,7572 |
+| `data/val` + os três estratos de val | 1800 | 0,7429 |
+
+**O estrato que a rede não sabe segmentar custa 5 pontos de IoU, enquanto a
+cobertura do platô nele desaba 42 pontos (0,944 → 0,527, §40.7).** A razão é
+geométrica: o platô é uma linha FINA, poucos pixels contra o corpo da curva.
+IoU é dominado pelo corpo, então perder o platô inteiro quase não aparece nele.
+
+Isso é um problema de PROCESSO, não de modelo. `train_unet.py:166` seleciona o
+melhor checkpoint por `m > melhor` sobre o `IoU_val` — a métrica quase cega ao
+defeito que o retreino existe para consertar. Somar `val_kneg` ao `--val-dir`
+melhora pouco (0,7694 contra 0,7814): a diluição continua.
+
+Consequência prática: a época que aprender o platô pode não ser a selecionada, e
+a que for selecionada pode não ter aprendido. **Retreinar sem resolver isto é
+gastar ~6 h numa loteria.**
+
+Duas saídas, e a segunda é a recomendada por ser menos invasiva:
+
+1. Plumbar cobertura do platô até a validação do `train_unet.py` e selecionar por
+   ela (ou por combinação). Exige `MaskDataset` devolver `theta` e a afim, que
+   hoje ela não devolve.
+2. **Salvar um checkpoint por época** e escolher depois, pela métrica de platô
+   que já existe (§40.7). Não toca métrica nenhuma, preserva o `IoU_val`
+   histórico para comparabilidade, e custa ~31 MB × 25 = ~775 MB temporários.
+
+**Baseline reconciliado, com uma ressalva.** O `logs/train_base32.log` reporta
+melhor `IoU_val = 0,7551`, e `data/val` + `data/val_reta` dá 0,7572 no
+checkpoint promovido — é quase certo que foi esse o conjunto de validação da
+rodada. Os 0,0021 de diferença NÃO foram reconciliados; quem for comparar
+números de época a época precisa fechar isso primeiro.
+
+### 40.10 O que o *smoke test* do retreino encontrou (e por que ele existe)
+
+Antes de comprometer ~6 h, o comando exato do retreino foi rodado com
+`--epochs 2 --batches-per-epoch 3`. Encontrou **duas** coisas, e a segunda não
+está escrita em lugar nenhum do projeto.
+
+**1. `--batch 6`, não 8.** `logs/train_base32.log` não registra o batch, mas o
+codifica: `passos = len(ds) // batch`, e 9450 amostras com **1575 passos** só
+fecham com 6. O §HANDOFF_P2_7:312 tinha PREVISTO que `base=32` não caberia com
+batch 8 e avisado que baixar o batch quebraria a comparabilidade com os pilotos
+do `HANDOFF_P2_6.md` §3.3. O batch foi baixado e o registro disso se perdeu —
+sobrou só a pegada na contagem de passos.
+
+Isso tem consequência além do OOM: **os pilotos de §3.3 e o checkpoint promovido
+NÃO são comparáveis em batch**, e qualquer conclusão que cruze os dois herda
+essa diferença. Fica registrado aqui porque a próxima pessoa a ler o §3.3 não
+tem como descobrir sozinha.
+
+**2. `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.** Registrado no §3.2
+como necessário por causa dos 0,73 GB de folga, e ausente do script até o smoke
+test. É opção de alocador — não toca em numérica, só em fragmentação.
+
+Medido nesta sessão, com a GPU livre e nada mais rodando nela:
+
+| configuração | resultado |
+|---|---|
+| batch 8, sem `expandable_segments` | OOM no backward, 5,42 de 5,64 GB |
+| batch 8, com `expandable_segments` | OOM no backward, 5,55 de 5,64 GB (faltaram 16 MiB) |
+| **batch 6, com `expandable_segments`** | **passa**, 2 épocas, checkpoints escritos |
+
+O alocador sozinho não salva o batch 8. As duas coisas são necessárias.
+
+**Custo revisado:** 10.950 amostras / 6 = **1825 passos/época** (contra 1575 da
+rodada promovida), ~818 s/época, **~5,7 h**.
+
+## 41. Ruling 64 — o retreino: o prior de posição caiu, e com ele o "defeito 4"
+
+Rodada de 6h05, 25 épocas, `base=32`, `in_ch=3`, **batch 6**, 512²,
+`expandable_segments:True`. 10.950 amostras dos 9 diretórios da rodada
+promovida mais `data/train_kneg` (1500, platô no topo). Validação em
+`data/val` + `data/val_reta` + `data/val_kneg`. Log em `logs/train_kneg.log`,
+checkpoint por época em `models/epocas_kneg/` (não versionado).
+
+**Promovido: época 13** (`IoU_val = 0,7618`, o que o próprio treino escolheu).
+
+### 41.1 O defeito foi consertado, e a prova é a coluna NÃO TREINADA
+
+| | topo treinado (K<0) | **topo NUNCA treinado** (K>0, eixo invertido) | rodapé (controle) |
+|---|---|---|---|
+| checkpoint anterior | 0,5433 | 0,5384 | 0,9299 |
+| **época 13** | **0,9246** | **0,9174** | 0,9322 |
+
+A coluna do meio é ganho POSITIVO com eixo y invertido — platô no topo, condição
+que não existe em nenhuma amostra de treino. Ela subiu junto com a treinada, e
+as duas andam paradas uma na outra em todas as 25 épocas. **A rede aprendeu
+POSIÇÃO, não decorou o estrato.** O rodapé não pagou nada.
+
+### 41.2 O "defeito 4" era o MESMO defeito, e a atribuição do §40.4 estava errada
+
+`caso_real_neg_fopdt.png` era recusada, e o §40.4 concluiu que a causa era "dois
+objetos de curva no mesmo quadro — envelope novo, spec própria", com a polilinha
+começando sobre a tracejada de ENTRADA (y[0] = −1,995). Depois do retreino ela
+**fecha**: K 0,15 %, τ 0,01 %, θ 0,02 %, e a série começa em y[0] = +0,005, sobre
+a resposta.
+
+O mecanismo descrito no §40.4 estava certo; a CAUSA estava errada. Não era a
+existência de dois objetos: era o mesmo prior de posição do §40.7. A rede não
+via o platô de repouso da resposta, que fica no topo, e a única linha visível
+naquela altura era a da entrada. **Um retreino fechou os dois defeitos porque
+eram um só.**
+
+Lição de método: "dois objetos no mesmo quadro" era uma explicação plausível e
+consistente com o sintoma, e passou porque ninguém pediu a ela que previsse mais
+nada. O prior de posição foi encontrado por ablação fatorial, não por inspeção.
+
+### 41.3 Efeito no corpus: melhor em quase tudo
+
+| critério | antes | depois |
+|---|---|---|
+| **2.6** (degradação, pior parâmetro) | +1,63 p.p. | **+1,08 p.p.** |
+| 2.6[ζ] / 2.6[ωₙ] | +1,63 / +1,00 | **+1,08 / +0,85** |
+| 2.6-aceitas | 254/300 | **260/300** |
+| **2.12** acerto de ordem | 92,3 % | **94,0 %** |
+| 2.1 erro perpendicular p95 | 1,703 px | **1,489 px** |
+| 2.11 amostras com valor | 292/300 | **295/300** |
+| 2.9 cobertura da calibração | 0,933 | 0,933 |
+| 2.1 mediana / 2.1-iou | 0,799 px / 0,6482 | 0,804 px / 0,6473 |
+
+`IoU_val` medido nos mesmos conjuntos, para comparação honesta:
+
+| | `data/val` (900) | `data/val`+`val_reta` (1200) | os três (1500) |
+|---|---|---|---|
+| anterior | 0,7822 | 0,7572 | 0,7519 |
+| época 13 | 0,7821 | 0,7559 | **0,7618** |
+| época 11 | 0,7742 | 0,7480 | 0,7541 |
+
+Isso fecha a ressalva de comparabilidade: acrescentar `val_kneg` ABAIXA o IoU do
+checkpoint anterior (0,7572 → 0,7519), então o 0,7618 da época 13 no mesmo
+conjunto é ganho real de +0,0099, não artefato de composição.
+
+**E inverte a recomendação que a seleção por platô sozinha produzia.** A época 11
+tem o melhor platô (0,9272) mas custa **−0,0092** no conjunto histórico; a época
+13 preserva os números históricos (0,7821 contra 0,7822 no `data/val`) e ainda
+ganha no conjunto novo. Escolher pela métrica de platô sozinha era o mesmo erro
+de método do §40.9 com o sinal trocado: **nenhuma das duas métricas decide
+sozinha.**
+
+### 41.4 O §40.9 estava certo como risco e exagerado como diagnóstico
+
+O `IoU_val` cego escolheu a época 13 — **e escolheu certo**, porque ele carrega
+exatamente a informação que a métrica de platô ignora. A época que o platô
+preferia era pior no conjunto histórico. O risco do §40.9 é real, mas nesta
+rodada a métrica acusada de cega foi a que protegeu o que o platô não vê.
+
+Fica registrado também o que o §40.9 NÃO tinha notado: o `IoU_val` alimenta
+**dois** consumidores, a seleção do checkpoint e o `ReduceLROnPlateau`. Nesta
+rodada o `IoU_val` melhorou em 11 das 25 épocas e o scheduler cortou o LR **10
+vezes**, porque os ganhos desta fase vêm em passos de 0,001 a 0,007 e o
+`--lr-threshold` é 0,01 ABSOLUTO. O LR chegou a 2,34e-06 na época 17 e as
+últimas 7 épocas não moveram nada. São dois problemas somados: limiar mal
+calibrado para a escala dos ganhos, e métrica que não vê o fenômeno.
+
+**O platô saturou na época 5** (0,9128, contra 0,9246 da 13). O conserto
+aconteceu nas primeiras 5 épocas; as 13 últimas não moveram nem `IoU_val` nem
+platô. Uma rodada de ~12 épocas teria bastado — e agora isso é medição.
+
+### 41.5 O custo, e o que sobrou
+
+**A cauda assentada com reta de referência coincidente piorou.** Em
+`caso_real_2ordem.png` a máscara perde 51 das 747 colunas, todas nos dois
+últimos decis. Não é limiar: probabilidade mediana **0,0004** nas colunas
+perdidas, contra 0,1811 do checkpoint anterior — supressão confiante.
+Sistêmico mas pequeno: `data/val_reta` isolado cai de 0,682 para 0,677.
+
+Isso NÃO afeta o resultado físico: ωₙ sai 2,0203 contra 2,0220 do anterior, os
+dois a ~1 % da verdade. Registrado em
+`test_caso_real_cobre_a_cauda_assentada` com `xfail` estrito.
+
+**Uma falsa regressão, e o erro de método que ela expôs.** O
+`test_caso_real_recupera_zeta_e_wn` acusou 17 % de erro em ωₙ. Não havia erro
+em ωₙ. O teste lia ωₙ como `wn_T / 10`, onde `wn_T` é normalizado pelo SPAN DA
+SÉRIE e o 10 é a janela do eixo — a suposição de que a máscara cobre a janela
+inteira. Com o span caindo de 9,81 s para 8,21 s, a conta erra 18 %.
+
+Duas coisas estavam desatualizadas no teste: a premissa (`cal.ok` era False
+quando ele foi escrito, hoje é True, então o bloco FÍSICO está disponível) e a
+confusão entre COBERTURA e ACURÁCIA. Reescrito para assertar o físico — mais
+forte, não mais fraco — com ζ seguindo no adimensional, que é invariante a
+escala e a truncagem. A cobertura ganhou teste próprio.
+
+**O que o retreino NÃO consertou:** os dois `xfail` do §39.3 em
+`test_caso_real_rg.py` seguem valendo (sistema 1, 65,3 % de cobertura; sistema
+3, 82,2 %). Coerente com o prior de posição: aquelas imagens são de ganho
+positivo com `plt.ylim(0, ...)`, então o platô delas fica no RODAPÉ, que a rede
+já dominava. E em `caso_real_neg_super.png`, ωₙ e ζ seguem errados (26 % e
+30 %). **A causa afirmada aqui — "precisa da cauda, que a rede ainda perde" —
+foi REFUTADA pelo §43:** a cauda tem rms 0,0073, está perfeita. É oclusão pela
+legenda na faixa de acomodação. θ e K passaram a sair certos e viraram portão.
+
+Suíte: `tests/part2/` **131 passam, 9 xfail, zero falhas**.
+
+## 42. Ruling 65 — `K` é `K_planta × U`, e isso não é conserto de software
+
+Reportado como classificação errada em `Figure_dn.png`: a pipeline devolveu
+`K = −1,997` onde a função de transferência do `rg_negativo.py` diz `K = 1`.
+
+**Não houve erro.** A planta é `2/(s+2)`, cujo ganho DC é `2/2 = 1`, e o degrau
+aplicado tem amplitude **−2** (`amplitude_degrau=-2` no `rg_negativo.py`). A
+curva desenhada é o produto: sai de 0 e assenta em −2,00, o que se lê no próprio
+eixo y da figura. `STEP_AMPLITUDE = 1.0` é convenção do projeto, então o `K`
+reportado é a excursão por unidade de entrada, `K_planta × U = 1 × (−2) = −2`.
+
+Verificado reconstruindo a curva a partir dos parâmetros reportados contra a
+verdade analítica: **erro máximo 0,0039, RMSE 0,0026**. `tau = 0,5` (erro
+0,01 %), `theta = 2,999` contra 3,0 (erro 0,02 %; são os 2 s do instante do
+degrau mais 1 s de atraso da planta). Estrutura FOPDT, correta.
+
+### 42.1 Por que não é corrigível
+
+Não é limitação de implementação, é **identificabilidade**. Da curva de saída
+sozinha, `K_planta` e `U` não são separáveis — só o produto é observável:
+
+| `K_planta` | `U` | curva observada |
+|---|---|---|
+| 1,997 | −1 | idêntica ponto a ponto |
+| 0,999 | −2 | idêntica ponto a ponto |
+| 0,499 | −4 | idêntica ponto a ponto |
+
+Nenhum algoritmo distingue entre elas sem conhecer `U`. O leitor humano acerta
+porque a figura **desenha a entrada** (a tracejada branca em −2) e ele divide;
+a pipeline não lê a entrada.
+
+### 42.2 O que fica registrado, e o que fica aberto
+
+Registrado na especificação, nos dois lugares onde alguém tropeça:
+`identify/classical.py` na definição de `STEP_AMPLITUDE`, e `ARQUITETURA.md` §4
+("O que `K` significa, e o que ele NÃO significa").
+
+**Aberto, e agora plausível:** ler a amplitude do degrau da imagem quando a
+entrada está plotada. Com `U` lido, `K_planta = K_reportado / U` sai de graça.
+Exige detectar e CLASSIFICAR um segundo objeto de curva como "entrada" — o que
+era impossível antes do §41, e passou a ser plausível porque a máscara agora
+separa a resposta da tracejada (é exatamente o que fechou o antigo "defeito 4").
+Envelope próprio, spec própria.
+
+**Aberto, barato:** o `identificar.py` imprime `K -1.997` sem dizer que é ganho
+por degrau unitário. Um rótulo explícito na saída evitaria esta leitura sem
+tocar em nada do cálculo. NÃO implementado — decisão do dono.
+
+## 43. Ruling 66 — era a LEGENDA, e eu errei a atribuição duas vezes antes disso
+
+`caso_real_neg_super.png` (`Figure_dl3.png`) devolvia wn=2,95 (erro 26 %) e
+zeta=0,87 (erro 30 %). O dono moveu a legenda de `lower left` para
+`upper right`, gerou a mesma figura de novo, e a pipeline passou a devolver
+**wn=3,88 (2,97 %) e zeta=1,22 (2,23 %)**, com o NRMSE do ajuste caindo de
+0,01207 para 0,00192.
+
+### 43.1 A causa, medida por faixa
+
+| faixa de t | original | legenda movida |
+|---|---|---|
+| platô inicial (0–3,3) | 0,0077 | 0,0077 |
+| arranque (3,3–3,7) | 0,0090 | 0,0090 |
+| transitório rápido (3,7–4,5) | 0,0201 | 0,0205 |
+| **acomodação (4,5–6,0)** | **0,1674** | **0,0090** |
+| cauda assentada (6–15) | 0,0073 | 0,0068 |
+
+(rms do erro de extração contra a verdade analítica.)
+
+**Uma faixa mudou, 19×. Todas as outras são idênticas.** A caixa da legenda em
+`lower left` ocupa t 0,3..5,6 e y −2,4..−3,05, e a curva atravessa essa faixa
+exatamente na acomodação. A polilinha segue a borda da caixa e cria um patamar
+falso em −2,93 onde a resposta verdadeira ainda está em −2,52 — antecipando a
+acomodação em ~0,7 s. O ajuste compensa com polo dominante mais lento e menos
+amortecimento.
+
+**O Estágio D está inocente, e isso foi medido:** o oráculo na MESMA grade de
+593 pontos recupera wn=4,0000 e zeta=1,2500 com **NRMSE zero**. A amostragem é
+suficiente; os 87 pontos da acomodação é que estão tortos.
+
+### 43.2 Duas atribuições erradas, e o que as produziu
+
+Esta imagem teve a causa errada atribuída duas vezes, as duas escritas no
+repositório antes de serem refutadas:
+
+1. **"Perde a cauda assentada"** (§41.5, e antes disso no `xfail`). Herdado do
+   §39.3, que era sobre OUTRA imagem. A cauda tem rms 0,0073 — está perfeita, e
+   não há buraco nenhum na cobertura.
+2. **"Atração pela tracejada de entrada em −3"**. A polilinha era puxada para
+   −2,93, mais negativa que a verdade, e "mais perto de −3" foi tratado como
+   evidência da tracejada. Mas a caixa da legenda ocupava a MESMA vizinhança
+   (y −2,4..−3,05). **A evidência disponível era compatível com as duas
+   hipóteses, e uma foi escolhida sem o teste que as separa.**
+
+O que resolveu foi um experimento de uma variável: mover a legenda. Nenhuma das
+duas hipóteses anteriores sobrevive a ele.
+
+Lição de método, e é a mesma do §41.2: hipótese consistente com o sintoma não é
+hipótese confirmada. A pergunta que faltou nas duas vezes foi "qual observação
+distinguiria isto da alternativa?".
+
+### 43.3 O que muda no prognóstico
+
+A `neg_super` **não precisa de retreino nem de estrato de cauda** — era o que o
+`xfail` anterior afirmava. O ajuste recupera tudo quando a curva não está
+ocluída. O que falta é o Estágio A atravessar a legenda.
+
+**E o corpus já media isso, fraco demais para alguém agir.** O critério 2.7
+estratificado por legenda está no relatório desde antes:
+
+    2.7-iou[legenda=False]   0,6758  (n=155)
+    2.7-iou[legenda=True]    0,6147  (n=145)
+
+6,1 pontos de IoU, em quase metade do corpus. O número existia e nunca foi
+ligado a nada, porque IoU DILUI: a legenda estraga um trecho pequeno da curva, e
+o IoU é dominado pelo corpo. A imagem real mostrou o mesmo dano em unidade de
+parâmetro físico — 26 % em wn. É o padrão do §40.9 outra vez, com outra métrica.
+
+**Candidato para o próximo bloco, agora com número:** um estrato de legenda
+SOBREPOSTA AO TRECHO DE ACOMODAÇÃO, em vez de legenda em posição sorteada. O
+gerador já tem `has_legend`; o que falta é posicioná-la onde faz estrago.
+
+### 43.4 O par controlado ficou versionado
+
+`rg_negativo.py` gera as duas variantes, e `caso_real_neg_super_legenda_movida.png`
+entrou como fixture ao lado da original. `test_neg_super_sem_oclusao_recupera_tudo`
+é portão (K 0,20 %, wn 2,97 %, zeta 2,23 %, theta 0,06 %); o `xfail` da original
+continua falhando, agora com a razão certa.
+
+Enquanto os dois coexistirem, nenhuma explicação alternativa sobrevive: uma
+variável muda, o resultado muda com ela.

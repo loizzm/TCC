@@ -120,10 +120,28 @@ def main() -> None:
                     help="fator de redução do LR quando o platô dispara")
     ap.add_argument("--lr-threshold", type=float, default=0.01,
                     help="ganho mínimo de IoU_val para contar como melhora real")
+    # O `IoU_val` e quase CEGO ao defeito do plato (§40.9): o estrato que a rede
+    # nao sabe segmentar custa 5 pontos de IoU (0,7814 -> 0,7304) enquanto a
+    # cobertura do plato nele desaba 42 (0,944 -> 0,527). O plato e uma linha
+    # FINA, poucos pixels contra o corpo da curva, e o IoU e dominado pelo corpo.
+    # Como a selecao do melhor checkpoint e por `m > melhor` sobre o `IoU_val`,
+    # a epoca que aprender o plato pode nao ser a selecionada.
+    #
+    # Guardar TODAS e escolher depois resolve isso sem tocar em metrica nenhuma:
+    # o `IoU_val` continua sendo calculado e reportado igual, para os numeros
+    # seguirem comparaveis com as rodadas historicas. Opt-in: sem o flag o
+    # comportamento e byte a byte o de antes.
+    ap.add_argument("--save-epoch-dir", default=None,
+                    help="se dado, salva `epoca_NN.pt` neste diretorio a cada "
+                         "epoca, ALEM do melhor por IoU_val em --out. Para "
+                         "selecionar por metrica que o IoU_val nao enxerga.")
     a = ap.parse_args()
 
     torch.manual_seed(20260817)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+    dir_epocas = Path(a.save_epoch_dir) if a.save_epoch_dir else None
+    if dir_epocas is not None:
+        dir_epocas.mkdir(parents=True, exist_ok=True)
     train_dirs = a.train_dir or ["data/train"]
     ds_tr = MaskDataset(train_dirs, a.size, in_ch=a.in_ch)
     passos = a.batches_per_epoch or (len(ds_tr) // a.batch)
@@ -162,6 +180,8 @@ def main() -> None:
         marca = " (LR reduzido)" if lr_depois < lr_antes else ""
         print(f"epoca {ep:02d}  IoU_val={m:.4f}  lr={lr_depois:.2e}{marca}  "
               f"{time.perf_counter()-t0:.0f}s", flush=True)
+        if dir_epocas is not None:
+            torch.save(model.state_dict(), dir_epocas / f"epoca_{ep:02d}.pt")
         if m > melhor:
             melhor = m
             torch.save(model.state_dict(), a.out)

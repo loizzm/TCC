@@ -283,9 +283,37 @@ _LOTE_GAP = 400        # px de fundo entre recortes vizinhos no mosaico, JÁ amp
 _LOTE_PAD = 8          # px de fundo na borda do mosaico
 
 
+# Glifos que o OCR devolve no lugar do sinal negativo. O matplotlib desenha
+# U+2212 (MINUS SIGN) e o tesseract quase nunca o devolve como tal: medido em
+# `Figure_dn2.png`, 8 de 9 rótulos vieram com EM DASH. Sem esta normalização o
+# `_NUM_RE` rejeita o rótulo inteiro e o eixo perde o par — foi assim que uma
+# imagem com os NOVE rótulos legíveis saiu com um só. Ver §40.1.
+#
+# '=' NÃO entra nesta tabela de propósito, embora o tesseract também o devolva
+# (o '=1.2' da mesma imagem). Mapear '=' para '-' é inventar leitura: um sinal
+# de igual pode vir de qualquer coisa no eixo, e o RANSAC já descarta o par
+# perdido de graça. Aqui vale a regra de sempre: perder um par é barato,
+# inventar um é caro.
+_GLIFOS_DE_SINAL = str.maketrans({
+    "\u2212": "-",   # MINUS SIGN (o que o matplotlib desenha)
+    "\u2014": "-",   # EM DASH
+    "\u2013": "-",   # EN DASH
+    "\u2010": "-",   # HYPHEN
+    "\u2011": "-",   # NON-BREAKING HYPHEN
+    "\u02d7": "-",   # MODIFIER LETTER MINUS SIGN
+})
+_SINAL_REPETIDO = re.compile(r"^-{2,}")
+
+
 def _texto_para_numero(txt: str) -> float | None:
-    """`str` -> número, com o MESMO filtro de `_ocr_number` (contrato §1.7)."""
-    txt = txt.strip().replace(" ", "")
+    """`str` -> número, com o MESMO filtro de `_ocr_number` (contrato §1.7).
+
+    Normaliza os glifos de sinal ANTES do filtro (`_GLIFOS_DE_SINAL`): o
+    tesseract devolve em-dash onde o matplotlib desenhou U+2212, e sem isso o
+    rótulo negativo inteiro é descartado.
+    """
+    txt = txt.strip().replace(" ", "").translate(_GLIFOS_DE_SINAL)
+    txt = _SINAL_REPETIDO.sub("-", txt)
     if not _NUM_RE.match(txt):
         return None
     try:

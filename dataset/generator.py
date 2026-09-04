@@ -230,31 +230,64 @@ def _new_figure(style: RenderStyle, facecolor: str) -> tuple[Figure, Axes]:
     return fig, ax
 
 
-# Luminancia ITU-R BT.601, a MESMA de `identify/extract.py::predict_mask`.
+# Luminancia ITU-R BT.601. E a mesma formula do `identify/calibrate.py`, que
+# roda o Estagio B INTEIRO em cinza (moldura, mascara de tinta, blobs de texto,
+# recortes do OCR), e a mesma do ramo `in_ch == 1` de
+# `identify/extract.py::predict_mask`.
+#
+# ATENCAO ao que este arquivo usa a luminancia PARA (ver `_cor_colidente`):
+# NAO e mais o que a U-Net enxerga. O checkpoint promovido e `in_ch=3` e recebe
+# RGB; o ramo de cinza do `predict_mask` so roda para checkpoints antigos.
 _PESO_CINZA = (0.299, 0.587, 0.114)
 
 
 def _cinza(rgb) -> float:
-    """Luminancia que a U-Net enxerga: ela recebe 1 canal, nao RGB."""
+    """Luminancia ITU-R BT.601 de uma cor RGB (0-255), em 0-255.
+
+    Foi escrita como "o que a U-Net enxerga" e isso valia quando o Estagio A
+    era de 1 canal. Hoje o checkpoint promovido e `in_ch=3` e nao converte —
+    ver `_cor_colidente` para o que isso fez com o estrato construido sobre
+    esta funcao.
+    """
     return sum(p * c for p, c in zip(_PESO_CINZA, rgb))
 
 
 def _cor_colidente(hex_curva: str) -> str:
     """Cor com a MESMA luminancia da curva e matiz oposta.
 
-    O estagio A converte a imagem para cinza antes da U-Net
-    (`identify/extract.py::predict_mask`), entao dois objetos de luminancia
-    igual chegam a rede como o MESMO byte — medido nas duas imagens reais do
-    Ruling 55: curva (44,160,44) e reta de referencia (230,61,61) viram ambas
-    112. Separar um do outro deixa de ser dificil e passa a ser impossivel:
-    nenhuma funcao de uma entrada distingue pontos onde a entrada e identica.
+    PREMISSA ORIGINAL, HOJE FALSA PARA O CHECKPOINT PROMOVIDO. Isto foi escrito
+    quando o Estagio A convertia a imagem para cinza antes da U-Net: dois
+    objetos de luminancia igual chegavam a rede como o MESMO byte — medido nas
+    duas imagens reais do Ruling 55, curva (44,160,44) e reta de referencia
+    (230,61,61) viram ambas 112. Separar um do outro nao era dificil, era
+    IMPOSSIVEL: nenhuma funcao de uma entrada distingue pontos onde a entrada e
+    identica. O estrato existia para reproduzir exatamente essa
+    impossibilidade.
 
-    O estrato precisa reproduzir ISSO, e nao apenas "existe uma reta". Uma cor
-    sorteada ao acaso colide raramente (medido no gerador: 2,05% dos
-    distratores ficam a menos de 2 bytes da curva) e, pior, colide sem se
-    SOBREPOR — e a medicao mostrou que colisao sem sobreposicao e inofensiva
-    (Spearman colisao x IoU = -0,006, p=0,86, n=900). Aqui a colisao e
-    construida de proposito e combinada com sobreposicao no patamar.
+    O checkpoint promovido e `in_ch=3` e recebe R, G e B separados
+    (`identify/extract.py::predict_mask`, ramo RGB). As duas cores que
+    colidiam em 112 chegam a ele perfeitamente distinguiveis, e a
+    impossibilidade deixou de existir.
+
+    O QUE ISSO SIGNIFICA, e por que a funcao FICA: o estrato continua valido —
+    um distrator de luminancia igual sobreposto ao patamar e um caso legitimo,
+    e agora serve de CONTROLE do ganho que o RGB trouxe, porque e o caso em que
+    1 canal nao tinha chance e 3 canais tem. O que ele deixou de ser e o pior
+    caso adversarial: para um modelo de 3 canais, a colisao de luminancia nao e
+    mais especial. Quem for medir dificuldade de estrato contra o checkpoint
+    atual precisa saber disso, senao le como "a rede ficou boa" o que e "o
+    estrato deixou de ser dificil".
+
+    NAO MEDIDO: qual e o IoU deste estrato com o checkpoint RGB, nem se algum
+    estrato adversarial equivalente EM RGB (colisao nos tres canais, nao so na
+    luminancia) faria sentido construir.
+
+    Sobre a escolha da cor, e independente do acima: uma cor sorteada ao acaso
+    colide raramente (medido no gerador: 2,05% dos distratores ficam a menos de
+    2 bytes da curva) e, pior, colide sem se SOBREPOR — e a medicao mostrou que
+    colisao sem sobreposicao e inofensiva (Spearman colisao x IoU = -0,006,
+    p=0,86, n=900). Aqui a colisao e construida de proposito e combinada com
+    sobreposicao no patamar.
 
     Depende so de `style.line_color`, que `sample_style` sorteia cego ao spec,
     entao nao abre caminho de vazamento (tests/test_part1.py:1115).
@@ -400,11 +433,11 @@ def render_sample(
         # teste para o defeito do §34.5.
         distractors = distractors + [
             {"orient": "h", "frac": None, "no_patamar": True,
-             # Cor de LUMINANCIA IGUAL a da curva (ver `_cor_colidente`): em
-             # cinza, que e o que a U-Net recebe, os dois objetos viram o mesmo
-             # byte. Sem isso o estrato so testa "existe uma reta", e a medicao
-             # mostrou que reta de cor qualquer nao degrada nada
-             # (Spearman colisao x IoU = -0,006, p=0,86, n=900).
+             # Cor de LUMINANCIA IGUAL a da curva (ver `_cor_colidente`, e
+             # LEIA a ressalva la: o checkpoint promovido e RGB e nao colapsa
+             # mais as duas cores). Sem isso o estrato so testa "existe uma
+             # reta", e a medicao mostrou que reta de cor qualquer nao degrada
+             # nada (Spearman colisao x IoU = -0,006, p=0,86, n=900).
              "color": _cor_colidente(style.line_color), "line_style": "--",
              # ACIMA da curva: os distratores comuns ficam em `zorder=1`, sob
              # ela, e por isso nao ocluem. O fenomeno real do Ruling 55 e a
@@ -622,7 +655,8 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
                     reta_no_patamar: bool = False,
                     janela_assentada: bool = False,
                     anotacao_com_seta: bool = False,
-                    banda_de_acomodacao: bool = False) -> dict:
+                    banda_de_acomodacao: bool = False,
+                    ganho_negativo: bool = False) -> dict:
     """Sorteia sistema+estilo com streams independentes, renderiza e devolve o meta."""
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
@@ -643,6 +677,26 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
         t_dom = dominant_time_constant(spec.order, spec.tau, spec.wn, spec.zeta)
         spec = replace(spec, t_end=float(max(spec.t_end,
                                              spec.theta + _T_DOM_ESTRATO * t_dom)))
+    if ganho_negativo:
+        # Estrato OOD opt-in (§40.5), molde do `reta_no_patamar` (§34.5). So o
+        # SINAL de K muda: `sample_system` continua sorteando K > 0, e |K| fica
+        # identico ao do mesmo seed sem o flag. Isso e o que torna o estrato
+        # comparavel AMOSTRA A AMOSTRA com o base — a diferenca entre os dois
+        # e o sinal e nada mais, entao qualquer diferenca de resultado e
+        # atribuivel a ele.
+        #
+        # Opt-in, e nao um sorteio dentro de `sample_system`, porque mexer no
+        # sorteio moveria TODA amostra do corpus base, e com ela todo numero
+        # historico da Parte 1 e da Parte 2. O corpus base fica byte a byte
+        # identico e o estrato novo entra ao lado. `test_o_padrao_nao_muda_um_byte`
+        # assevera isso comparando os PNG e o meta.json.
+        #
+        # Aplicado ao SPEC e depois de `sample_style`, nunca ao estilo: o
+        # estilo nao pode ver o spec (anti-vazamento estrutural de
+        # `randomize.py`), e um traco que mudasse de cor ou espessura por causa
+        # do sinal do ganho ensinaria a rede a ler o sinal do RENDER em vez da
+        # forma da curva.
+        spec = replace(spec, K=-spec.K)
     return render_sample(spec, style, out_dir, add_noise=add_noise, rng=rng_noise,
                          seed=int(seed), reta_no_patamar=reta_no_patamar,
                          anotacao_com_seta=anotacao_com_seta,
@@ -650,10 +704,10 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
 
 
 def _generate_one(args: tuple) -> str:
-    out_dir, seed, add_noise, reta, janela, seta, banda = args
+    out_dir, seed, add_noise, reta, janela, seta, banda, kneg = args
     generate_sample(out_dir, seed, add_noise=add_noise, reta_no_patamar=reta,
                     janela_assentada=janela, anotacao_com_seta=seta,
-                    banda_de_acomodacao=banda)
+                    banda_de_acomodacao=banda, ganho_negativo=kneg)
     return str(out_dir)
 
 
@@ -667,6 +721,7 @@ def generate_dataset(
     janela_assentada: bool = False,
     anotacao_com_seta: bool = False,
     banda_de_acomodacao: bool = False,
+    ganho_negativo: bool = False,
 ) -> list[str]:
     """Gera n amostras em paralelo. Resultado independe do numero de workers."""
     root = Path(out_dir)
@@ -674,7 +729,8 @@ def generate_dataset(
     jobs = [
         (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise),
          bool(reta_no_patamar), bool(janela_assentada),
-         bool(anotacao_com_seta), bool(banda_de_acomodacao))
+         bool(anotacao_com_seta), bool(banda_de_acomodacao),
+         bool(ganho_negativo))
         for i in range(int(n))
     ]
     if workers is not None and workers <= 1:
