@@ -28,18 +28,23 @@ O que cada uma protege, e o que cada uma ainda não entrega:
     isoladamente; nenhum deles pega uma regressão no Estágio A. Esta imagem
     pega, porque a série extraída dela perde o platô inicial (o `axvspan` cinza
     cai exatamente sobre ele) e mesmo assim a direção tem de sair certa.
-  - `neg_fopdt` segue RECUSADA pelo defeito 4: o degrau de ENTRADA é plotado
-    como tracejada branca no mesmo quadro, e a polilinha começa SOBRE ELA
-    (y[0] = -1,995, o patamar da entrada) em vez de sobre a resposta, cujo
-    repouso só aparece 38 amostras depois. O dano é anterior ao Estágio D e
-    contamina tudo o que vem depois: o mínimo precede o máximo, a direção é
-    lida como subida, o espelho não dispara e K trava no piso (0,001, NRMSE
-    0,90). Os testes abaixo MEDEM o defeito e põem a recuperação em `xfail`
-    estrito, para o dia em que alguém separar os dois objetos.
-  - `neg_super` responde com K certo e wn/zeta/theta errados, por causa do
-    §39.3 (o Estágio A come o platô e a cauda, cobertura de 62,5 %). Os três
-    parâmetros errados entram com `xfail` estrito: quando o retreino fechar
-    aquele defeito, viram XPASS, a suíte reprova e obriga a conversão em portão.
+  - `neg_fopdt` FECHA, desde o retreino do §40.7. Ela era o caso do "defeito
+    4": o degrau de ENTRADA é plotado como tracejada branca no mesmo quadro, e
+    a polilinha começava SOBRE ELA (y[0] = -1,995) em vez de sobre a resposta,
+    o que fazia o mínimo preceder o máximo, a direção sair como subida, o
+    espelho não disparar e K travar no piso (0,001, NRMSE 0,90).
+
+    A ATRIBUIÇÃO DA CAUSA ESTAVA ERRADA, e vale registrar porque custou uma
+    conclusão: aquilo foi lido como "dois objetos de curva no mesmo quadro,
+    envelope novo, spec própria". Não era. Era o MESMO prior de posição do
+    §40.7 — a rede não via o platô de repouso da resposta, que fica no topo, e
+    a única linha visível naquela altura era a da entrada. Um retreino fechou
+    os dois defeitos porque eram um só. Hoje: K 0,15 %, tau 0,01 %, theta
+    0,02 %.
+  - `neg_super` recupera K (0,42 %) e theta (0,94 %) — o theta entrou com o
+    retreino. wn e zeta seguem errados (26 % e 30 %) e ficam em `xfail`
+    estrito: eles se leem da FORMA do transitório, que depende da cauda
+    assentada, e essa a rede ainda perde.
 """
 from pathlib import Path
 
@@ -100,11 +105,16 @@ def _erro(medido, esperado):
 # A direção, lida das três séries reais
 # --------------------------------------------------------------------------- #
 
-@pytest.mark.parametrize("caso", [NEG_SUB, NEG_SUPER], ids=["sub", "super"])
+@pytest.mark.parametrize("caso", [NEG_SUB, NEG_SUPER, NEG_FOPDT],
+                         ids=["sub", "super", "fopdt"])
 def test_a_direcao_sai_negativa(caso, modelo):
-    """As duas DESCEM. `_sinal_do_degrau` é medido aqui contra série real, não
+    """As três DESCEM. `_sinal_do_degrau` é medido aqui contra série real, não
     sintética: é sobre `sub` que a formulação por decil falhava, porque o
-    `axvspan` cinza cai sobre o platô inicial e o Estágio A o come."""
+    `axvspan` cinza cai sobre o platô inicial e o Estágio A o come.
+
+    A `fopdt` entrou nesta lista DEPOIS do retreino do §40.7. Antes dele a
+    polilinha começava sobre a tracejada de ENTRADA (y[0] = -1,995) e a direção
+    saía +1; hoje começa sobre a resposta (y[0] = +0,005) e sai -1."""
     from identify.classical import _sinal_do_degrau
     _, y = _serie(caso, modelo)
     assert _sinal_do_degrau(y) == -1.0
@@ -131,57 +141,52 @@ def test_neg_sub_fecha_fim_a_fim(modelo):
 # neg_fopdt — recusada pelo defeito 4, com a física certa por baixo
 # --------------------------------------------------------------------------- #
 
-def test_neg_fopdt_e_recusada_e_nomeia_a_causa(modelo):
-    """Comportamento ATUAL, documentado: a pipeline recusa em vez de devolver
-    número errado em silêncio. A causa é o degrau de entrada plotado no mesmo
-    quadro (defeito 4), que faz a polilinha pular entre dois objetos."""
+def test_neg_fopdt_fecha_fim_a_fim(modelo):
+    """PORTÃO NOVO (§40.11). Esta imagem era RECUSADA até o retreino do §40.7.
+
+    Ela era o caso do "defeito 4": o degrau de ENTRADA é plotado como tracejada
+    branca no mesmo quadro, e a polilinha começava sobre ELA em vez de sobre a
+    resposta. A atribuição da causa estava errada — ver §40.11. Não era "dois
+    objetos confundem a polilinha": era o MESMO prior de posição do §40.7. A
+    rede não via o platô de repouso da resposta, que fica no topo, e a única
+    linha visível naquela altura era a da entrada."""
     r = _roda(NEG_FOPDT, modelo)
-    assert not r["ok"]
-    assert r["reason"] in ("resposta_inversa", "ajuste_inconsistente"), r["reason"]
+    assert r["ok"], f"sem físico: reason={r['reason']!r} cal={r['calibration']}"
+    assert r["order"] == "fopdt", f"ordem {r['order']!r}"
+    assert r["params"]["K"] < 0.0, f"K = {r['params']['K']:.4f}"
 
 
-def test_neg_fopdt_a_polilinha_comeca_no_degrau_de_entrada(modelo):
-    """MEDE o defeito 4, para que ele tenha um número e não só um nome.
+def test_neg_fopdt_a_polilinha_segue_a_RESPOSTA_e_nao_a_entrada(modelo):
+    """PORTÃO NOVO (§40.11). Mede o defeito 4 pelo lado consertado.
 
-    A série extraída começa em -1,995 — o patamar da TRACEJADA DE ENTRADA, que
-    `rg_negativo.py` desenha em y=-2 a partir de t=2 s. O repouso da RESPOSTA
-    (y=0) só aparece 38 amostras depois. A polilinha, portanto, não está
-    seguindo um objeto só.
+    A versão anterior deste teste asseverava o DEFEITO: `y[0] < -1,5`, o
+    patamar da tracejada de entrada, com o mínimo precedendo o máximo. Ele
+    existia para dar um número ao defeito 4 e para falhar no dia em que alguém
+    o consertasse. Falhou — o retreino do §40.7 consertou.
 
-    A consequência é dupla e está asseverada abaixo: a direção é lida ao
-    contrário (o mínimo vem antes do máximo, então a série "sobe") e o ajuste
-    trava K no piso. Quem consertar o defeito 4 tem de fazer este teste falhar.
+    Agora assevera o contrário, e é o portão que impede a volta: a série tem de
+    começar no repouso da RESPOSTA (perto de 0) e não no patamar da entrada
+    (-2), e o máximo tem de vir antes do mínimo, que é o que faz
+    `_sinal_do_degrau` ler descida.
     """
     _, y = _serie(NEG_FOPDT, modelo)
-    assert float(y[0]) < -1.5, (
-        f"y[0] = {float(y[0]):.4f}; se a polilinha passou a seguir a RESPOSTA, "
-        "ela começa perto de 0 e o defeito 4 foi consertado")
-    assert int(np.argmin(y)) < int(np.argmax(y))
+    assert abs(float(y[0])) < 0.5, (
+        f"y[0] = {float(y[0]):.4f}; perto de -2 significa que a polilinha "
+        "voltou a começar sobre a tracejada de ENTRADA (defeito 4 de volta)")
+    assert int(np.argmax(y)) < int(np.argmin(y)), (
+        "o máximo tem de vir antes do mínimo numa resposta que desce")
 
 
-@pytest.mark.xfail(strict=True, reason=
-                   "defeito 4: o degrau de ENTRADA é plotado como tracejada "
-                   "branca no mesmo quadro, a polilinha pula entre os dois "
-                   "objetos e começa sobre a entrada (y[0]=-1,995, o patamar "
-                   "dela) em vez de sobre a resposta. Com isso o mínimo precede "
-                   "o máximo, `_sinal_do_degrau` lê subida, o espelho não "
-                   "dispara e K trava no piso de K_BOUNDS (0,001, NRMSE 0,90). "
-                   "Fechar exige distinguir dois objetos de curva no mesmo "
-                   "quadro — envelope novo, spec própria. Quando fechar, isto "
-                   "vira XPASS e reprova a suíte.")
 @pytest.mark.parametrize("nome", ["K", "tau", "theta"])
 def test_neg_fopdt_recupera_os_parametros(nome, modelo):
-    from identify.classical import identify
-    t, y = _serie(NEG_FOPDT, modelo)
-    f = identify(t, y)
-    e = _erro(f.params[nome], NEG_FOPDT[nome])
-    assert e <= TOL, (f"{nome} = {f.params[nome]:.4f}, "
+    """PORTÃO NOVO (§40.11): era `xfail` estrito pelo defeito 4, virou portão.
+    Medido depois do retreino: K 0,15 %, tau 0,01 %, theta 0,02 %."""
+    r = _roda(NEG_FOPDT, modelo)
+    assert r["ok"], f"sem físico: reason={r['reason']!r}"
+    e = _erro(r["params"][nome], NEG_FOPDT[nome])
+    assert e <= TOL, (f"{nome} = {r['params'][nome]:.4f}, "
                       f"esperado {NEG_FOPDT[nome]} (erro {e:.1%})")
 
-
-# --------------------------------------------------------------------------- #
-# neg_super — K certo, o resto preso no §39.3
-# --------------------------------------------------------------------------- #
 
 def test_neg_super_recupera_o_ganho(modelo):
     """K sai certo mesmo com o Estágio A comendo platô e cauda: o ganho se lê da
@@ -193,13 +198,30 @@ def test_neg_super_recupera_o_ganho(modelo):
     assert e <= TOL, f"K = {r['params']['K']:.4f}, esperado {NEG_SUPER['K']} (erro {e:.1%})"
 
 
+def test_neg_super_recupera_o_theta(modelo):
+    """PORTÃO NOVO (§40.11): era `xfail` pelo §39.3, virou portão.
+
+    O retreino recuperou o ATRASO desta imagem (0,94 % de erro) mas não a
+    dinâmica — ver o `xfail` abaixo. Faz sentido: theta se lê de ONDE a resposta
+    arranca, e o arranque voltou a ser visível quando o platô de repouso no topo
+    passou a ser segmentado. wn e zeta se leem da FORMA do transitório, que
+    depende da cauda, ainda perdida."""
+    r = _roda(NEG_SUPER, modelo)
+    assert r["ok"], f"sem físico: reason={r['reason']!r}"
+    e = _erro(r["params"]["theta"], NEG_SUPER["theta"])
+    assert e <= TOL, (f"theta = {r['params']['theta']:.4f}, "
+                      f"esperado {NEG_SUPER['theta']} (erro {e:.1%})")
+
+
 @pytest.mark.xfail(strict=True, reason=
-                   "§39.3: o Estágio A perde o platô e a cauda desta imagem "
-                   "(cobertura 62,5 %), e sem eles a DINÂMICA não é "
-                   "identificável — só o ganho. Exige RETREINO, não conserta no "
-                   "Estágio D. Quando o retreino fechar, isto vira XPASS e "
-                   "reprova a suíte, obrigando a virar portão de regressão.")
-@pytest.mark.parametrize("nome", ["wn", "zeta", "theta"])
+                   "§39.3, o que SOBROU dele depois do retreino do §40.7. O "
+                   "platô de repouso desta imagem foi recuperado (theta sai a "
+                   "0,94 %, K a 0,42 %), mas a CAUDA assentada não — e wn e zeta "
+                   "se leem da forma do transitório, que precisa dela. Medido: "
+                   "wn 26 % de erro, zeta 30 %. Exige mais retreino ou um "
+                   "estrato de cauda; não conserta no Estágio D. Quando fechar, "
+                   "vira XPASS e reprova a suíte.")
+@pytest.mark.parametrize("nome", ["wn", "zeta"])
 def test_neg_super_recupera_a_dinamica(nome, modelo):
     r = _roda(NEG_SUPER, modelo)
     assert r["ok"], f"sem físico: reason={r['reason']!r}"

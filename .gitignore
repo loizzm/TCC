@@ -33,3 +33,16 @@ models/*_interrompido.pt
 # ja esta no historico (`git show <commit>:models/unet_stageA.pt`), entao
 # versiona-la so duplicaria o arquivo na arvore.
 models/*_backup.pt
+
+# Checkpoints POR EPOCA do retreino (25 x ~31 MB = ~775 MB). Sao insumo de
+# selecao, nao modelos: existem porque o IoU_val e quase cego ao defeito do
+# plato (HANDOFF_P2_7 §40.9) e a escolha do checkpoint precisa ser feita depois
+# do treino, por `seleciona_checkpoint.py`. So o VENCEDOR e promovido e
+# versionado; os outros 24 sao descartaveis e reproduziveis pelo log.
+models/epocas_*/
+
+# Saida `--out` do retreino: sao os MESMOS pesos que `models/unet_stageA.pt`
+# depois da promocao (verificado tensor a tensor), entao versiona-la duplicaria
+# o arquivo na arvore. A rastreabilidade vem de `logs/train_kneg.log`, que
+# registra a receita e a epoca vencedora.
+models/unet_stageA_kneg.pt

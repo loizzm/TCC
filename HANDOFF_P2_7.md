@@ -4122,3 +4122,163 @@ melhor `IoU_val = 0,7551`, e `data/val` + `data/val_reta` dá 0,7572 no
 checkpoint promovido — é quase certo que foi esse o conjunto de validação da
 rodada. Os 0,0021 de diferença NÃO foram reconciliados; quem for comparar
 números de época a época precisa fechar isso primeiro.
+
+### 40.10 O que o *smoke test* do retreino encontrou (e por que ele existe)
+
+Antes de comprometer ~6 h, o comando exato do retreino foi rodado com
+`--epochs 2 --batches-per-epoch 3`. Encontrou **duas** coisas, e a segunda não
+está escrita em lugar nenhum do projeto.
+
+**1. `--batch 6`, não 8.** `logs/train_base32.log` não registra o batch, mas o
+codifica: `passos = len(ds) // batch`, e 9450 amostras com **1575 passos** só
+fecham com 6. O §HANDOFF_P2_7:312 tinha PREVISTO que `base=32` não caberia com
+batch 8 e avisado que baixar o batch quebraria a comparabilidade com os pilotos
+do `HANDOFF_P2_6.md` §3.3. O batch foi baixado e o registro disso se perdeu —
+sobrou só a pegada na contagem de passos.
+
+Isso tem consequência além do OOM: **os pilotos de §3.3 e o checkpoint promovido
+NÃO são comparáveis em batch**, e qualquer conclusão que cruze os dois herda
+essa diferença. Fica registrado aqui porque a próxima pessoa a ler o §3.3 não
+tem como descobrir sozinha.
+
+**2. `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.** Registrado no §3.2
+como necessário por causa dos 0,73 GB de folga, e ausente do script até o smoke
+test. É opção de alocador — não toca em numérica, só em fragmentação.
+
+Medido nesta sessão, com a GPU livre e nada mais rodando nela:
+
+| configuração | resultado |
+|---|---|
+| batch 8, sem `expandable_segments` | OOM no backward, 5,42 de 5,64 GB |
+| batch 8, com `expandable_segments` | OOM no backward, 5,55 de 5,64 GB (faltaram 16 MiB) |
+| **batch 6, com `expandable_segments`** | **passa**, 2 épocas, checkpoints escritos |
+
+O alocador sozinho não salva o batch 8. As duas coisas são necessárias.
+
+**Custo revisado:** 10.950 amostras / 6 = **1825 passos/época** (contra 1575 da
+rodada promovida), ~818 s/época, **~5,7 h**.
+
+## 41. Ruling 64 — o retreino: o prior de posição caiu, e com ele o "defeito 4"
+
+Rodada de 6h05, 25 épocas, `base=32`, `in_ch=3`, **batch 6**, 512²,
+`expandable_segments:True`. 10.950 amostras dos 9 diretórios da rodada
+promovida mais `data/train_kneg` (1500, platô no topo). Validação em
+`data/val` + `data/val_reta` + `data/val_kneg`. Log em `logs/train_kneg.log`,
+checkpoint por época em `models/epocas_kneg/` (não versionado).
+
+**Promovido: época 13** (`IoU_val = 0,7618`, o que o próprio treino escolheu).
+
+### 41.1 O defeito foi consertado, e a prova é a coluna NÃO TREINADA
+
+| | topo treinado (K<0) | **topo NUNCA treinado** (K>0, eixo invertido) | rodapé (controle) |
+|---|---|---|---|
+| checkpoint anterior | 0,5433 | 0,5384 | 0,9299 |
+| **época 13** | **0,9246** | **0,9174** | 0,9322 |
+
+A coluna do meio é ganho POSITIVO com eixo y invertido — platô no topo, condição
+que não existe em nenhuma amostra de treino. Ela subiu junto com a treinada, e
+as duas andam paradas uma na outra em todas as 25 épocas. **A rede aprendeu
+POSIÇÃO, não decorou o estrato.** O rodapé não pagou nada.
+
+### 41.2 O "defeito 4" era o MESMO defeito, e a atribuição do §40.4 estava errada
+
+`caso_real_neg_fopdt.png` era recusada, e o §40.4 concluiu que a causa era "dois
+objetos de curva no mesmo quadro — envelope novo, spec própria", com a polilinha
+começando sobre a tracejada de ENTRADA (y[0] = −1,995). Depois do retreino ela
+**fecha**: K 0,15 %, τ 0,01 %, θ 0,02 %, e a série começa em y[0] = +0,005, sobre
+a resposta.
+
+O mecanismo descrito no §40.4 estava certo; a CAUSA estava errada. Não era a
+existência de dois objetos: era o mesmo prior de posição do §40.7. A rede não
+via o platô de repouso da resposta, que fica no topo, e a única linha visível
+naquela altura era a da entrada. **Um retreino fechou os dois defeitos porque
+eram um só.**
+
+Lição de método: "dois objetos no mesmo quadro" era uma explicação plausível e
+consistente com o sintoma, e passou porque ninguém pediu a ela que previsse mais
+nada. O prior de posição foi encontrado por ablação fatorial, não por inspeção.
+
+### 41.3 Efeito no corpus: melhor em quase tudo
+
+| critério | antes | depois |
+|---|---|---|
+| **2.6** (degradação, pior parâmetro) | +1,63 p.p. | **+1,08 p.p.** |
+| 2.6[ζ] / 2.6[ωₙ] | +1,63 / +1,00 | **+1,08 / +0,85** |
+| 2.6-aceitas | 254/300 | **260/300** |
+| **2.12** acerto de ordem | 92,3 % | **94,0 %** |
+| 2.1 erro perpendicular p95 | 1,703 px | **1,489 px** |
+| 2.11 amostras com valor | 292/300 | **295/300** |
+| 2.9 cobertura da calibração | 0,933 | 0,933 |
+| 2.1 mediana / 2.1-iou | 0,799 px / 0,6482 | 0,804 px / 0,6473 |
+
+`IoU_val` medido nos mesmos conjuntos, para comparação honesta:
+
+| | `data/val` (900) | `data/val`+`val_reta` (1200) | os três (1500) |
+|---|---|---|---|
+| anterior | 0,7822 | 0,7572 | 0,7519 |
+| época 13 | 0,7821 | 0,7559 | **0,7618** |
+| época 11 | 0,7742 | 0,7480 | 0,7541 |
+
+Isso fecha a ressalva de comparabilidade: acrescentar `val_kneg` ABAIXA o IoU do
+checkpoint anterior (0,7572 → 0,7519), então o 0,7618 da época 13 no mesmo
+conjunto é ganho real de +0,0099, não artefato de composição.
+
+**E inverte a recomendação que a seleção por platô sozinha produzia.** A época 11
+tem o melhor platô (0,9272) mas custa **−0,0092** no conjunto histórico; a época
+13 preserva os números históricos (0,7821 contra 0,7822 no `data/val`) e ainda
+ganha no conjunto novo. Escolher pela métrica de platô sozinha era o mesmo erro
+de método do §40.9 com o sinal trocado: **nenhuma das duas métricas decide
+sozinha.**
+
+### 41.4 O §40.9 estava certo como risco e exagerado como diagnóstico
+
+O `IoU_val` cego escolheu a época 13 — **e escolheu certo**, porque ele carrega
+exatamente a informação que a métrica de platô ignora. A época que o platô
+preferia era pior no conjunto histórico. O risco do §40.9 é real, mas nesta
+rodada a métrica acusada de cega foi a que protegeu o que o platô não vê.
+
+Fica registrado também o que o §40.9 NÃO tinha notado: o `IoU_val` alimenta
+**dois** consumidores, a seleção do checkpoint e o `ReduceLROnPlateau`. Nesta
+rodada o `IoU_val` melhorou em 11 das 25 épocas e o scheduler cortou o LR **10
+vezes**, porque os ganhos desta fase vêm em passos de 0,001 a 0,007 e o
+`--lr-threshold` é 0,01 ABSOLUTO. O LR chegou a 2,34e-06 na época 17 e as
+últimas 7 épocas não moveram nada. São dois problemas somados: limiar mal
+calibrado para a escala dos ganhos, e métrica que não vê o fenômeno.
+
+**O platô saturou na época 5** (0,9128, contra 0,9246 da 13). O conserto
+aconteceu nas primeiras 5 épocas; as 13 últimas não moveram nem `IoU_val` nem
+platô. Uma rodada de ~12 épocas teria bastado — e agora isso é medição.
+
+### 41.5 O custo, e o que sobrou
+
+**A cauda assentada com reta de referência coincidente piorou.** Em
+`caso_real_2ordem.png` a máscara perde 51 das 747 colunas, todas nos dois
+últimos decis. Não é limiar: probabilidade mediana **0,0004** nas colunas
+perdidas, contra 0,1811 do checkpoint anterior — supressão confiante.
+Sistêmico mas pequeno: `data/val_reta` isolado cai de 0,682 para 0,677.
+
+Isso NÃO afeta o resultado físico: ωₙ sai 2,0203 contra 2,0220 do anterior, os
+dois a ~1 % da verdade. Registrado em
+`test_caso_real_cobre_a_cauda_assentada` com `xfail` estrito.
+
+**Uma falsa regressão, e o erro de método que ela expôs.** O
+`test_caso_real_recupera_zeta_e_wn` acusou 17 % de erro em ωₙ. Não havia erro
+em ωₙ. O teste lia ωₙ como `wn_T / 10`, onde `wn_T` é normalizado pelo SPAN DA
+SÉRIE e o 10 é a janela do eixo — a suposição de que a máscara cobre a janela
+inteira. Com o span caindo de 9,81 s para 8,21 s, a conta erra 18 %.
+
+Duas coisas estavam desatualizadas no teste: a premissa (`cal.ok` era False
+quando ele foi escrito, hoje é True, então o bloco FÍSICO está disponível) e a
+confusão entre COBERTURA e ACURÁCIA. Reescrito para assertar o físico — mais
+forte, não mais fraco — com ζ seguindo no adimensional, que é invariante a
+escala e a truncagem. A cobertura ganhou teste próprio.
+
+**O que o retreino NÃO consertou:** os dois `xfail` do §39.3 em
+`test_caso_real_rg.py` seguem valendo (sistema 1, 65,3 % de cobertura; sistema
+3, 82,2 %). Coerente com o prior de posição: aquelas imagens são de ganho
+positivo com `plt.ylim(0, ...)`, então o platô delas fica no RODAPÉ, que a rede
+já dominava. E em `caso_real_neg_super.png`, ωₙ e ζ seguem errados (26 % e
+30 %) porque se leem da FORMA do transitório, que precisa da cauda — o platô
+foi recuperado, a cauda não. θ e K passaram a sair certos e viraram portão.
+
+Suíte: `tests/part2/` **131 passam, 9 xfail, zero falhas**.
