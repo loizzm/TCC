@@ -4027,14 +4027,98 @@ horizontal no alto do quadro é exatamente o que ela aprendeu a apagar.
 O estrato do §40.6 é o insumo: `generate_dataset(..., ganho_negativo=True)`
 produz o dado de treino que falta. Nenhum corpus de treino foi gerado ainda.
 
-**Confundimento que fica declarado.** O experimento prova que o SINAL causa a
-perda do platô. Não isola "topo do quadro" como o mecanismo: com degrau negativo
-o repouso está sempre em cima, então sinal e posição estão confundidos neste
-desenho. A ablação que separa os dois é render o caso POSITIVO com o eixo y
-invertido (platô em cima, sinal positivo) — se perder o platô igual, a posição é
-o mecanismo; se não perder, há algo mais ligado ao sinal. Não foi feita.
+**Confundimento RESOLVIDO por ablação fatorial 2x2 (n=80 seeds por célula).**
+O eixo y foi invertido monkeypatchando `_axis_limits`, que alimenta tanto a
+figura da imagem quanto a da máscara — a verdade fica consistente. Isso cruza
+SINAL com ORIENTAÇÃO e move o platô independentemente dos dois:
+
+| sinal | eixo | platô em | cob. do platô | cob. de colunas | IoU |
+|---|---|---|---|---|---|
+| K>0 | normal | **rodapé** | **0,9443** | 0,9556 | 0,6245 |
+| K<0 | invertido | **rodapé** | **0,9398** | 0,9538 | 0,6220 |
+| K<0 | normal | **topo** | **0,5274** | 0,8627 | 0,5920 |
+| K>0 | invertido | **topo** | **0,5238** | 0,8572 | 0,5882 |
+
+Os resultados agrupam por POSIÇÃO e ignoram o SINAL. Ganho positivo com eixo
+invertido perde o platô exatamente como ganho negativo (0,5238 contra 0,5274,
+dentro do ruído); ganho negativo com eixo invertido o preserva exatamente como o
+positivo normal (0,9398 contra 0,9443).
+
+**O sinal do ganho é IRRELEVANTE. O que a U-Net não sabe fazer é segmentar platô
+de repouso na metade de cima do quadro, qualquer que seja o sinal.** O ganho
+negativo não é o defeito — é só o que expôs o defeito.
+
+Isso amplia o escopo do problema para além do Bloco 9: qualquer figura de eixo y
+invertido cai nele, mesmo com K > 0, e essa é convenção corrente em parte da
+engenharia. Não há nenhuma amostra assim no corpus.
+
+E dá uma validação INDEPENDENTE para o retreino: treinar com ganho negativo
+(platô no topo) e validar em positivo de eixo invertido (platô no topo, condição
+NUNCA treinada). Se o retreino aprendeu posição em vez de decorar o estrato, as
+duas melhoram juntas.
 
 **E isto refina o §39.3.** Parte do que foi atribuído a "trecho reto" nas imagens
 `neg_sub` e `neg_super` é, na verdade, este prior de posição — as duas são de
 ganho negativo, e o platô que elas perdem está no topo. O retreino do §39.3 e o
 retreino do ganho negativo são provavelmente O MESMO retreino.
+
+### 40.8 O que a VALIDAÇÃO do retreino exige, medido antes de treinar
+
+- **Receita do checkpoint promovido** (`logs/train_base32.log`): 9450 amostras de
+  9 diretórios, `base=32`, 25 épocas, 1575 passos/época, ~703 s/época —
+  **~4,9 h** nesta máquina. Melhor `IoU_val = 0,7551`.
+- **`train_unet.py` não precisa mudar.** `--train-dir` e `--val-dir` são
+  repetíveis e fazem glob de `sample_*`; o estrato novo entra como diretório.
+- **LACUNA CRÍTICA: `data/val` (n=900) é 100 % K > 0, logo 100 % platô no
+  rodapé.** `IoU_val` não mediria NADA do que o retreino pretende consertar, e o
+  early-stopping selecionaria o checkpoint pelo critério errado. Um estrato de
+  validação com platô no topo é pré-requisito, não opcional.
+- **Bases de seed em uso:** 1 (`train`), 2 (`val`), 3 (`test`), 4
+  (`train_extra`), 77–84 e 90001–90003 (estratos). Livres para o estrato novo:
+  90004 em diante. `generate_dataset` deriva `seed·1_000_003 + i`, então bases
+  distintas garantem conjuntos disjuntos — sem vazamento entre treino, validação
+  e teste.
+- **Baseline a bater, já medido** com o checkpoint atual sobre platô no topo:
+  cobertura do platô **0,527**, cobertura de colunas **0,863**, IoU **0,592**.
+  O alvo é chegar perto do que ele já faz no rodapé: 0,944 / 0,956 / 0,625.
+
+### 40.9 O `IoU_val` é CEGO ao defeito do platô — e é ele que seleciona o checkpoint
+
+Medido com o checkpoint promovido (`base=32`, `in_ch=3`, 7 768 947 parâmetros):
+
+| conjunto de validação | n | IoU_val |
+|---|---|---|
+| `data/val` (todo K > 0, platô no rodapé) | 900 | 0,7814 |
+| `data/val_kneg` (todo K < 0, platô no topo) | 300 | **0,7304** |
+| `data/val` + `data/val_kneg` | 1200 | 0,7694 |
+| `data/val` + `data/val_reta` | 1200 | 0,7572 |
+| `data/val` + os três estratos de val | 1800 | 0,7429 |
+
+**O estrato que a rede não sabe segmentar custa 5 pontos de IoU, enquanto a
+cobertura do platô nele desaba 42 pontos (0,944 → 0,527, §40.7).** A razão é
+geométrica: o platô é uma linha FINA, poucos pixels contra o corpo da curva.
+IoU é dominado pelo corpo, então perder o platô inteiro quase não aparece nele.
+
+Isso é um problema de PROCESSO, não de modelo. `train_unet.py:166` seleciona o
+melhor checkpoint por `m > melhor` sobre o `IoU_val` — a métrica quase cega ao
+defeito que o retreino existe para consertar. Somar `val_kneg` ao `--val-dir`
+melhora pouco (0,7694 contra 0,7814): a diluição continua.
+
+Consequência prática: a época que aprender o platô pode não ser a selecionada, e
+a que for selecionada pode não ter aprendido. **Retreinar sem resolver isto é
+gastar ~6 h numa loteria.**
+
+Duas saídas, e a segunda é a recomendada por ser menos invasiva:
+
+1. Plumbar cobertura do platô até a validação do `train_unet.py` e selecionar por
+   ela (ou por combinação). Exige `MaskDataset` devolver `theta` e a afim, que
+   hoje ela não devolve.
+2. **Salvar um checkpoint por época** e escolher depois, pela métrica de platô
+   que já existe (§40.7). Não toca métrica nenhuma, preserva o `IoU_val`
+   histórico para comparabilidade, e custa ~31 MB × 25 = ~775 MB temporários.
+
+**Baseline reconciliado, com uma ressalva.** O `logs/train_base32.log` reporta
+melhor `IoU_val = 0,7551`, e `data/val` + `data/val_reta` dá 0,7572 no
+checkpoint promovido — é quase certo que foi esse o conjunto de validação da
+rodada. Os 0,0021 de diferença NÃO foram reconciliados; quem for comparar
+números de época a época precisa fechar isso primeiro.
