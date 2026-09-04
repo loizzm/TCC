@@ -9,7 +9,8 @@ Ele não substitui os outros três:
 | pergunta | documento |
 |---|---|
 | *por que assim?* — decisões de arquitetura, critérios de aceitação | `PLANO.md` |
-| *como está hoje?* — estado, decisões tomadas na execução, pontos abertos | `HANDOFF.md` |
+| *como chegou aqui?* — cronologia das decisões e dos problemas, com os números | `TIMELINE.md` |
+| *o que falta?* — o que está aberto agora | `nextSteps.md` |
 | *quanto deu?* — todos os números medidos, com a metodologia de cada limiar | `reports/part1_metrics.md` (**gerado**) |
 | *o que cada peça é e como se encaixam?* | este arquivo |
 | *em que literatura isso se apoia?* | `REFERENCIAS.md` |
@@ -95,7 +96,8 @@ TCC-2/
 │   └── part1_metrics.md        GERADO pela suíte. Não editar à mão
 │
 ├── PLANO.md                    plano das 3 partes e critérios
-├── HANDOFF.md                  estado, decisões e regras
+├── TIMELINE.md                 cronologia das decisões e problemas (Rulings)
+├── nextSteps.md                o que está aberto (documento vivo)
 ├── ARQUITETURA.md              este arquivo
 ├── pytest.ini                  testpaths, marcador `slow`
 ├── requirements.txt            ambiente PINADO (o critério 1.6 compara sha256 de PNG)
@@ -284,7 +286,7 @@ Os critérios anti-vazamento, em cinco camadas de força crescente:
 | 1.4c | **round-trip exato**: re-deriva o estilo da seed e exige igualdade | falso positivo e falso negativo **zero** |
 | 1.4d / 1.4e | lê os **pixels** da `image.png` | fecha o elo pixel → meta → estilo |
 
-As duas últimas nasceram do teste de mutação (HANDOFF §3.5.1): antes delas toda a
+As duas últimas nasceram do teste de mutação (`TIMELINE.md` §P1.4): antes delas toda a
 verificação passava pelo `meta.json`, e um gerador que pintasse a curva por
 `order` sem mexer no meta passava com 30/30 — que é *literalmente* o defeito do
 `img.py`.
@@ -365,7 +367,7 @@ Recuperar `K_planta` exige **ler a amplitude do degrau da imagem**, o que só é
 possível quando a entrada está plotada no mesmo quadro — como nas figuras do
 `rg_negativo.py`, que desenham o degrau como tracejada. É envelope próprio, com
 spec própria, e ficou plausível só depois do retreino do §41, que ensinou a
-máscara a separar a resposta da tracejada. Ver `HANDOFF_P2_7.md` §42.
+máscara a separar a resposta da tracejada. Ver `TIMELINE.md` §9.6 (Ruling 65).
 
 > **Nota:** o código cita um `contract.md` em ~12 lugares (`contrato §1`, `§2`,
 > `§4`, `§5`, `§6`) que **não está no repositório**. Era o contrato de execução
@@ -512,7 +514,7 @@ média quadrática) — Ruling L. É a convenção mais severa das duas.
 
 **Ruling.** Decisão tomada durante a execução, quando um critério do PLANO se
 mostrou impossível de verificar como escrito. Cada um está na tabela do
-`HANDOFF.md` §6, com o custo caso esteja errado. Nenhum alvo numérico foi
+`TIMELINE.md` §P1.2, com o custo caso esteja errado. Nenhum alvo numérico foi
 afrouxado — a grandeza medida é que foi trocada por uma bem posta.
 
 **IoU** (*Intersection over Union*). Métrica de segmentação da Parte 2: área da

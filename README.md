@@ -76,7 +76,8 @@ TCC/
 ├── PLANO.md                    plano das 3 partes, decisões e critérios de aceitação
 ├── PLANO_PARTE2.md             plano de execução da Parte 2, em blocos
 ├── PLANO_CNN_FIM_A_FIM.md      plano do baseline fim-a-fim: prós, contras e passos
-├── HANDOFF.md                  estado atual, decisões tomadas e pontos abertos
+├── TIMELINE.md                 cronologia das decisões e problemas (Rulings)
+├── nextSteps.md                o que está aberto agora (documento vivo)
 ├── ARQUITETURA.md              mapa detalhado, fluxo de dados e glossário
 ├── REFERENCIAS.md              bibliografia mapeada decisão por decisão
 ├── img.py               (264)  LEGADO DEFEITUOSO — evidência, não código
@@ -312,14 +313,15 @@ Gerar um dataset fora dos testes:
 | pergunta | documento |
 |---|---|
 | *por que assim?* — decisões de arquitetura, critérios de aceitação | `PLANO.md` |
-| *como está hoje?* — estado, decisões da execução, pontos abertos | `HANDOFF.md` |
+| *como chegou aqui?* — cronologia das decisões e problemas, com os números | `TIMELINE.md` |
+| *o que falta?* — o que está aberto agora | `nextSteps.md` |
 | *o que cada peça é e como se encaixam?* — mapa detalhado e glossário | `ARQUITETURA.md` |
 | *o que vem agora?* — Parte 2 em blocos, com critérios e handoffs | `PLANO_PARTE2.md` |
 | *e se fosse fim-a-fim?* — o baseline rejeitado, com prós, contras e passos | `PLANO_CNN_FIM_A_FIM.md` |
 | *em que me apoio?* — literatura que sustenta cada decisão | `REFERENCIAS.md` |
 | *quanto deu?* — todos os números medidos, com a metodologia de cada limiar | `reports/part1_metrics.md` (**gerado**) |
 
-Comece por `ARQUITETURA.md` se o objetivo é entender o código; por `HANDOFF.md`
+Comece por `ARQUITETURA.md` se o objetivo é entender o código; por `TIMELINE.md`
 se o objetivo é continuar o trabalho de onde parou.
 
 ---

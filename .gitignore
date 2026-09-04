@@ -46,3 +46,8 @@ models/epocas_*/
 # o arquivo na arvore. A rastreabilidade vem de `logs/train_kneg.log`, que
 # registra a receita e a epoca vencedora.
 models/unet_stageA_kneg.pt
+
+# Planos e specs do fluxo superpowers: sao artefatos de sessao (rascunhos de
+# execucao gerados por agente), nao documentacao do trabalho. O registro que
+# sobrevive esta em TIMELINE.md e nextSteps.md.
+docs/
