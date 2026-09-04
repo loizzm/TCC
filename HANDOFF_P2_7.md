@@ -4278,7 +4278,139 @@ escala e a truncagem. A cobertura ganhou teste próprio.
 3, 82,2 %). Coerente com o prior de posição: aquelas imagens são de ganho
 positivo com `plt.ylim(0, ...)`, então o platô delas fica no RODAPÉ, que a rede
 já dominava. E em `caso_real_neg_super.png`, ωₙ e ζ seguem errados (26 % e
-30 %) porque se leem da FORMA do transitório, que precisa da cauda — o platô
-foi recuperado, a cauda não. θ e K passaram a sair certos e viraram portão.
+30 %). **A causa afirmada aqui — "precisa da cauda, que a rede ainda perde" —
+foi REFUTADA pelo §43:** a cauda tem rms 0,0073, está perfeita. É oclusão pela
+legenda na faixa de acomodação. θ e K passaram a sair certos e viraram portão.
 
 Suíte: `tests/part2/` **131 passam, 9 xfail, zero falhas**.
+
+## 42. Ruling 65 — `K` é `K_planta × U`, e isso não é conserto de software
+
+Reportado como classificação errada em `Figure_dn.png`: a pipeline devolveu
+`K = −1,997` onde a função de transferência do `rg_negativo.py` diz `K = 1`.
+
+**Não houve erro.** A planta é `2/(s+2)`, cujo ganho DC é `2/2 = 1`, e o degrau
+aplicado tem amplitude **−2** (`amplitude_degrau=-2` no `rg_negativo.py`). A
+curva desenhada é o produto: sai de 0 e assenta em −2,00, o que se lê no próprio
+eixo y da figura. `STEP_AMPLITUDE = 1.0` é convenção do projeto, então o `K`
+reportado é a excursão por unidade de entrada, `K_planta × U = 1 × (−2) = −2`.
+
+Verificado reconstruindo a curva a partir dos parâmetros reportados contra a
+verdade analítica: **erro máximo 0,0039, RMSE 0,0026**. `tau = 0,5` (erro
+0,01 %), `theta = 2,999` contra 3,0 (erro 0,02 %; são os 2 s do instante do
+degrau mais 1 s de atraso da planta). Estrutura FOPDT, correta.
+
+### 42.1 Por que não é corrigível
+
+Não é limitação de implementação, é **identificabilidade**. Da curva de saída
+sozinha, `K_planta` e `U` não são separáveis — só o produto é observável:
+
+| `K_planta` | `U` | curva observada |
+|---|---|---|
+| 1,997 | −1 | idêntica ponto a ponto |
+| 0,999 | −2 | idêntica ponto a ponto |
+| 0,499 | −4 | idêntica ponto a ponto |
+
+Nenhum algoritmo distingue entre elas sem conhecer `U`. O leitor humano acerta
+porque a figura **desenha a entrada** (a tracejada branca em −2) e ele divide;
+a pipeline não lê a entrada.
+
+### 42.2 O que fica registrado, e o que fica aberto
+
+Registrado na especificação, nos dois lugares onde alguém tropeça:
+`identify/classical.py` na definição de `STEP_AMPLITUDE`, e `ARQUITETURA.md` §4
+("O que `K` significa, e o que ele NÃO significa").
+
+**Aberto, e agora plausível:** ler a amplitude do degrau da imagem quando a
+entrada está plotada. Com `U` lido, `K_planta = K_reportado / U` sai de graça.
+Exige detectar e CLASSIFICAR um segundo objeto de curva como "entrada" — o que
+era impossível antes do §41, e passou a ser plausível porque a máscara agora
+separa a resposta da tracejada (é exatamente o que fechou o antigo "defeito 4").
+Envelope próprio, spec própria.
+
+**Aberto, barato:** o `identificar.py` imprime `K -1.997` sem dizer que é ganho
+por degrau unitário. Um rótulo explícito na saída evitaria esta leitura sem
+tocar em nada do cálculo. NÃO implementado — decisão do dono.
+
+## 43. Ruling 66 — era a LEGENDA, e eu errei a atribuição duas vezes antes disso
+
+`caso_real_neg_super.png` (`Figure_dl3.png`) devolvia wn=2,95 (erro 26 %) e
+zeta=0,87 (erro 30 %). O dono moveu a legenda de `lower left` para
+`upper right`, gerou a mesma figura de novo, e a pipeline passou a devolver
+**wn=3,88 (2,97 %) e zeta=1,22 (2,23 %)**, com o NRMSE do ajuste caindo de
+0,01207 para 0,00192.
+
+### 43.1 A causa, medida por faixa
+
+| faixa de t | original | legenda movida |
+|---|---|---|
+| platô inicial (0–3,3) | 0,0077 | 0,0077 |
+| arranque (3,3–3,7) | 0,0090 | 0,0090 |
+| transitório rápido (3,7–4,5) | 0,0201 | 0,0205 |
+| **acomodação (4,5–6,0)** | **0,1674** | **0,0090** |
+| cauda assentada (6–15) | 0,0073 | 0,0068 |
+
+(rms do erro de extração contra a verdade analítica.)
+
+**Uma faixa mudou, 19×. Todas as outras são idênticas.** A caixa da legenda em
+`lower left` ocupa t 0,3..5,6 e y −2,4..−3,05, e a curva atravessa essa faixa
+exatamente na acomodação. A polilinha segue a borda da caixa e cria um patamar
+falso em −2,93 onde a resposta verdadeira ainda está em −2,52 — antecipando a
+acomodação em ~0,7 s. O ajuste compensa com polo dominante mais lento e menos
+amortecimento.
+
+**O Estágio D está inocente, e isso foi medido:** o oráculo na MESMA grade de
+593 pontos recupera wn=4,0000 e zeta=1,2500 com **NRMSE zero**. A amostragem é
+suficiente; os 87 pontos da acomodação é que estão tortos.
+
+### 43.2 Duas atribuições erradas, e o que as produziu
+
+Esta imagem teve a causa errada atribuída duas vezes, as duas escritas no
+repositório antes de serem refutadas:
+
+1. **"Perde a cauda assentada"** (§41.5, e antes disso no `xfail`). Herdado do
+   §39.3, que era sobre OUTRA imagem. A cauda tem rms 0,0073 — está perfeita, e
+   não há buraco nenhum na cobertura.
+2. **"Atração pela tracejada de entrada em −3"**. A polilinha era puxada para
+   −2,93, mais negativa que a verdade, e "mais perto de −3" foi tratado como
+   evidência da tracejada. Mas a caixa da legenda ocupava a MESMA vizinhança
+   (y −2,4..−3,05). **A evidência disponível era compatível com as duas
+   hipóteses, e uma foi escolhida sem o teste que as separa.**
+
+O que resolveu foi um experimento de uma variável: mover a legenda. Nenhuma das
+duas hipóteses anteriores sobrevive a ele.
+
+Lição de método, e é a mesma do §41.2: hipótese consistente com o sintoma não é
+hipótese confirmada. A pergunta que faltou nas duas vezes foi "qual observação
+distinguiria isto da alternativa?".
+
+### 43.3 O que muda no prognóstico
+
+A `neg_super` **não precisa de retreino nem de estrato de cauda** — era o que o
+`xfail` anterior afirmava. O ajuste recupera tudo quando a curva não está
+ocluída. O que falta é o Estágio A atravessar a legenda.
+
+**E o corpus já media isso, fraco demais para alguém agir.** O critério 2.7
+estratificado por legenda está no relatório desde antes:
+
+    2.7-iou[legenda=False]   0,6758  (n=155)
+    2.7-iou[legenda=True]    0,6147  (n=145)
+
+6,1 pontos de IoU, em quase metade do corpus. O número existia e nunca foi
+ligado a nada, porque IoU DILUI: a legenda estraga um trecho pequeno da curva, e
+o IoU é dominado pelo corpo. A imagem real mostrou o mesmo dano em unidade de
+parâmetro físico — 26 % em wn. É o padrão do §40.9 outra vez, com outra métrica.
+
+**Candidato para o próximo bloco, agora com número:** um estrato de legenda
+SOBREPOSTA AO TRECHO DE ACOMODAÇÃO, em vez de legenda em posição sorteada. O
+gerador já tem `has_legend`; o que falta é posicioná-la onde faz estrago.
+
+### 43.4 O par controlado ficou versionado
+
+`rg_negativo.py` gera as duas variantes, e `caso_real_neg_super_legenda_movida.png`
+entrou como fixture ao lado da original. `test_neg_super_sem_oclusao_recupera_tudo`
+é portão (K 0,20 %, wn 2,97 %, zeta 2,23 %, theta 0,06 %); o `xfail` da original
+continua falhando, agora com a razão certa.
+
+Enquanto os dois coexistirem, nenhuma explicação alternativa sobrevive: uma
+variável muda, o resultado muda com ela.

@@ -42,9 +42,11 @@ O que cada uma protege, e o que cada uma ainda não entrega:
     os dois defeitos porque eram um só. Hoje: K 0,15 %, tau 0,01 %, theta
     0,02 %.
   - `neg_super` recupera K (0,42 %) e theta (0,94 %) — o theta entrou com o
-    retreino. wn e zeta seguem errados (26 % e 30 %) e ficam em `xfail`
-    estrito: eles se leem da FORMA do transitório, que depende da cauda
-    assentada, e essa a rede ainda perde.
+    retreino. wn e zeta seguem errados (26 % e 30 %), e a causa é **OCLUSÃO
+    PELA LEGENDA**, não o §39.3: a caixa cai exatamente sobre a faixa de
+    acomodação da curva. A variante `neg_super_legenda_movida` é a mesma imagem
+    com a legenda em outro canto e recupera tudo a menos de 3 % — o par isola a
+    causa numa única variável. Ver §43.
 """
 from pathlib import Path
 
@@ -60,6 +62,10 @@ NEG_FOPDT = {"path": FIX / "caso_real_neg_fopdt.png",
              "order": "fopdt", "K": -2.0, "tau": 0.5, "theta": 3.0}
 NEG_SUPER = {"path": FIX / "caso_real_neg_super.png",
              "order": "second", "K": -3.0, "wn": 4.0, "zeta": 1.25, "theta": 3.5}
+# IDENTICA a NEG_SUPER, so com a legenda em 'upper right' em vez de 'lower left'.
+# O par isola o efeito da oclusao por legenda — ver §43 e `rg_negativo.py`.
+NEG_SUPER_SEM_OCLUSAO = {**NEG_SUPER,
+                         "path": FIX / "caso_real_neg_super_legenda_movida.png"}
 
 # Mesma tolerância de `test_caso_real_rg.py`: folgada sobre o que a cadeia
 # entrega e apertada o bastante para reprovar o defeito.
@@ -214,13 +220,19 @@ def test_neg_super_recupera_o_theta(modelo):
 
 
 @pytest.mark.xfail(strict=True, reason=
-                   "§39.3, o que SOBROU dele depois do retreino do §40.7. O "
-                   "platô de repouso desta imagem foi recuperado (theta sai a "
-                   "0,94 %, K a 0,42 %), mas a CAUDA assentada não — e wn e zeta "
-                   "se leem da forma do transitório, que precisa dela. Medido: "
-                   "wn 26 % de erro, zeta 30 %. Exige mais retreino ou um "
-                   "estrato de cauda; não conserta no Estágio D. Quando fechar, "
-                   "vira XPASS e reprova a suíte.")
+                   "OCLUSAO PELA LEGENDA, e nao o §39.3 como esta versao antes "
+                   "afirmava. A caixa da legenda ('lower left') ocupa t 0,3..5,6 "
+                   "e y -2,4..-3,05, e a curva atravessa essa faixa exatamente na "
+                   "ACOMODACAO: a polilinha segue a borda da caixa e cria um "
+                   "patamar falso em -2,93 onde a resposta ainda esta em -2,52. "
+                   "Isso antecipa a acomodacao em ~0,7 s, e o ajuste compensa com "
+                   "polo dominante mais lento e menos amortecimento. Medido por "
+                   "faixa: acomodacao rms 0,1674 contra 0,0090 na variante de "
+                   "legenda movida; TODAS as outras faixas identicas, inclusive a "
+                   "cauda (0,0073). O Estagio D esta inocente — o oraculo na MESMA "
+                   "grade de 593 pontos recupera wn=4,0000 e zeta=1,2500 com NRMSE "
+                   "zero. Nao precisa de retreino nem de estrato de cauda: precisa "
+                   "que o Estagio A atravesse a legenda. Ver §43.")
 @pytest.mark.parametrize("nome", ["wn", "zeta"])
 def test_neg_super_recupera_a_dinamica(nome, modelo):
     r = _roda(NEG_SUPER, modelo)
@@ -228,3 +240,26 @@ def test_neg_super_recupera_a_dinamica(nome, modelo):
     e = _erro(r["params"][nome], NEG_SUPER[nome])
     assert e <= TOL, (f"{nome} = {r['params'][nome]:.4f}, "
                       f"esperado {NEG_SUPER[nome]} (erro {e:.1%})")
+
+
+# --------------------------------------------------------------------------- #
+# O PAR CONTROLADO: a mesma planta com a legenda fora do caminho
+# --------------------------------------------------------------------------- #
+
+@pytest.mark.parametrize("nome", ["K", "wn", "zeta", "theta"])
+def test_neg_super_sem_oclusao_recupera_tudo(nome, modelo):
+    """PORTÃO (§43). Prova que o que falha acima é OCLUSÃO, não identificação.
+
+    Esta imagem é byte a byte a `neg_super` exceto pela posição da legenda. Se
+    este teste passar e o `xfail` acima continuar falhando, a causa está isolada
+    numa única variável — e nenhuma explicação alternativa (cauda perdida,
+    resolução, limite do Estágio D) sobrevive a isso.
+
+    Medido: K 0,20 %, wn 2,97 %, zeta 2,23 %, theta 0,06 %.
+    """
+    r = _roda(NEG_SUPER_SEM_OCLUSAO, modelo)
+    assert r["ok"], f"sem físico: reason={r['reason']!r} cal={r['calibration']}"
+    assert r["order"] == "second", f"ordem {r['order']!r}"
+    e = _erro(r["params"][nome], NEG_SUPER_SEM_OCLUSAO[nome])
+    assert e <= TOL, (f"{nome} = {r['params'][nome]:.4f}, "
+                      f"esperado {NEG_SUPER_SEM_OCLUSAO[nome]} (erro {e:.1%})")

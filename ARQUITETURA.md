@@ -335,6 +335,38 @@ Dois pontos que costumam gerar erro:
 - **`render` nunca entra em modelo nenhum.** Existe para estratificar métricas.
   Usá-lo como feature seria reintroduzir o vazamento pela porta dos fundos.
 
+### O que `K` significa, e o que ele NÃO significa
+
+`K` é a **excursão da saída por unidade de entrada** — o produto `K_planta × U`,
+onde `U` é a amplitude do degrau realmente aplicado. `STEP_AMPLITUDE = 1.0`
+(`identify/classical.py`) é uma **convenção**, não uma medição: a pipeline nunca
+vê a entrada, só a resposta.
+
+Isso importa porque `K` **não** é o ganho DC da planta, a menos que `U = 1`. E a
+diferença não é corrigível por software: da curva de saída sozinha, `K_planta` e
+`U` não são separáveis, só o produto é observável. Estas três situações geram a
+mesma curva ponto a ponto:
+
+| `K_planta` | `U` | curva observada |
+|---|---|---|
+| 1,997 | −1 | idêntica |
+| 0,999 | −2 | idêntica |
+| 0,499 | −4 | idêntica |
+
+**O caso concreto que expôs isso.** `Figure_dn.png` (do `rg_negativo.py`) tem
+planta `2/(s+2)`, ganho DC = 1, com degrau de amplitude **−2**. A pipeline
+devolve `K = −1,997`, que é `1 × (−2)` e está correto: a curva reconstruída a
+partir dos parâmetros reportados bate com a verdade analítica com erro máximo de
+0,0039 e RMSE 0,0026, e `tau` e `theta` saem a 0,01 % e 0,02 %. Mesmo assim, quem
+comparar esse `−1,997` com o `K = 1` escrito na função de transferência conclui
+que houve falha de ajuste. Não houve.
+
+Recuperar `K_planta` exige **ler a amplitude do degrau da imagem**, o que só é
+possível quando a entrada está plotada no mesmo quadro — como nas figuras do
+`rg_negativo.py`, que desenham o degrau como tracejada. É envelope próprio, com
+spec própria, e ficou plausível só depois do retreino do §41, que ensinou a
+máscara a separar a resposta da tracejada. Ver `HANDOFF_P2_7.md` §42.
+
 > **Nota:** o código cita um `contract.md` em ~12 lugares (`contrato §1`, `§2`,
 > `§4`, `§5`, `§6`) que **não está no repositório**. Era o contrato de execução
 > passado aos implementadores. Pelas citações: §1 = modelos analíticos, `T_dom` e

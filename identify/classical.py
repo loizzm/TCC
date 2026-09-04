@@ -33,6 +33,30 @@ __all__ = [
 ]
 
 # Amplitude do degrau: sempre 1.0 neste trabalho (contract.md §1).
+#
+# CONSEQUENCIA QUE JA CAUSOU LEITURA ERRADA, e que nao e limitacao de
+# implementacao: o `K` que este modulo devolve e a EXCURSAO DA SAIDA POR UNIDADE
+# DE ENTRADA, ou seja o PRODUTO `K_planta x U`, onde U e a amplitude do degrau
+# realmente aplicado. Nao e o ganho DC da planta, a menos que U = 1.
+#
+# Da curva de SAIDA sozinha, `K_planta` e `U` nao sao separaveis — so o produto
+# e observavel. Estas tres situacoes geram a MESMA curva, ponto a ponto:
+#
+#     K_planta = 1,997   com   U = -1
+#     K_planta = 0,999   com   U = -2
+#     K_planta = 0,499   com   U = -4
+#
+# Nenhum algoritmo distingue entre elas sem conhecer U. Medido em
+# `Figure_dn.png` (`rg_negativo.py`, sistema 1): a planta e `2/(s+2)`, cujo
+# ganho DC e 1, e o degrau aplicado tem amplitude -2. A pipeline devolve
+# K = -1,997, que e 1 x (-2) e esta CORRETO sob esta convencao — a curva
+# reconstruida a partir dela bate com a verdade analitica com erro maximo de
+# 0,0039 e RMSE 0,0026. Quem comparar esse -1,997 com o "K = 1" escrito na
+# funcao de transferencia vai concluir, erradamente, que houve falha de ajuste.
+#
+# Recuperar `K_planta` exige LER a amplitude do degrau, o que so e possivel
+# quando a entrada esta plotada no mesmo quadro — envelope proprio, ainda nao
+# implementado. Ver ARQUITETURA.md §4 e HANDOFF_P2_7 §42.
 STEP_AMPLITUDE: float = 1.0
 
 PARAM_KEYS: tuple[str, ...] = ("K", "tau", "theta", "wn", "zeta")
