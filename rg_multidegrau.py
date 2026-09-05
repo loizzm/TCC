@@ -7,18 +7,33 @@ MESMOS limites de eixo — muda uma variavel so, o segundo degrau. Enquanto as
 duas coexistirem, nenhuma explicacao alternativa sobrevive a discordancia entre
 elas (Ruling 66).
 
-Este gerador reproduz FIELMENTE a geometria de `rg.py`, incluindo a linha
-tracejada do sinal de entrada acumulado (o "degrau" desenhado em preto,
-`drawstyle="steps-post"`). Isso nao e decoracao: toda medida da spec (§39.3,
-§41) foi feita sobre a geometria de `rg.py` COM essa linha presente. Uma
-primeira versao deste arquivo omitiu a linha tracejada por engano — o efeito
-nao foi neutro: sem ela a curva de saida encosta no rodape do quadro e o
-trecho ja assentado fica um segmento perfeitamente reto, os dois defeitos de
-Estagio A documentados em §39.3 (A e B) que o retreino de §41 especificamente
-ensinou a mascara a separar da linha tracejada. Sem a linha, a cobertura
-extraida cai e a selecao de estrutura chega a trocar de FOPDT para 2a ordem.
-Por isso a linha tracejada fica; ela e contexto que a mascara usa, nao um
-distrator.
+Este gerador reproduz a geometria de `rg.py` no que importa para a mascara:
+`figsize=(9, 5)`, `dpi=110`, estilo `seaborn-v0_8-darkgrid`, as mesmas cores,
+os mesmos limites de eixo, a mesma posicao de legenda, e a linha tracejada do
+sinal de entrada acumulado (o "degrau" desenhado em preto,
+`drawstyle="steps-post"`). O UNICO respeito em que o render NAO e uma copia
+sao os titulos: aqui sao mais curtos que os de `rg.py` (ex.: "FOPDT: dois
+degraus positivos" contra "FOPDT: Dois Degraus Positivos Consecutivos" em
+`rg.py:80`) — decisao deliberada da spec deste arquivo, nao um descuido. Os
+titulos sao texto que a mascara tem que ignorar; o que o par controlado exige
+e que as duas metades compartilhem o MESMO titulo, o que elas fazem.
+
+A linha tracejada nao e decoracao: toda medida da spec (§39.3, §41) foi feita
+sobre a geometria de `rg.py` COM essa linha presente. Uma primeira versao
+deste arquivo omitiu a linha tracejada por engano — o efeito nao foi neutro:
+sem ela a curva de saida encosta no rodape do quadro e o trecho ja assentado
+fica um segmento perfeitamente reto, os dois defeitos de Estagio A
+documentados em §39.3 (A e B) que o retreino de §41 especificamente ensinou a
+mascara a separar da linha tracejada. Medido com uma variavel isolada (mesmo
+dpi, mesmos eixos, so a linha tracejada entrando e saindo): no controle
+negativo a cobertura da mascara cai de 96.2% (com a tracejada) para 53.2%
+(sem ela), e a estrutura selecionada muda de FOPDT para 2a ordem
+SUPERAMORTECIDA (wn=8.86, zeta=2.33) — so o ROTULO da estrutura muda; um polo
+lento `1/1.996` de uma 2a ordem superamortecida e numericamente o mesmo
+`tau = 0.501` do FOPDT verdadeiro, a dinamica nao muda. Na figura FOPDT de
+dois degraus a cobertura cai de 97.0% (com a tracejada) para 92.3% (sem ela),
+com a mesma troca de rotulo de estrutura. Por isso a linha tracejada fica;
+ela e contexto que a mascara usa, nao um distrator.
 
 Verdade declarada na propria funcao de transferencia, sem estimativa:
 
