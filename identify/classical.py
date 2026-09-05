@@ -1032,7 +1032,7 @@ _N_MIN_PREFIXO = 30
 # NÃO é classificador — é gatilho de custo, e quem decide é `_GANHO_MIN`.
 # Medido em `data/test`, série EXTRAÍDA DA IMAGEM (n=837): p98 = 0,0246, e este
 # piso dispara em 16 amostras (1,91 %). As duas figuras de dois degraus da
-# fixture disparam, com 0,069 e 0,143.
+# fixture disparam, com 0,069 e 0,593.
 _PISO_SUSPEITA = 0.030
 
 # Ganho relativo de nrmse exigido para ACEITAR a truncagem.
@@ -1049,13 +1049,20 @@ _PISO_SUSPEITA = 0.030
 #                     36,4 pp SEM NENHUMA AMOSTRA
 #     0,43246  <- borda esquerda           0,21918  ...
 # Qualquer limiar dentro dela dá comportamento idêntico (os mesmos 4 disparos,
-# todos auditados e sem dano) e captura as duas figuras (90,4 % e 95,4 %).
+# todos auditados e sem dano) e captura as duas figuras (93,5 % e 99,1 %).
 # 0,60 é o CENTRO da banda, e não a beira dela — a mesma disciplina que o
 # `_UNDERSHOOT_MAX` já registra em `identify/pipeline.py`. Abaixo de 0,4325
 # entra o `sample_00193`, que a truncagem degrada de 0,8 % para 7,3 %.
 #
 # Qualquer mudança no Estágio A obriga a REMAPEAR A BANDA e a reauditar as
 # quatro amostras: as bordas são artefatos do extrator atual, não do problema.
+#
+# Propriedade de segurança não documentada até agora: `_metrics` normaliza o
+# nrmse pela FAIXA da série que está sendo ajustada, e como `faixa(prefixo) <=
+# faixa(inteira)`, o `ganho` reportado aqui é sempre <= o ganho de RMSE puro —
+# o gate SUBFIRE, nunca sobrefire. Uma "limpeza" futura que normalizasse os
+# dois nrmse pela mesma faixa (a inteira) afrouxaria o gate em silêncio, sem
+# derrubar teste nenhum.
 _GANHO_MIN = 0.60
 
 

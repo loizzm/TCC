@@ -61,6 +61,61 @@ def test_dois_degraus_trunca_e_recupera_o_primeiro():
             f"{nome} = {obtido:.4f}, esperado {esperado}")
 
 
+# --------------------------------------------------------------------------- #
+# Guarda de _GANHO_MIN (FINDING 1): par controlado em nível de UNIDADE
+# --------------------------------------------------------------------------- #
+#
+# O par abaixo isola o gate do GANHO (_GANHO_MIN) do gate do CUSTO
+# (_PISO_SUSPEITA): as duas séries têm `nrmse_full` acima do piso (0,03968 e
+# 0,04093, ambos > 0,030), então as duas genuinamente alcançam o laço de
+# varredura — o que a asserção `nrmse_full > _PISO_SUSPEITA` em cada teste
+# prova. É a MESMA planta de dois degraus nos dois casos (1º degrau
+# K=2,0/tau=0,5/theta=1,5, 2º degrau K=0,5/tau=0,5/theta=4,5); só a amplitude
+# do ruído muda (sigma 0,03 contra 0,05), com a mesma semente
+# (`np.random.default_rng(20260904)`, recriada do zero para cada série).
+#
+# Ganho medido no melhor corte: 0,6657 com sigma=0,03 (acima de
+# `_GANHO_MIN=0,60`, trunca) e 0,4803 com sigma=0,05 (abaixo, não trunca). Os
+# dois valores pinam a constante nas DUAS direções: baixar `_GANHO_MIN` abaixo
+# de ~0,48 quebra `test_ganho_abaixo_do_minimo_nao_trunca`; subi-lo acima de
+# ~0,67 quebra `test_ganho_acima_do_minimo_trunca`.
+#
+# Este é o ÚNICO lugar do branch que restringe `_GANHO_MIN`. O controle
+# negativo `test_um_degrau_nao_dispara_truncagem` (em
+# `test_caso_real_multidegrau.py`) NÃO cumpre esse papel apesar do nome: seu
+# `nrmse_full` medido é 0,0031, 9,7x abaixo de `_PISO_SUSPEITA`, então o scan
+# nunca é alcançado ali — quem o segura é o PISO, não o ganho.
+def _serie_bracket_ganho(sigma: float):
+    t = _t()
+    rng = np.random.default_rng(20260904)
+    y = (model_response("fopdt", {"K": 2.0, "tau": 0.5, "theta": 1.5}, t)
+         + model_response("fopdt", {"K": 0.5, "tau": 0.5, "theta": 4.5}, t)
+         + rng.normal(0.0, sigma, t.size))
+    return t, y
+
+
+def test_ganho_abaixo_do_minimo_nao_trunca():
+    """sigma=0,05: melhor ganho medido 0,4803, abaixo de `_GANHO_MIN=0,60`.
+    Ver o docstring da seção acima — este é o lado de BAIXO do par."""
+    t, y = _serie_bracket_ganho(0.05)
+    r = identify_com_truncagem(t, y)
+    assert r.nrmse_full > _PISO_SUSPEITA, "o teste precisa CHEGAR ao laço"
+    assert r.truncado_em is None
+    esperado = identify(t, y)
+    assert r.fit.order == esperado.order
+    assert r.fit.params == esperado.params
+    assert r.fit.nrmse == esperado.nrmse
+
+
+def test_ganho_acima_do_minimo_trunca():
+    """sigma=0,03: melhor ganho medido 0,6657, acima de `_GANHO_MIN=0,60`.
+    Ver o docstring da seção acima — este é o lado de CIMA do par."""
+    t, y = _serie_bracket_ganho(0.03)
+    r = identify_com_truncagem(t, y)
+    assert r.truncado_em is not None
+    assert r.ganho >= _GANHO_MIN
+
+
 def test_serie_truncada_acompanha_o_ajuste():
     """`t`/`y` devolvidos são o PREFIXO, não a série inteira — a pipeline usa
     esses dois para a guarda e para o bloco adimensional, e usar a série inteira
@@ -103,7 +158,6 @@ def test_serie_curta_demais_nao_trunca():
 
 def test_campos_de_truncagem_sempre_existem():
     """Aditivo significa SEMPRE presente: consumidor não pode levar KeyError."""
-    import numpy as np
     from identify.pipeline import identify_from_image
     from identify.extract_classical import extract_mask_classical
 

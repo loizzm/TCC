@@ -551,7 +551,7 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         ordem = np.argsort(t)
         t, y = t[ordem], y[ordem]
         # A varredura vem ANTES da guarda, de propósito. Mantida a ordem
-        # anterior, uma figura de dois degraus e resíduo alto (0,143 medido em
+        # anterior, uma figura de dois degraus e resíduo alto (0,593 medido em
         # `caso_real_multi_sub.png`) é recusada antes de alguém tentar truncar,
         # e a mudanca nao teria efeito nenhum sobre ela.
         tr = identify_com_truncagem(t, y)

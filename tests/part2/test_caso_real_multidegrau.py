@@ -63,7 +63,7 @@ def _confere(r, caso):
 
 def test_sub_recupera_o_primeiro_degrau(modelo):
     """Sem a truncagem esta imagem é RECUSADA (`ajuste_inconsistente`, nrmse
-    0,143): a série inteira não sustenta modelo nenhum."""
+    0,593): a série inteira não sustenta modelo nenhum."""
     r = _roda(SUB, modelo)
     assert r["truncado_em"] is not None, "não truncou — a imagem tem dois degraus"
     _confere(r, SUB)
@@ -83,13 +83,22 @@ def test_fopdt_recupera_o_primeiro_degrau(modelo):
 # --------------------------------------------------------------------------- #
 
 def test_um_degrau_nao_dispara_truncagem(modelo):
-    """A metade de controle do par. É este teste que impede alguém de apertar o
-    `_GANHO_MIN` até truncar tudo: baixá-lo o bastante quebra AQUI antes de
-    quebrar em qualquer outro lugar."""
+    """A metade de controle do par. Este teste NÃO pina `_GANHO_MIN` — o que ele
+    guarda é o PISO: `r["nrmse_full"]` medido aqui é 0,0031, 9,7x abaixo de
+    `_PISO_SUSPEITA = 0,030`, então `identify_com_truncagem` devolve antes de o
+    laço de varredura sequer rodar, e `_GANHO_MIN` nunca chega a ser avaliado.
+    É esta a razão de o par ainda passar com `_GANHO_MIN = 0.0`: quem segura o
+    falso positivo aqui é o custo, não o ganho. A constante `_GANHO_MIN` é
+    pinada, nas duas direções, pelo par sintético em
+    `test_truncagem.py::test_ganho_abaixo_do_minimo_nao_trunca` /
+    `test_ganho_acima_do_minimo_trunca`."""
     r = _roda(FOPDT_1, modelo)
     assert r["truncado_em"] is None, (
         f"truncou em t={r['truncado_em']} uma figura de UM degrau "
         f"(ganho {r['ganho_truncagem']}) — falso positivo no controle negativo")
+    assert r["nrmse_full"] < 0.030, (
+        "esta figura precisa ficar abaixo de _PISO_SUSPEITA (0,030) — é o piso, "
+        "não o _GANHO_MIN, que segura este teste")
     _confere(r, FOPDT_1)
 
 

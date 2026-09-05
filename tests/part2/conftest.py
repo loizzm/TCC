@@ -113,10 +113,37 @@ def _write_report_p2() -> None:
     REPORT_PATH.write_text("\n".join(L) + "\n", encoding="utf-8")
 
 
+def _linhas_de_criterio(texto: str) -> int:
+    """Conta linhas de dado da tabela (`| ...`), excluindo cabeçalho/separador."""
+    n = 0
+    for linha in texto.splitlines():
+        s = linha.strip()
+        if not s.startswith("|"):
+            continue
+        if s.startswith("|---") or s.startswith("| Critério"):
+            continue
+        n += 1
+    return n
+
+
 def pytest_sessionfinish(session, exitstatus):  # noqa: ARG001
     if not RESULTS_P2["criteria"]:
         return
     try:
+        # Guarda contra um run PARCIAL (ex.: `pytest tests/part2/test_x.py`
+        # sozinho) clobbering o relatório de um run completo anterior: nunca
+        # escreve se a sessão atual registrou MENOS critérios do que o arquivo
+        # já tem.
+        n_novo = len(RESULTS_P2["criteria"])
+        n_existente = 0
+        if REPORT_PATH.exists():
+            n_existente = _linhas_de_criterio(REPORT_PATH.read_text(encoding="utf-8"))
+        if n_existente > n_novo:
+            print(f"\n[tests/part2/conftest] {REPORT_PATH} NÃO foi reescrito: "
+                  f"esta sessão registrou {n_novo} critério(s), o arquivo já "
+                  f"tem {n_existente} — parece um run parcial, mantendo o "
+                  f"relatório existente intocado.")
+            return
         _write_report_p2()
     except Exception as exc:  # pragma: no cover - o relatorio nunca derruba a sessao
         print(f"\n[tests/part2/conftest] falha ao escrever {REPORT_PATH}: {exc!r}")
