@@ -30,6 +30,8 @@ __all__ = [
     "baseline_tangent",
     "baseline_smith",
     "baseline_sundaresan_krishnaswamy",
+    "TruncResult",
+    "identify_com_truncagem",
 ]
 
 # Amplitude do degrau: sempre 1.0 neste trabalho (contract.md §1).
@@ -1014,6 +1016,102 @@ def _identify_ascendente(t, y) -> FitResult:
     if ganho <= 2.0 * (r2.n_params - r1.n_params):
         return r1
     return r1 if _polo_rapido_e_artefato(tc, yc, r1, r2) else r2
+
+
+# --------------------------------------------------------------------------- #
+# Truncagem no 1º degrau (spec de 04/09/2026)
+# --------------------------------------------------------------------------- #
+
+# Frações da série usadas como corte candidato: 13 pontos de 0,35 a 0,95.
+_FRACS_CORTE = tuple(round(0.35 + 0.05 * i, 2) for i in range(13))
+
+# Mínimo de pontos num prefixo para ele ser candidato.
+_N_MIN_PREFIXO = 30
+
+# Resíduo do ajuste de degrau único acima do qual VALE A PENA varrer cortes.
+# NÃO é classificador — é gatilho de custo, e quem decide é `_GANHO_MIN`.
+# Medido em `data/test`, série EXTRAÍDA DA IMAGEM (n=837): p98 = 0,0246, e este
+# piso dispara em 16 amostras (1,91 %). As duas figuras de dois degraus da
+# fixture disparam, com 0,069 e 0,143.
+_PISO_SUSPEITA = 0.030
+
+# Ganho relativo de nrmse exigido para ACEITAR a truncagem.
+#
+# ATENÇÃO à população: medido na série EXTRAÍDA DA IMAGEM (n=378), não na série
+# gravada no `meta.json`. A primeira medição foi feita na série gravada e deu
+# teto de 7,9 % no corpus; na população certa o teto é 97,5 %, e três amostras de
+# degrau único ganham MAIS que as figuras de dois degraus. Ou seja: as duas
+# populações se SOBREPÕEM e não existe classificador. Este limiar não separa
+# multi-degrau de degrau único — ele LIMITA O DANO.
+#
+# Os ganhos do corpus têm uma banda vazia larga:
+#     0,97500  0,94008  0,92097  0,79675   <- borda direita
+#                     36,4 pp SEM NENHUMA AMOSTRA
+#     0,43246  <- borda esquerda           0,21918  ...
+# Qualquer limiar dentro dela dá comportamento idêntico (os mesmos 4 disparos,
+# todos auditados e sem dano) e captura as duas figuras (90,4 % e 95,4 %).
+# 0,60 é o CENTRO da banda, e não a beira dela — a mesma disciplina que o
+# `_UNDERSHOOT_MAX` já registra em `identify/pipeline.py`. Abaixo de 0,4325
+# entra o `sample_00193`, que a truncagem degrada de 0,8 % para 7,3 %.
+#
+# Qualquer mudança no Estágio A obriga a REMAPEAR A BANDA e a reauditar as
+# quatro amostras: as bordas são artefatos do extrator atual, não do problema.
+_GANHO_MIN = 0.60
+
+
+@dataclass
+class TruncResult:
+    """Ajuste escolhido, mais a série que ele de fato descreve.
+
+    `t`/`y` são o PREFIXO quando houve truncagem, e a série inteira quando não.
+    A pipeline julga a guarda e deriva o bloco adimensional a partir deles.
+    """
+
+    fit: FitResult
+    t: np.ndarray
+    y: np.ndarray
+    truncado_em: float | None = None
+    ganho: float | None = None
+    nrmse_full: float = float("nan")
+
+
+def identify_com_truncagem(t, y) -> TruncResult:
+    """`identify`, com truncagem quando um PREFIXO ajusta decisivamente melhor.
+
+    Dispara em duas situações que este código NÃO distingue: entrada com mais de
+    um degrau, e cauda de extração ruim. Chamar isto de "detector de
+    multi-degrau" seria afirmar causa não verificada — ver a spec §5.2.
+
+    `identify` não é tocado: abaixo do piso, o caminho é byte a byte o de antes.
+    """
+    t = np.asarray(t, dtype=float)
+    y = np.asarray(y, dtype=float)
+    full = identify(t, y)
+
+    if not (full.success and np.isfinite(full.nrmse)):
+        # Sem denominador o ganho não é definível. Comportamento de hoje.
+        return TruncResult(full, t, y, None, None, full.nrmse)
+    if full.nrmse <= _PISO_SUSPEITA:
+        return TruncResult(full, t, y, None, None, full.nrmse)
+
+    candidatos = []                      # em ordem CRESCENTE de corte
+    for fr in _FRACS_CORTE:
+        k = int(fr * t.size)
+        if k < _N_MIN_PREFIXO:
+            continue
+        r = identify(t[:k], y[:k])
+        if r.success and np.isfinite(r.nrmse):
+            candidatos.append((1.0 - r.nrmse / full.nrmse, k, r))
+
+    if not candidatos or max(g for g, _, _ in candidatos) < _GANHO_MIN:
+        return TruncResult(full, t, y, None, None, full.nrmse)
+
+    # A ACEITAÇÃO olha o ganho máximo (acima); o corte REPORTADO é o mais
+    # precoce que já alcança o mínimo. O de maior ganho cai sistematicamente na
+    # borda direita do platô, que é onde começa o despenhadeiro — medido: no
+    # `Figure_222` ele cai 19 ms antes de a resposta ao 2º degrau arrancar.
+    ganho, k, r = next(c for c in candidatos if c[0] >= _GANHO_MIN)
+    return TruncResult(r, t[:k], y[:k], float(t[k - 1]), float(ganho), full.nrmse)
 
 
 # --------------------------------------------------------------------------- #
