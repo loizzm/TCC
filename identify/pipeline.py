@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from identify.calibrate import calibrate
-from identify.classical import identify
+from identify.classical import identify, identify_com_truncagem
 from identify.extract import predict_mask
 from identify.polyline import mask_to_polyline, polyline_to_series
 
@@ -465,6 +465,12 @@ def _implausivel(y: np.ndarray, nrmse: float) -> str:
     return ""
 
 
+def _num_ou_none(v):
+    """`nan`/`inf` viram `None` — JSON não os representa, e o `--json` do
+    `identificar.py` serializa este dicionário direto."""
+    return float(v) if v is not None and np.isfinite(v) else None
+
+
 def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                         extractor=None) -> dict:
     """Imagem -> parâmetros. Nunca levanta: falha vira ok=False.
@@ -502,7 +508,7 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     """
     t0 = time.perf_counter()
 
-    def _saida(order, params, ok, reason, dim, cal, n_pts):
+    def _saida(order, params, ok, reason, dim, cal, n_pts, trunc=None):
         fis = dict(params) if (ok and params) else None
         # `physical` mantem o contrato antigo: existe se e so se `ok` (o teste
         # 2.11 assevera isso). `physical_parcial` e ADITIVO e entrega o que
@@ -519,6 +525,14 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                             "T_s": T_s, "y_faixa": y_faixa_s,
                             "n_pairs_x": int(cal.n_pairs_x),
                             "n_pairs_y": int(cal.n_pairs_y)},
+            # Truncagem: SEMPRE presentes, nulos quando não houve. Sem isto a
+            # saida afirma "FOPDT, K=2,01" sem dizer que descartou 63 % da
+            # janela — e alguem compara esse K com a excursao total e conclui,
+            # erradamente, que houve falha (o mal-entendido do Ruling 65).
+            "truncado_em": None if trunc is None else trunc.truncado_em,
+            "ganho_truncagem": None if trunc is None else trunc.ganho,
+            "nrmse_full": None if trunc is None else _num_ou_none(trunc.nrmse_full),
+            "nrmse_final": None if trunc is None else _num_ou_none(trunc.fit.nrmse),
             "latency_ms": (time.perf_counter() - t0) * 1e3,
             "n_points": int(n_pts),
         }
@@ -536,17 +550,28 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         t, y = polyline_to_series(x_px, y_px, cal)
         ordem = np.argsort(t)
         t, y = t[ordem], y[ordem]
-        fit = identify(t, y)
-        mau = _implausivel(y, fit.nrmse) if fit.success else ""
+        # A varredura vem ANTES da guarda, de propósito. Mantida a ordem
+        # anterior, uma figura de dois degraus e resíduo alto (0,143 medido em
+        # `caso_real_multi_sub.png`) é recusada antes de alguém tentar truncar,
+        # e a mudanca nao teria efeito nenhum sobre ela.
+        tr = identify_com_truncagem(t, y)
+        fit, t_fit, y_fit = tr.fit, tr.t, tr.y
+        # A guarda julga a serie TRUNCADA — a que o ajuste de fato descreve.
+        # Truncar nao e passe livre: fase nao-minima ou residuo ainda alto no
+        # prefixo continuam recusando, exatamente como hoje.
+        mau = _implausivel(y_fit, fit.nrmse) if fit.success else ""
         if mau:
             # A serie nao sustenta resposta nenhuma: nem fisica nem
             # adimensional. Devolver so o adimensional aqui seria trocar um
             # numero errado por outro — os dois saem do MESMO ajuste.
-            return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
-        dim = (_adimensional(fit.params, float(t[-1] - t[0]), float(np.ptp(y)))
+            return _saida("", {}, False, mau, _vazio_adimensional(), cal,
+                          x_px.size, tr)
+        dim = (_adimensional(fit.params, float(t_fit[-1] - t_fit[0]),
+                             float(np.ptp(y_fit)))
                if fit.success else _vazio_adimensional())
         return _saida(fit.order, fit.params, bool(fit.success),
-                      "" if fit.success else "ajuste_falhou", dim, cal, x_px.size)
+                      "" if fit.success else "ajuste_falhou", dim, cal,
+                      x_px.size, tr)
 
     # Calibração falhou: só o nível adimensional é possível. No quadro
     # normalizado T = 1 e a faixa de y = 1, então `_adimensional` recebe as duas
