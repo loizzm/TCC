@@ -112,3 +112,48 @@ def test_campos_de_truncagem_sempre_existem():
     for campo in ("truncado_em", "ganho_truncagem", "nrmse_full", "nrmse_final"):
         assert campo in r, f"campo {campo!r} ausente da saída"
     assert r["truncado_em"] is None
+
+
+def test_relatorio_nomeia_as_duas_causas_possiveis():
+    """O relatório NÃO pode afirmar que existe um 2º degrau: a regra não
+    distingue multi-degrau de cauda de extração ruim (spec §4.1). Afirmar causa
+    não verificada é o defeito que a §7 aponta no `ajuste_inconsistente`."""
+    from pathlib import Path
+    from identificar import _relatorio
+
+    r = {"order": "fopdt",
+         "params": {"K": 2.0112, "tau": 0.5020, "theta": 1.4903,
+                    "wn": None, "zeta": None},
+         "ok": True, "reason": "",
+         "dimensionless": {}, "physical": {}, "physical_parcial": {},
+         "calibration": {"ok": True, "reason": "", "ok_x": True, "ok_y": True,
+                         "T_s": 7.965, "y_faixa": 3.982,
+                         "n_pairs_x": 8, "n_pairs_y": 6},
+         "truncado_em": 2.968, "ganho_truncagem": 0.893,
+         "nrmse_full": 0.0694, "nrmse_final": 0.0067,
+         "latency_ms": 226.0, "n_points": 663}
+    texto = _relatorio(Path("x.png"), r)
+    assert "2.968" in texto or "2,968" in texto
+    assert "degrau" in texto.lower()
+    assert "extracao" in texto.lower() or "extração" in texto.lower()
+    # spec §4.1: theta e o instante de PARTIDA, e o tempo morto nao se separa
+    # do instante do degrau sem ler a entrada. Quem comparar o theta reportado
+    # com o theta da funcao de transferencia conclui, erradamente, que errou.
+    assert "partida" in texto.lower()
+
+
+def test_relatorio_silencioso_quando_nao_truncou():
+    from pathlib import Path
+    from identificar import _relatorio
+
+    r = {"order": "fopdt",
+         "params": {"K": 5.0, "tau": 1.0, "theta": 4.0, "wn": None, "zeta": None},
+         "ok": True, "reason": "",
+         "dimensionless": {}, "physical": {}, "physical_parcial": {},
+         "calibration": {"ok": True, "reason": "", "ok_x": True, "ok_y": True,
+                         "T_s": 10.0, "y_faixa": 5.0,
+                         "n_pairs_x": 5, "n_pairs_y": 5},
+         "truncado_em": None, "ganho_truncagem": None,
+         "nrmse_full": None, "nrmse_final": None,
+         "latency_ms": 150.0, "n_points": 600}
+    assert "truncada" not in _relatorio(Path("x.png"), r).lower()

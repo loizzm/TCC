@@ -105,6 +105,18 @@ def _relatorio(caminho: Path, r: dict) -> str:
                  f"   ·   faixa de y  {_fmt(cal.get('y_faixa'))}")
         L.append(f"  Rotulos        {cal['n_pairs_x']} no eixo x, "
                  f"{cal['n_pairs_y']} no eixo y")
+        if r.get("truncado_em") is not None:
+            L.append("")
+            L.append(f"  \033[1mSerie truncada\033[0m em t = "
+                     f"{_fmt(r['truncado_em'], unidade=' s')}")
+            L.append(f"    o prefixo ajusta melhor que a serie inteira "
+                     f"(residuo {_fmt(r['nrmse_full'])} -> "
+                     f"{_fmt(r['nrmse_final'])})")
+            L.append("    causa possivel: entrada com mais de um degrau, OU")
+            L.append("    cauda de extracao ruim — a pipeline nao distingue as")
+            L.append("    duas, e os parametros acima descrevem so o trecho lido")
+            L.append("    theta e o INSTANTE DE PARTIDA (degrau + tempo morto);")
+            L.append("    os dois nao se separam sem ler a entrada do grafico")
     else:
         motivo = MOTIVOS.get(cal["reason"], cal["reason"] or "desconhecido")
         L.append("")
