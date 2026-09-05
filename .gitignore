@@ -51,3 +51,8 @@ models/unet_stageA_kneg.pt
 # execucao gerados por agente), nao documentacao do trabalho. O registro que
 # sobrevive esta em TIMELINE.md e nextSteps.md.
 docs/
+
+# Espaco de trabalho do fluxo subagent-driven-development: ledger, briefs e
+# pacotes de revisao de uma execucao. Mesma razao de `docs/`: artefato de
+# sessao, nao documentacao do trabalho.
+.superpowers/
