@@ -141,6 +141,19 @@ def test_relatorio_nomeia_as_duas_causas_possiveis():
     # com o theta da funcao de transferencia conclui, erradamente, que errou.
     assert "partida" in texto.lower()
 
+    # Load-bearing assertions: pin the hedging that makes the wording compliant.
+    # A substring test that passes on both correct and incorrect wording protects
+    # nothing. The counterexample "Um segundo degrau foi detectado na entrada;
+    # a extração da cauda também pode ter ruído; theta na partida do sistema"
+    # contains all four substrings above but violates the no-assertion requirement.
+    # These assertions must exclude such counterexamples:
+    assert "causa possivel" in texto.lower(), \
+        "report must hedge with 'causa possivel', not assert"
+    assert "nao distingue" in texto.lower(), \
+        "report must state pipeline cannot distinguish causes"
+    assert "instante de partida" in texto.lower(), \
+        "must use 'instante de partida' not bare 'partida'"
+
 
 def test_relatorio_silencioso_quando_nao_truncou():
     from pathlib import Path
