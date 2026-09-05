@@ -24,7 +24,7 @@ FOPDT_2 = {"path": FIX / "caso_real_multi_fopdt.png", "order": "fopdt",
 FOPDT_1 = {"path": FIX / "caso_real_multi_fopdt_1degrau.png", "order": "fopdt",
            "K": 2.0, "tau": 0.5, "theta": 1.5}
 
-# Mesma tolerância de `test_caso_real_rg.py` e `test_caso_real.py`.
+# Mesma tolerância de `test_caso_real_rg.py`.
 TOL = 0.06
 
 
@@ -93,7 +93,7 @@ def test_um_degrau_nao_dispara_truncagem(modelo):
     _confere(r, FOPDT_1)
 
 
-def test_o_par_difere_em_uma_variavel_so(modelo):
+def test_o_par_difere_em_uma_variavel_so():
     """Documenta em CÓDIGO que o par é controlado: mesma planta, mesmo render,
     mesmos eixos. Se alguém regerar as fixtures mudando o render de uma e não da
     outra, o par deixa de isolar a variável e este teste avisa."""
