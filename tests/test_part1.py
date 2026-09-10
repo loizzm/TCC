@@ -892,8 +892,13 @@ def test_model_cross_check():
 # ==========================================================================
 # Contrato do meta.json e da API
 # ==========================================================================
+# `degraus`, `n_degraus` e `u_final` entraram no schema v2 e saem em TODA
+# amostra — inclusive nas de um degrau, onde valem `[[1.0, 0.0]]`, `1` e `1.0`.
+# Estavam faltando aqui desde o bump e o teste falhava; o contrato e' que as
+# chaves sejam exatamente estas, entao a lista e' que estava errada.
 _META_KEYS = {"schema_version", "sample_id", "seed", "order", "params",
-              "step_amplitude", "t_window", "plot_bbox_px", "axis_affine",
+              "step_amplitude", "degraus", "n_degraus", "u_final",
+              "t_window", "plot_bbox_px", "axis_affine",
               "ticks", "series", "noise", "render"}
 _RENDER_KEYS = {"dpi", "size_px", "has_grid", "has_legend", "line_width",
                 "line_style", "line_color", "bg_color", "has_marker",
@@ -909,6 +914,17 @@ def test_meta_contract(clean_dataset, noisy_dataset):
         m = read_meta(sample_dir)
         assert set(m) == _META_KEYS, f"chaves erradas em {sample_dir}: {set(m) ^ _META_KEYS}"
         assert m["schema_version"] == SCHEMA_VERSION
+        # INVARIANTE DO QUAL TODA A PARTE 1 DEPENDE, e que antes era suposto em
+        # silencio. Os oraculos daqui comparam parametro ajustado contra
+        # `meta["params"]` via `model_response`, o que so faz sentido se a
+        # curva desenhada FOR um membro da familia de modelos. O estrato
+        # `fase_nao_minima` (schema v3) sai fora dela de proposito, e as
+        # fixtures da Parte 1 nao o ligam. Se um dia ligarem, e' aqui que se
+        # descobre — alto, e nao como uma comparacao silenciosamente sem
+        # sentido la adiante.
+        assert "fora_da_familia" not in m, (
+            f"{sample_dir} esta fora da familia de modelos; os oraculos da "
+            f"Parte 1 nao se aplicam a ele")
         assert m["sample_id"] == Path(sample_dir).name
         assert isinstance(m["seed"], int)
         assert m["order"] in ("fopdt", "second")
