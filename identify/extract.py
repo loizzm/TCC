@@ -56,9 +56,35 @@ def _block(cin: int, cout: int) -> nn.Sequential:
 
 
 class UNet(nn.Module):
-    """4 níveis, base 16 canais. Saída = logits, mesma resolução da entrada."""
+    """4 níveis, base 16 canais. Saída = logits, mesma resolução da entrada.
 
-    def __init__(self, base: int = 16, levels: int = 4, in_ch: int = 1):
+    `com_contagem` acrescenta uma SEGUNDA saída — um logit de "há mais de um
+    degrau nesta figura?" — pendurada no gargalo. Ela existe porque o portão
+    que hoje decide a truncagem (`_PISO_SUSPEITA` em `identify/classical.py`)
+    barra 80,7 % dos multi-degrau não detectados: o resíduo de um ajuste de
+    degrau único não denuncia o segundo degrau quando os dois têm o mesmo
+    sinal. Com a contagem servindo de portão e a busca por prefixo colocando o
+    corte, o teto medido vai de F1 0,571 para 0,825.
+
+    Duas escolhas de desenho, as duas medidas:
+
+    - **No gargalo, não no decoder.** O gradiente da contagem flui pelo
+      ENCODER apenas e nunca toca quem produz a máscara. O encoder é
+      compartilhado — esse é o risco real, e é o que a seleção de checkpoint
+      tem de medir.
+    - **Colapsa só o eixo Y.** Um degrau é um evento ao longo de `x`; média
+      global apagaria a estrutura temporal que a tarefa precisa ler. O mapa
+      (B, C, H', W') vira (B, C, W') e passa por convoluções 1-D.
+
+    Saída BINÁRIA e não contagem multi-classe: o portão é binário, e uma
+    probabilidade dá ponto de operação ajustável — precisão e revocação trocam
+    de lugar conforme o limiar, e isso importa muito aqui. Saber "são 3
+    degraus" não acrescenta: a busca por prefixo acha o primeiro corte de
+    qualquer forma.
+    """
+
+    def __init__(self, base: int = 16, levels: int = 4, in_ch: int = 1,
+                 com_contagem: bool = False):
         super().__init__()
         self.in_ch = int(in_ch)
         chs = [base * 2 ** i for i in range(levels + 1)]
@@ -75,17 +101,53 @@ class UNet(nn.Module):
             self.dec.append(_block(chs[i] * 2, chs[i]))
         self.head = nn.Conv2d(chs[0], 1, 1)
         self.pool = nn.MaxPool2d(2)
+        # Só existe quando pedida: um checkpoint sem ela não tem estas chaves,
+        # e `load_model` decide pela presença delas no state_dict.
+        self.cabeca_conta = None
+        if com_contagem:
+            self.cabeca_conta = nn.Sequential(
+                # BatchNorm na ENTRADA nao e enfeite: sem ela o treino da
+                # cabeca e instavel. Medido na sondagem de encoder congelado,
+                # 5 sementes: sem normalizar, 3 convergem para AUC 0,86-0,88 e
+                # 2 COLAPSAM em 0,50 (ReLU morta); com ela, as 5 dao 0,965 a
+                # 0,979. As ativacoes do gargalo tem escala por canal muito
+                # desigual, e a cabeca e rasa demais para absorver isso.
+                nn.BatchNorm1d(chs[-1]),
+                nn.Conv1d(chs[-1], 64, 5, padding=2), nn.ReLU(inplace=True),
+                nn.Conv1d(64, 64, 5, padding=2), nn.ReLU(inplace=True),
+                nn.AdaptiveAvgPool1d(1), nn.Flatten(), nn.Linear(64, 1),
+            )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def gargalo(self, x: torch.Tensor) -> torch.Tensor:
+        """Ativação do gargalo. Existe separada para que a sondagem possa
+        CACHEAR features sem refazer o decoder — o experimento de encoder
+        congelado roda em segundos assim, em vez de horas."""
+        for e in self.enc:
+            x = e(x)
+            x = self.pool(x)
+        return self.bott(x)
+
+    def conta_de_gargalo(self, g: torch.Tensor) -> torch.Tensor:
+        """Logit de multi-degrau a partir do gargalo já calculado."""
+        return self.cabeca_conta(g.mean(dim=2))
+
+    def forward(self, x: torch.Tensor, com_contagem: bool = False):
+        # O default `False` NÃO é preciosismo: devolver tupla sempre quebraria
+        # `predict_mask` (que faz `model(x)[0, 0]`) e as duas chamadas do laço
+        # de treino. Com ele, o caminho existente fica byte a byte idêntico.
         skips = []
         for e in self.enc:
             x = e(x)
             skips.append(x)
             x = self.pool(x)
         x = self.bott(x)
+        conta = None
+        if com_contagem and self.cabeca_conta is not None:
+            conta = self.conta_de_gargalo(x)
         for up, dec, s in zip(self.up, self.dec, reversed(skips)):
             x = dec(torch.cat([up(x), s], dim=1))
-        return self.head(x)
+        m = self.head(x)
+        return (m, conta) if com_contagem else m
 
 
 def dice_bce_loss(logits: torch.Tensor, target: torch.Tensor,
@@ -108,7 +170,13 @@ def load_model(path: str | Path, device: str = "cpu") -> UNet:
     # `in_ch` tambem sai do checkpoint: um modelo de 1 canal (cinza) e um de 3
     # (RGB) convivem, e trocar de um para o outro nao exige mexer no chamador.
     in_ch = int(state["enc.0.0.weight"].shape[1])
-    model = UNet(base=base, levels=levels, in_ch=in_ch)
+    # A cabeça de contagem também sai do checkpoint, pela mesma razão que
+    # `base`/`levels`/`in_ch`: um modelo com ela e um sem ela convivem, e
+    # `load_state_dict` é ESTRITO — construir sempre com a cabeça recusaria
+    # todo checkpoint antigo. Nada de `strict=False`, que aceitaria um
+    # checkpoint truncado em silêncio.
+    com_contagem = any(k.startswith("cabeca_conta.") for k in state)
+    model = UNet(base=base, levels=levels, in_ch=in_ch, com_contagem=com_contagem)
     model.load_state_dict(state)
     model.to(device).eval()
     return model
