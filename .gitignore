@@ -56,3 +56,30 @@ docs/
 # pacotes de revisao de uma execucao. Mesma razao de `docs/`: artefato de
 # sessao, nao documentacao do trabalho.
 .superpowers/
+
+# Saida `--out` do retreino do estrato fora-da-familia. MESMA razao do
+# `unet_stageA_kneg.pt`, com um detalhe a mais: aqui ela nem e' o modelo
+# promovido. O `--out` guarda o melhor por `IoU_val` (epoca 13); a promocao
+# foi da epoca 17, escolhida por `seleciona_checkpoint_nmp.py` contra o
+# objetivo do retreino e tres guardas. Versiona-la sugeriria que o IoU_val
+# decidiu, que e exatamente o erro que o seletor existe para evitar.
+models/unet_stageA_nmp.pt
+
+# Checkpoints de retreinos NAO promovidos. Mesma razao dos `piloto_*`: nao sao
+# modelos utilizaveis, e os numeros deles vivem nos logs e em
+# reports/selecao_*.json.
+models/unet_stageA_multi.pt
+models/unet_stageA_multi_thr01_abortado.pt
+models/cabeca_contagem_congelada.pt
+
+# Lotes DERIVADOS de figura: reproduziveis pelos scripts que os geram, com a
+# seed no proprio script. Os lotes de REFERENCIA (aqueles contra os quais os
+# numeros do relatorio sao citados) continuam versionados.
+# (ablacao_render_nmp.py regenera o primeiro; o segundo e' so symlinks mais
+#  analises derivadas dos lotes de referencia)
+reports/amostras_aleatorias/ablacao_nmp/
+reports/pos_nmp/
+
+# Caches de features/series: insumo de sondagem, grandes e regeneraveis.
+reports/amostras_aleatorias/*.npz
+reports/sonda_contagem_features.npz

@@ -1,0 +1,26 @@
+########## epoca_16 ##########
+FORA DA FAMILIA — epoca_16.pt
+
+  corpus                n  recall p10     p50     p90  pts p50
+  data/val            150       0.639   0.787   0.900      726
+  data/val_nmp        150       0.674   0.802   0.905      714
+  data/val_multi      150       0.685   0.818   0.925      713
+
+  veredito da pipeline
+    data/val          ok=138 (92%), ocr_insuficiente=8 (5%), sinal_de_escala_invalido=1 (1%), resposta_inversa=1 (1%), bbox_not_found=1 (1%), calibration_failed=1 (1%)
+    data/val_nmp      resposta_inversa=143 (95%), ok=7 (5%)
+    data/val_multi    ok=139 (93%), ocr_insuficiente=10 (7%), calibration_failed=1 (1%)
+
+########## epoca_08 ##########
+FORA DA FAMILIA — epoca_08.pt
+
+  corpus                n  recall p10     p50     p90  pts p50
+  data/val            150       0.647   0.785   0.898      724
+  data/val_nmp        150       0.655   0.799   0.898      708
+  data/val_multi      150       0.682   0.809   0.920      711
+
+  veredito da pipeline
+    data/val          ok=138 (92%), ocr_insuficiente=8 (5%), sinal_de_escala_invalido=1 (1%), resposta_inversa=1 (1%), bbox_not_found=1 (1%), calibration_failed=1 (1%)
+    data/val_nmp      resposta_inversa=145 (97%), ok=5 (3%)
+    data/val_multi    ok=139 (93%), ocr_insuficiente=10 (7%), calibration_failed=1 (1%)
+

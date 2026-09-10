@@ -1,0 +1,4946 @@
+[
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_00.png",
+    "order": "second",
+    "params": {
+      "K": 0.6898340541708439,
+      "tau": null,
+      "theta": 19.955907679266005,
+      "wn": 0.11741570672690992,
+      "zeta": 0.4634497813728986
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.4634497813728986,
+      "wn_T": 10.303344329967297,
+      "tau_T": null,
+      "theta_T": 0.2274151895247224,
+      "theta_tau": null,
+      "K_yrange": 0.8350642484892565
+    },
+    "physical": {
+      "K": 0.6898340541708439,
+      "tau": null,
+      "theta": 19.955907679266005,
+      "wn": 0.11741570672690992,
+      "zeta": 0.4634497813728986
+    },
+    "physical_parcial": {
+      "K": 0.6898340541708439,
+      "tau": null,
+      "theta": 19.955907679266005,
+      "wn": 0.11741570672690992,
+      "zeta": 0.4634497813728986
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 90.39940866951856,
+      "y_faixa": 0.9671671920713756,
+      "n_pairs_x": 4,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.003493368746871101,
+    "nrmse_final": 0.003493368746871101,
+    "latency_ms": 321.26427299999705,
+    "n_points": 995
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_00.png",
+    "order": "second",
+    "params": {
+      "K": -180.1260175107296,
+      "tau": null,
+      "theta": 1.8022702128245582,
+      "wn": 1.0755403096274843,
+      "zeta": 9.99999999999997
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 9.99999999999997,
+      "wn_T": 1.8076806196816602,
+      "tau_T": null,
+      "theta_T": 1.0723212063174523,
+      "theta_tau": null,
+      "K_yrange": -56.29381045873882
+    },
+    "physical": {
+      "K": -180.1260175107296,
+      "tau": null,
+      "theta": 1.8022702128245582,
+      "wn": 1.0755403096274843,
+      "zeta": 9.99999999999997
+    },
+    "physical_parcial": {
+      "K": -180.1260175107296,
+      "tau": null,
+      "theta": 1.8022702128245582,
+      "wn": 1.0755403096274843,
+      "zeta": 9.99999999999997
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.3022670595426336,
+      "y_faixa": 27.099101862618507,
+      "n_pairs_x": 6,
+      "n_pairs_y": 4
+    },
+    "truncado_em": 2.164023014937787,
+    "ganho_truncagem": 0.9305618475641976,
+    "nrmse_full": 0.18337396853128318,
+    "nrmse_final": 0.012733149579633282,
+    "latency_ms": 1060.7249619999948,
+    "n_points": 483
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_01.png",
+    "order": "second",
+    "params": {
+      "K": 5.393238865038906,
+      "tau": null,
+      "theta": 0.5704687991574703,
+      "wn": 2.787964982131391,
+      "zeta": 0.297600197440376
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.297600197440376,
+      "wn_T": 13.79332875964981,
+      "tau_T": null,
+      "theta_T": 0.11530552654571481,
+      "theta_tau": null,
+      "K_yrange": 0.7294516496265815
+    },
+    "physical": {
+      "K": 5.393238865038906,
+      "tau": null,
+      "theta": 0.5704687991574703,
+      "wn": 2.787964982131391,
+      "zeta": 0.297600197440376
+    },
+    "physical_parcial": {
+      "K": 5.393238865038906,
+      "tau": null,
+      "theta": 0.5704687991574703,
+      "wn": 2.787964982131391,
+      "zeta": 0.297600197440376
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.043776207230459,
+      "y_faixa": 8.314457303187316,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018000747347748573,
+    "nrmse_final": 0.0018000747347748573,
+    "latency_ms": 190.52365699985785,
+    "n_points": 566
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_01.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.094637381699969,
+      "tau": 1.3710244166490528,
+      "theta": 0.14710271970539565,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 1.1362974135047446,
+      "theta_T": 0.12191791618802456,
+      "theta_tau": 0.10729401892413575,
+      "K_yrange": -0.9953241459141692
+    },
+    "physical": {
+      "K": -2.094637381699969,
+      "tau": 1.3710244166490528,
+      "theta": 0.14710271970539565,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.094637381699969,
+      "tau": 1.3710244166490528,
+      "theta": 0.14710271970539565,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2513781808460307,
+      "y_faixa": 2.8059701492537323,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.1084276693133904,
+    "nrmse_final": 0.1084276693133904,
+    "latency_ms": 1630.248735000123,
+    "n_points": 755
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_02.png",
+    "order": "second",
+    "params": {
+      "K": 36.37388913924956,
+      "tau": null,
+      "theta": 4.3283577346815685,
+      "wn": 0.7169424061533088,
+      "zeta": 2.668998692055627
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.668998692055627,
+      "wn_T": 4.320798977205417,
+      "tau_T": null,
+      "theta_T": 0.718196617191839,
+      "theta_tau": null,
+      "K_yrange": 2.8430955843702668
+    },
+    "physical": {
+      "K": 36.37388913924956,
+      "tau": null,
+      "theta": 4.3283577346815685,
+      "wn": 0.7169424061533088,
+      "zeta": 2.668998692055627
+    },
+    "physical_parcial": {
+      "K": 36.37388913924956,
+      "tau": null,
+      "theta": 4.3283577346815685,
+      "wn": 0.7169424061533088,
+      "zeta": 2.668998692055627
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 18.99450543687607,
+      "y_faixa": 38.19720402768189,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 7.666752083263498,
+    "ganho_truncagem": 0.94675128763023,
+    "nrmse_full": 0.11256917923748559,
+    "nrmse_final": 0.005994163846917954,
+    "latency_ms": 765.6516209999609,
+    "n_points": 834
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -4.903204853494943,
+      "tau": 2.3126871147618533,
+      "theta": 0.617832550167061,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4399717482302283,
+      "theta_T": 0.11753810771697637,
+      "theta_tau": 0.2671492162616566,
+      "K_yrange": -1.1389763758596434
+    },
+    "physical": {
+      "K": -4.903204853494943,
+      "tau": 2.3126871147618533,
+      "theta": 0.617832550167061,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -4.903204853494943,
+      "tau": 2.3126871147618533,
+      "theta": 0.617832550167061,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.439422089255625,
+      "y_faixa": 4.932723522957976,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017900034804260291,
+    "nrmse_final": 0.0017900034804260291,
+    "latency_ms": 837.4726609999925,
+    "n_points": 949
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_03.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 297.4404246833185,
+      "y_faixa": 0.9292035398230084,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.2597429864592582,
+    "nrmse_final": 0.2597429864592582,
+    "latency_ms": 4125.36886099997,
+    "n_points": 845
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.880664397365205,
+      "tau": 0.1940741115606297,
+      "theta": 0.10589286993592177,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2091320814527515,
+      "theta_T": 0.11410896653151195,
+      "theta_tau": 0.5456310946596312,
+      "K_yrange": -1.0044064644258868
+    },
+    "physical": {
+      "K": -2.880664397365205,
+      "tau": 0.1940741115606297,
+      "theta": 0.10589286993592177,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.880664397365205,
+      "tau": 0.1940741115606297,
+      "theta": 0.10589286993592177,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9511088566308583,
+      "y_faixa": 3.5257318749045674,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.004478722376892644,
+    "nrmse_final": 0.004478722376892644,
+    "latency_ms": 231.00700000009056,
+    "n_points": 523
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_04.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6328031482027408,
+      "y_faixa": 0.6358053535086197,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.26369754249768645,
+    "nrmse_final": 0.26369754249768645,
+    "latency_ms": 1056.9293650000873,
+    "n_points": 570
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.7694573505851714,
+      "tau": 0.473932438494126,
+      "theta": 0.1805578124464403,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 1.4157277196754194,
+      "theta_T": 0.5393610551254748,
+      "theta_tau": 0.3809779575758628,
+      "K_yrange": -3.041154162878244
+    },
+    "physical": {
+      "K": -1.7694573505851714,
+      "tau": 0.473932438494126,
+      "theta": 0.1805578124464403,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.7694573505851714,
+      "tau": 0.473932438494126,
+      "theta": 0.1805578124464403,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9973611430583823,
+      "y_faixa": 1.8384975534636494,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 0.3674417770896556,
+    "ganho_truncagem": 0.9584159357973623,
+    "nrmse_full": 0.14366227300891102,
+    "nrmse_final": 0.0059740611842994205,
+    "latency_ms": 922.2536370000398,
+    "n_points": 834
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_05.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 48.37711588427681,
+      "y_faixa": 0.5572192513368983,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.25789797213939814,
+    "nrmse_final": 0.25789797213939814,
+    "latency_ms": 1317.495013000098,
+    "n_points": 704
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.2303340755452306,
+      "tau": 23.60815925900998,
+      "theta": 7.490407961660793,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3280650421770025,
+      "theta_T": 0.10408863210829819,
+      "theta_tau": 0.317280474071781,
+      "K_yrange": -1.0023597008004983
+    },
+    "physical": {
+      "K": -2.2303340755452306,
+      "tau": 23.60815925900998,
+      "theta": 7.490407961660793,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.2303340755452306,
+      "tau": 23.60815925900998,
+      "theta": 7.490407961660793,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 84.23346109573191,
+      "y_faixa": 2.865742273547966,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.11212482637224461,
+    "nrmse_final": 0.11212482637224461,
+    "latency_ms": 832.103805000088,
+    "n_points": 605
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_06.png",
+    "order": "second",
+    "params": {
+      "K": 1.2749446147817256,
+      "tau": null,
+      "theta": 3.981763635288896,
+      "wn": 0.13702370756051518,
+      "zeta": 2.049577056378187
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.049577056378187,
+      "wn_T": 7.7465049436615425,
+      "tau_T": null,
+      "theta_T": 0.07043124866051302,
+      "theta_tau": null,
+      "K_yrange": 1.1901891226112458
+    },
+    "physical": {
+      "K": 1.2749446147817256,
+      "tau": null,
+      "theta": 3.981763635288896,
+      "wn": 0.13702370756051518,
+      "zeta": 2.049577056378187
+    },
+    "physical_parcial": {
+      "K": 1.2749446147817256,
+      "tau": null,
+      "theta": 3.981763635288896,
+      "wn": 0.13702370756051518,
+      "zeta": 2.049577056378187
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 57.054300588959464,
+      "y_faixa": 2.9405813711919437,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0028371632469125605,
+    "nrmse_final": 0.0028371632469125605,
+    "latency_ms": 209.0119759998288,
+    "n_points": 653
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.3223060960792177,
+      "tau": 1.8754241365861541,
+      "theta": 2.122711935963184,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.23197511414600017,
+      "theta_T": 0.262562656648157,
+      "theta_tau": 1.131856999466355,
+      "K_yrange": -1.0029172530757473
+    },
+    "physical": {
+      "K": -2.3223060960792177,
+      "tau": 1.8754241365861541,
+      "theta": 2.122711935963184,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.3223060960792177,
+      "tau": 1.8754241365861541,
+      "theta": 2.122711935963184,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 8.683450595188233,
+      "y_faixa": 2.949746557532958,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0059241764089623524,
+    "nrmse_final": 0.0059241764089623524,
+    "latency_ms": 233.73510799979158,
+    "n_points": 568
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.6105612472528374,
+      "tau": 3.481343905447891,
+      "theta": 1.9430215424828168,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24609701613294335,
+      "theta_T": 0.13735264796412902,
+      "theta_tau": 0.558123987533153,
+      "K_yrange": 1.033765766700645
+    },
+    "physical": {
+      "K": 1.6105612472528374,
+      "tau": 3.481343905447891,
+      "theta": 1.9430215424828168,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.6105612472528374,
+      "tau": 3.481343905447891,
+      "theta": 1.9430215424828168,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 14.47089305509779,
+      "y_faixa": 1.9907211457174023,
+      "n_pairs_x": 8,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018444290215584736,
+    "nrmse_final": 0.0018444290215584736,
+    "latency_ms": 267.1849190001012,
+    "n_points": 916
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.7844860535058875,
+      "tau": 0.788749892627827,
+      "theta": 0.2217819044012386,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.41477255784297007,
+      "theta_T": 0.11662638389123939,
+      "theta_tau": 0.2811815335560201,
+      "K_yrange": -1.1161424563408318
+    },
+    "physical": {
+      "K": -2.7844860535058875,
+      "tau": 0.788749892627827,
+      "theta": 0.2217819044012386,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.7844860535058875,
+      "tau": 0.788749892627827,
+      "theta": 0.2217819044012386,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.9384072496600282,
+      "y_faixa": 2.7914720134637143,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007404928925198068,
+    "nrmse_final": 0.007404928925198068,
+    "latency_ms": 209.5447620001778,
+    "n_points": 570
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_08.png",
+    "order": "fopdt",
+    "params": {
+      "K": 10.170919488936146,
+      "tau": 3.0928602378084022,
+      "theta": 4.13025348315675,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.1652189144857208,
+      "theta_T": 0.2206358983494096,
+      "theta_tau": 1.3354154942621796,
+      "K_yrange": 1.0068527682000539
+    },
+    "physical": {
+      "K": 10.170919488936146,
+      "tau": 3.0928602378084022,
+      "theta": 4.13025348315675,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 10.170919488936146,
+      "tau": 3.0928602378084022,
+      "theta": 4.13025348315675,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 19.272157646407766,
+      "y_faixa": 13.152542372881367,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.003221275358348771,
+    "nrmse_final": 0.003221275358348771,
+    "latency_ms": 221.56933199994455,
+    "n_points": 611
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_08.png",
+    "order": "second",
+    "params": {
+      "K": -2.1461152770060483,
+      "tau": null,
+      "theta": 0.9874644310807311,
+      "wn": 3.0967946257475747,
+      "zeta": 1.4379730105189292
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4379730105189292,
+      "wn_T": 10.409132098852119,
+      "tau_T": null,
+      "theta_T": 0.29377805125798306,
+      "theta_tau": null,
+      "K_yrange": -1.047975045668823
+    },
+    "physical": {
+      "K": -2.1461152770060483,
+      "tau": null,
+      "theta": 0.9874644310807311,
+      "wn": 3.0967946257475747,
+      "zeta": 1.4379730105189292
+    },
+    "physical_parcial": {
+      "K": -2.1461152770060483,
+      "tau": null,
+      "theta": 0.9874644310807311,
+      "wn": 3.0967946257475747,
+      "zeta": 1.4379730105189292
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.5779884375240743,
+      "y_faixa": 2.2817744304509513,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0015253475307860519,
+    "nrmse_final": 0.0015253475307860519,
+    "latency_ms": 212.95990700014045,
+    "n_points": 854
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.5799817122037383,
+      "tau": 1.539457794963854,
+      "theta": 1.267571098684108,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.19306645382883145,
+      "theta_T": 0.15896860427057216,
+      "theta_tau": 0.8233880154628535,
+      "K_yrange": 1.0101929272227343
+    },
+    "physical": {
+      "K": 2.5799817122037383,
+      "tau": 1.539457794963854,
+      "theta": 1.267571098684108,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.5799817122037383,
+      "tau": 1.539457794963854,
+      "theta": 1.267571098684108,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 8.217103632414723,
+      "y_faixa": 2.967617366200946,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002435816727377471,
+    "nrmse_final": 0.002435816727377471,
+    "latency_ms": 206.9640019999497,
+    "n_points": 689
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": -12.74117986635655,
+      "tau": 0.22031535197044286,
+      "theta": 0.2282321690051381,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.295637929715063,
+      "theta_T": 0.3062613900283699,
+      "theta_tau": 1.0359340234980872,
+      "K_yrange": -1.088277108063925
+    },
+    "physical": {
+      "K": -12.74117986635655,
+      "tau": 0.22031535197044286,
+      "theta": 0.2282321690051381,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -12.74117986635655,
+      "tau": 0.22031535197044286,
+      "theta": 0.2282321690051381,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.7714895397025355,
+      "y_faixa": 13.503526839810043,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0019030669127876791,
+    "nrmse_final": 0.0019030669127876791,
+    "latency_ms": 244.12586700009342,
+    "n_points": 540
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_10.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.38591770232094996,
+      "tau": 0.8740013964963077,
+      "theta": 0.4575965963559288,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.6700687922431439,
+      "theta_T": 0.35082460953034184,
+      "theta_tau": 0.5235650631570381,
+      "K_yrange": 1.4670137174783568
+    },
+    "physical": {
+      "K": 0.38591770232094996,
+      "tau": 0.8740013964963077,
+      "theta": 0.4575965963559288,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.38591770232094996,
+      "tau": 0.8740013964963077,
+      "theta": 0.4575965963559288,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.4093249775316385,
+      "y_faixa": 0.7651192096287134,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": 1.8674445353074929,
+    "ganho_truncagem": 0.9735764081685987,
+    "nrmse_full": 0.1094171013819618,
+    "nrmse_final": 0.002891192826292015,
+    "latency_ms": 814.4298550000713,
+    "n_points": 591
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_10.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.987938083864939,
+      "tau": 5.680434042417083,
+      "theta": 4.658555862839704,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.26883998114274604,
+      "theta_T": 0.2204771784983782,
+      "theta_tau": 0.8201056165872566,
+      "K_yrange": -1.053263042732958
+    },
+    "physical": {
+      "K": -1.987938083864939,
+      "tau": 5.680434042417083,
+      "theta": 4.658555862839704,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.987938083864939,
+      "tau": 5.680434042417083,
+      "theta": 4.658555862839704,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 21.79466858955407,
+      "y_faixa": 2.609260079557566,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002502514049501928,
+    "nrmse_final": 0.002502514049501928,
+    "latency_ms": 230.25677600003291,
+    "n_points": 668
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_11.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.4142209208104315,
+      "y_faixa": 1.8941630236407612,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.1650221793909517,
+    "nrmse_final": 0.1650221793909517,
+    "latency_ms": 828.3521270000165,
+    "n_points": 877
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_11.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.380866422087814,
+      "y_faixa": 2.298759333844539,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.26308391952999244,
+    "nrmse_final": 0.26308391952999244,
+    "latency_ms": 1575.7045089999338,
+    "n_points": 603
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_12.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.9463618183879863,
+      "tau": 0.16483308256209922,
+      "theta": 0.029154322323474886,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2699736576870668,
+      "theta_T": 0.04775072402162313,
+      "theta_tau": 0.17687178975428847,
+      "K_yrange": 1.0232873381227734
+    },
+    "physical": {
+      "K": 2.9463618183879863,
+      "tau": 0.16483308256209922,
+      "theta": 0.029154322323474886,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.9463618183879863,
+      "tau": 0.16483308256209922,
+      "theta": 0.029154322323474886,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6363629933984192,
+      "y_faixa": 3.5172413793103456,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0032486382301500963,
+    "nrmse_final": 0.0032486382301500963,
+    "latency_ms": 227.76270899998963,
+    "n_points": 687
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_12.png",
+    "order": "second",
+    "params": {
+      "K": -21.57778428374412,
+      "tau": null,
+      "theta": 0.27268597713581433,
+      "wn": 5.763761609329464,
+      "zeta": 2.2951733801300773
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.2951733801300773,
+      "wn_T": 11.148668442047603,
+      "tau_T": null,
+      "theta_T": 0.1409762048793367,
+      "theta_tau": null,
+      "K_yrange": -1.1153127150154118
+    },
+    "physical": {
+      "K": -21.57778428374412,
+      "tau": null,
+      "theta": 0.27268597713581433,
+      "wn": 5.763761609329464,
+      "zeta": 2.2951733801300773
+    },
+    "physical_parcial": {
+      "K": -21.57778428374412,
+      "tau": null,
+      "theta": 0.27268597713581433,
+      "wn": 5.763761609329464,
+      "zeta": 2.2951733801300773
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.0065516468842906,
+      "y_faixa": 23.288288288288292,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0040053497012327065,
+    "nrmse_final": 0.0040053497012327065,
+    "latency_ms": 220.97604800001136,
+    "n_points": 670
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_13.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.9493426896896424,
+      "tau": 6.088507150097171,
+      "theta": 3.0692322253406874,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.20176545464884135,
+      "theta_T": 0.10171048831877541,
+      "theta_tau": 0.5041025902863074,
+      "K_yrange": 1.0080530421369136
+    },
+    "physical": {
+      "K": 2.9493426896896424,
+      "tau": 6.088507150097171,
+      "theta": 3.0692322253406874,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.9493426896896424,
+      "tau": 6.088507150097171,
+      "theta": 3.0692322253406874,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 30.85136064711424,
+      "y_faixa": 3.515625000000001,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.029259190570827306,
+    "nrmse_final": 0.029259190570827306,
+    "latency_ms": 216.60004300019864,
+    "n_points": 582
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_13.png",
+    "order": "second",
+    "params": {
+      "K": -10.814235547706202,
+      "tau": null,
+      "theta": 0.6151284641735671,
+      "wn": 4.0186981299410345,
+      "zeta": 2.065237897937036
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.065237897937036,
+      "wn_T": 4.081458908431255,
+      "tau_T": null,
+      "theta_T": 0.6056696059198978,
+      "theta_tau": null,
+      "K_yrange": -3.0689187181674384
+    },
+    "physical": {
+      "K": -10.814235547706202,
+      "tau": null,
+      "theta": 0.6151284641735671,
+      "wn": 4.0186981299410345,
+      "zeta": 2.065237897937036
+    },
+    "physical_parcial": {
+      "K": -10.814235547706202,
+      "tau": null,
+      "theta": 0.6151284641735671,
+      "wn": 4.0186981299410345,
+      "zeta": 2.065237897937036
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.949001413347487,
+      "y_faixa": 12.755288113336535,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 1.0545808559995717,
+    "ganho_truncagem": 0.9594623079910956,
+    "nrmse_full": 0.21285237404241514,
+    "nrmse_final": 0.00862854398229556,
+    "latency_ms": 877.0766620000359,
+    "n_points": 863
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_14.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.180926795004665,
+      "y_faixa": 10.820211372704298,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.26816802116416544,
+    "nrmse_final": 0.26816802116416544,
+    "latency_ms": 1271.3740240001243,
+    "n_points": 604
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_14.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 35.5669065668582,
+      "y_faixa": 1.123434525730621,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.13848784462568303,
+    "nrmse_final": 0.13848784462568303,
+    "latency_ms": 1148.2657869999002,
+    "n_points": 519
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_15.png",
+    "order": "second",
+    "params": {
+      "K": 0.5484449583363079,
+      "tau": null,
+      "theta": 0.22525200204975365,
+      "wn": 6.381282052360892,
+      "zeta": 1.2626994059242855
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2626994059242855,
+      "wn_T": 4.0470191562099425,
+      "tau_T": null,
+      "theta_T": 0.35517414236422407,
+      "theta_tau": null,
+      "K_yrange": 1.5091302329317222
+    },
+    "physical": {
+      "K": 0.5484449583363079,
+      "tau": null,
+      "theta": 0.22525200204975365,
+      "wn": 6.381282052360892,
+      "zeta": 1.2626994059242855
+    },
+    "physical_parcial": {
+      "K": 0.5484449583363079,
+      "tau": null,
+      "theta": 0.22525200204975365,
+      "wn": 6.381282052360892,
+      "zeta": 1.2626994059242855
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.8784655777410963,
+      "y_faixa": 2.252392334322873,
+      "n_pairs_x": 8,
+      "n_pairs_y": 9
+    },
+    "truncado_em": 0.6526728459755907,
+    "ganho_truncagem": 0.9470814486550064,
+    "nrmse_full": 0.1317366884824991,
+    "nrmse_final": 0.00697131471348055,
+    "latency_ms": 1242.8311109999868,
+    "n_points": 830
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_15.png",
+    "order": "second",
+    "params": {
+      "K": -734.322652514423,
+      "tau": null,
+      "theta": 0.40164078568348,
+      "wn": 0.29876722633556924,
+      "zeta": 9.999999999015618
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 9.999999999015618,
+      "wn_T": 0.17309395845706804,
+      "tau_T": null,
+      "theta_T": 0.6932483640187512,
+      "theta_tau": null,
+      "K_yrange": -436.9848257904781
+    },
+    "physical": {
+      "K": -734.322652514423,
+      "tau": null,
+      "theta": 0.40164078568348,
+      "wn": 0.29876722633556924,
+      "zeta": 9.999999999015618
+    },
+    "physical_parcial": {
+      "K": -734.322652514423,
+      "tau": null,
+      "theta": 0.40164078568348,
+      "wn": 0.29876722633556924,
+      "zeta": 9.999999999015618
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.803074164030727,
+      "y_faixa": 7.769732665029919,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 0.6883790386353364,
+    "ganho_truncagem": 0.7690060635530465,
+    "nrmse_full": 0.059162859775352496,
+    "nrmse_final": 0.013666261870967795,
+    "latency_ms": 1289.1330339998603,
+    "n_points": 896
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_16.png",
+    "order": "fopdt",
+    "params": {
+      "K": 5.245612459028917,
+      "tau": 17.701386631157703,
+      "theta": 0.7118149799640987,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 4.725111954174171,
+      "theta_T": 0.19000802259572125,
+      "theta_tau": 0.040212385323033006,
+      "K_yrange": 5.287474187127449
+    },
+    "physical": {
+      "K": 5.245612459028917,
+      "tau": 17.701386631157703,
+      "theta": 0.7118149799640987,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 5.245612459028917,
+      "tau": 17.701386631157703,
+      "theta": 0.7118149799640987,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.746236449597829,
+      "y_faixa": 1.1801920653007796,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.10268936866833976,
+    "nrmse_final": 0.10268936866833976,
+    "latency_ms": 2111.80410399993,
+    "n_points": 659
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_16.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.0957063464090795,
+      "tau": 6.968901379155313,
+      "theta": 1.3646739239844454,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24771847560975427,
+      "theta_T": 0.0485090727736462,
+      "theta_tau": 0.19582339449749178,
+      "K_yrange": -1.0195585137036365
+    },
+    "physical": {
+      "K": -3.0957063464090795,
+      "tau": 6.968901379155313,
+      "theta": 1.3646739239844454,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.0957063464090795,
+      "tau": 6.968901379155313,
+      "theta": 1.3646739239844454,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 34.31042742834148,
+      "y_faixa": 4.1777603561619925,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0031897914624695093,
+    "nrmse_final": 0.0031897914624695093,
+    "latency_ms": 217.1307969999816,
+    "n_points": 511
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_17.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.6854785920488604,
+      "tau": 0.3636976634098841,
+      "theta": 0.2444175410791259,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3080048625227914,
+      "theta_T": 0.206990032414349,
+      "theta_tau": 0.67203495009444,
+      "K_yrange": 1.0832395810805568
+    },
+    "physical": {
+      "K": 0.6854785920488604,
+      "tau": 0.3636976634098841,
+      "theta": 0.2444175410791259,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.6854785920488604,
+      "tau": 0.3636976634098841,
+      "theta": 0.2444175410791259,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.209618364708867,
+      "y_faixa": 1.034920634920635,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002915053887376352,
+    "nrmse_final": 0.002915053887376352,
+    "latency_ms": 243.11215100010486,
+    "n_points": 698
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_17.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.8487195203317874,
+      "tau": 0.10469189173337609,
+      "theta": 0.06693516643155419,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.30434255651150255,
+      "theta_T": 0.19458259216656892,
+      "theta_tau": 0.6393538728101429,
+      "K_yrange": -1.0635535008598611
+    },
+    "physical": {
+      "K": -0.8487195203317874,
+      "tau": 0.10469189173337609,
+      "theta": 0.06693516643155419,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.8487195203317874,
+      "tau": 0.10469189173337609,
+      "theta": 0.06693516643155419,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5140403233236811,
+      "y_faixa": 1.0294246413958896,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00872180672830783,
+    "nrmse_final": 0.00872180672830783,
+    "latency_ms": 211.27380900020398,
+    "n_points": 442
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_18.png",
+    "order": "second",
+    "params": {
+      "K": 7.344777087383024,
+      "tau": null,
+      "theta": 0.33744052779043343,
+      "wn": 9.824929538023401,
+      "zeta": 2.275188947781091
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.275188947781091,
+      "wn_T": 13.911325370417797,
+      "tau_T": null,
+      "theta_T": 0.23831873100060105,
+      "theta_tau": null,
+      "K_yrange": 1.0912118429831872
+    },
+    "physical": {
+      "K": 7.344777087383024,
+      "tau": null,
+      "theta": 0.33744052779043343,
+      "wn": 9.824929538023401,
+      "zeta": 2.275188947781091
+    },
+    "physical_parcial": {
+      "K": 7.344777087383024,
+      "tau": null,
+      "theta": 0.33744052779043343,
+      "wn": 9.824929538023401,
+      "zeta": 2.275188947781091
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.4562480014756227,
+      "y_faixa": 9.330403245823973,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002381266654534375,
+    "nrmse_final": 0.002381266654534375,
+    "latency_ms": 214.63380700015477,
+    "n_points": 949
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_18.png",
+    "order": "second",
+    "params": {
+      "K": -4.2270978492950535,
+      "tau": null,
+      "theta": 0.43364008849926605,
+      "wn": 5.587173826332691,
+      "zeta": 1.4351543013419465
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4351543013419465,
+      "wn_T": 6.197588948860643,
+      "tau_T": null,
+      "theta_T": 0.3909298555460184,
+      "theta_tau": null,
+      "K_yrange": -1.2564364170825673
+    },
+    "physical": {
+      "K": -4.2270978492950535,
+      "tau": null,
+      "theta": 0.43364008849926605,
+      "wn": 5.587173826332691,
+      "zeta": 1.4351543013419465
+    },
+    "physical_parcial": {
+      "K": -4.2270978492950535,
+      "tau": null,
+      "theta": 0.43364008849926605,
+      "wn": 5.587173826332691,
+      "zeta": 1.4351543013419465
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2323106792247658,
+      "y_faixa": 4.4429273247094,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0026119927296508927,
+    "nrmse_final": 0.0026119927296508927,
+    "latency_ms": 238.8960099999622,
+    "n_points": 641
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_19.png",
+    "order": "fopdt",
+    "params": {
+      "K": 6.40630755393017,
+      "tau": 0.36180729807426254,
+      "theta": 0.2857983201325472,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2564830323122148,
+      "theta_T": 0.20260072189667985,
+      "theta_tau": 0.7899186159420306,
+      "K_yrange": 1.0415162587677882
+    },
+    "physical": {
+      "K": 6.40630755393017,
+      "tau": 0.36180729807426254,
+      "theta": 0.2857983201325472,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 6.40630755393017,
+      "tau": 0.36180729807426254,
+      "theta": 0.2857983201325472,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.4352238344516182,
+      "y_faixa": 7.566037735849059,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017588894055136058,
+    "nrmse_final": 0.0017588894055136058,
+    "latency_ms": 240.45328000011068,
+    "n_points": 575
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_19.png",
+    "order": "second",
+    "params": {
+      "K": -5.480038735858445,
+      "tau": null,
+      "theta": 0.9500599422195065,
+      "wn": 3.787213914516874,
+      "zeta": 1.9751941026096413
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.9751941026096413,
+      "wn_T": 16.400093657523126,
+      "tau_T": null,
+      "theta_T": 0.21939388322628786,
+      "theta_tau": null,
+      "K_yrange": -1.0219081970333708
+    },
+    "physical": {
+      "K": -5.480038735858445,
+      "tau": null,
+      "theta": 0.9500599422195065,
+      "wn": 3.787213914516874,
+      "zeta": 1.9751941026096413
+    },
+    "physical_parcial": {
+      "K": -5.480038735858445,
+      "tau": null,
+      "theta": 0.9500599422195065,
+      "wn": 3.787213914516874,
+      "zeta": 1.9751941026096413
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.367773714874791,
+      "y_faixa": 7.027998685259417,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.003086414483801209,
+    "nrmse_final": 0.003086414483801209,
+    "latency_ms": 209.00038900003892,
+    "n_points": 456
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_20.png",
+    "order": "second",
+    "params": {
+      "K": 11.738432289087507,
+      "tau": null,
+      "theta": 7.900280114036,
+      "wn": 0.07481304165632713,
+      "zeta": 1.1001898927558227
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.1001898927558227,
+      "wn_T": 7.2154273390726615,
+      "tau_T": null,
+      "theta_T": 0.0819139265761063,
+      "theta_tau": null,
+      "K_yrange": 1.0238879812596933
+    },
+    "physical": {
+      "K": 11.738432289087507,
+      "tau": null,
+      "theta": 7.900280114036,
+      "wn": 0.07481304165632713,
+      "zeta": 1.1001898927558227
+    },
+    "physical_parcial": {
+      "K": 11.738432289087507,
+      "tau": null,
+      "theta": 7.900280114036,
+      "wn": 0.07481304165632713,
+      "zeta": 1.1001898927558227
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 98.1957060206706,
+      "y_faixa": 14.456692913385826,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.005660600217968777,
+    "nrmse_final": 0.005660600217968777,
+    "latency_ms": 241.88430599997446,
+    "n_points": 883
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_20.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.381512614031136,
+      "tau": 2.3429455390033866,
+      "theta": 2.8497311006536736,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2782986159565834,
+      "theta_T": 0.338495371726693,
+      "theta_tau": 1.2163027493442538,
+      "K_yrange": -1.0658175024003493
+    },
+    "physical": {
+      "K": -3.381512614031136,
+      "tau": 2.3429455390033866,
+      "theta": 2.8497311006536736,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.381512614031136,
+      "tau": 2.3429455390033866,
+      "theta": 2.8497311006536736,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.419242057739577,
+      "y_faixa": 4.025729435544831,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0022283814903447862,
+    "nrmse_final": 0.0022283814903447862,
+    "latency_ms": 288.0085770000278,
+    "n_points": 994
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_21.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.7974048490486352,
+      "tau": 1.1967318148572526,
+      "theta": 0.46772845577985395,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.516136722622601,
+      "theta_T": 0.20172592492858546,
+      "theta_tau": 0.3908381560288385,
+      "K_yrange": 1.2495603416886067
+    },
+    "physical": {
+      "K": 1.7974048490486352,
+      "tau": 1.1967318148572526,
+      "theta": 0.46772845577985395,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.7974048490486352,
+      "tau": 1.1967318148572526,
+      "theta": 0.46772845577985395,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.3832509940160893,
+      "y_faixa": 1.6814748507630704,
+      "n_pairs_x": 4,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0031477994445002345,
+    "nrmse_final": 0.0031477994445002345,
+    "latency_ms": 209.5794310000656,
+    "n_points": 611
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_21.png",
+    "order": "second",
+    "params": {
+      "K": -4.0495837537710715,
+      "tau": null,
+      "theta": 12.597824583200667,
+      "wn": 0.07549479948850932,
+      "zeta": 1.4100690034504504
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4100690034504504,
+      "wn_T": 10.395996861023491,
+      "tau_T": null,
+      "theta_T": 0.09148427549703152,
+      "theta_tau": null,
+      "K_yrange": -1.0182479380869451
+    },
+    "physical": {
+      "K": -4.0495837537710715,
+      "tau": null,
+      "theta": 12.597824583200667,
+      "wn": 0.07549479948850932,
+      "zeta": 1.4100690034504504
+    },
+    "physical_parcial": {
+      "K": -4.0495837537710715,
+      "tau": null,
+      "theta": 12.597824583200667,
+      "wn": 0.07549479948850932,
+      "zeta": 1.4100690034504504
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 140.87323710844456,
+      "y_faixa": 4.862068965517244,
+      "n_pairs_x": 8,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0019322549744580555,
+    "nrmse_final": 0.0019322549744580555,
+    "latency_ms": 191.04802800006837,
+    "n_points": 566
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_22.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.993054909823844,
+      "y_faixa": 2.0583003763964816,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.2876605146155421,
+    "nrmse_final": 0.2876605146155421,
+    "latency_ms": 2825.538563000009,
+    "n_points": 678
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_22.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.3401050016730003,
+      "tau": 1.5508143367335296,
+      "theta": 0.3520811698166661,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3841497521865615,
+      "theta_T": 0.08721346645498981,
+      "theta_tau": 0.2270298651985978,
+      "K_yrange": -1.0916943530578205
+    },
+    "physical": {
+      "K": -2.3401050016730003,
+      "tau": 1.5508143367335296,
+      "theta": 0.3520811698166661,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.3401050016730003,
+      "tau": 1.5508143367335296,
+      "theta": 0.3520811698166661,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.1929798319843865,
+      "y_faixa": 2.4926181387847914,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0033479914208494675,
+    "nrmse_final": 0.0033479914208494675,
+    "latency_ms": 241.86605899990354,
+    "n_points": 881
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_23.png",
+    "order": "second",
+    "params": {
+      "K": 1.333144193098814,
+      "tau": null,
+      "theta": 0.5072933167409728,
+      "wn": 2.1072420652701243,
+      "zeta": 0.9019548043877353
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.9019548043877353,
+      "wn_T": 3.5138992390163915,
+      "tau_T": null,
+      "theta_T": 0.30421754972297094,
+      "theta_tau": null,
+      "K_yrange": 1.2089788025651005
+    },
+    "physical": {
+      "K": 1.333144193098814,
+      "tau": null,
+      "theta": 0.5072933167409728,
+      "wn": 2.1072420652701243,
+      "zeta": 0.9019548043877353
+    },
+    "physical_parcial": {
+      "K": 1.333144193098814,
+      "tau": null,
+      "theta": 0.5072933167409728,
+      "wn": 2.1072420652701243,
+      "zeta": 0.9019548043877353
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.8697321889540746,
+      "y_faixa": 1.264864864864865,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002137469206048602,
+    "nrmse_final": 0.002137469206048602,
+    "latency_ms": 236.20599200012293,
+    "n_points": 702
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_23.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.47021861664844145,
+      "tau": 7.584081878073419,
+      "theta": 2.480778305421101,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3674703794550666,
+      "theta_T": 0.12020077840570012,
+      "theta_tau": 0.3271033126097119,
+      "K_yrange": -1.079464342809119
+    },
+    "physical": {
+      "K": -0.47021861664844145,
+      "tau": 7.584081878073419,
+      "theta": 2.480778305421101,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.47021861664844145,
+      "tau": 7.584081878073419,
+      "theta": 2.480778305421101,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 33.99070590512908,
+      "y_faixa": 2.0545584307608538,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006313762692111977,
+    "nrmse_final": 0.006313762692111977,
+    "latency_ms": 244.8289769999974,
+    "n_points": 525
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_1deg_24.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.033180650312757,
+      "tau": 2.297500546912169,
+      "theta": 2.5450511175657065,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.21555777512298166,
+      "theta_T": 0.23878364565094237,
+      "theta_tau": 1.1077477744178317,
+      "K_yrange": 1.0296469676811326
+    },
+    "physical": {
+      "K": 1.033180650312757,
+      "tau": 2.297500546912169,
+      "theta": 2.5450511175657065,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.033180650312757,
+      "tau": 2.297500546912169,
+      "theta": 2.5450511175657065,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 11.154137381936092,
+      "y_faixa": 1.4690964573909124,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0020114552104879965,
+    "nrmse_final": 0.0020114552104879965,
+    "latency_ms": 258.461527999998,
+    "n_points": 689
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_1deg_24.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.4840756593009319,
+      "tau": 0.34248258547109217,
+      "theta": 0.3484385099244972,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4383747207395769,
+      "theta_T": 0.4459982520657495,
+      "theta_tau": 1.0173904446709678,
+      "K_yrange": -1.3129282563422482
+    },
+    "physical": {
+      "K": -1.4840756593009319,
+      "tau": 0.34248258547109217,
+      "theta": 0.3484385099244972,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.4840756593009319,
+      "tau": 0.34248258547109217,
+      "theta": 0.3484385099244972,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.854653517728755,
+      "y_faixa": 1.500290010733037,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006449736181801205,
+    "nrmse_final": 0.006449736181801205,
+    "latency_ms": 957.682707999993,
+    "n_points": 629
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_00.png",
+    "order": "second",
+    "params": {
+      "K": 27.27407528905236,
+      "tau": null,
+      "theta": 1.2893484741732297,
+      "wn": 0.0726403254702876,
+      "zeta": 0.9868373141773348
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.9868373141773348,
+      "wn_T": 7.805164850364441,
+      "tau_T": null,
+      "theta_T": 0.011999579074129227,
+      "theta_tau": null,
+      "K_yrange": 0.9983854515127315
+    },
+    "physical": {
+      "K": 27.27407528905236,
+      "tau": null,
+      "theta": 1.2893484741732297,
+      "wn": 0.0726403254702876,
+      "zeta": 0.9868373141773348
+    },
+    "physical_parcial": {
+      "K": 27.27407528905236,
+      "tau": null,
+      "theta": 1.2893484741732297,
+      "wn": 0.0726403254702876,
+      "zeta": 0.9868373141773348
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 110.21133441884194,
+      "y_faixa": 33.181818181818194,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.011786446289424648,
+    "nrmse_final": 0.011786446289424648,
+    "latency_ms": 211.9604160000108,
+    "n_points": 818
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_00.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 16.19932596023061,
+      "y_faixa": 3.99612777018109,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.5788176528469181,
+    "nrmse_final": 0.5788176528469181,
+    "latency_ms": 406.23083600007703,
+    "n_points": 824
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_01.png",
+    "order": "second",
+    "params": {
+      "K": 11.7468138871957,
+      "tau": null,
+      "theta": 6.671831883320246,
+      "wn": 0.12598674694523396,
+      "zeta": 0.6735458665745727
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.6735458665745727,
+      "wn_T": 4.872928260167578,
+      "tau_T": null,
+      "theta_T": 0.1724963615852832,
+      "theta_tau": null,
+      "K_yrange": 0.9331991694963796
+    },
+    "physical": {
+      "K": 11.7468138871957,
+      "tau": null,
+      "theta": 6.671831883320246,
+      "wn": 0.12598674694523396,
+      "zeta": 0.6735458665745727
+    },
+    "physical_parcial": {
+      "K": 11.7468138871957,
+      "tau": null,
+      "theta": 6.671831883320246,
+      "wn": 0.12598674694523396,
+      "zeta": 0.6735458665745727
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 39.965655420519695,
+      "y_faixa": 13.754344623031178,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01020778471142794,
+    "nrmse_final": 0.01020778471142794,
+    "latency_ms": 206.47447500005,
+    "n_points": 752
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_01.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 43.37743577408266,
+      "y_faixa": 24.463954879106947,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 15.938445220821867,
+    "ganho_truncagem": 0.8714276295877585,
+    "nrmse_full": 0.19365936900205985,
+    "nrmse_final": 0.0248992441251338,
+    "latency_ms": 1395.153584999889,
+    "n_points": 981
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.5489484633103217,
+      "tau": 10.010614805964526,
+      "theta": 5.213114289431655,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.8384376425951614,
+      "theta_T": 0.4366236580001034,
+      "theta_tau": 0.5207586537367891,
+      "K_yrange": 1.9702136502361562
+    },
+    "physical": {
+      "K": 1.5489484633103217,
+      "tau": 10.010614805964526,
+      "theta": 5.213114289431655,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.5489484633103217,
+      "tau": 10.010614805964526,
+      "theta": 5.213114289431655,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 35.29051578424241,
+      "y_faixa": 3.653333267881292,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 12.3245392316992,
+    "ganho_truncagem": 0.8497316795294149,
+    "nrmse_full": 0.039321147399671755,
+    "nrmse_final": 0.005908722778724991,
+    "latency_ms": 1276.4136320001853,
+    "n_points": 651
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -14.556901283695806,
+      "tau": 12.585496511585061,
+      "theta": 5.0770790808880495,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5295264977800732,
+      "theta_T": 0.21361476698041923,
+      "theta_tau": 0.40340713425287217,
+      "K_yrange": -1.2470987044529354
+    },
+    "physical": {
+      "K": -14.556901283695806,
+      "tau": 12.585496511585061,
+      "theta": 5.0770790808880495,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -14.556901283695806,
+      "tau": 12.585496511585061,
+      "theta": 5.0770790808880495,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 69.59982139616235,
+      "y_faixa": 23.517516676296026,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 25.18424495511595,
+    "ganho_truncagem": 0.9672052052752016,
+    "nrmse_full": 0.17942752856257024,
+    "nrmse_final": 0.005884288967187394,
+    "latency_ms": 870.6074280000848,
+    "n_points": 1002
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_03.png",
+    "order": "second",
+    "params": {
+      "K": 2.8788790800736015,
+      "tau": null,
+      "theta": 0.4481290764124805,
+      "wn": 2.3114666651962916,
+      "zeta": 1.4728946426583813
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4728946426583813,
+      "wn_T": 4.538264221777334,
+      "tau_T": null,
+      "theta_T": 0.22824484675486417,
+      "theta_tau": null,
+      "K_yrange": 1.3783138820993717
+    },
+    "physical": {
+      "K": 2.8788790800736015,
+      "tau": null,
+      "theta": 0.4481290764124805,
+      "wn": 2.3114666651962916,
+      "zeta": 1.4728946426583813
+    },
+    "physical_parcial": {
+      "K": 2.8788790800736015,
+      "tau": null,
+      "theta": 0.4481290764124805,
+      "wn": 2.3114666651962916,
+      "zeta": 1.4728946426583813
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.706959706959706,
+      "y_faixa": 9.404357909356538,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 2.043956043956043,
+    "ganho_truncagem": 0.8351618946147462,
+    "nrmse_full": 0.0471452961135572,
+    "nrmse_final": 0.0077713412891855385,
+    "latency_ms": 1212.8000309999152,
+    "n_points": 769
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_03.png",
+    "order": "second",
+    "params": {
+      "K": -5.9030398552283945,
+      "tau": null,
+      "theta": 1.0934283198438948,
+      "wn": 0.13730190394684003,
+      "zeta": 2.0563437525443375
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.0563437525443375,
+      "wn_T": 7.863566705133199,
+      "tau_T": null,
+      "theta_T": 0.01909181873486989,
+      "theta_tau": null,
+      "K_yrange": -1.174535877171594
+    },
+    "physical": {
+      "K": -5.9030398552283945,
+      "tau": null,
+      "theta": 1.0934283198438948,
+      "wn": 0.13730190394684003,
+      "zeta": 2.0563437525443375
+    },
+    "physical_parcial": {
+      "K": -5.9030398552283945,
+      "tau": null,
+      "theta": 1.0934283198438948,
+      "wn": 0.13730190394684003,
+      "zeta": 2.0563437525443375
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 165.15097747067705,
+      "y_faixa": 15.718096093399188,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 58.22124628604591,
+    "ganho_truncagem": 0.9690108022384705,
+    "nrmse_full": 0.22843142481188225,
+    "nrmse_final": 0.007078906598443388,
+    "latency_ms": 768.8593509999464,
+    "n_points": 666
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": 24.844868878435392,
+      "tau": 2.4795721945513183,
+      "theta": 0.09014759019203465,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3253158143712419,
+      "theta_T": 0.011827216316334516,
+      "theta_tau": 0.03635610626305921,
+      "K_yrange": 1.0486574129745379
+    },
+    "physical": {
+      "K": 24.844868878435392,
+      "tau": 2.4795721945513183,
+      "theta": 0.09014759019203465,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 24.844868878435392,
+      "tau": 2.4795721945513183,
+      "theta": 0.09014759019203465,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.724355631640842,
+      "y_faixa": 26.338043594084866,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.02002062561595781,
+    "nrmse_final": 0.02002062561595781,
+    "latency_ms": 838.9263859999119,
+    "n_points": 746
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.20448191355134604,
+      "tau": 1.3718325212913223,
+      "theta": 0.6961281722826013,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4814398947499811,
+      "theta_T": 0.24430378256433036,
+      "theta_tau": 0.507443992964482,
+      "K_yrange": -1.213028300728323
+    },
+    "physical": {
+      "K": -0.20448191355134604,
+      "tau": 1.3718325212913223,
+      "theta": 0.6961281722826013,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.20448191355134604,
+      "tau": 1.3718325212913223,
+      "theta": 0.6961281722826013,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 8.323591216533051,
+      "y_faixa": 1.5514285714285727,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 2.898556460065361,
+    "ganho_truncagem": 0.6696679926534082,
+    "nrmse_full": 0.04352873369456977,
+    "nrmse_final": 0.014378933978582462,
+    "latency_ms": 1044.9943769999663,
+    "n_points": 910
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_05.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.8189880004867248,
+      "y_faixa": 5.139240506329116,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.1723251571454516,
+    "nrmse_final": 0.1723251571454516,
+    "latency_ms": 1430.554304999987,
+    "n_points": 877
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_05.png",
+    "order": "second",
+    "params": {
+      "K": -0.5675217699752921,
+      "tau": null,
+      "theta": 5.5742463429168545,
+      "wn": 0.4385424580820502,
+      "zeta": 0.37853199431384604
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.37853199431384604,
+      "wn_T": 4.533297279104817,
+      "tau_T": null,
+      "theta_T": 0.5392418680427586,
+      "theta_tau": null,
+      "K_yrange": -0.8980595024123509
+    },
+    "physical": {
+      "K": -0.5675217699752921,
+      "tau": null,
+      "theta": 5.5742463429168545,
+      "wn": 0.4385424580820502,
+      "zeta": 0.37853199431384604
+    },
+    "physical_parcial": {
+      "K": -0.5675217699752921,
+      "tau": null,
+      "theta": 5.5742463429168545,
+      "wn": 0.4385424580820502,
+      "zeta": 0.37853199431384604
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 30.82498197710035,
+      "y_faixa": 1.8135621659196044,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 11.03892051037952,
+    "ganho_truncagem": 0.9496019101068865,
+    "nrmse_full": 0.09766829469405547,
+    "nrmse_final": 0.004922295495698102,
+    "latency_ms": 841.640433000066,
+    "n_points": 796
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.2307124010872894,
+      "tau": 0.13643144794698225,
+      "theta": 0.07979166043930232,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5148849663899523,
+      "theta_T": 0.3011294464854896,
+      "theta_tau": 0.584848007112771,
+      "K_yrange": 1.2551913349765653
+    },
+    "physical": {
+      "K": 0.2307124010872894,
+      "tau": 0.13643144794698225,
+      "theta": 0.07979166043930232,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.2307124010872894,
+      "tau": 0.13643144794698225,
+      "theta": 0.07979166043930232,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6862944162436547,
+      "y_faixa": 3.5306176681829062,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 0.27258883248730953,
+    "ganho_truncagem": 0.6347504362382863,
+    "nrmse_full": 0.06876904614943416,
+    "nrmse_final": 0.025117864106389987,
+    "latency_ms": 2048.491097999886,
+    "n_points": 656
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_06.png",
+    "order": "second",
+    "params": {
+      "K": -0.7555145282745956,
+      "tau": null,
+      "theta": 14.600991163947135,
+      "wn": 0.29209181689933317,
+      "zeta": 2.1234829440230167
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.1234829440230167,
+      "wn_T": 7.651154670877257,
+      "tau_T": null,
+      "theta_T": 0.5574099885657436,
+      "theta_tau": null,
+      "K_yrange": -1.474908840057975
+    },
+    "physical": {
+      "K": -0.7555145282745956,
+      "tau": null,
+      "theta": 14.600991163947135,
+      "wn": 0.29209181689933317,
+      "zeta": 2.1234829440230167
+    },
+    "physical_parcial": {
+      "K": -0.7555145282745956,
+      "tau": null,
+      "theta": 14.600991163947135,
+      "wn": 0.29209181689933317,
+      "zeta": 2.1234829440230167
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 80.55997561985585,
+      "y_faixa": 1.6734693877551021,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 30.543685356559607,
+    "ganho_truncagem": 0.8174178011526536,
+    "nrmse_full": 0.04602284922351679,
+    "nrmse_final": 0.008402953008449586,
+    "latency_ms": 776.5414319999309,
+    "n_points": 762
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_07.png",
+    "order": "second",
+    "params": {
+      "K": 1.4350313263787977,
+      "tau": null,
+      "theta": 0.05393028183135501,
+      "wn": 30.37237678393296,
+      "zeta": 2.7065413336469106
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.7065413336469106,
+      "wn_T": 10.87086920562984,
+      "tau_T": null,
+      "theta_T": 0.1506770810007833,
+      "theta_tau": null,
+      "K_yrange": 1.1683440887331813
+    },
+    "physical": {
+      "K": 1.4350313263787977,
+      "tau": null,
+      "theta": 0.05393028183135501,
+      "wn": 30.37237678393296,
+      "zeta": 2.7065413336469106
+    },
+    "physical_parcial": {
+      "K": 1.4350313263787977,
+      "tau": null,
+      "theta": 0.05393028183135501,
+      "wn": 30.37237678393296,
+      "zeta": 2.7065413336469106
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.0828971982747908,
+      "y_faixa": 2.516304347826085,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 0.3918625863888745,
+    "ganho_truncagem": 0.7743410564325643,
+    "nrmse_full": 0.03324930500724991,
+    "nrmse_final": 0.007503003042287462,
+    "latency_ms": 780.9894580000218,
+    "n_points": 677
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_07.png",
+    "order": "second",
+    "params": {
+      "K": -3.108281006264294,
+      "tau": null,
+      "theta": 8.238987617269265,
+      "wn": 0.05017825969711453,
+      "zeta": 0.3568267909656053
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.3568267909656053,
+      "wn_T": 3.8508747826615735,
+      "tau_T": null,
+      "theta_T": 0.10735692112401268,
+      "theta_tau": null,
+      "K_yrange": -0.7525597238526932
+    },
+    "physical": {
+      "K": -3.108281006264294,
+      "tau": null,
+      "theta": 8.238987617269265,
+      "wn": 0.05017825969711453,
+      "zeta": 0.3568267909656053
+    },
+    "physical_parcial": {
+      "K": -3.108281006264294,
+      "tau": null,
+      "theta": 8.238987617269265,
+      "wn": 0.05017825969711453,
+      "zeta": 0.3568267909656053
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 81.24968530760631,
+      "y_faixa": 5.0034577947337775,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.021356898645737966,
+    "nrmse_final": 0.021356898645737966,
+    "latency_ms": 226.91823800005295,
+    "n_points": 529
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_08.png",
+    "order": "second",
+    "params": {
+      "K": 9.328653456856042,
+      "tau": null,
+      "theta": 0.1873971705862133,
+      "wn": 2.0795241268517053,
+      "zeta": 0.3584446854701826
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.3584446854701826,
+      "wn_T": 3.7383930082864376,
+      "tau_T": null,
+      "theta_T": 0.10424183243280785,
+      "theta_tau": null,
+      "K_yrange": 0.7508847575377379
+    },
+    "physical": {
+      "K": 9.328653456856042,
+      "tau": null,
+      "theta": 0.1873971705862133,
+      "wn": 2.0795241268517053,
+      "zeta": 0.3584446854701826
+    },
+    "physical_parcial": {
+      "K": 9.328653456856042,
+      "tau": null,
+      "theta": 0.1873971705862133,
+      "wn": 2.0795241268517053,
+      "zeta": 0.3584446854701826
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.8239743890826228,
+      "y_faixa": 14.40917003437892,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01139920960514282,
+    "nrmse_final": 0.01139920960514282,
+    "latency_ms": 287.6672789998338,
+    "n_points": 891
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_08.png",
+    "order": "second",
+    "params": {
+      "K": -2.566297210532733,
+      "tau": null,
+      "theta": 1.3981237559559252,
+      "wn": 0.2258822502692141,
+      "zeta": 0.12833682245789577
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.12833682245789577,
+      "wn_T": 4.505007293711286,
+      "tau_T": null,
+      "theta_T": 0.07010229275122887,
+      "theta_tau": null,
+      "K_yrange": -0.5857991187093837
+    },
+    "physical": {
+      "K": -2.566297210532733,
+      "tau": null,
+      "theta": 1.3981237559559252,
+      "wn": 0.2258822502692141,
+      "zeta": 0.12833682245789577
+    },
+    "physical_parcial": {
+      "K": -2.566297210532733,
+      "tau": null,
+      "theta": 1.3981237559559252,
+      "wn": 0.2258822502692141,
+      "zeta": 0.12833682245789577
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 20.470949421400313,
+      "y_faixa": 4.838704438010138,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.10000362460263747,
+    "nrmse_final": 0.10000362460263747,
+    "latency_ms": 956.614940999998,
+    "n_points": 1023
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_09.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9217501901618802,
+      "y_faixa": 1.9668028463936105,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04461731066694225,
+    "nrmse_final": 0.04461731066694225,
+    "latency_ms": 1516.6916529999526,
+    "n_points": 592
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": -4.7524437794003225,
+      "tau": 4.793447285246316,
+      "theta": 2.126331286033242,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.21726155337355033,
+      "theta_T": 0.09637532462540106,
+      "theta_tau": 0.4435912527040502,
+      "K_yrange": -1.01954315590734
+    },
+    "physical": {
+      "K": -4.7524437794003225,
+      "tau": 4.793447285246316,
+      "theta": 2.126331286033242,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -4.7524437794003225,
+      "tau": 4.793447285246316,
+      "theta": 2.126331286033242,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 23.352423547208385,
+      "y_faixa": 5.165993545087388,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0071512468205111755,
+    "nrmse_final": 0.0071512468205111755,
+    "latency_ms": 226.80162500000733,
+    "n_points": 617
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_10.png",
+    "order": "second",
+    "params": {
+      "K": 10.549283348181373,
+      "tau": null,
+      "theta": 1.9562315987852236e-19,
+      "wn": 0.4287225883865386,
+      "zeta": 0.9223243554559842
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.9223243554559842,
+      "wn_T": 5.271472998694469,
+      "tau_T": null,
+      "theta_T": 1.590979740809533e-20,
+      "theta_tau": null,
+      "K_yrange": 1.0084849490085332
+    },
+    "physical": {
+      "K": 10.549283348181373,
+      "tau": null,
+      "theta": 1.9562315987852236e-19,
+      "wn": 0.4287225883865386,
+      "zeta": 0.9223243554559842
+    },
+    "physical_parcial": {
+      "K": 10.549283348181373,
+      "tau": null,
+      "theta": 1.9562315987852236e-19,
+      "wn": 0.4287225883865386,
+      "zeta": 0.9223243554559842
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.521118840103723,
+      "y_faixa": 11.473684210526322,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.016845095203285365,
+    "nrmse_final": 0.016845095203285365,
+    "latency_ms": 220.03010000003087,
+    "n_points": 874
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_10.png",
+    "order": "second",
+    "params": {
+      "K": -25.664947648783315,
+      "tau": null,
+      "theta": 0.28194146553213,
+      "wn": 2.798493096204766,
+      "zeta": 0.9212178886054103
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.9212178886054103,
+      "wn_T": 6.606579247612889,
+      "tau_T": null,
+      "theta_T": 0.11942810571909931,
+      "theta_tau": null,
+      "K_yrange": -0.998604965323197
+    },
+    "physical": {
+      "K": -25.664947648783315,
+      "tau": null,
+      "theta": 0.28194146553213,
+      "wn": 2.798493096204766,
+      "zeta": 0.9212178886054103
+    },
+    "physical_parcial": {
+      "K": -25.664947648783315,
+      "tau": null,
+      "theta": 0.28194146553213,
+      "wn": 2.798493096204766,
+      "zeta": 0.9212178886054103
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.387794742340237,
+      "y_faixa": 31.513093809557414,
+      "n_pairs_x": 4,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0031058135657795497,
+    "nrmse_final": 0.0031058135657795497,
+    "latency_ms": 236.89624700000422,
+    "n_points": 787
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_11.png",
+    "order": "fopdt",
+    "params": {
+      "K": 8.620449854474195,
+      "tau": 0.799197398680365,
+      "theta": 0.04104465926640608,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 1.5162181652112727,
+      "theta_T": 0.07786894460291122,
+      "theta_tau": 0.05135734842753372,
+      "K_yrange": 2.20003221109324
+    },
+    "physical": {
+      "K": 8.620449854474195,
+      "tau": 0.799197398680365,
+      "theta": 0.04104465926640608,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 8.620449854474195,
+      "tau": 0.799197398680365,
+      "theta": 0.04104465926640608,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5336753048657893,
+      "y_faixa": 5.317111538177026,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.02755335195373644,
+    "nrmse_final": 0.02755335195373644,
+    "latency_ms": 254.0296929998931,
+    "n_points": 1043
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_11.png",
+    "order": "fopdt",
+    "params": {
+      "K": -7.771066285854402,
+      "tau": 1.4644216850500003,
+      "theta": 0.4713272870675827,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4460985431492792,
+      "theta_T": 0.14357778108166422,
+      "theta_tau": 0.3218521631298365,
+      "K_yrange": -1.0996434734700349
+    },
+    "physical": {
+      "K": -7.771066285854402,
+      "tau": 1.4644216850500003,
+      "theta": 0.4713272870675827,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -7.771066285854402,
+      "tau": 1.4644216850500003,
+      "theta": 0.4713272870675827,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.3329041278039067,
+      "y_faixa": 8.21546623895942,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.12502592252957884,
+    "nrmse_final": 0.12502592252957884,
+    "latency_ms": 1178.7353079998866,
+    "n_points": 917
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_12.png",
+    "order": "second",
+    "params": {
+      "K": 0.27709903732512897,
+      "tau": null,
+      "theta": 10.013340155539328,
+      "wn": 0.061560727798196505,
+      "zeta": 0.0010000000000000002
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.0010000000000000002,
+      "wn_T": 2.7825336208982847,
+      "tau_T": null,
+      "theta_T": 0.22153497195369226,
+      "theta_tau": null,
+      "K_yrange": 0.5055517657450551
+    },
+    "physical": {
+      "K": 0.27709903732512897,
+      "tau": null,
+      "theta": 10.013340155539328,
+      "wn": 0.061560727798196505,
+      "zeta": 0.0010000000000000002
+    },
+    "physical_parcial": {
+      "K": 0.27709903732512897,
+      "tau": null,
+      "theta": 10.013340155539328,
+      "wn": 0.061560727798196505,
+      "zeta": 0.0010000000000000002
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 57.923248949595646,
+      "y_faixa": 1.7880486017633028,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0086423393111768,
+    "nrmse_final": 0.0086423393111768,
+    "latency_ms": 238.31256800008305,
+    "n_points": 644
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_12.png",
+    "order": "second",
+    "params": {
+      "K": -7.019127381621517,
+      "tau": null,
+      "theta": 0.0071017759998332755,
+      "wn": 4.463938847295677,
+      "zeta": 2.1437950886392603
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.1437950886392603,
+      "wn_T": 7.150210422041295,
+      "tau_T": null,
+      "theta_T": 0.004433700814275808,
+      "theta_tau": null,
+      "K_yrange": -1.2219891826369267
+    },
+    "physical": {
+      "K": -7.019127381621517,
+      "tau": null,
+      "theta": 0.0071017759998332755,
+      "wn": 4.463938847295677,
+      "zeta": 2.1437950886392603
+    },
+    "physical_parcial": {
+      "K": -7.019127381621517,
+      "tau": null,
+      "theta": 0.0071017759998332755,
+      "wn": 4.463938847295677,
+      "zeta": 2.1437950886392603
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.647036942916167,
+      "y_faixa": 15.132275993992458,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 1.6068378826224867,
+    "ganho_truncagem": 0.9092389800684687,
+    "nrmse_full": 0.034406189766537275,
+    "nrmse_final": 0.003122740875168738,
+    "latency_ms": 706.8851600001835,
+    "n_points": 727
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_13.png",
+    "order": "second",
+    "params": {
+      "K": 7.008787173650103,
+      "tau": null,
+      "theta": 1.8702493575711034,
+      "wn": 0.21893781227082804,
+      "zeta": 0.6420656996642585
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.6420656996642585,
+      "wn_T": 3.5460820660399315,
+      "tau_T": null,
+      "theta_T": 0.11547062225912064,
+      "theta_tau": null,
+      "K_yrange": 0.9292492226870397
+    },
+    "physical": {
+      "K": 7.008787173650103,
+      "tau": null,
+      "theta": 1.8702493575711034,
+      "wn": 0.21893781227082804,
+      "zeta": 0.6420656996642585
+    },
+    "physical_parcial": {
+      "K": 7.008787173650103,
+      "tau": null,
+      "theta": 1.8702493575711034,
+      "wn": 0.21893781227082804,
+      "zeta": 0.6420656996642585
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 48.17034859242362,
+      "y_faixa": 21.63731506416374,
+      "n_pairs_x": 4,
+      "n_pairs_y": 9
+    },
+    "truncado_em": 16.75165263828363,
+    "ganho_truncagem": 0.9520332540421094,
+    "nrmse_full": 0.1713868844272502,
+    "nrmse_final": 0.00822087114583628,
+    "latency_ms": 1032.4875209998936,
+    "n_points": 775
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_13.png",
+    "order": "fopdt",
+    "params": {
+      "K": -18.369959539964064,
+      "tau": 99.51419844255543,
+      "theta": 14.314275152130584,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.26604658857319285,
+      "theta_T": 0.03826854993280867,
+      "theta_tau": 0.14384153594316995,
+      "K_yrange": -0.8685734559991637
+    },
+    "physical": {
+      "K": -18.369959539964064,
+      "tau": 99.51419844255543,
+      "theta": 14.314275152130584,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -18.369959539964064,
+      "tau": 99.51419844255543,
+      "theta": 14.314275152130584,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 378.84965866447675,
+      "y_faixa": 28.52481154892201,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.12656289002391047,
+    "nrmse_final": 0.12656289002391047,
+    "latency_ms": 879.871435000041,
+    "n_points": 780
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_14.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.3760673244552721,
+      "tau": 0.16884369251681766,
+      "theta": 0.09082180864174426,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.6784538107349669,
+      "theta_T": 0.36494346488362805,
+      "theta_tau": 0.53790465778103,
+      "K_yrange": 1.6388665803123792
+    },
+    "physical": {
+      "K": 1.3760673244552721,
+      "tau": 0.16884369251681766,
+      "theta": 0.09082180864174426,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.3760673244552721,
+      "tau": 0.16884369251681766,
+      "theta": 0.09082180864174426,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.7281617842618457,
+      "y_faixa": 4.6104183661577895,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 0.2527069345922992,
+    "ganho_truncagem": 0.7923447982888252,
+    "nrmse_full": 0.03632083352650132,
+    "nrmse_final": 0.007542210012263633,
+    "latency_ms": 1647.6037410000117,
+    "n_points": 700
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_14.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 17.748536160673876,
+      "y_faixa": 10.362783969628092,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": 6.042215935396193,
+    "ganho_truncagem": 0.85296940610855,
+    "nrmse_full": 0.2620223291025025,
+    "nrmse_final": 0.03852529866076191,
+    "latency_ms": 1077.8675390001808,
+    "n_points": 902
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_15.png",
+    "order": "second",
+    "params": {
+      "K": 0.9533561035476744,
+      "tau": null,
+      "theta": 2.508550731800152,
+      "wn": 0.5910891082821987,
+      "zeta": 0.7378440426628676
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7378440426628676,
+      "wn_T": 2.037960493673379,
+      "tau_T": null,
+      "theta_T": 0.7275788808190958,
+      "theta_tau": null,
+      "K_yrange": 1.781871707499039
+    },
+    "physical": {
+      "K": 0.9533561035476744,
+      "tau": null,
+      "theta": 2.508550731800152,
+      "wn": 0.5910891082821987,
+      "zeta": 0.7378440426628676
+    },
+    "physical_parcial": {
+      "K": 0.9533561035476744,
+      "tau": null,
+      "theta": 2.508550731800152,
+      "wn": 0.5910891082821987,
+      "zeta": 0.7378440426628676
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 14.97640672168742,
+      "y_faixa": 3.797669035888716,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 8.104375315807888,
+    "ganho_truncagem": 0.9513669618647015,
+    "nrmse_full": 0.1905905345298128,
+    "nrmse_final": 0.009268996734015319,
+    "latency_ms": 1987.7265330001137,
+    "n_points": 369
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_15.png",
+    "order": "second",
+    "params": {
+      "K": -2.480766971409652,
+      "tau": null,
+      "theta": 3.211188007750107,
+      "wn": 0.27536426687907406,
+      "zeta": 1.2506389771309763
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2506389771309763,
+      "wn_T": 7.560434408378564,
+      "tau_T": null,
+      "theta_T": 0.11695709317774784,
+      "theta_tau": null,
+      "K_yrange": -1.045813527162892
+    },
+    "physical": {
+      "K": -2.480766971409652,
+      "tau": null,
+      "theta": 3.211188007750107,
+      "wn": 0.27536426687907406,
+      "zeta": 1.2506389771309763
+    },
+    "physical_parcial": {
+      "K": -2.480766971409652,
+      "tau": null,
+      "theta": 3.211188007750107,
+      "wn": 0.27536426687907406,
+      "zeta": 1.2506389771309763
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 28.08012292499105,
+      "y_faixa": 3.209302325581396,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.008848011456344713,
+    "nrmse_final": 0.008848011456344713,
+    "latency_ms": 214.04614099992614,
+    "n_points": 837
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_16.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.8516633407909864,
+      "tau": 20.087069302629324,
+      "theta": 6.92309195194479,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.6056013738358824,
+      "theta_T": 0.20872303142505239,
+      "theta_tau": 0.34465415773910746,
+      "K_yrange": 1.3276463019639593
+    },
+    "physical": {
+      "K": 0.8516633407909864,
+      "tau": 20.087069302629324,
+      "theta": 6.92309195194479,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.8516633407909864,
+      "tau": 20.087069302629324,
+      "theta": 6.92309195194479,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 96.93975920638819,
+      "y_faixa": 3.9702634156814884,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": 34.185588780798106,
+    "ganho_truncagem": 0.8520660757304619,
+    "nrmse_full": 0.07292946644192073,
+    "nrmse_final": 0.010788742165636927,
+    "latency_ms": 1334.0510580001137,
+    "n_points": 964
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_16.png",
+    "order": "fopdt",
+    "params": {
+      "K": -9999.999812974853,
+      "tau": 4966.11927436051,
+      "theta": 0.06484110761984581,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 21358.34546601672,
+      "theta_T": 0.278869415016652,
+      "theta_tau": 1.3056695588165356e-05,
+      "K_yrange": -24971.04385111853
+    },
+    "physical": {
+      "K": -9999.999812974853,
+      "tau": 4966.11927436051,
+      "theta": 0.06484110761984581,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -9999.999812974853,
+      "tau": 4966.11927436051,
+      "theta": 0.06484110761984581,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6844433001035382,
+      "y_faixa": 2.3803793979645334,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": 0.234581006062102,
+    "ganho_truncagem": 0.9389229220321441,
+    "nrmse_full": 0.6171037239477719,
+    "nrmse_final": 0.037690892261812305,
+    "latency_ms": 2248.477044000083,
+    "n_points": 613
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_17.png",
+    "order": "second",
+    "params": {
+      "K": 37.61923772019342,
+      "tau": null,
+      "theta": 4.3347597527823496e-26,
+      "wn": 0.07610813319305983,
+      "zeta": 1.8843852402197365
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.8843852402197365,
+      "wn_T": 2.871206386065007,
+      "tau_T": null,
+      "theta_T": 1.1490308541588924e-27,
+      "theta_tau": null,
+      "K_yrange": 1.9373929971289598
+    },
+    "physical": {
+      "K": 37.61923772019342,
+      "tau": null,
+      "theta": 4.3347597527823496e-26,
+      "wn": 0.07610813319305983,
+      "zeta": 1.8843852402197365
+    },
+    "physical_parcial": {
+      "K": 37.61923772019342,
+      "tau": null,
+      "theta": 4.3347597527823496e-26,
+      "wn": 0.07610813319305983,
+      "zeta": 1.8843852402197365
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 38.49038178642744,
+      "y_faixa": 25.943874879266392,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.008309744901481847,
+    "nrmse_final": 0.008309744901481847,
+    "latency_ms": 229.20208100003947,
+    "n_points": 790
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_17.png",
+    "order": "second",
+    "params": {
+      "K": -1.1964565969690089,
+      "tau": null,
+      "theta": 0.24397446757294114,
+      "wn": 0.6689735180110733,
+      "zeta": 0.46482679730532267
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.46482679730532267,
+      "wn_T": 3.455698437031926,
+      "tau_T": null,
+      "theta_T": 0.04722994811356599,
+      "theta_tau": null,
+      "K_yrange": -0.8325645979551246
+    },
+    "physical": {
+      "K": -1.1964565969690089,
+      "tau": null,
+      "theta": 0.24397446757294114,
+      "wn": 0.6689735180110733,
+      "zeta": 0.46482679730532267
+    },
+    "physical_parcial": {
+      "K": -1.1964565969690089,
+      "tau": null,
+      "theta": 0.24397446757294114,
+      "wn": 0.6689735180110733,
+      "zeta": 0.46482679730532267
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.188083724837482,
+      "y_faixa": 1.6899311149732952,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.014658583877992362,
+    "nrmse_final": 0.014658583877992362,
+    "latency_ms": 209.24458600029539,
+    "n_points": 462
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_18.png",
+    "order": "fopdt",
+    "params": {
+      "K": 48.11370397159737,
+      "tau": 148.8296836130168,
+      "theta": 1.5139815665724174e-19,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 9.89678533549888,
+      "theta_T": 1.0067582086130997e-20,
+      "theta_tau": 1.0172578008759558e-21,
+      "K_yrange": 10.771724769760603
+    },
+    "physical": {
+      "K": 48.11370397159737,
+      "tau": 148.8296836130168,
+      "theta": 1.5139815665724174e-19,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 48.11370397159737,
+      "tau": 148.8296836130168,
+      "theta": 1.5139815665724174e-19,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 15.826631490126863,
+      "y_faixa": 5.444444444444446,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.09295610897856953,
+    "nrmse_final": 0.09295610897856953,
+    "latency_ms": 1225.6028529996001,
+    "n_points": 783
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_18.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.6392120627232314,
+      "tau": 7.177330795748014,
+      "theta": 0.9374734107170735,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.941538915994671,
+      "theta_T": 0.12297993836696078,
+      "theta_tau": 0.1306158845670664,
+      "K_yrange": -1.4468354769621246
+    },
+    "physical": {
+      "K": -0.6392120627232314,
+      "tau": 7.177330795748014,
+      "theta": 0.9374734107170735,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.6392120627232314,
+      "tau": 7.177330795748014,
+      "theta": 0.9374734107170735,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.493418948577272,
+      "y_faixa": 3.8940964829414213,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 8.036050398980649,
+    "ganho_truncagem": 0.7680628860127554,
+    "nrmse_full": 0.07511813544699843,
+    "nrmse_final": 0.017422683543679752,
+    "latency_ms": 1008.0734750004012,
+    "n_points": 585
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_19.png",
+    "order": "second",
+    "params": {
+      "K": 1.210296114105192,
+      "tau": null,
+      "theta": 0.7928156867158088,
+      "wn": 0.9854843666178249,
+      "zeta": 1.695134532605543
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.695134532605543,
+      "wn_T": 4.350493688725403,
+      "tau_T": null,
+      "theta_T": 0.17959052943637538,
+      "theta_tau": null,
+      "K_yrange": 1.4878024528605116
+    },
+    "physical": {
+      "K": 1.210296114105192,
+      "tau": null,
+      "theta": 0.7928156867158088,
+      "wn": 0.9854843666178249,
+      "zeta": 1.695134532605543
+    },
+    "physical_parcial": {
+      "K": 1.210296114105192,
+      "tau": null,
+      "theta": 0.7928156867158088,
+      "wn": 0.9854843666178249,
+      "zeta": 1.695134532605543
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 13.11668397902062,
+      "y_faixa": 4.215300490596894,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 4.59577527101111,
+    "ganho_truncagem": 0.9578529196843211,
+    "nrmse_full": 0.08744171240267322,
+    "nrmse_final": 0.0036854128755759628,
+    "latency_ms": 783.3370170001217,
+    "n_points": 798
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_19.png",
+    "order": "second",
+    "params": {
+      "K": -139.61531863098477,
+      "tau": null,
+      "theta": 0.009526079534291004,
+      "wn": 0.41072931732577317,
+      "zeta": 9.999999999999984
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 9.999999999999984,
+      "wn_T": 0.16410051578146065,
+      "tau_T": null,
+      "theta_T": 0.023842948483604926,
+      "theta_tau": null,
+      "K_yrange": -165.12381117439384
+    },
+    "physical": {
+      "K": -139.61531863098477,
+      "tau": null,
+      "theta": 0.009526079534291004,
+      "wn": 0.41072931732577317,
+      "zeta": 9.999999999999984
+    },
+    "physical_parcial": {
+      "K": -139.61531863098477,
+      "tau": null,
+      "theta": 0.009526079534291004,
+      "wn": 0.41072931732577317,
+      "zeta": 9.999999999999984
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.1710492777228265,
+      "y_faixa": 6.161719665304576,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 0.41534097157541605,
+    "ganho_truncagem": 0.7515867291269105,
+    "nrmse_full": 0.048691581363333764,
+    "nrmse_final": 0.012095634990448904,
+    "latency_ms": 1327.6163979999183,
+    "n_points": 833
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_20.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.614178380385117,
+      "tau": 10.88965996193102,
+      "theta": 7.613264956935497,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.6804162673386951,
+      "theta_T": 0.47569798711510547,
+      "theta_tau": 0.6991278867798061,
+      "K_yrange": 1.8443753011682584
+    },
+    "physical": {
+      "K": 1.614178380385117,
+      "tau": 10.88965996193102,
+      "theta": 7.613264956935497,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.614178380385117,
+      "tau": 10.88965996193102,
+      "theta": 7.613264956935497,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 40.376267344445736,
+      "y_faixa": 2.825724791262084,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 16.015499933113905,
+    "ganho_truncagem": 0.6419824263514358,
+    "nrmse_full": 0.030994184279610107,
+    "nrmse_final": 0.011096462653002483,
+    "latency_ms": 973.8052770003378,
+    "n_points": 605
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_20.png",
+    "order": "fopdt",
+    "params": {
+      "K": -33.87615147846423,
+      "tau": 29.42567268571252,
+      "theta": 1.7092755020764325,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3811855546286017,
+      "theta_T": 0.02214226798588852,
+      "theta_tau": 0.058087898969472404,
+      "K_yrange": -1.0980043354442912
+    },
+    "physical": {
+      "K": -33.87615147846423,
+      "tau": 29.42567268571252,
+      "theta": 1.7092755020764325,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -33.87615147846423,
+      "tau": 29.42567268571252,
+      "theta": 1.7092755020764325,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 80.47593462649424,
+      "y_faixa": 37.834177505866045,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.026374195155193063,
+    "nrmse_final": 0.026374195155193063,
+    "latency_ms": 251.97212600005514,
+    "n_points": 801
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_21.png",
+    "order": "second",
+    "params": {
+      "K": 0.9754340367365077,
+      "tau": null,
+      "theta": 3.814802793199625,
+      "wn": 0.11789983104094544,
+      "zeta": 0.0010000000000000002
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.0010000000000000002,
+      "wn_T": 3.7203012982047747,
+      "tau_T": null,
+      "theta_T": 0.1208946718884827,
+      "theta_tau": null,
+      "K_yrange": 0.48690700815085125
+    },
+    "physical": {
+      "K": 0.9754340367365077,
+      "tau": null,
+      "theta": 3.814802793199625,
+      "wn": 0.11789983104094544,
+      "zeta": 0.0010000000000000002
+    },
+    "physical_parcial": {
+      "K": 0.9754340367365077,
+      "tau": null,
+      "theta": 3.814802793199625,
+      "wn": 0.11789983104094544,
+      "zeta": 0.0010000000000000002
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 32.59711315910627,
+      "y_faixa": 2.8246358102098803,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.025847836005818643,
+    "nrmse_final": 0.025847836005818643,
+    "latency_ms": 857.8452050001033,
+    "n_points": 667
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_21.png",
+    "order": "second",
+    "params": {
+      "K": -8.013336495422115,
+      "tau": null,
+      "theta": 13.82908823802139,
+      "wn": 0.10220266813281349,
+      "zeta": 1.3025945229234714
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.3025945229234714,
+      "wn_T": 12.238508802676176,
+      "tau_T": null,
+      "theta_T": 0.1154854515822087,
+      "theta_tau": null,
+      "K_yrange": -1.0110083695016348
+    },
+    "physical": {
+      "K": -8.013336495422115,
+      "tau": null,
+      "theta": 13.82908823802139,
+      "wn": 0.10220266813281349,
+      "zeta": 1.3025945229234714
+    },
+    "physical_parcial": {
+      "K": -8.013336495422115,
+      "tau": null,
+      "theta": 13.82908823802139,
+      "wn": 0.10220266813281349,
+      "zeta": 1.3025945229234714
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 122.75617900254097,
+      "y_faixa": 9.416104113021087,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007434272298647886,
+    "nrmse_final": 0.007434272298647886,
+    "latency_ms": 223.11218999993798,
+    "n_points": 797
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_22.png",
+    "order": "second",
+    "params": {
+      "K": 7.120532205346123,
+      "tau": null,
+      "theta": 23.081200473560937,
+      "wn": 0.12590304416602208,
+      "zeta": 1.7633703054712664
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.7633703054712664,
+      "wn_T": 8.349204629284117,
+      "tau_T": null,
+      "theta_T": 0.3480563157399485,
+      "theta_tau": null,
+      "K_yrange": 1.2271761907033845
+    },
+    "physical": {
+      "K": 7.120532205346123,
+      "tau": null,
+      "theta": 23.081200473560937,
+      "wn": 0.12590304416602208,
+      "zeta": 1.7633703054712664
+    },
+    "physical_parcial": {
+      "K": 7.120532205346123,
+      "tau": null,
+      "theta": 23.081200473560937,
+      "wn": 0.12590304416602208,
+      "zeta": 1.7633703054712664
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 198.2576590647427,
+      "y_faixa": 11.464201211756503,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 68.84903077570004,
+    "ganho_truncagem": 0.9747769708194969,
+    "nrmse_full": 0.15848377501272604,
+    "nrmse_final": 0.0039974408817822805,
+    "latency_ms": 756.3209240001925,
+    "n_points": 833
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_22.png",
+    "order": "second",
+    "params": {
+      "K": -11.884959682342753,
+      "tau": null,
+      "theta": 2.7734115242963962e-18,
+      "wn": 0.25314234129150665,
+      "zeta": 0.2677724528325577
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.2677724528325577,
+      "wn_T": 2.648006181156517,
+      "tau_T": null,
+      "theta_T": 2.651307582366019e-19,
+      "theta_tau": null,
+      "K_yrange": -0.7128139714698953
+    },
+    "physical": {
+      "K": -11.884959682342753,
+      "tau": null,
+      "theta": 2.7734115242963962e-18,
+      "wn": 0.25314234129150665,
+      "zeta": 0.2677724528325577
+    },
+    "physical_parcial": {
+      "K": -11.884959682342753,
+      "tau": null,
+      "theta": 2.7734115242963962e-18,
+      "wn": 0.25314234129150665,
+      "zeta": 0.2677724528325577
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.214896628956508,
+      "y_faixa": 22.54155356412449,
+      "n_pairs_x": 7,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.021558142364498052,
+    "nrmse_final": 0.021558142364498052,
+    "latency_ms": 231.62373800005298,
+    "n_points": 639
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_23.png",
+    "order": "second",
+    "params": {
+      "K": 9.47583359494985,
+      "tau": null,
+      "theta": 0.6458172352552204,
+      "wn": 2.3700997600048277,
+      "zeta": 0.587063076554238
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.587063076554238,
+      "wn_T": 10.182843470920453,
+      "tau_T": null,
+      "theta_T": 0.1503166849865188,
+      "theta_tau": null,
+      "K_yrange": 0.8713626726690344
+    },
+    "physical": {
+      "K": 9.47583359494985,
+      "tau": null,
+      "theta": 0.6458172352552204,
+      "wn": 2.3700997600048277,
+      "zeta": 0.587063076554238
+    },
+    "physical_parcial": {
+      "K": 9.47583359494985,
+      "tau": null,
+      "theta": 0.6458172352552204,
+      "wn": 2.3700997600048277,
+      "zeta": 0.587063076554238
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.474590551223726,
+      "y_faixa": 14.375498939513966,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.024949632610321962,
+    "nrmse_final": 0.024949632610321962,
+    "latency_ms": 241.39149700022244,
+    "n_points": 893
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_23.png",
+    "order": "second",
+    "params": {
+      "K": -2.0735965937298,
+      "tau": null,
+      "theta": 0.7507903820234405,
+      "wn": 0.4429246559974513,
+      "zeta": 0.32521988629078685
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.32521988629078685,
+      "wn_T": 3.9390659336823393,
+      "tau_T": null,
+      "theta_T": 0.08442193588088971,
+      "theta_tau": null,
+      "K_yrange": -0.7364174818853496
+    },
+    "physical": {
+      "K": -2.0735965937298,
+      "tau": null,
+      "theta": 0.7507903820234405,
+      "wn": 0.4429246559974513,
+      "zeta": 0.32521988629078685
+    },
+    "physical_parcial": {
+      "K": -2.0735965937298,
+      "tau": null,
+      "theta": 0.7507903820234405,
+      "wn": 0.4429246559974513,
+      "zeta": 0.32521988629078685
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.265525466275356,
+      "y_faixa": 3.3618421052631584,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01979088813725972,
+    "nrmse_final": 0.01979088813725972,
+    "latency_ms": 243.5784699996475,
+    "n_points": 670
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K+_2deg_24.png",
+    "order": "fopdt",
+    "params": {
+      "K": 20.144179420123233,
+      "tau": 3.692603615830392,
+      "theta": 0.320597336295613,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.9267844814344427,
+      "theta_T": 0.08046480667304877,
+      "theta_tau": 0.08682148685583116,
+      "K_yrange": 1.6295153882164934
+    },
+    "physical": {
+      "K": 20.144179420123233,
+      "tau": 3.692603615830392,
+      "theta": 0.320597336295613,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 20.144179420123233,
+      "tau": 3.692603615830392,
+      "theta": 0.320597336295613,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.05616583487459,
+      "y_faixa": 14.214062771293694,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.024320027082080357,
+    "nrmse_final": 0.024320027082080357,
+    "latency_ms": 220.2486350001891,
+    "n_points": 611
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/balanceado2/bal_K-_2deg_24.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.9492031475658855,
+      "tau": 2.220321584988524,
+      "theta": 0.7935004857395526,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.7317579566708807,
+      "theta_T": 0.2615163037588213,
+      "theta_tau": 0.3573808817174805,
+      "K_yrange": -1.5606397722171985
+    },
+    "physical": {
+      "K": -3.9492031475658855,
+      "tau": 2.220321584988524,
+      "theta": 0.7935004857395526,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.9492031475658855,
+      "tau": 2.220321584988524,
+      "theta": 0.7935004857395526,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 8.791485498108447,
+      "y_faixa": 11.86600587473724,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 3.0560174863387983,
+    "ganho_truncagem": 0.67668245114055,
+    "nrmse_full": 0.03016745498088137,
+    "nrmse_final": 0.009753667599746368,
+    "latency_ms": 1215.8684340001855,
+    "n_points": 562
+  }
+]

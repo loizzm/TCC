@@ -1,0 +1,155 @@
+{
+  "iou_referencia": 0.7618434205651283,
+  "checkpoints": [
+    {
+      "ckpt": "epoca_00.pt",
+      "iou": 0.6833704836666584,
+      "auc_real": 0.5495953237410072,
+      "guarda_ok": false
+    },
+    {
+      "ckpt": "epoca_01.pt",
+      "iou": 0.7252244740724564,
+      "auc_real": 0.5839028776978418,
+      "guarda_ok": false
+    },
+    {
+      "ckpt": "epoca_02.pt",
+      "iou": 0.7410694122314453,
+      "auc_real": 0.6130395683453237,
+      "guarda_ok": false
+    },
+    {
+      "ckpt": "epoca_03.pt",
+      "iou": 0.7492640264332294,
+      "auc_real": 0.5800359712230216,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_04.pt",
+      "iou": 0.7398779399693012,
+      "auc_real": 0.620908273381295,
+      "guarda_ok": false
+    },
+    {
+      "ckpt": "epoca_05.pt",
+      "iou": 0.7412260755896568,
+      "auc_real": 0.6094424460431656,
+      "guarda_ok": false
+    },
+    {
+      "ckpt": "epoca_06.pt",
+      "iou": 0.7574583061039448,
+      "auc_real": 0.6404226618705035,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_07.pt",
+      "iou": 0.7618565142154694,
+      "auc_real": 0.6247302158273382,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_08.pt",
+      "iou": 0.7559612780809403,
+      "auc_real": 0.6838129496402878,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_09.pt",
+      "iou": 0.7537956073880195,
+      "auc_real": 0.658498201438849,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_10.pt",
+      "iou": 0.7624584585428238,
+      "auc_real": 0.6462679856115109,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_11.pt",
+      "iou": 0.756793399900198,
+      "auc_real": 0.6353417266187051,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_12.pt",
+      "iou": 0.7584335237741471,
+      "auc_real": 0.641546762589928,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_13.pt",
+      "iou": 0.7651124790310859,
+      "auc_real": 0.6281025179856115,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_14.pt",
+      "iou": 0.7655100613832474,
+      "auc_real": 0.6534172661870503,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_15.pt",
+      "iou": 0.7654791921377182,
+      "auc_real": 0.6297661870503597,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_16.pt",
+      "iou": 0.7629208698868751,
+      "auc_real": 0.639523381294964,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_17.pt",
+      "iou": 0.764247378706932,
+      "auc_real": 0.6342625899280575,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_18.pt",
+      "iou": 0.7666793435811996,
+      "auc_real": 0.623246402877698,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_19.pt",
+      "iou": 0.7631665825843811,
+      "auc_real": 0.6381744604316547,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_20.pt",
+      "iou": 0.7627384096384049,
+      "auc_real": 0.637589928057554,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_21.pt",
+      "iou": 0.7638698741793633,
+      "auc_real": 0.6446942446043166,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_22.pt",
+      "iou": 0.7645083725452423,
+      "auc_real": 0.6394784172661871,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_23.pt",
+      "iou": 0.7645761236548424,
+      "auc_real": 0.6424010791366906,
+      "guarda_ok": true
+    },
+    {
+      "ckpt": "epoca_24.pt",
+      "iou": 0.7635630220174789,
+      "auc_real": 0.6402877697841727,
+      "guarda_ok": true
+    }
+  ]
+}

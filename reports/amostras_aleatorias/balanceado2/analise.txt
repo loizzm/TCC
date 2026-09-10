@@ -1,0 +1,167 @@
+AMOSTRAS: 100
+
+==============================================================================
+1. TAXA DE RESPOSTA
+==============================================================================
+  rg       n=36   respondeu= 33 ( 91.7%)  calibrou= 36 (100.0%)  fisico(ok)= 33 ( 91.7%)
+  neg      n=23   respondeu= 18 ( 78.3%)  calibrou= 23 (100.0%)  fisico(ok)= 18 ( 78.3%)
+  multi    n=41   respondeu= 36 ( 87.8%)  calibrou= 41 (100.0%)  fisico(ok)= 36 ( 87.8%)
+  TODAS    n=100  respondeu= 87 ( 87.0%)  calibrou=100 (100.0%)  fisico(ok)= 87 ( 87.0%)
+
+  motivos de nao entregar parametro fisico:
+    ajuste_inconsistente         10
+    resposta_inversa             3
+
+==============================================================================
+2. ESTRUTURA (so entre as que responderam)
+==============================================================================
+  acerto estrito de rotulo: 71/87 (81.6%)
+  matriz de confusao (verdade -> predito):
+    fopdt    -> fopdt    37
+    fopdt    -> second   9
+    second   -> fopdt    7
+    second   -> second   34
+  trocas de rotulo com t_dom a menos de 15%: 4/16 — a dinamica nao muda, so o nome
+
+==============================================================================
+3. PARAMETROS FISICOS (so as ok=True)
+==============================================================================
+  n = 87
+  sinal de K correto: 87/87 (100.0%)
+
+  erro relativo (|.|):
+  K                          n=87   mediana=  0.0227  media=322.6482  p90=  1.6208  max=27768.5769
+  t_dom (unifica ordens)     n=87   mediana=  0.0397  media=531.7576  p90=  5.3788  max=43157.6382
+  tau (mesma estrutura)      n=37   mediana=  0.0075  media=1166.7059  p90=  0.9596  max=43157.6382
+  wn (mesma estrutura)       n=34   mediana=  0.0720  media=  0.2037  p90=  0.5740  max=  0.9149
+  zeta (mesma estrutura)     n=34   mediana=  0.0731  media=  1.0922  p90=  0.9839  max= 18.2130
+  theta (relativo)           n=87   mediana=  0.0184  media=  0.2265  p90=  0.8222  max=  2.9935
+  theta (|dtheta|/T janela)  n=87   mediana=  0.0019  media=  0.0155  p90=  0.0588  max=  0.1450
+
+  erro de CURVA reconstruida (NRMSE no trecho do 1o degrau):
+  nrmse                      n=87   mediana=  0.0062  media=  0.0332  p90=  0.0675  max=  0.4927
+    NRMSE <= 0.02: 61/87 (70.1%)  [61/100 do total = 61.0%]
+    NRMSE <= 0.05: 72/87 (82.8%)  [72/100 do total = 72.0%]
+    NRMSE <= 0.10: 81/87 (93.1%)  [81/100 do total = 81.0%]
+    NRMSE <= 0.20: 83/87 (95.4%)  [83/100 do total = 83.0%]
+
+==============================================================================
+4. ESTRATIFICACAO
+==============================================================================
+  por familia:
+    multi            n=41   respondeu= 87.8%  fisico= 87.8%  NRMSE med=  0.0067  NRMSE<=0.05: 31/41
+    neg              n=23   respondeu= 78.3%  fisico= 78.3%  NRMSE med=  0.0061  NRMSE<=0.05: 14/23
+    rg               n=36   respondeu= 91.7%  fisico= 91.7%  NRMSE med=  0.0054  NRMSE<=0.05: 27/36
+
+  por tipo de linha da curva:
+    -                n=29   respondeu=100.0%  fisico=100.0%  NRMSE med=  0.0054  NRMSE<=0.05: 25/29
+    --               n=26   respondeu= 84.6%  fisico= 84.6%  NRMSE med=  0.0133  NRMSE<=0.05: 16/26
+    -.               n=19   respondeu= 73.7%  fisico= 73.7%  NRMSE med=  0.0194  NRMSE<=0.05: 9/19
+    :                n=26   respondeu= 84.6%  fisico= 84.6%  NRMSE med=  0.0040  NRMSE<=0.05: 22/26
+
+  por numero de degraus:
+    1                n=50   respondeu= 84.0%  fisico= 84.0%  NRMSE med=  0.0018  NRMSE<=0.05: 39/50
+    2                n=50   respondeu= 90.0%  fisico= 90.0%  NRMSE med=  0.0181  NRMSE<=0.05: 33/50
+
+  por preenchimento:
+    axhspan_ref      n=23   respondeu= 91.3%  fisico= 91.3%  NRMSE med=  0.0064  NRMSE<=0.05: 19/23
+    axvspan_atraso   n=8    respondeu= 87.5%  fisico= 87.5%  NRMSE med=  0.0432  NRMSE<=0.05: 4/8
+    axvspan_e_fill   n=14   respondeu= 78.6%  fisico= 78.6%  NRMSE med=  0.0089  NRMSE<=0.05: 9/14
+    fill_between     n=20   respondeu= 95.0%  fisico= 95.0%  NRMSE med=  0.0051  NRMSE<=0.05: 15/20
+    nenhum           n=35   respondeu= 82.9%  fisico= 82.9%  NRMSE med=  0.0052  NRMSE<=0.05: 25/35
+
+  por fundo escuro:
+    False            n=77   respondeu= 89.6%  fisico= 89.6%  NRMSE med=  0.0064  NRMSE<=0.05: 58/77
+    True             n=23   respondeu= 78.3%  fisico= 78.3%  NRMSE med=  0.0061  NRMSE<=0.05: 14/23
+
+  por ordem verdadeira:
+    fopdt            n=51   respondeu= 90.2%  fisico= 90.2%  NRMSE med=  0.0047  NRMSE<=0.05: 39/51
+    second           n=49   respondeu= 83.7%  fisico= 83.7%  NRMSE med=  0.0117  NRMSE<=0.05: 33/49
+
+==============================================================================
+5. TRUNCAGEM (o mecanismo de multi-degrau)
+==============================================================================
+  1 degrau(s): n=50  truncou=7 (14.0%)
+  2 degrau(s): n=50  truncou=23 (46.0%)
+      truncou a menos de 20% da janela do 2o degrau: 16/23
+
+==============================================================================
+5b. TRUNCAGEM COMO DETECTOR DE 'MAIS DE UM DEGRAU'
+==============================================================================
+  TP=21  FN=24  FP=7  TN=35
+  precisao=75.0%   revocacao=46.7%
+    1 degrau   truncou    n=7   NRMSE med= 0.0320  |errK| med= 0.1198
+    1 degrau   nao trunc  n=35  NRMSE med= 0.0018  |errK| med= 0.0023
+    2+ degraus truncou    n=21  NRMSE med= 0.0060  |errK| med= 0.0227
+    2+ degraus nao trunc  n=24  NRMSE med= 0.0467  |errK| med= 0.5573
+  as 24 multi-degrau NAO truncadas, contra que K elas batem:
+    contra K do 1o degrau: |erro| mediana = 0.5573
+    contra K TOTAL (soma): |erro| mediana = 0.1774
+    mais perto do TOTAL em 22/24 — o ajuste descreve a excursao inteira, nao a do 1o degrau
+
+==============================================================================
+5c. JANELA EFETIVA DO 1o DEGRAU (em constantes de tempo dominantes)
+==============================================================================
+  assentar a 1% leva ~4,6 t_dom; abaixo disso o patamar nao esta na figura
+  ATENCAO ao confundimento: nas figuras de 1 degrau a janela curta NAO
+  estraga o ajuste (|errK| 3,5% em 0-2 t_dom); nas de 2+ degraus estraga
+  (46%) — e cai para 2% quando a truncagem dispara. O que pesa e a
+  truncagem, nao o tamanho da janela. Ver o corte por n_degraus abaixo.
+  faixa (t_dom)      n   NRMSE med  |errK| med  |errK|>50%  zeta no lim
+  0-2               38      0.0205      0.2899      16/38         4/38 
+  2-3               27      0.0052      0.0084       4/27         1/27 
+  3-4.6             18      0.0017      0.0017       0/18         0/18 
+  4.6-8              4      0.0042      0.0074       0/4          0/4  
+
+  -- so 1 degrau
+     0-2          n=6   NRMSE med= 0.0032  |errK| med= 0.0216
+     2-3          n=14  NRMSE med= 0.0027  |errK| med= 0.0035
+     3-4.6        n=18  NRMSE med= 0.0017  |errK| med= 0.0017
+     4.6-8        n=4   NRMSE med= 0.0042  |errK| med= 0.0074
+  -- 2+ degraus
+     0-2          n=32  NRMSE med= 0.0252  |errK| med= 0.3349
+     2-3          n=13  NRMSE med= 0.0131  |errK| med= 0.0227
+  -- 2+ degraus truncadas
+     0-2          n=12  NRMSE med= 0.0102  |errK| med= 0.0804
+     2-3          n=9   NRMSE med= 0.0052  |errK| med= 0.0076
+
+  ajustes com zeta ENCOSTADO no limite da caixa (1e-3 ou 10): 5/87 (5.7%)
+    entre eles: NRMSE med=0.1516  |errK| med=5.9003
+    os demais:  NRMSE med=0.0053  |errK| med=0.0130
+
+==============================================================================
+6. LATENCIA
+==============================================================================
+  mediana=732 ms  p90=1439 ms  max=4125 ms
+
+==============================================================================
+7. PIORES CASOS (por NRMSE de curva)
+==============================================================================
+  arquivo         ordem v->p              NRMSE     errK  err t_dom    dth/T  trunc
+  bal_K-_1deg_15.pngsecond -> second       0.4927 -144.515    114.273    0.006  sim
+  bal_K-_2deg_13.pngsecond -> fopdt        0.2639   -1.805      0.673    0.012  nao
+  bal_K+_2deg_15.pngfopdt -> second        0.2570    0.964     -0.049    0.048  sim
+  bal_K+_2deg_01.pngsecond -> second       0.2225    2.630      0.689    0.077  nao
+  bal_K-_1deg_00.pngsecond -> second       0.1825   -5.900      7.222    0.006  sim
+  bal_K+_2deg_21.pngfopdt -> second        0.1516    0.596    923.799   -0.023  nao
+  bal_K+_2deg_18.pngsecond -> fopdt        0.0878   18.495     51.397   -0.066  nao
+  bal_K+_2deg_10.pngfopdt -> second        0.0701    0.721     -0.086   -0.039  nao
+  bal_K-_2deg_08.pngsecond -> second       0.0675   -0.583      6.484   -0.067  nao
+  bal_K-_2deg_07.pngfopdt -> second        0.0675   -0.527      2.657   -0.081  nao
+  bal_K-_2deg_22.pngfopdt -> second        0.0666   -0.150      3.741   -0.145  nao
+  bal_K-_2deg_23.pngsecond -> second       0.0652   -0.811      3.275   -0.019  nao
+
+  RECUSADAS / sem fisica:
+    bal_K+_1deg_03.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K+_1deg_04.png reason=ajuste_inconsistente     cal=                       ordem_v=fopdt
+    bal_K+_1deg_05.png reason=ajuste_inconsistente     cal=                       ordem_v=fopdt
+    bal_K+_1deg_11.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K-_1deg_11.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K+_1deg_14.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K-_1deg_14.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K+_1deg_22.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K-_2deg_00.png reason=ajuste_inconsistente     cal=                       ordem_v=fopdt
+    bal_K-_2deg_01.png reason=resposta_inversa         cal=                       ordem_v=fopdt
+    bal_K+_2deg_05.png reason=ajuste_inconsistente     cal=                       ordem_v=second
+    bal_K+_2deg_09.png reason=resposta_inversa         cal=                       ordem_v=fopdt
+    bal_K-_2deg_14.png reason=resposta_inversa         cal=                       ordem_v=second

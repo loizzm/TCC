@@ -1,0 +1,4970 @@
+[
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_00.png",
+    "order": "fopdt",
+    "params": {
+      "K": 6.955374000082063,
+      "tau": 1.9239686022665012,
+      "theta": 1.3685730910365264,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.21797462323257905,
+      "theta_T": 0.1550514928016541,
+      "theta_tau": 0.7113281835391181,
+      "K_yrange": 1.020754546087129
+    },
+    "physical": {
+      "K": 6.955374000082063,
+      "tau": 1.9239686022665012,
+      "theta": 1.3685730910365264,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 6.955374000082063,
+      "tau": 1.9239686022665012,
+      "theta": 1.3685730910365264,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.155739246043273,
+      "y_faixa": 8.418604651162788,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0030648035082894817,
+    "nrmse_final": 0.0030648035082894817,
+    "latency_ms": 407.06597300595604,
+    "n_points": 725
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_00.png",
+    "order": "fopdt",
+    "params": {
+      "K": -4.034832620433709,
+      "tau": 9.196500492223143,
+      "theta": 4.305609136247946,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4258878993451353,
+      "theta_T": 0.19939180474012932,
+      "theta_tau": 0.46817907962805067,
+      "K_yrange": -1.1702761280045824
+    },
+    "physical": {
+      "K": -4.034832620433709,
+      "tau": 9.196500492223143,
+      "theta": 4.305609136247946,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -4.034832620433709,
+      "tau": 9.196500492223143,
+      "theta": 4.305609136247946,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.095383735330767,
+      "y_faixa": 4.544776119402984,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0011413752411880951,
+    "nrmse_final": 0.0011413752411880951,
+    "latency_ms": 269.1327810025541,
+    "n_points": 991
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_01.png",
+    "order": "second",
+    "params": {
+      "K": 1.3487181236894268,
+      "tau": null,
+      "theta": 27.28706626242736,
+      "wn": 0.07650569386065834,
+      "zeta": 0.35899585811803575
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.35899585811803575,
+      "wn_T": 15.117636345691325,
+      "tau_T": null,
+      "theta_T": 0.1380914244853996,
+      "theta_tau": null,
+      "K_yrange": 0.9046696701096
+    },
+    "physical": {
+      "K": 1.3487181236894268,
+      "tau": null,
+      "theta": 27.28706626242736,
+      "wn": 0.07650569386065834,
+      "zeta": 0.35899585811803575
+    },
+    "physical_parcial": {
+      "K": 1.3487181236894268,
+      "tau": null,
+      "theta": 27.28706626242736,
+      "wn": 0.07650569386065834,
+      "zeta": 0.35899585811803575
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 203.32508231665742,
+      "y_faixa": 1.9697982206005533,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0042526493398414005,
+    "nrmse_final": 0.0042526493398414005,
+    "latency_ms": 227.94908400101122,
+    "n_points": 607
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_01.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.3689073705107017,
+      "tau": 0.17795926549053007,
+      "theta": 0.04878314386639789,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2654208926875596,
+      "theta_T": 0.0727585920150586,
+      "theta_tau": 0.27412533835724245,
+      "K_yrange": -1.0231283000959703
+    },
+    "physical": {
+      "K": -0.3689073705107017,
+      "tau": 0.17795926549053007,
+      "theta": 0.04878314386639789,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.3689073705107017,
+      "tau": 0.17795926549053007,
+      "theta": 0.04878314386639789,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6813374602290833,
+      "y_faixa": 0.7626173686056028,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0031610164120854985,
+    "nrmse_final": 0.0031610164120854985,
+    "latency_ms": 216.69685999222565,
+    "n_points": 742
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_02.png",
+    "order": "second",
+    "params": {
+      "K": 0.5930571971865827,
+      "tau": null,
+      "theta": 6.13008438051179,
+      "wn": 0.30494316577095165,
+      "zeta": 2.010344260704417
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.010344260704417,
+      "wn_T": 4.695484625473284,
+      "tau_T": null,
+      "theta_T": 0.39811169379516564,
+      "theta_tau": null,
+      "K_yrange": 2.021482078817385
+    },
+    "physical": {
+      "K": 0.5930571971865827,
+      "tau": null,
+      "theta": 6.13008438051179,
+      "wn": 0.30494316577095165,
+      "zeta": 2.010344260704417
+    },
+    "physical_parcial": {
+      "K": 0.5930571971865827,
+      "tau": null,
+      "theta": 6.13008438051179,
+      "wn": 0.30494316577095165,
+      "zeta": 2.010344260704417
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 46.28020755228093,
+      "y_faixa": 2.4643703293583963,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 15.605542909054464,
+    "ganho_truncagem": 0.9196865961549141,
+    "nrmse_full": 0.15574390273764863,
+    "nrmse_final": 0.012508322956978561,
+    "latency_ms": 797.158479996142,
+    "n_points": 513
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.5318464799725906,
+      "tau": 0.14832677638068276,
+      "theta": 0.019065967010075097,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5416659320369008,
+      "theta_T": 0.06962589656901699,
+      "theta_tau": 0.1285402910742294,
+      "K_yrange": -1.20823823015362
+    },
+    "physical": {
+      "K": -1.5318464799725906,
+      "tau": 0.14832677638068276,
+      "theta": 0.019065967010075097,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.5318464799725906,
+      "tau": 0.14832677638068276,
+      "theta": 0.019065967010075097,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.277177941700669,
+      "y_faixa": 1.4575357724273843,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00256968930952178,
+    "nrmse_final": 0.00256968930952178,
+    "latency_ms": 222.95494300487917,
+    "n_points": 820
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": 14.936013465688424,
+      "tau": 18.766053521839606,
+      "theta": 12.104893174377317,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2557842217566171,
+      "theta_T": 0.16499157249294516,
+      "theta_tau": 0.6450420255004523,
+      "K_yrange": 1.0526964644331167
+    },
+    "physical": {
+      "K": 14.936013465688424,
+      "tau": 18.766053521839606,
+      "theta": 12.104893174377317,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 14.936013465688424,
+      "tau": 18.766053521839606,
+      "theta": 12.104893174377317,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 75.45256430002955,
+      "y_faixa": 16.871624965223315,
+      "n_pairs_x": 8,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.032681023103989536,
+    "nrmse_final": 0.032681023103989536,
+    "latency_ms": 749.8895589960739,
+    "n_points": 810
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_03.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.113005180021272,
+      "y_faixa": 18.180404408694926,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.907957054649717,
+    "nrmse_final": 0.907957054649717,
+    "latency_ms": 386.1630619940115,
+    "n_points": 910
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_04.png",
+    "order": "second",
+    "params": {
+      "K": 1.4255109010354703,
+      "tau": null,
+      "theta": 0.31616303704912657,
+      "wn": 4.989338685803418,
+      "zeta": 3.4467877888342846
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 3.4467877888342846,
+      "wn_T": 5.673684660843692,
+      "tau_T": null,
+      "theta_T": 0.2780282243489606,
+      "theta_tau": null,
+      "K_yrange": 1.9512696744211744
+    },
+    "physical": {
+      "K": 1.4255109010354703,
+      "tau": null,
+      "theta": 0.31616303704912657,
+      "wn": 4.989338685803418,
+      "zeta": 3.4467877888342846
+    },
+    "physical_parcial": {
+      "K": 1.4255109010354703,
+      "tau": null,
+      "theta": 0.31616303704912657,
+      "wn": 4.989338685803418,
+      "zeta": 3.4467877888342846
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.777842661301308,
+      "y_faixa": 1.605555555555557,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": 1.297875108025485,
+    "ganho_truncagem": 0.6148014371786068,
+    "nrmse_full": 0.01230911797163072,
+    "nrmse_final": 0.004741454552271137,
+    "latency_ms": 609.7525259974645,
+    "n_points": 449
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_04.png",
+    "order": "second",
+    "params": {
+      "K": -3.721624428463909,
+      "tau": null,
+      "theta": 0.1513595606739061,
+      "wn": 0.8023449423265466,
+      "zeta": 4.0048133502803696
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 4.0048133502803696,
+      "wn_T": 21.92997037412687,
+      "tau_T": null,
+      "theta_T": 0.0055377447350661,
+      "theta_tau": null,
+      "K_yrange": -1.0693186831349655
+    },
+    "physical": {
+      "K": -3.721624428463909,
+      "tau": null,
+      "theta": 0.1513595606739061,
+      "wn": 0.8023449423265466,
+      "zeta": 4.0048133502803696
+    },
+    "physical_parcial": {
+      "K": -3.721624428463909,
+      "tau": null,
+      "theta": 0.1513595606739061,
+      "wn": 0.8023449423265466,
+      "zeta": 4.0048133502803696
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 27.551005771932935,
+      "y_faixa": 4.832393126161672,
+      "n_pairs_x": 5,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017603866975717743,
+    "nrmse_final": 0.0017603866975717743,
+    "latency_ms": 209.00933600205462,
+    "n_points": 751
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_05.png",
+    "order": "second",
+    "params": {
+      "K": 5.729946394615204,
+      "tau": null,
+      "theta": 7.436493217782615,
+      "wn": 0.20619002341375203,
+      "zeta": 1.511237843455644
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.511237843455644,
+      "wn_T": 13.447510496492102,
+      "tau_T": null,
+      "theta_T": 0.11402338827627521,
+      "theta_tau": null,
+      "K_yrange": 1.0117137442118922
+    },
+    "physical": {
+      "K": 5.729946394615204,
+      "tau": null,
+      "theta": 7.436493217782615,
+      "wn": 0.20619002341375203,
+      "zeta": 1.511237843455644
+    },
+    "physical_parcial": {
+      "K": 5.729946394615204,
+      "tau": null,
+      "theta": 7.436493217782615,
+      "wn": 0.20619002341375203,
+      "zeta": 1.511237843455644
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 68.31415604936208,
+      "y_faixa": 7.541128025874105,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.001232523812381641,
+    "nrmse_final": 0.001232523812381641,
+    "latency_ms": 197.11981900036335,
+    "n_points": 591
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -4.927269293726137,
+      "tau": 6.426293482566904,
+      "theta": 2.095222728981997,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5247202821483415,
+      "theta_T": 0.1710793110363686,
+      "theta_tau": 0.3260390666355135,
+      "K_yrange": -1.2379956895284407
+    },
+    "physical": {
+      "K": -4.927269293726137,
+      "tau": 6.426293482566904,
+      "theta": 2.095222728981997,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -4.927269293726137,
+      "tau": 6.426293482566904,
+      "theta": 2.095222728981997,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.533565712770798,
+      "y_faixa": 5.205115342591889,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002892604797101291,
+    "nrmse_final": 0.002892604797101291,
+    "latency_ms": 219.06986300018616,
+    "n_points": 856
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_06.png",
+    "order": "second",
+    "params": {
+      "K": 2.508005770662923,
+      "tau": null,
+      "theta": 17.01687117487887,
+      "wn": 0.0869821725211383,
+      "zeta": 0.38150267077730887
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.38150267077730887,
+      "wn_T": 7.554712374781631,
+      "tau_T": null,
+      "theta_T": 0.1959259798221085,
+      "theta_tau": null,
+      "K_yrange": 0.7827244827671666
+    },
+    "physical": {
+      "K": 2.508005770662923,
+      "tau": null,
+      "theta": 17.01687117487887,
+      "wn": 0.0869821725211383,
+      "zeta": 0.38150267077730887
+    },
+    "physical_parcial": {
+      "K": 2.508005770662923,
+      "tau": null,
+      "theta": 17.01687117487887,
+      "wn": 0.0869821725211383,
+      "zeta": 0.38150267077730887
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 88.14267871503803,
+      "y_faixa": 4.5489678447778195,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018352500703410612,
+    "nrmse_final": 0.0018352500703410612,
+    "latency_ms": 192.43301000096835,
+    "n_points": 540
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_06.png",
+    "order": "second",
+    "params": {
+      "K": -7.084796062549675,
+      "tau": null,
+      "theta": 13.136085080268431,
+      "wn": 0.11299539025776202,
+      "zeta": 2.1910556487023367
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.1910556487023367,
+      "wn_T": 7.868790835420616,
+      "tau_T": null,
+      "theta_T": 0.1886334369726266,
+      "theta_tau": null,
+      "K_yrange": -1.2749096291381403
+    },
+    "physical": {
+      "K": -7.084796062549675,
+      "tau": null,
+      "theta": 13.136085080268431,
+      "wn": 0.11299539025776202,
+      "zeta": 2.1910556487023367
+    },
+    "physical_parcial": {
+      "K": -7.084796062549675,
+      "tau": null,
+      "theta": 13.136085080268431,
+      "wn": 0.11299539025776202,
+      "zeta": 2.1910556487023367
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 71.91446578585423,
+      "y_faixa": 6.239547145216476,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0021355389811765903,
+    "nrmse_final": 0.0021355389811765903,
+    "latency_ms": 221.6123180114664,
+    "n_points": 827
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_07.png",
+    "order": "second",
+    "params": {
+      "K": 2.9169069303540978,
+      "tau": null,
+      "theta": 1.4679571719244973,
+      "wn": 0.4730042117111094,
+      "zeta": 0.5108060664849136
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5108060664849136,
+      "wn_T": 4.049624095960816,
+      "tau_T": null,
+      "theta_T": 0.17146034013981107,
+      "theta_tau": null,
+      "K_yrange": 0.8648132185771555
+    },
+    "physical": {
+      "K": 2.9169069303540978,
+      "tau": null,
+      "theta": 1.4679571719244973,
+      "wn": 0.4730042117111094,
+      "zeta": 0.5108060664849136
+    },
+    "physical_parcial": {
+      "K": 2.9169069303540978,
+      "tau": null,
+      "theta": 1.4679571719244973,
+      "wn": 0.4730042117111094,
+      "zeta": 0.5108060664849136
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.103539731552573,
+      "y_faixa": 3.7613241460672704,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.001533680317069602,
+    "nrmse_final": 0.001533680317069602,
+    "latency_ms": 206.55800099484622,
+    "n_points": 617
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_07.png",
+    "order": "second",
+    "params": {
+      "K": -0.9492907374640601,
+      "tau": null,
+      "theta": 0.62638101859366,
+      "wn": 0.9072887266134594,
+      "zeta": 1.5612694565479017
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5612694565479017,
+      "wn_T": 2.367270295690374,
+      "tau_T": null,
+      "theta_T": 0.24006909467384924,
+      "theta_tau": null,
+      "K_yrange": -2.3784427268330295
+    },
+    "physical": {
+      "K": -0.9492907374640601,
+      "tau": null,
+      "theta": 0.62638101859366,
+      "wn": 0.9072887266134594,
+      "zeta": 1.5612694565479017
+    },
+    "physical_parcial": {
+      "K": -0.9492907374640601,
+      "tau": null,
+      "theta": 0.62638101859366,
+      "wn": 0.9072887266134594,
+      "zeta": 1.5612694565479017
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.641144864681699,
+      "y_faixa": 2.0614035087719302,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.010379751751351496,
+    "nrmse_final": 0.010379751751351496,
+    "latency_ms": 2058.3878030010965,
+    "n_points": 817
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_08.png",
+    "order": "second",
+    "params": {
+      "K": 0.190582925820769,
+      "tau": null,
+      "theta": 6.854706681873763,
+      "wn": 0.5313392153847308,
+      "zeta": 2.133305452736776
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.133305452736776,
+      "wn_T": 11.684939146764734,
+      "tau_T": null,
+      "theta_T": 0.31169819750817473,
+      "theta_tau": null,
+      "K_yrange": 1.143262520879417
+    },
+    "physical": {
+      "K": 0.190582925820769,
+      "tau": null,
+      "theta": 6.854706681873763,
+      "wn": 0.5313392153847308,
+      "zeta": 2.133305452736776
+    },
+    "physical_parcial": {
+      "K": 0.190582925820769,
+      "tau": null,
+      "theta": 6.854706681873763,
+      "wn": 0.5313392153847308,
+      "zeta": 2.133305452736776
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.40447209430908,
+      "y_faixa": 0.6214727665118436,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007645647791182461,
+    "nrmse_final": 0.007645647791182461,
+    "latency_ms": 966.5306959941518,
+    "n_points": 640
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_08.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 70.91333627694985,
+      "y_faixa": 1.3289118464012473,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05187833790540178,
+    "nrmse_final": 0.05187833790540178,
+    "latency_ms": 857.2572470002342,
+    "n_points": 848
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_09.png",
+    "order": "second",
+    "params": {
+      "K": 30.723841517964946,
+      "tau": null,
+      "theta": 0.1918728297719085,
+      "wn": 3.5554532407047623,
+      "zeta": 0.511428373510709
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.511428373510709,
+      "wn_T": 4.579151509863123,
+      "tau_T": null,
+      "theta_T": 0.1489784456675724,
+      "theta_tau": null,
+      "K_yrange": 0.8629563640821575
+    },
+    "physical": {
+      "K": 30.723841517964946,
+      "tau": null,
+      "theta": 0.1918728297719085,
+      "wn": 3.5554532407047623,
+      "zeta": 0.511428373510709
+    },
+    "physical_parcial": {
+      "K": 30.723841517964946,
+      "tau": null,
+      "theta": 0.1918728297719085,
+      "wn": 3.5554532407047623,
+      "zeta": 0.511428373510709
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.3126181204109035,
+      "y_faixa": 39.46899014352288,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002286109749456052,
+    "nrmse_final": 0.002286109749456052,
+    "latency_ms": 232.46962499979418,
+    "n_points": 679
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_09.png",
+    "order": "second",
+    "params": {
+      "K": -2.0500017919603466,
+      "tau": null,
+      "theta": 0.060486684283399164,
+      "wn": 25.368106928306187,
+      "zeta": 2.5344349760415446
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.5344349760415446,
+      "wn_T": 21.019288597739425,
+      "tau_T": null,
+      "theta_T": 0.07300117068686102,
+      "theta_tau": null,
+      "K_yrange": -1.015044621963193
+    },
+    "physical": {
+      "K": -2.0500017919603466,
+      "tau": null,
+      "theta": 0.060486684283399164,
+      "wn": 25.368106928306187,
+      "zeta": 2.5344349760415446
+    },
+    "physical_parcial": {
+      "K": -2.0500017919603466,
+      "tau": null,
+      "theta": 0.060486684283399164,
+      "wn": 25.368106928306187,
+      "zeta": 2.5344349760415446
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9088435374149665,
+      "y_faixa": 2.71312087775259,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0027063223289860764,
+    "nrmse_final": 0.0027063223289860764,
+    "latency_ms": 242.154012012179,
+    "n_points": 610
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_10.png",
+    "order": "second",
+    "params": {
+      "K": 5.663699443721264,
+      "tau": null,
+      "theta": 0.11310721937117692,
+      "wn": 6.2089527850241435,
+      "zeta": 1.3193952585673745
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.3193952585673745,
+      "wn_T": 4.996502227604929,
+      "tau_T": null,
+      "theta_T": 0.14055380198592285,
+      "theta_tau": null,
+      "K_yrange": 1.1701296494505977
+    },
+    "physical": {
+      "K": 5.663699443721264,
+      "tau": null,
+      "theta": 0.11310721937117692,
+      "wn": 6.2089527850241435,
+      "zeta": 1.3193952585673745
+    },
+    "physical_parcial": {
+      "K": 5.663699443721264,
+      "tau": null,
+      "theta": 0.11310721937117692,
+      "wn": 6.2089527850241435,
+      "zeta": 1.3193952585673745
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9838297042890675,
+      "y_faixa": 6.797293878512421,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.001984903274601557,
+    "nrmse_final": 0.001984903274601557,
+    "latency_ms": 218.10495399404317,
+    "n_points": 648
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_10.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.3382912985305384,
+      "tau": 0.4998041475910594,
+      "theta": 0.2291338915870354,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.43880939455305046,
+      "theta_T": 0.2011710081308855,
+      "theta_tau": 0.4584473592134196,
+      "K_yrange": -1.186258673510976
+    },
+    "physical": {
+      "K": -3.3382912985305384,
+      "tau": 0.4998041475910594,
+      "theta": 0.2291338915870354,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.3382912985305384,
+      "tau": 0.4998041475910594,
+      "theta": 0.2291338915870354,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.1561714260952463,
+      "y_faixa": 3.245932759264019,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0014055362841264559,
+    "nrmse_final": 0.0014055362841264559,
+    "latency_ms": 237.91389999678358,
+    "n_points": 598
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_11.png",
+    "order": "second",
+    "params": {
+      "K": 3.1177285563118633,
+      "tau": null,
+      "theta": 0.34186945104137323,
+      "wn": 5.026927923824592,
+      "zeta": 0.5101180349938607
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5101180349938607,
+      "wn_T": 6.594532996335868,
+      "tau_T": null,
+      "theta_T": 0.2606026978252055,
+      "theta_tau": null,
+      "K_yrange": 0.8642169233656384
+    },
+    "physical": {
+      "K": 3.1177285563118633,
+      "tau": null,
+      "theta": 0.34186945104137323,
+      "wn": 5.026927923824592,
+      "zeta": 0.5101180349938607
+    },
+    "physical_parcial": {
+      "K": 3.1177285563118633,
+      "tau": null,
+      "theta": 0.34186945104137323,
+      "wn": 5.026927923824592,
+      "zeta": 0.5101180349938607
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.5933650870799418,
+      "y_faixa": 4.122944429500826,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01018234209166858,
+    "nrmse_final": 0.01018234209166858,
+    "latency_ms": 755.5482830066467,
+    "n_points": 453
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_11.png",
+    "order": "second",
+    "params": {
+      "K": -14.015271249170823,
+      "tau": null,
+      "theta": 2.1014532583373664,
+      "wn": 0.3660714322367956,
+      "zeta": 0.8270835454330797
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.8270835454330797,
+      "wn_T": 6.2997269396819995,
+      "tau_T": null,
+      "theta_T": 0.12211354736862177,
+      "theta_tau": null,
+      "K_yrange": -0.9808269965037819
+    },
+    "physical": {
+      "K": -14.015271249170823,
+      "tau": null,
+      "theta": 2.1014532583373664,
+      "wn": 0.3660714322367956,
+      "zeta": 0.8270835454330797
+    },
+    "physical_parcial": {
+      "K": -14.015271249170823,
+      "tau": null,
+      "theta": 2.1014532583373664,
+      "wn": 0.3660714322367956,
+      "zeta": 0.8270835454330797
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 17.67232950450148,
+      "y_faixa": 17.800813808558082,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017395332444443989,
+    "nrmse_final": 0.0017395332444443989,
+    "latency_ms": 201.17892499547452,
+    "n_points": 521
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_12.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.989299154845217,
+      "tau": 3.4085812445189183,
+      "theta": 1.6659735904212856,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.26187960938809424,
+      "theta_T": 0.12799592610912922,
+      "theta_tau": 0.4887586567285764,
+      "K_yrange": 1.031752077761587
+    },
+    "physical": {
+      "K": 1.989299154845217,
+      "tau": 3.4085812445189183,
+      "theta": 1.6659735904212856,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.989299154845217,
+      "tau": 3.4085812445189183,
+      "theta": 1.6659735904212856,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 13.25502128769054,
+      "y_faixa": 2.4292092262072718,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0025803445757575224,
+    "nrmse_final": 0.0025803445757575224,
+    "latency_ms": 229.06307100492995,
+    "n_points": 654
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_12.png",
+    "order": "second",
+    "params": {
+      "K": -5.100267412972624,
+      "tau": null,
+      "theta": 1.543845781241021e-26,
+      "wn": 1.9179037962311805,
+      "zeta": 0.8701681011044738
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.8701681011044738,
+      "wn_T": 6.013603599844184,
+      "tau_T": null,
+      "theta_T": 4.923749355069508e-27,
+      "theta_tau": null,
+      "K_yrange": -1.12923720554437
+    },
+    "physical": {
+      "K": -5.100267412972624,
+      "tau": null,
+      "theta": 1.543845781241021e-26,
+      "wn": 1.9179037962311805,
+      "zeta": 0.8701681011044738
+    },
+    "physical_parcial": {
+      "K": -5.100267412972624,
+      "tau": null,
+      "theta": 1.543845781241021e-26,
+      "wn": 1.9179037962311805,
+      "zeta": 0.8701681011044738
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.2836025194128156,
+      "y_faixa": 6.917093614011017,
+      "n_pairs_x": 6,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04566270416270814,
+    "nrmse_final": 0.04566270416270814,
+    "latency_ms": 871.3410920026945,
+    "n_points": 615
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_13.png",
+    "order": "second",
+    "params": {
+      "K": 1.6380916303985458,
+      "tau": null,
+      "theta": 34.69439331937186,
+      "wn": 0.05268541656551007,
+      "zeta": 1.788146674994086
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.788146674994086,
+      "wn_T": 8.992692750660773,
+      "tau_T": null,
+      "theta_T": 0.20326376261264403,
+      "theta_tau": null,
+      "K_yrange": 1.1308426552072677
+    },
+    "physical": {
+      "K": 1.6380916303985458,
+      "tau": null,
+      "theta": 34.69439331937186,
+      "wn": 0.05268541656551007,
+      "zeta": 1.788146674994086
+    },
+    "physical_parcial": {
+      "K": 1.6380916303985458,
+      "tau": null,
+      "theta": 34.69439331937186,
+      "wn": 0.05268541656551007,
+      "zeta": 1.788146674994086
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 173.62165088493194,
+      "y_faixa": 1.6212342388492391,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0019076749600904577,
+    "nrmse_final": 0.0019076749600904577,
+    "latency_ms": 203.29628999752458,
+    "n_points": 757
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_13.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.22874948802217696,
+      "tau": 0.6427595810855088,
+      "theta": 0.41015019157664284,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.45835646720496825,
+      "theta_T": 0.2924810432495152,
+      "theta_tau": 0.6381082501858171,
+      "K_yrange": -1.2028829804598693
+    },
+    "physical": {
+      "K": -0.22874948802217696,
+      "tau": 0.6427595810855088,
+      "theta": 0.41015019157664284,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.22874948802217696,
+      "tau": 0.6427595810855088,
+      "theta": 0.41015019157664284,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.6026442974894197,
+      "y_faixa": 0.7516151895175225,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0060096748247083775,
+    "nrmse_final": 0.0060096748247083775,
+    "latency_ms": 846.2144559889566,
+    "n_points": 743
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_14.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.3530220264540158,
+      "tau": 0.1375970805535312,
+      "theta": 0.035037902040044554,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.47945853333081123,
+      "theta_T": 0.12208995318452835,
+      "theta_tau": 0.2546413186899943,
+      "K_yrange": 1.1771086441514835
+    },
+    "physical": {
+      "K": 1.3530220264540158,
+      "tau": 0.1375970805535312,
+      "theta": 0.035037902040044554,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.3530220264540158,
+      "tau": 0.1375970805535312,
+      "theta": 0.035037902040044554,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.2918347579331718,
+      "y_faixa": 1.469825419554523,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0009640891520333862,
+    "nrmse_final": 0.0009640891520333862,
+    "latency_ms": 828.4679589996813,
+    "n_points": 711
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_14.png",
+    "order": "fopdt",
+    "params": {
+      "K": -5.329554772372388,
+      "tau": 0.157781040207387,
+      "theta": 0.06221210837645155,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.7864337363971132,
+      "theta_T": 0.31008605834596553,
+      "theta_tau": 0.3942939423816709,
+      "K_yrange": -1.6814178745904094
+    },
+    "physical": {
+      "K": -5.329554772372388,
+      "tau": 0.157781040207387,
+      "theta": 0.06221210837645155,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -5.329554772372388,
+      "tau": 0.157781040207387,
+      "theta": 0.06221210837645155,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.347972337076082,
+      "y_faixa": 4.9948025617786405,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 0.2033178081633601,
+    "ganho_truncagem": 0.619299207367292,
+    "nrmse_full": 0.013163705192194394,
+    "nrmse_final": 0.005011433000651698,
+    "latency_ms": 783.8312270032475,
+    "n_points": 724
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_15.png",
+    "order": "fopdt",
+    "params": {
+      "K": 10.269468986385098,
+      "tau": 0.8658530089832933,
+      "theta": 0.2173455873990012,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2845380089307033,
+      "theta_T": 0.07142445663035078,
+      "theta_tau": 0.25101903573011075,
+      "K_yrange": 1.0369822103515902
+    },
+    "physical": {
+      "K": 10.269468986385098,
+      "tau": 0.8658530089832933,
+      "theta": 0.2173455873990012,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 10.269468986385098,
+      "tau": 0.8658530089832933,
+      "theta": 0.2173455873990012,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.1069647704173735,
+      "y_faixa": 13.387096774193543,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0023716477674462126,
+    "nrmse_final": 0.0023716477674462126,
+    "latency_ms": 197.1252259972971,
+    "n_points": 572
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_15.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 26.777777777777782,
+      "y_faixa": 3.0571428571428574,
+      "n_pairs_x": 5,
+      "n_pairs_y": 2
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.6419716092620951,
+    "nrmse_final": 0.6419716092620951,
+    "latency_ms": 368.9467829972273,
+    "n_points": 677
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_16.png",
+    "order": "fopdt",
+    "params": {
+      "K": 18.369447879900182,
+      "tau": 0.5010698529819146,
+      "theta": 0.2163273451879267,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4049752717172547,
+      "theta_T": 0.17484034386821315,
+      "theta_tau": 0.4317309131661823,
+      "K_yrange": 1.1427806282086486
+    },
+    "physical": {
+      "K": 18.369447879900182,
+      "tau": 0.5010698529819146,
+      "theta": 0.2163273451879267,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 18.369447879900182,
+      "tau": 0.5010698529819146,
+      "theta": 0.2163273451879267,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2752791262875136,
+      "y_faixa": 19.61364797503485,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0016819428887154416,
+    "nrmse_final": 0.0016819428887154416,
+    "latency_ms": 227.62684599729255,
+    "n_points": 750
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_16.png",
+    "order": "second",
+    "params": {
+      "K": -4.175738285110649,
+      "tau": null,
+      "theta": 0.5421605356437081,
+      "wn": 10.525122390183515,
+      "zeta": 3.4476319954561516
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 3.4476319954561516,
+      "wn_T": 26.770482837145682,
+      "tau_T": null,
+      "theta_T": 0.2131566332774406,
+      "theta_tau": null,
+      "K_yrange": -1.0308555413011158
+    },
+    "physical": {
+      "K": -4.175738285110649,
+      "tau": null,
+      "theta": 0.5421605356437081,
+      "wn": 10.525122390183515,
+      "zeta": 3.4476319954561516
+    },
+    "physical_parcial": {
+      "K": -4.175738285110649,
+      "tau": null,
+      "theta": 0.5421605356437081,
+      "wn": 10.525122390183515,
+      "zeta": 3.4476319954561516
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.6246592604694468,
+      "y_faixa": 5.309899051009223,
+      "n_pairs_x": 6,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0025677155422406703,
+    "nrmse_final": 0.0025677155422406703,
+    "latency_ms": 207.23108500533272,
+    "n_points": 941
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_17.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.436803740432754,
+      "y_faixa": 1.6519649939695982,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05109274442983007,
+    "nrmse_final": 0.05109274442983007,
+    "latency_ms": 983.9071550086373,
+    "n_points": 753
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_17.png",
+    "order": "fopdt",
+    "params": {
+      "K": -11.351237250658235,
+      "tau": 0.2266343683604306,
+      "theta": 0.22550490104741,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3424148783748972,
+      "theta_T": 0.3407084010413213,
+      "theta_tau": 0.9950163458384902,
+      "K_yrange": -1.1360849870224783
+    },
+    "physical": {
+      "K": -11.351237250658235,
+      "tau": 0.2266343683604306,
+      "theta": 0.22550490104741,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -11.351237250658235,
+      "tau": 0.2266343683604306,
+      "theta": 0.22550490104741,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.7046565154160122,
+      "y_faixa": 12.5364351568425,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002387453552939916,
+    "nrmse_final": 0.002387453552939916,
+    "latency_ms": 232.29584201180842,
+    "n_points": 759
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_18.png",
+    "order": "second",
+    "params": {
+      "K": 5.543581448524558,
+      "tau": null,
+      "theta": 12.889375844248448,
+      "wn": 0.11533372557806616,
+      "zeta": 1.4439497150459744
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4439497150459744,
+      "wn_T": 7.837727421504159,
+      "tau_T": null,
+      "theta_T": 0.18966974182011193,
+      "theta_tau": null,
+      "K_yrange": 1.1102582562250614
+    },
+    "physical": {
+      "K": 5.543581448524558,
+      "tau": null,
+      "theta": 12.889375844248448,
+      "wn": 0.11533372557806616,
+      "zeta": 1.4439497150459744
+    },
+    "physical_parcial": {
+      "K": 5.543581448524558,
+      "tau": null,
+      "theta": 12.889375844248448,
+      "wn": 0.11533372557806616,
+      "zeta": 1.4439497150459744
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 70.63316584827353,
+      "y_faixa": 6.325918577587849,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.005009094171123239,
+    "nrmse_final": 0.005009094171123239,
+    "latency_ms": 788.585532005527,
+    "n_points": 600
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_18.png",
+    "order": "second",
+    "params": {
+      "K": -5.765439498470121,
+      "tau": null,
+      "theta": 51.15158989069143,
+      "wn": 0.059746950099078155,
+      "zeta": 2.303008601389374
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.303008601389374,
+      "wn_T": 22.556442129680676,
+      "tau_T": null,
+      "theta_T": 0.13548907540991337,
+      "theta_tau": null,
+      "K_yrange": -1.005666354539882
+    },
+    "physical": {
+      "K": -5.765439498470121,
+      "tau": null,
+      "theta": 51.15158989069143,
+      "wn": 0.059746950099078155,
+      "zeta": 2.303008601389374
+    },
+    "physical_parcial": {
+      "K": -5.765439498470121,
+      "tau": null,
+      "theta": 51.15158989069143,
+      "wn": 0.059746950099078155,
+      "zeta": 2.303008601389374
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 387.9072093155202,
+      "y_faixa": 6.829545454545455,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.003272531039249244,
+    "nrmse_final": 0.003272531039249244,
+    "latency_ms": 227.61403900221922,
+    "n_points": 838
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_19.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.0288395367277714,
+      "tau": 0.6232199454065239,
+      "theta": 0.3079884325051956,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.46393475890569336,
+      "theta_T": 0.22927144779815414,
+      "theta_tau": 0.49418898540594036,
+      "K_yrange": 1.2114756694333126
+    },
+    "physical": {
+      "K": 1.0288395367277714,
+      "tau": 0.6232199454065239,
+      "theta": 0.3079884325051956,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.0288395367277714,
+      "tau": 0.6232199454065239,
+      "theta": 0.3079884325051956,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.3820322168841417,
+      "y_faixa": 1.2644312992270887,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0024155042297183092,
+    "nrmse_final": 0.0024155042297183092,
+    "latency_ms": 249.20758100051899,
+    "n_points": 730
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_19.png",
+    "order": "second",
+    "params": {
+      "K": -2.1459227899774698,
+      "tau": null,
+      "theta": 19.881060556073344,
+      "wn": 0.056844874551969383,
+      "zeta": 0.5078664340398089
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5078664340398089,
+      "wn_T": 10.492682243097649,
+      "tau_T": null,
+      "theta_T": 0.10770710168160559,
+      "theta_tau": null,
+      "K_yrange": -0.8619218653462342
+    },
+    "physical": {
+      "K": -2.1459227899774698,
+      "tau": null,
+      "theta": 19.881060556073344,
+      "wn": 0.056844874551969383,
+      "zeta": 0.5078664340398089
+    },
+    "physical_parcial": {
+      "K": -2.1459227899774698,
+      "tau": null,
+      "theta": 19.881060556073344,
+      "wn": 0.056844874551969383,
+      "zeta": 0.5078664340398089
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 190.67806443770195,
+      "y_faixa": 3.1356363583244073,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0031975717767070678,
+    "nrmse_final": 0.0031975717767070678,
+    "latency_ms": 232.46410601132084,
+    "n_points": 728
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_20.png",
+    "order": "second",
+    "params": {
+      "K": 7.256088522470415,
+      "tau": null,
+      "theta": 1.009738649286411,
+      "wn": 2.4540881411009723,
+      "zeta": 0.21393135116434273
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.21393135116434273,
+      "wn_T": 12.451925424325779,
+      "tau_T": null,
+      "theta_T": 0.19900437565937865,
+      "theta_tau": null,
+      "K_yrange": 0.6616985021860631
+    },
+    "physical": {
+      "K": 7.256088522470415,
+      "tau": null,
+      "theta": 1.009738649286411,
+      "wn": 2.4540881411009723,
+      "zeta": 0.21393135116434273
+    },
+    "physical_parcial": {
+      "K": 7.256088522470415,
+      "tau": null,
+      "theta": 1.009738649286411,
+      "wn": 2.4540881411009723,
+      "zeta": 0.21393135116434273
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.13269529073106,
+      "y_faixa": 15.281663481812924,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.005326851061409482,
+    "nrmse_final": 0.005326851061409482,
+    "latency_ms": 879.687445005402,
+    "n_points": 692
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_20.png",
+    "order": "second",
+    "params": {},
+    "ok": false,
+    "reason": "calibration_failed",
+    "dimensionless": {
+      "zeta": 0.0010000000000000009,
+      "wn_T": 4.826727874345873,
+      "tau_T": null,
+      "theta_T": 0.022307731793858608,
+      "theta_tau": null,
+      "K_yrange": -0.4860813608037848
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": 0.013279052202203186,
+      "wn": 8.108511753947655,
+      "zeta": 0.0010000000000000009
+    },
+    "calibration": {
+      "ok": false,
+      "reason": "calibration_failed",
+      "ok_x": true,
+      "ok_y": false,
+      "T_s": 0.5952668036765151,
+      "y_faixa": null,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": null,
+    "nrmse_final": null,
+    "latency_ms": 244.93276099383365,
+    "n_points": 862
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_21.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.7088644150598369,
+      "y_faixa": 21.803278688524586,
+      "n_pairs_x": 8,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.02968563023162378,
+    "nrmse_final": 0.02968563023162378,
+    "latency_ms": 842.9516019969014,
+    "n_points": 750
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_21.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.6891445500374035,
+      "tau": 1.4456795931061401,
+      "theta": 0.736011050054804,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24445269849387943,
+      "theta_T": 0.12445350142948383,
+      "theta_tau": 0.5091107694710103,
+      "K_yrange": -1.0337168250561053
+    },
+    "physical": {
+      "K": -0.6891445500374035,
+      "tau": 1.4456795931061401,
+      "theta": 0.736011050054804,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.6891445500374035,
+      "tau": 1.4456795931061401,
+      "theta": 0.736011050054804,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 6.143409299431575,
+      "y_faixa": 1.525,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.010808846638629783,
+    "nrmse_final": 0.010808846638629783,
+    "latency_ms": 671.9024969934253,
+    "n_points": 568
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_22.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.0617556965244277,
+      "tau": 0.29677918616100024,
+      "theta": 0.06229285083046525,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.29397807825332284,
+      "theta_T": 0.06170490866609014,
+      "theta_tau": 0.20989629237904808,
+      "K_yrange": 1.0406337900438745
+    },
+    "physical": {
+      "K": 2.0617556965244277,
+      "tau": 0.29677918616100024,
+      "theta": 0.06229285083046525,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.0617556965244277,
+      "tau": 0.29677918616100024,
+      "theta": 0.06229285083046525,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.0179410241188376,
+      "y_faixa": 2.5250000000000017,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002019948284869449,
+    "nrmse_final": 0.002019948284869449,
+    "latency_ms": 229.59267201076727,
+    "n_points": 841
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_22.png",
+    "order": "second",
+    "params": {
+      "K": -3.098202763965987,
+      "tau": null,
+      "theta": 21.744169618839997,
+      "wn": 0.15223711189057768,
+      "zeta": 0.30380967503204703
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.30380967503204703,
+      "wn_T": 18.282358229958977,
+      "tau_T": null,
+      "theta_T": 0.1810635992137253,
+      "theta_tau": null,
+      "K_yrange": -0.7267520095401417
+    },
+    "physical": {
+      "K": -3.098202763965987,
+      "tau": null,
+      "theta": 21.744169618839997,
+      "wn": 0.15223711189057768,
+      "zeta": 0.30380967503204703
+    },
+    "physical_parcial": {
+      "K": -3.098202763965987,
+      "tau": null,
+      "theta": 21.744169618839997,
+      "wn": 0.15223711189057768,
+      "zeta": 0.30380967503204703
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 123.42009421544991,
+      "y_faixa": 5.2136329798635135,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00418240597808599,
+    "nrmse_final": 0.00418240597808599,
+    "latency_ms": 219.82943700277247,
+    "n_points": 939
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_23.png",
+    "order": "second",
+    "params": {
+      "K": 0.7581818512747515,
+      "tau": null,
+      "theta": 0.1597575376612399,
+      "wn": 5.790050833670697,
+      "zeta": 2.3080273898116253
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.3080273898116253,
+      "wn_T": 3.004009636895583,
+      "tau_T": null,
+      "theta_T": 0.3079232012972375,
+      "theta_tau": null,
+      "K_yrange": 2.8298987748286564
+    },
+    "physical": {
+      "K": 0.7581818512747515,
+      "tau": null,
+      "theta": 0.1597575376612399,
+      "wn": 5.790050833670697,
+      "zeta": 2.3080273898116253
+    },
+    "physical_parcial": {
+      "K": 0.7581818512747515,
+      "tau": null,
+      "theta": 0.1597575376612399,
+      "wn": 5.790050833670697,
+      "zeta": 2.3080273898116253
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.7412194996466037,
+      "y_faixa": 2.1682463917458974,
+      "n_pairs_x": 9,
+      "n_pairs_y": 9
+    },
+    "truncado_em": 0.5238569850366657,
+    "ganho_truncagem": 0.8532741009942388,
+    "nrmse_full": 0.10079685948014526,
+    "nrmse_final": 0.01478950982418169,
+    "latency_ms": 656.4225030015223,
+    "n_points": 591
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_23.png",
+    "order": "second",
+    "params": {
+      "K": -0.4938625394487871,
+      "tau": null,
+      "theta": 2.3044619031120885,
+      "wn": 0.316346789065887,
+      "zeta": 1.10107706780233
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.10107706780233,
+      "wn_T": 3.9782416875115345,
+      "tau_T": null,
+      "theta_T": 0.18324907857224265,
+      "theta_tau": null,
+      "K_yrange": -1.1938019972813054
+    },
+    "physical": {
+      "K": -0.4938625394487871,
+      "tau": null,
+      "theta": 2.3044619031120885,
+      "wn": 0.316346789065887,
+      "zeta": 1.10107706780233
+    },
+    "physical_parcial": {
+      "K": -0.4938625394487871,
+      "tau": null,
+      "theta": 2.3044619031120885,
+      "wn": 0.316346789065887,
+      "zeta": 1.10107706780233
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 13.536586866943294,
+      "y_faixa": 1.0787328721426022,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006270951286302279,
+    "nrmse_final": 0.006270951286302279,
+    "latency_ms": 1062.4573550012428,
+    "n_points": 459
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_24.png",
+    "order": "second",
+    "params": {
+      "K": 2.6681223950127704,
+      "tau": null,
+      "theta": 0.9560226680288247,
+      "wn": 2.2908312484564943,
+      "zeta": 0.3976673624766918
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.3976673624766918,
+      "wn_T": 9.881233275871175,
+      "tau_T": null,
+      "theta_T": 0.22164101797911387,
+      "theta_tau": null,
+      "K_yrange": 0.7940885692193875
+    },
+    "physical": {
+      "K": 2.6681223950127704,
+      "tau": null,
+      "theta": 0.9560226680288247,
+      "wn": 2.2908312484564943,
+      "zeta": 0.3976673624766918
+    },
+    "physical_parcial": {
+      "K": 2.6681223950127704,
+      "tau": null,
+      "theta": 0.9560226680288247,
+      "wn": 2.2908312484564943,
+      "zeta": 0.3976673624766918
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.427343240163246,
+      "y_faixa": 3.9199776718964934,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0033611396526201658,
+    "nrmse_final": 0.0033611396526201658,
+    "latency_ms": 237.4238970078295,
+    "n_points": 758
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_24.png",
+    "order": "second",
+    "params": {
+      "K": -0.29651003509492047,
+      "tau": null,
+      "theta": 16.009190210451692,
+      "wn": 0.09466369320346218,
+      "zeta": 0.2510045929377595
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.2510045929377595,
+      "wn_T": 5.704141078926024,
+      "tau_T": null,
+      "theta_T": 0.265682256022217,
+      "theta_tau": null,
+      "K_yrange": -0.7806729027905666
+    },
+    "physical": {
+      "K": -0.29651003509492047,
+      "tau": null,
+      "theta": 16.009190210451692,
+      "wn": 0.09466369320346218,
+      "zeta": 0.2510045929377595
+    },
+    "physical_parcial": {
+      "K": -0.29651003509492047,
+      "tau": null,
+      "theta": 16.009190210451692,
+      "wn": 0.09466369320346218,
+      "zeta": 0.2510045929377595
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 80.29971222784071,
+      "y_faixa": 0.9721098393326398,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0278045441548054,
+    "nrmse_final": 0.0278045441548054,
+    "latency_ms": 1234.9589590012329,
+    "n_points": 470
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_25.png",
+    "order": "fopdt",
+    "params": {
+      "K": 4.075257950907222,
+      "tau": 1.2929660395957676,
+      "theta": 1.46048155268872,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.312394521202183,
+      "theta_T": 0.35286807341007514,
+      "theta_tau": 1.1295590974263519,
+      "K_yrange": 1.1462764322316068
+    },
+    "physical": {
+      "K": 4.075257950907222,
+      "tau": 1.2929660395957676,
+      "theta": 1.46048155268872,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 4.075257950907222,
+      "tau": 1.2929660395957676,
+      "theta": 1.46048155268872,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.214632696276021,
+      "y_faixa": 4.6797709734391795,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.004417326288220321,
+    "nrmse_final": 0.004417326288220321,
+    "latency_ms": 225.04567899159156,
+    "n_points": 766
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_25.png",
+    "order": "second",
+    "params": {
+      "K": -4.462260508999559,
+      "tau": null,
+      "theta": 0.2813655779028668,
+      "wn": 2.163360546837943,
+      "zeta": 0.801011734546003
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.801011734546003,
+      "wn_T": 3.2678225641685508,
+      "tau_T": null,
+      "theta_T": 0.18626935169235337,
+      "theta_tau": null,
+      "K_yrange": -1.1591631664506816
+    },
+    "physical": {
+      "K": -4.462260508999559,
+      "tau": null,
+      "theta": 0.2813655779028668,
+      "wn": 2.163360546837943,
+      "zeta": 0.801011734546003
+    },
+    "physical_parcial": {
+      "K": -4.462260508999559,
+      "tau": null,
+      "theta": 0.2813655779028668,
+      "wn": 2.163360546837943,
+      "zeta": 0.801011734546003
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.5532312349264945,
+      "y_faixa": 5.011056581522499,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002018462116519119,
+    "nrmse_final": 0.002018462116519119,
+    "latency_ms": 202.84392801113427,
+    "n_points": 567
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_26.png",
+    "order": "fopdt",
+    "params": {
+      "K": 15.660013027149471,
+      "tau": 1.0267849621675047,
+      "theta": 0.5803780416645877,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3323075096298744,
+      "theta_T": 0.1878328849521656,
+      "theta_tau": 0.5652381589611825,
+      "K_yrange": 1.0890652671299492
+    },
+    "physical": {
+      "K": 15.660013027149471,
+      "tau": 1.0267849621675047,
+      "theta": 0.5803780416645877,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 15.660013027149471,
+      "tau": 1.0267849621675047,
+      "theta": 0.5803780416645877,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.102901253470542,
+      "y_faixa": 18.875778919760627,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002035526190818994,
+    "nrmse_final": 0.002035526190818994,
+    "latency_ms": 230.57632600830402,
+    "n_points": 712
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_26.png",
+    "order": "second",
+    "params": {
+      "K": -1.3826271851688403,
+      "tau": null,
+      "theta": 43.97580405359802,
+      "wn": 0.06441245325509229,
+      "zeta": 2.0276561821553525
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.0276561821553525,
+      "wn_T": 12.728838614529518,
+      "tau_T": null,
+      "theta_T": 0.22253321836637788,
+      "theta_tau": null,
+      "K_yrange": -1.0696391510390326
+    },
+    "physical": {
+      "K": -1.3826271851688403,
+      "tau": null,
+      "theta": 43.97580405359802,
+      "wn": 0.06441245325509229,
+      "zeta": 2.0276561821553525
+    },
+    "physical_parcial": {
+      "K": -1.3826271851688403,
+      "tau": null,
+      "theta": 43.97580405359802,
+      "wn": 0.06441245325509229,
+      "zeta": 2.0276561821553525
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 200.36685201651383,
+      "y_faixa": 2.2869269098830656,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0032702581801588183,
+    "nrmse_final": 0.0032702581801588183,
+    "latency_ms": 206.00058099080343,
+    "n_points": 719
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_27.png",
+    "order": "second",
+    "params": {
+      "K": 3.40089401014192,
+      "tau": null,
+      "theta": 0.13669438226660421,
+      "wn": 8.613128916094457,
+      "zeta": 3.5968199271114623
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 3.5968199271114623,
+      "wn_T": 22.901946704375046,
+      "tau_T": null,
+      "theta_T": 0.051409006918317623,
+      "theta_tau": null,
+      "K_yrange": 1.0459667590224462
+    },
+    "physical": {
+      "K": 3.40089401014192,
+      "tau": null,
+      "theta": 0.13669438226660421,
+      "wn": 8.613128916094457,
+      "zeta": 3.5968199271114623
+    },
+    "physical_parcial": {
+      "K": 3.40089401014192,
+      "tau": null,
+      "theta": 0.13669438226660421,
+      "wn": 8.613128916094457,
+      "zeta": 3.5968199271114623
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.7023104189054297,
+      "y_faixa": 4.3005660603259335,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002807081504225882,
+    "nrmse_final": 0.002807081504225882,
+    "latency_ms": 224.06440100166947,
+    "n_points": 921
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_27.png",
+    "order": "second",
+    "params": {
+      "K": -8.58984659500377,
+      "tau": null,
+      "theta": 0.9829175830338803,
+      "wn": 5.467999962253579,
+      "zeta": 5.020688449003002
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 5.020688449003002,
+      "wn_T": 18.789199846035903,
+      "tau_T": null,
+      "theta_T": 0.2860469498950779,
+      "theta_tau": null,
+      "K_yrange": -1.2653723190317745
+    },
+    "physical": {
+      "K": -8.58984659500377,
+      "tau": null,
+      "theta": 0.9829175830338803,
+      "wn": 5.467999962253579,
+      "zeta": 5.020688449003002
+    },
+    "physical_parcial": {
+      "K": -8.58984659500377,
+      "tau": null,
+      "theta": 0.9829175830338803,
+      "wn": 5.467999962253579,
+      "zeta": 5.020688449003002
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.8326965231027814,
+      "y_faixa": 8.3201348982055,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018337023258943972,
+    "nrmse_final": 0.0018337023258943972,
+    "latency_ms": 206.00687799742445,
+    "n_points": 625
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_28.png",
+    "order": "second",
+    "params": {
+      "K": 10.291050081097165,
+      "tau": null,
+      "theta": 18.65913896085962,
+      "wn": 0.12051308670070357,
+      "zeta": 0.3328185410023739
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.3328185410023739,
+      "wn_T": 8.274732155411787,
+      "tau_T": null,
+      "theta_T": 0.27175144634499027,
+      "theta_tau": null,
+      "K_yrange": 0.7511169926362353
+    },
+    "physical": {
+      "K": 10.291050081097165,
+      "tau": null,
+      "theta": 18.65913896085962,
+      "wn": 0.12051308670070357,
+      "zeta": 0.3328185410023739
+    },
+    "physical_parcial": {
+      "K": 10.291050081097165,
+      "tau": null,
+      "theta": 18.65913896085962,
+      "wn": 0.12051308670070357,
+      "zeta": 0.3328185410023739
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 70.67542715083252,
+      "y_faixa": 15.672361066090149,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017323294675473308,
+    "nrmse_final": 0.0017323294675473308,
+    "latency_ms": 217.17289599473588,
+    "n_points": 615
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_28.png",
+    "order": "second",
+    "params": {},
+    "ok": false,
+    "reason": "calibration_failed",
+    "dimensionless": {
+      "zeta": 0.04069422672073115,
+      "wn_T": 4.708330139479063,
+      "tau_T": null,
+      "theta_T": 1.1612197573234892e-18,
+      "theta_tau": null,
+      "K_yrange": -0.5298597611002266
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": 2.6840202727614585e-18,
+      "wn": 2.0370211199409454,
+      "zeta": 0.04069422672073115
+    },
+    "calibration": {
+      "ok": false,
+      "reason": "calibration_failed",
+      "ok_x": true,
+      "ok_y": false,
+      "T_s": 2.311380129242627,
+      "y_faixa": null,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": null,
+    "nrmse_final": null,
+    "latency_ms": 252.83748500805814,
+    "n_points": 691
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_29.png",
+    "order": "second",
+    "params": {
+      "K": 0.25745926075885917,
+      "tau": null,
+      "theta": 1.3982397865207499,
+      "wn": 1.1542209654039188,
+      "zeta": 1.390232464092956
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.390232464092956,
+      "wn_T": 5.831806861991292,
+      "tau_T": null,
+      "theta_T": 0.27673716130459863,
+      "theta_tau": null,
+      "K_yrange": 1.2251059292893731
+    },
+    "physical": {
+      "K": 0.25745926075885917,
+      "tau": null,
+      "theta": 1.3982397865207499,
+      "wn": 1.1542209654039188,
+      "zeta": 1.390232464092956
+    },
+    "physical_parcial": {
+      "K": 0.25745926075885917,
+      "tau": null,
+      "theta": 1.3982397865207499,
+      "wn": 1.1542209654039188,
+      "zeta": 1.390232464092956
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.138759571227702,
+      "y_faixa": 0.6526692137727219,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.004530861415262832,
+    "nrmse_final": 0.004530861415262832,
+    "latency_ms": 209.71163900685497,
+    "n_points": 646
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_29.png",
+    "order": "second",
+    "params": {
+      "K": -6.955072736278539,
+      "tau": null,
+      "theta": 0.40202782349178273,
+      "wn": 6.530067486862922,
+      "zeta": 3.9737403485093488
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 3.9737403485093488,
+      "wn_T": 4.152099166154026,
+      "tau_T": null,
+      "theta_T": 0.6322750767606713,
+      "theta_tau": null,
+      "K_yrange": -5.719223945823155
+    },
+    "physical": {
+      "K": -6.955072736278539,
+      "tau": null,
+      "theta": 0.40202782349178273,
+      "wn": 6.530067486862922,
+      "zeta": 3.9737403485093488
+    },
+    "physical_parcial": {
+      "K": -6.955072736278539,
+      "tau": null,
+      "theta": 0.40202782349178273,
+      "wn": 6.530067486862922,
+      "zeta": 3.9737403485093488
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.8670102519282137,
+      "y_faixa": 3.950416930243256,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": 0.6503899394330934,
+    "ganho_truncagem": 0.9049607694767485,
+    "nrmse_full": 0.07655538987296849,
+    "nrmse_final": 0.007275765345934443,
+    "latency_ms": 709.5850850018905,
+    "n_points": 586
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_30.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.1344036208297982,
+      "tau": 0.062285999353760106,
+      "theta": 0.18064276257957437,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.354018714275645,
+      "theta_T": 1.0267302317557003,
+      "theta_tau": 2.9002145659347,
+      "K_yrange": 3.78358906130977
+    },
+    "physical": {
+      "K": 0.1344036208297982,
+      "tau": 0.062285999353760106,
+      "theta": 0.18064276257957437,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.1344036208297982,
+      "tau": 0.062285999353760106,
+      "theta": 0.18064276257957437,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.4661654135338347,
+      "y_faixa": 0.678916779124944,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 0.19924812030075198,
+    "ganho_truncagem": 0.6356706099404545,
+    "nrmse_full": 0.08214259368414695,
+    "nrmse_final": 0.029926961054854328,
+    "latency_ms": 1509.2988700052956,
+    "n_points": 588
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_30.png",
+    "order": "second",
+    "params": {
+      "K": -3.816817298700442,
+      "tau": null,
+      "theta": 2.74035071422951,
+      "wn": 0.09580676541239148,
+      "zeta": 0.8633585444053037
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.8633585444053037,
+      "wn_T": 5.714637305670666,
+      "tau_T": null,
+      "theta_T": 0.04594239738807957,
+      "theta_tau": null,
+      "K_yrange": -0.9445030135187381
+    },
+    "physical": {
+      "K": -3.816817298700442,
+      "tau": null,
+      "theta": 2.74035071422951,
+      "wn": 0.09580676541239148,
+      "zeta": 0.8633585444053037
+    },
+    "physical_parcial": {
+      "K": -3.816817298700442,
+      "tau": null,
+      "theta": 2.74035071422951,
+      "wn": 0.09580676541239148,
+      "zeta": 0.8633585444053037
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 63.74099230832039,
+      "y_faixa": 5.068479940785376,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006725425985574388,
+    "nrmse_final": 0.006725425985574388,
+    "latency_ms": 773.0713900091359,
+    "n_points": 694
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_31.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.139033707576299,
+      "tau": 3.8441640032976063,
+      "theta": 4.281283866745461,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2551927741545831,
+      "theta_T": 0.2842107428197183,
+      "theta_tau": 1.1137099934011359,
+      "K_yrange": 1.0443529281801043
+    },
+    "physical": {
+      "K": 1.139033707576299,
+      "tau": 3.8441640032976063,
+      "theta": 4.281283866745461,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.139033707576299,
+      "tau": 3.8441640032976063,
+      "theta": 4.281283866745461,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 16.453223740506726,
+      "y_faixa": 1.2543650190420976,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002450347285882285,
+    "nrmse_final": 0.002450347285882285,
+    "latency_ms": 238.1751670036465,
+    "n_points": 890
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_31.png",
+    "order": "second",
+    "params": {
+      "K": -17.5192516581449,
+      "tau": null,
+      "theta": 5.754252022115496,
+      "wn": 0.1340529177083017,
+      "zeta": 1.5656808722896625
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5656808722896625,
+      "wn_T": 10.90178994945548,
+      "tau_T": null,
+      "theta_T": 0.07075666256365594,
+      "theta_tau": null,
+      "K_yrange": -1.0221781403256411
+    },
+    "physical": {
+      "K": -17.5192516581449,
+      "tau": null,
+      "theta": 5.754252022115496,
+      "wn": 0.1340529177083017,
+      "zeta": 1.5656808722896625
+    },
+    "physical_parcial": {
+      "K": -17.5192516581449,
+      "tau": null,
+      "theta": 5.754252022115496,
+      "wn": 0.1340529177083017,
+      "zeta": 1.5656808722896625
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 82.80539717044506,
+      "y_faixa": 20.59036309481135,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018711097879924759,
+    "nrmse_final": 0.0018711097879924759,
+    "latency_ms": 234.93079798936378,
+    "n_points": 660
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_32.png",
+    "order": "second",
+    "params": {
+      "K": 10.81246792454785,
+      "tau": null,
+      "theta": 0.05288919670804934,
+      "wn": 63.02642372534849,
+      "zeta": 4.1945859744486365
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 4.1945859744486365,
+      "wn_T": 19.288911178003353,
+      "tau_T": null,
+      "theta_T": 0.17281519373764231,
+      "theta_tau": null,
+      "K_yrange": 1.1737425880634758
+    },
+    "physical": {
+      "K": 10.81246792454785,
+      "tau": null,
+      "theta": 0.05288919670804934,
+      "wn": 63.02642372534849,
+      "zeta": 4.1945859744486365
+    },
+    "physical_parcial": {
+      "K": 10.81246792454785,
+      "tau": null,
+      "theta": 0.05288919670804934,
+      "wn": 63.02642372534849,
+      "zeta": 4.1945859744486365
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.30791857455109395,
+      "y_faixa": 12.385826455677577,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017790927265003212,
+    "nrmse_final": 0.0017790927265003212,
+    "latency_ms": 193.47319399821572,
+    "n_points": 491
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_32.png",
+    "order": "second",
+    "params": {
+      "K": -13.143900348353274,
+      "tau": null,
+      "theta": 0.4290752404577227,
+      "wn": 1.3473248954683097,
+      "zeta": 1.5804531650007658
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5804531650007658,
+      "wn_T": 10.455297342845032,
+      "tau_T": null,
+      "theta_T": 0.055292904117486434,
+      "theta_tau": null,
+      "K_yrange": -1.0256336100549728
+    },
+    "physical": {
+      "K": -13.143900348353274,
+      "tau": null,
+      "theta": 0.4290752404577227,
+      "wn": 1.3473248954683097,
+      "zeta": 1.5804531650007658
+    },
+    "physical_parcial": {
+      "K": -13.143900348353274,
+      "tau": null,
+      "theta": 0.4290752404577227,
+      "wn": 1.3473248954683097,
+      "zeta": 1.5804531650007658
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.730321763809672,
+      "y_faixa": 16.092896070099894,
+      "n_pairs_x": 4,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00394794764850596,
+    "nrmse_final": 0.00394794764850596,
+    "latency_ms": 828.6213869869243,
+    "n_points": 706
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_33.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 19.831419263910647,
+      "y_faixa": 4.015052536303175,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.014108259504892844,
+    "nrmse_final": 0.014108259504892844,
+    "latency_ms": 839.237874999526,
+    "n_points": 745
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_33.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.9058220979438699,
+      "tau": 10.500946444032813,
+      "theta": 2.928866056696677,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.44559529165996864,
+      "theta_T": 0.12428298075059299,
+      "theta_tau": 0.27891448378550787,
+      "K_yrange": -1.1356722155369732
+    },
+    "physical": {
+      "K": -0.9058220979438699,
+      "tau": 10.500946444032813,
+      "theta": 2.928866056696677,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.9058220979438699,
+      "tau": 10.500946444032813,
+      "theta": 2.928866056696677,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 23.803848583160715,
+      "y_faixa": 2.9171285107184857,
+      "n_pairs_x": 5,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006020079088821934,
+    "nrmse_final": 0.006020079088821934,
+    "latency_ms": 754.4337720028125,
+    "n_points": 794
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_34.png",
+    "order": "second",
+    "params": {
+      "K": 0.19665629842104154,
+      "tau": null,
+      "theta": 0.4962291537843056,
+      "wn": 2.7209182591775267,
+      "zeta": 0.0010000000000000002
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.0010000000000000002,
+      "wn_T": 3.421723228966044,
+      "tau_T": null,
+      "theta_T": 0.3945961946419393,
+      "theta_tau": null,
+      "K_yrange": 0.6396060225872698
+    },
+    "physical": {
+      "K": 0.19665629842104154,
+      "tau": null,
+      "theta": 0.4962291537843056,
+      "wn": 2.7209182591775267,
+      "zeta": 0.0010000000000000002
+    },
+    "physical_parcial": {
+      "K": 0.19665629842104154,
+      "tau": null,
+      "theta": 0.4962291537843056,
+      "wn": 2.7209182591775267,
+      "zeta": 0.0010000000000000002
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.736006913021362,
+      "y_faixa": 2.5185065762021135,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": 1.2800517250889163,
+    "ganho_truncagem": 0.8378659436109598,
+    "nrmse_full": 0.12971813725743273,
+    "nrmse_final": 0.021031727780777852,
+    "latency_ms": 1492.2887180000544,
+    "n_points": 690
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_34.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.3409516566244049,
+      "tau": 0.9173855109592473,
+      "theta": 1.079535277905346,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2996872671990713,
+      "theta_T": 0.35265760513500727,
+      "theta_tau": 1.1767520469955426,
+      "K_yrange": -1.0688027964238793
+    },
+    "physical": {
+      "K": -1.3409516566244049,
+      "tau": 0.9173855109592473,
+      "theta": 1.079535277905346,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.3409516566244049,
+      "tau": 0.9173855109592473,
+      "theta": 1.079535277905346,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.2820499791749462,
+      "y_faixa": 2.7175925925925934,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006422779271990928,
+    "nrmse_final": 0.006422779271990928,
+    "latency_ms": 943.2689399982337,
+    "n_points": 777
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_35.png",
+    "order": "second",
+    "params": {
+      "K": 0.6619632724422229,
+      "tau": null,
+      "theta": 4.026164648019113,
+      "wn": 0.2379466521335792,
+      "zeta": 1.548482184543879
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.548482184543879,
+      "wn_T": 4.240749827833981,
+      "tau_T": null,
+      "theta_T": 0.22590636982329038,
+      "theta_tau": null,
+      "K_yrange": 1.4849586297510873
+    },
+    "physical": {
+      "K": 0.6619632724422229,
+      "tau": null,
+      "theta": 4.026164648019113,
+      "wn": 0.2379466521335792,
+      "zeta": 1.548482184543879
+    },
+    "physical_parcial": {
+      "K": 0.6619632724422229,
+      "tau": null,
+      "theta": 4.026164648019113,
+      "wn": 0.2379466521335792,
+      "zeta": 1.548482184543879
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 52.69193301852494,
+      "y_faixa": 1.1983640121627903,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 18.337194298571113,
+    "ganho_truncagem": 0.8782911226596237,
+    "nrmse_full": 0.0567404552160385,
+    "nrmse_final": 0.006905817104125943,
+    "latency_ms": 660.5605859949719,
+    "n_points": 727
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_35.png",
+    "order": "second",
+    "params": {
+      "K": -0.8802664392826874,
+      "tau": null,
+      "theta": 1.26241256325908,
+      "wn": 1.310773811077015,
+      "zeta": 1.9598313052021585
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.9598313052021585,
+      "wn_T": 7.2372481921511485,
+      "tau_T": null,
+      "theta_T": 0.2286417824511232,
+      "theta_tau": null,
+      "K_yrange": -1.2570449869316433
+    },
+    "physical": {
+      "K": -0.8802664392826874,
+      "tau": null,
+      "theta": 1.26241256325908,
+      "wn": 1.310773811077015,
+      "zeta": 1.9598313052021585
+    },
+    "physical_parcial": {
+      "K": -0.8802664392826874,
+      "tau": null,
+      "theta": 1.26241256325908,
+      "wn": 1.310773811077015,
+      "zeta": 1.9598313052021585
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.723805202540678,
+      "y_faixa": 1.6701757451331558,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.008179903937227073,
+    "nrmse_final": 0.008179903937227073,
+    "latency_ms": 841.5942179999547,
+    "n_points": 601
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_36.png",
+    "order": "second",
+    "params": {
+      "K": 1.8875355423696922,
+      "tau": null,
+      "theta": 37.9387396763656,
+      "wn": 0.06836548182347801,
+      "zeta": 1.482892244272804
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.482892244272804,
+      "wn_T": 11.707351766603793,
+      "tau_T": null,
+      "theta_T": 0.22154457040822714,
+      "theta_tau": null,
+      "K_yrange": 1.0348227029364911
+    },
+    "physical": {
+      "K": 1.8875355423696922,
+      "tau": null,
+      "theta": 37.9387396763656,
+      "wn": 0.06836548182347801,
+      "zeta": 1.482892244272804
+    },
+    "physical_parcial": {
+      "K": 1.8875355423696922,
+      "tau": null,
+      "theta": 37.9387396763656,
+      "wn": 0.06836548182347801,
+      "zeta": 1.482892244272804
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 180.39532080255498,
+      "y_faixa": 2.427742660416491,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0021076275209107407,
+    "nrmse_final": 0.0021076275209107407,
+    "latency_ms": 224.53227899677586,
+    "n_points": 731
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_36.png",
+    "order": "second",
+    "params": {
+      "K": -3.176056604061208,
+      "tau": null,
+      "theta": 0.20254898126776608,
+      "wn": 4.600231853307495,
+      "zeta": 1.5880505102734412
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5880505102734412,
+      "wn_T": 5.427905814107298,
+      "tau_T": null,
+      "theta_T": 0.17166330945928632,
+      "theta_tau": null,
+      "K_yrange": -1.2704239876621362
+    },
+    "physical": {
+      "K": -3.176056604061208,
+      "tau": null,
+      "theta": 0.20254898126776608,
+      "wn": 4.600231853307495,
+      "zeta": 1.5880505102734412
+    },
+    "physical_parcial": {
+      "K": -3.176056604061208,
+      "tau": null,
+      "theta": 0.20254898126776608,
+      "wn": 4.600231853307495,
+      "zeta": 1.5880505102734412
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2292375060204241,
+      "y_faixa": 3.2488173125314543,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0026030273579991125,
+    "nrmse_final": 0.0026030273579991125,
+    "latency_ms": 231.62844199396204,
+    "n_points": 958
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_37.png",
+    "order": "second",
+    "params": {
+      "K": 10.637276079435422,
+      "tau": null,
+      "theta": 1.1538923750299646,
+      "wn": 1.6025056719500361,
+      "zeta": 1.1387276296359594
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.1387276296359594,
+      "wn_T": 9.35823829780566,
+      "tau_T": null,
+      "theta_T": 0.19759264692362044,
+      "theta_tau": null,
+      "K_yrange": 1.0159330007832363
+    },
+    "physical": {
+      "K": 10.637276079435422,
+      "tau": null,
+      "theta": 1.1538923750299646,
+      "wn": 1.6025056719500361,
+      "zeta": 1.1387276296359594
+    },
+    "physical_parcial": {
+      "K": 10.637276079435422,
+      "tau": null,
+      "theta": 1.1538923750299646,
+      "wn": 1.6025056719500361,
+      "zeta": 1.1387276296359594
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 6.004873891343353,
+      "y_faixa": 14.35422646799451,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0034480079675519642,
+    "nrmse_final": 0.0034480079675519642,
+    "latency_ms": 234.20471799909137,
+    "n_points": 1062
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_37.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.4368346751763725,
+      "tau": 1.1707862267998652,
+      "theta": 0.6826419143602831,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.23248773102497258,
+      "theta_T": 0.13555495114249846,
+      "theta_tau": 0.5830628160242051,
+      "K_yrange": -1.0197507135705737
+    },
+    "physical": {
+      "K": -1.4368346751763725,
+      "tau": 1.1707862267998652,
+      "theta": 0.6826419143602831,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.4368346751763725,
+      "tau": 1.1707862267998652,
+      "theta": 0.6826419143602831,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.582711272215994,
+      "y_faixa": 3.2031398635952626,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0028211252631465114,
+    "nrmse_final": 0.0028211252631465114,
+    "latency_ms": 207.84947500214912,
+    "n_points": 572
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_38.png",
+    "order": "second",
+    "params": {
+      "K": 31.220673328985654,
+      "tau": null,
+      "theta": 1.8788955701333312,
+      "wn": 0.3132440709076527,
+      "zeta": 1.4574544144156771
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4574544144156771,
+      "wn_T": 8.602559758714808,
+      "tau_T": null,
+      "theta_T": 0.06841601961586925,
+      "theta_tau": null,
+      "K_yrange": 1.0479666571967217
+    },
+    "physical": {
+      "K": 31.220673328985654,
+      "tau": null,
+      "theta": 1.8788955701333312,
+      "wn": 0.3132440709076527,
+      "zeta": 1.4574544144156771
+    },
+    "physical_parcial": {
+      "K": 31.220673328985654,
+      "tau": null,
+      "theta": 1.8788955701333312,
+      "wn": 0.3132440709076527,
+      "zeta": 1.4574544144156771
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 28.066890256068337,
+      "y_faixa": 36.04166666666666,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0033276360406315378,
+    "nrmse_final": 0.0033276360406315378,
+    "latency_ms": 217.71175498724915,
+    "n_points": 592
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_38.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.4454096853715275,
+      "tau": 1.2436813279787295,
+      "theta": 0.39156489679020234,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24136853071251668,
+      "theta_T": 0.0759932964262255,
+      "theta_tau": 0.31484343133669623,
+      "K_yrange": -1.0143924381476666
+    },
+    "physical": {
+      "K": -1.4454096853715275,
+      "tau": 1.2436813279787295,
+      "theta": 0.39156489679020234,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.4454096853715275,
+      "tau": 1.2436813279787295,
+      "theta": 0.39156489679020234,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.248365509096736,
+      "y_faixa": 1.713938908089876,
+      "n_pairs_x": 4,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002376747839441426,
+    "nrmse_final": 0.002376747839441426,
+    "latency_ms": 232.82812599791214,
+    "n_points": 593
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_39.png",
+    "order": "second",
+    "params": {
+      "K": 4.34176151924372,
+      "tau": null,
+      "theta": 1.0707949607393832,
+      "wn": 1.5182050719808609,
+      "zeta": 1.5311809435812465
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5311809435812465,
+      "wn_T": 5.5002727755776,
+      "tau_T": null,
+      "theta_T": 0.29556467593106966,
+      "theta_tau": null,
+      "K_yrange": 1.3599150578062602
+    },
+    "physical": {
+      "K": 4.34176151924372,
+      "tau": null,
+      "theta": 1.0707949607393832,
+      "wn": 1.5182050719808609,
+      "zeta": 1.5311809435812465
+    },
+    "physical_parcial": {
+      "K": 4.34176151924372,
+      "tau": null,
+      "theta": 1.0707949607393832,
+      "wn": 1.5182050719808609,
+      "zeta": 1.5311809435812465
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.036313062050864,
+      "y_faixa": 4.7133698205685075,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0015366487823842492,
+    "nrmse_final": 0.0015366487823842492,
+    "latency_ms": 245.97203999292105,
+    "n_points": 851
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_39.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": false,
+      "reason": "ocr_insuficiente",
+      "ok_x": true,
+      "ok_y": false,
+      "T_s": 5.2577102877466375,
+      "y_faixa": null,
+      "n_pairs_x": 6,
+      "n_pairs_y": 0
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": null,
+    "nrmse_final": null,
+    "latency_ms": 556.7618640052387,
+    "n_points": 480
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_40.png",
+    "order": "second",
+    "params": {
+      "K": 0.23603316209643782,
+      "tau": null,
+      "theta": 1.6363722165379297,
+      "wn": 0.22766342211175444,
+      "zeta": 0.652151179868188
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.652151179868188,
+      "wn_T": 2.490426516438511,
+      "tau_T": null,
+      "theta_T": 0.14958967719247704,
+      "theta_tau": null,
+      "K_yrange": 1.1996475583871642
+    },
+    "physical": {
+      "K": 0.23603316209643782,
+      "tau": null,
+      "theta": 1.6363722165379297,
+      "wn": 0.22766342211175444,
+      "zeta": 0.652151179868188
+    },
+    "physical_parcial": {
+      "K": 0.23603316209643782,
+      "tau": null,
+      "theta": 1.6363722165379297,
+      "wn": 0.22766342211175444,
+      "zeta": 0.652151179868188
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 11.372016574671251,
+      "y_faixa": 0.9188131492813433,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006653259286203211,
+    "nrmse_final": 0.006653259286203211,
+    "latency_ms": 1855.5669510096777,
+    "n_points": 759
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_40.png",
+    "order": "second",
+    "params": {
+      "K": -0.34057781609905474,
+      "tau": null,
+      "theta": 0.15975576359774113,
+      "wn": 6.517853974167385,
+      "zeta": 1.2476351816518108
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2476351816518108,
+      "wn_T": 6.220572409492417,
+      "tau_T": null,
+      "theta_T": 0.1673905020497377,
+      "theta_tau": null,
+      "K_yrange": -1.0795100420996828
+    },
+    "physical": {
+      "K": -0.34057781609905474,
+      "tau": null,
+      "theta": 0.15975576359774113,
+      "wn": 6.517853974167385,
+      "zeta": 1.2476351816518108
+    },
+    "physical_parcial": {
+      "K": -0.34057781609905474,
+      "tau": null,
+      "theta": 0.15975576359774113,
+      "wn": 6.517853974167385,
+      "zeta": 1.2476351816518108
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9680726613894869,
+      "y_faixa": 1.12112676056338,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00811209381606366,
+    "nrmse_final": 0.00811209381606366,
+    "latency_ms": 915.6384310044814,
+    "n_points": 838
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_41.png",
+    "order": "second",
+    "params": {
+      "K": 0.3843187731525553,
+      "tau": null,
+      "theta": 0.10259685991236978,
+      "wn": 17.24047698963292,
+      "zeta": 2.660259981474338
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.660259981474338,
+      "wn_T": 10.307106882800735,
+      "tau_T": null,
+      "theta_T": 0.17161157079678646,
+      "theta_tau": null,
+      "K_yrange": 1.2114565526907257
+    },
+    "physical": {
+      "K": 0.3843187731525553,
+      "tau": null,
+      "theta": 0.10259685991236978,
+      "wn": 17.24047698963292,
+      "zeta": 2.660259981474338
+    },
+    "physical_parcial": {
+      "K": 0.3843187731525553,
+      "tau": null,
+      "theta": 0.10259685991236978,
+      "wn": 17.24047698963292,
+      "zeta": 2.660259981474338
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.6320991848633084,
+      "y_faixa": 1.4441834159518212,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00600729995613346,
+    "nrmse_final": 0.00600729995613346,
+    "latency_ms": 692.4069669912569,
+    "n_points": 734
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_41.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.8657267427240924,
+      "tau": 0.2996731065656036,
+      "theta": 0.05623983717858041,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3476489306260258,
+      "theta_T": 0.06524348974049521,
+      "theta_tau": 0.18767061823837217,
+      "K_yrange": -1.0663169275252433
+    },
+    "physical": {
+      "K": -2.8657267427240924,
+      "tau": 0.2996731065656036,
+      "theta": 0.05623983717858041,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.8657267427240924,
+      "tau": 0.2996731065656036,
+      "theta": 0.05623983717858041,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.88292787950165,
+      "y_faixa": 3.333333333333335,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.005038539241023135,
+    "nrmse_final": 0.005038539241023135,
+    "latency_ms": 672.0264440082246,
+    "n_points": 660
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_42.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.9259178290999723,
+      "tau": 1.5347996815622298,
+      "theta": 0.9539876494751804,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.29369967807134667,
+      "theta_T": 0.18255533207415567,
+      "theta_tau": 0.6215714408437608,
+      "K_yrange": 1.0626019121925638
+    },
+    "physical": {
+      "K": 2.9259178290999723,
+      "tau": 1.5347996815622298,
+      "theta": 0.9539876494751804,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.9259178290999723,
+      "tau": 1.5347996815622298,
+      "theta": 0.9539876494751804,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.254874209834117,
+      "y_faixa": 3.657310463526775,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002154943456504029,
+    "nrmse_final": 0.002154943456504029,
+    "latency_ms": 223.71444500458892,
+    "n_points": 898
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_42.png",
+    "order": "second",
+    "params": {
+      "K": -19.26516121363447,
+      "tau": null,
+      "theta": 0.42104447246312837,
+      "wn": 6.858346336680861,
+      "zeta": 1.784324225807014
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.784324225807014,
+      "wn_T": 10.461203275005522,
+      "tau_T": null,
+      "theta_T": 0.276036010331297,
+      "theta_tau": null,
+      "K_yrange": -1.1308502646647873
+    },
+    "physical": {
+      "K": -19.26516121363447,
+      "tau": null,
+      "theta": 0.42104447246312837,
+      "wn": 6.858346336680861,
+      "zeta": 1.784324225807014
+    },
+    "physical_parcial": {
+      "K": -19.26516121363447,
+      "tau": null,
+      "theta": 0.42104447246312837,
+      "wn": 6.858346336680861,
+      "zeta": 1.784324225807014
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.0318580700409328,
+      "y_faixa": 23.13017418513244,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0026458528017228957,
+    "nrmse_final": 0.0026458528017228957,
+    "latency_ms": 232.2986619983567,
+    "n_points": 534
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_43.png",
+    "order": "second",
+    "params": {
+      "K": 25.99565599771483,
+      "tau": null,
+      "theta": 0.020073713662627356,
+      "wn": 3.084813305867947,
+      "zeta": 2.0842150405768964
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.0842150405768964,
+      "wn_T": 9.390327835167911,
+      "tau_T": null,
+      "theta_T": 0.006594408639573209,
+      "theta_tau": null,
+      "K_yrange": 1.1085234689716241
+    },
+    "physical": {
+      "K": 25.99565599771483,
+      "tau": null,
+      "theta": 0.020073713662627356,
+      "wn": 3.084813305867947,
+      "zeta": 2.0842150405768964
+    },
+    "physical_parcial": {
+      "K": 25.99565599771483,
+      "tau": null,
+      "theta": 0.020073713662627356,
+      "wn": 3.084813305867947,
+      "zeta": 2.0842150405768964
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.0493446142122265,
+      "y_faixa": 26.197183098591534,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0033713299680971924,
+    "nrmse_final": 0.0033713299680971924,
+    "latency_ms": 185.3670679993229,
+    "n_points": 576
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_43.png",
+    "order": "second",
+    "params": {
+      "K": -0.9978014344822699,
+      "tau": null,
+      "theta": 18.467269718930034,
+      "wn": 0.059942540600691395,
+      "zeta": 1.2208898413546583
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2208898413546583,
+      "wn_T": 6.8085000094153845,
+      "tau_T": null,
+      "theta_T": 0.16258721647647223,
+      "theta_tau": null,
+      "K_yrange": -1.0722658696963288
+    },
+    "physical": {
+      "K": -0.9978014344822699,
+      "tau": null,
+      "theta": 18.467269718930034,
+      "wn": 0.059942540600691395,
+      "zeta": 1.2208898413546583
+    },
+    "physical_parcial": {
+      "K": -0.9978014344822699,
+      "tau": null,
+      "theta": 18.467269718930034,
+      "wn": 0.059942540600691395,
+      "zeta": 1.2208898413546583
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 114.95390438321805,
+      "y_faixa": 1.2546277088420585,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0017071107393088097,
+    "nrmse_final": 0.0017071107393088097,
+    "latency_ms": 224.64043099898845,
+    "n_points": 830
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_44.png",
+    "order": "second",
+    "params": {
+      "K": 6.531506398183551,
+      "tau": null,
+      "theta": 1.0508859266498172,
+      "wn": 0.2716798583459486,
+      "zeta": 0.7979929237294154
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7979929237294154,
+      "wn_T": 3.4165731860266395,
+      "tau_T": null,
+      "theta_T": 0.08356459064235808,
+      "theta_tau": null,
+      "K_yrange": 1.0763428232627874
+    },
+    "physical": {
+      "K": 6.531506398183551,
+      "tau": null,
+      "theta": 1.0508859266498172,
+      "wn": 0.2716798583459486,
+      "zeta": 0.7979929237294154
+    },
+    "physical_parcial": {
+      "K": 6.531506398183551,
+      "tau": null,
+      "theta": 1.0508859266498172,
+      "wn": 0.2716798583459486,
+      "zeta": 0.7979929237294154
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.885202283339785,
+      "y_faixa": 8.527326242168145,
+      "n_pairs_x": 7,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007398955812142155,
+    "nrmse_final": 0.007398955812142155,
+    "latency_ms": 1121.7597530048806,
+    "n_points": 895
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_44.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.4652198049713387,
+      "y_faixa": 5.36326530612245,
+      "n_pairs_x": 5,
+      "n_pairs_y": 2
+    },
+    "truncado_em": 1.13943697322082,
+    "ganho_truncagem": 0.6851994031686071,
+    "nrmse_full": 0.11553165131383575,
+    "nrmse_final": 0.036369432786511884,
+    "latency_ms": 1664.1864590055775,
+    "n_points": 729
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_45.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.4154539363719543,
+      "tau": 3.994513002871766,
+      "theta": 0.7154810024277485,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.8028801578086177,
+      "theta_T": 0.14380864443932811,
+      "theta_tau": 0.17911595278657733,
+      "K_yrange": 1.4892624851043563
+    },
+    "physical": {
+      "K": 0.4154539363719543,
+      "tau": 3.994513002871766,
+      "theta": 0.7154810024277485,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.4154539363719543,
+      "tau": 3.994513002871766,
+      "theta": 0.7154810024277485,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 17.698144442086363,
+      "y_faixa": 1.267402117392056,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 5.161762397685944,
+    "ganho_truncagem": 0.8994295999706352,
+    "nrmse_full": 0.07180488986532033,
+    "nrmse_final": 0.007221446497819743,
+    "latency_ms": 695.0376050081104,
+    "n_points": 378
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_45.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "ajuste_inconsistente",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.48580441640378563,
+      "y_faixa": 1.01978021978022,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.2695054403178291,
+    "nrmse_final": 0.2695054403178291,
+    "latency_ms": 314.4777389970841,
+    "n_points": 734
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_46.png",
+    "order": "second",
+    "params": {
+      "K": 1.5292084218492719,
+      "tau": null,
+      "theta": 1.3702169414289047,
+      "wn": 1.5974388605398295,
+      "zeta": 2.146788029209847
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.146788029209847,
+      "wn_T": 11.019222946000513,
+      "tau_T": null,
+      "theta_T": 0.19863812542271964,
+      "theta_tau": null,
+      "K_yrange": 1.1306460662019677
+    },
+    "physical": {
+      "K": 1.5292084218492719,
+      "tau": null,
+      "theta": 1.3702169414289047,
+      "wn": 1.5974388605398295,
+      "zeta": 2.146788029209847
+    },
+    "physical_parcial": {
+      "K": 1.5292084218492719,
+      "tau": null,
+      "theta": 1.3702169414289047,
+      "wn": 1.5974388605398295,
+      "zeta": 2.146788029209847
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.0317394022149955,
+      "y_faixa": 1.7830367391827333,
+      "n_pairs_x": 8,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0018213856120750985,
+    "nrmse_final": 0.0018213856120750985,
+    "latency_ms": 207.00464099354576,
+    "n_points": 517
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_46.png",
+    "order": "second",
+    "params": {
+      "K": -7.629592810685131,
+      "tau": null,
+      "theta": 0.41810424672408936,
+      "wn": 1.3117456198623914,
+      "zeta": 2.2265338663658127
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.2265338663658127,
+      "wn_T": 12.177880266257363,
+      "tau_T": null,
+      "theta_T": 0.04503627908100161,
+      "theta_tau": null,
+      "K_yrange": -1.0607737388301008
+    },
+    "physical": {
+      "K": -7.629592810685131,
+      "tau": null,
+      "theta": 0.41810424672408936,
+      "wn": 1.3117456198623914,
+      "zeta": 2.2265338663658127
+    },
+    "physical_parcial": {
+      "K": -7.629592810685131,
+      "tau": null,
+      "theta": 0.41810424672408936,
+      "wn": 1.3117456198623914,
+      "zeta": 2.2265338663658127
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.56279069767442,
+      "y_faixa": 8.635156440333898,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0024147931947855294,
+    "nrmse_final": 0.0024147931947855294,
+    "latency_ms": 194.31125599658117,
+    "n_points": 500
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_47.png",
+    "order": "second",
+    "params": {
+      "K": 0.2747348314426168,
+      "tau": null,
+      "theta": 0.7286832062023667,
+      "wn": 1.164157681424018,
+      "zeta": 0.7622760006602278
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7622760006602278,
+      "wn_T": 4.948099803991077,
+      "tau_T": null,
+      "theta_T": 0.17143998412096229,
+      "theta_tau": null,
+      "K_yrange": 0.9762911717912549
+    },
+    "physical": {
+      "K": 0.2747348314426168,
+      "tau": null,
+      "theta": 0.7286832062023667,
+      "wn": 1.164157681424018,
+      "zeta": 0.7622760006602278
+    },
+    "physical_parcial": {
+      "K": 0.2747348314426168,
+      "tau": null,
+      "theta": 0.7286832062023667,
+      "wn": 1.164157681424018,
+      "zeta": 0.7622760006602278
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.376355050675919,
+      "y_faixa": 0.9502042843629983,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.005248985065374001,
+    "nrmse_final": 0.005248985065374001,
+    "latency_ms": 1132.7786639885744,
+    "n_points": 642
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_47.png",
+    "order": "second",
+    "params": {
+      "K": -4.536185469819006,
+      "tau": null,
+      "theta": 0.4838769655678268,
+      "wn": 5.435821660897798,
+      "zeta": 1.7850272563862744
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.7850272563862744,
+      "wn_T": 9.373356774122223,
+      "tau_T": null,
+      "theta_T": 0.2806111998110095,
+      "theta_tau": null,
+      "K_yrange": -1.1527394394457635
+    },
+    "physical": {
+      "K": -4.536185469819006,
+      "tau": null,
+      "theta": 0.4838769655678268,
+      "wn": 5.435821660897798,
+      "zeta": 1.7850272563862744
+    },
+    "physical_parcial": {
+      "K": -4.536185469819006,
+      "tau": null,
+      "theta": 0.4838769655678268,
+      "wn": 5.435821660897798,
+      "zeta": 1.7850272563862744
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.7420150127543528,
+      "y_faixa": 5.0810810810810825,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.002360743301796348,
+    "nrmse_final": 0.002360743301796348,
+    "latency_ms": 199.4860940030776,
+    "n_points": 685
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_48.png",
+    "order": "fopdt",
+    "params": {
+      "K": 5.337533683874784,
+      "tau": 0.19823143936963464,
+      "theta": 0.1452955508844172,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5266929969123233,
+      "theta_T": 0.3860444608417803,
+      "theta_tau": 0.7329591680635992,
+      "K_yrange": 1.3609925594735675
+    },
+    "physical": {
+      "K": 5.337533683874784,
+      "tau": 0.19823143936963464,
+      "theta": 0.1452955508844172,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 5.337533683874784,
+      "tau": 0.19823143936963464,
+      "theta": 0.1452955508844172,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.1048801500576289,
+      "y_faixa": 6.426137300251259,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": 0.4048306206029796,
+    "ganho_truncagem": 0.8825488844936287,
+    "nrmse_full": 0.04933592965805655,
+    "nrmse_final": 0.005794559972882612,
+    "latency_ms": 741.3417490024585,
+    "n_points": 669
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_48.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.4183699957762443,
+      "tau": 0.32193119787033064,
+      "theta": 0.3189694110076778,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.37740321170798247,
+      "theta_T": 0.37393107889900284,
+      "theta_tau": 0.990799938364949,
+      "K_yrange": -1.1811556908302043
+    },
+    "physical": {
+      "K": -1.4183699957762443,
+      "tau": 0.32193119787033064,
+      "theta": 0.3189694110076778,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.4183699957762443,
+      "tau": 0.32193119787033064,
+      "theta": 0.3189694110076778,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9152157082921203,
+      "y_faixa": 2.5208540717266827,
+      "n_pairs_x": 5,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0033843445438142884,
+    "nrmse_final": 0.0033843445438142884,
+    "latency_ms": 855.4383590089856,
+    "n_points": 577
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_49.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.744442177630968,
+      "tau": 1.0275378002392257,
+      "theta": 0.3361520595047967,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3052982291764744,
+      "theta_T": 0.09987625611140176,
+      "theta_tau": 0.3271432539285033,
+      "K_yrange": 1.0443613283312139
+    },
+    "physical": {
+      "K": 0.744442177630968,
+      "tau": 1.0275378002392257,
+      "theta": 0.3361520595047967,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.744442177630968,
+      "tau": 1.0275378002392257,
+      "theta": 0.3361520595047967,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.4875814766831614,
+      "y_faixa": 1.048717948717949,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0034283944620386924,
+    "nrmse_final": 0.0034283944620386924,
+    "latency_ms": 207.67512200109195,
+    "n_points": 498
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_49.png",
+    "order": "fopdt",
+    "params": {
+      "K": -9.433121971009054,
+      "tau": 0.11522133975412549,
+      "theta": 0.024050447194940688,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4313742181911599,
+      "theta_T": 0.09004185229927295,
+      "theta_tau": 0.20873257719674765,
+      "K_yrange": -1.1085502693933535
+    },
+    "physical": {
+      "K": -9.433121971009054,
+      "tau": 0.11522133975412549,
+      "theta": 0.024050447194940688,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -9.433121971009054,
+      "tau": 0.11522133975412549,
+      "theta": 0.024050447194940688,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.29228579720570763,
+      "y_faixa": 11.782276516120657,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0023054077725211094,
+    "nrmse_final": 0.0023054077725211094,
+    "latency_ms": 239.64151699328795,
+    "n_points": 648
+  }
+]

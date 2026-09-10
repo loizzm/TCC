@@ -1,0 +1,10 @@
+treino: 12450 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta', 'data/train_kneg', 'data/train_multi']  base=32  2075 passos/epoca
+parametros: 7948578
+epoca 00  IoU_val=0.6824  acerto_contagem=0.8488  lr=3.00e-04  1070s
+epoca 01  IoU_val=0.7157  acerto_contagem=0.9298  lr=3.00e-04  957s
+epoca 02  IoU_val=0.7266  acerto_contagem=0.9556  lr=3.00e-04  967s
+epoca 03  IoU_val=0.7549  acerto_contagem=0.9566  lr=3.00e-04  994s
+epoca 04  IoU_val=0.7447  acerto_contagem=0.9690  lr=3.00e-04  993s
+epoca 05  IoU_val=0.7516  acerto_contagem=0.9706  lr=1.50e-04 (LR reduzido)  1020s
+epoca 06  IoU_val=0.7600  acerto_contagem=0.9758  lr=1.50e-04  1027s
+epoca 07  IoU_val=0.7644  acerto_contagem=0.9732  lr=7.50e-05 (LR reduzido)  1023s

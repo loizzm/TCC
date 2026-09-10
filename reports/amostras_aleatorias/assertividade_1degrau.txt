@@ -1,0 +1,80 @@
+ASSERTIVIDADE — SO FIGURAS DE UM DEGRAU (sem multi-degrau)
+============================================================================
+  populacao: 139 figuras dos tres lotes com a entrada desenhada
+
+1. ENTREGA
+----------------------------------------------------------------------------
+  calibrou os dois eixos       139/139  (100.0%)
+  entregou parametro fisico    116/139  (83.5%)
+  rotulo de estrutura correto  109/116  (94.0%)
+  sinal de K correto           116/116  (100.0%)
+
+  recusas: 23  ajuste_inconsistente=22, resposta_inversa=1
+
+2. EXATIDAO DOS PARAMETROS (erro relativo, so as que entregaram)
+----------------------------------------------------------------------------
+  grandeza                              n    mediana        p90
+  K                                   116     0.0035     0.5461
+  t_dom (unifica as ordens)           116     0.0081     1.0910
+  tau (quando FOPDT dos dois lados)    53     0.0021     0.0744
+  wn (quando 2a ordem dos dois lados)   56     0.0150     0.4061
+  zeta (idem)                          56     0.0279     0.9977
+  theta (relativo)                    116     0.0079     0.1989
+  theta (|dtheta| / janela)           116     0.0010     0.0207
+
+  erro de CURVA reconstruida (NRMSE contra a verdade analitica):
+    NRMSE <= 0.01:  85/116 das entregues (73.3%)   ·   85/139 do total (61.2%)
+    NRMSE <= 0.02:  93/116 das entregues (80.2%)   ·   93/139 do total (66.9%)
+    NRMSE <= 0.05:  100/116 das entregues (86.2%)   ·   100/139 do total (71.9%)
+    NRMSE <= 0.10:  104/116 das entregues (89.7%)   ·   104/139 do total (74.8%)
+
+3. AS DUAS SUBPOPULACOES (a truncagem espuria parte a amostra em duas)
+----------------------------------------------------------------------------
+                                    n  |errK| p50   NRMSE p50   estrutura
+  sem truncagem espuria            85      0.0024      0.001979/85          
+  COM truncagem espuria            31      0.1198      0.031130/31          
+
+  a truncagem espuria multiplica o erro de K por 49x
+
+4. O NUCLEO LIMPO — um degrau, sem truncagem espuria
+----------------------------------------------------------------------------
+  n = 85 de 139 (61.2% da populacao de um degrau)
+  estrutura correta      79/85 (92.9%)
+  K                      mediana 0.0024   p90 0.0750
+  t_dom                  mediana 0.0029   p90 0.2977
+  theta/janela           mediana 0.0009   p90 0.0215
+  NRMSE <= 0.01          76/85 (89.4%)
+  NRMSE <= 0.02          79/85 (92.9%)
+  NRMSE <= 0.05          82/85 (96.5%)
+
+5. ROBUSTEZ AO RENDER (a variacao de estilo move a agulha?)
+----------------------------------------------------------------------------
+  por tipo de linha:
+    -                n=43   fisico= 97.7%  |errK| p50= 0.0026  NRMSE p50= 0.0025
+    --               n=27   fisico= 70.4%  |errK| p50= 0.0027  NRMSE p50= 0.0020
+    -.               n=36   fisico= 75.0%  |errK| p50= 0.0052  NRMSE p50= 0.0050
+    :                n=33   fisico= 84.8%  |errK| p50= 0.0062  NRMSE p50= 0.0034
+
+  por tema:
+    False            n=78   fisico= 83.3%  |errK| p50= 0.0027  NRMSE p50= 0.0019
+    True             n=61   fisico= 83.6%  |errK| p50= 0.0055  NRMSE p50= 0.0039
+
+  por preenchimento:
+    axhspan_ref      n=26   fisico= 80.8%  |errK| p50= 0.0028  NRMSE p50= 0.0025
+    axvspan_atraso   n=17   fisico= 88.2%  |errK| p50= 0.0047  NRMSE p50= 0.0026
+    axvspan_e_fill   n=17   fisico= 82.4%  |errK| p50= 0.0132  NRMSE p50= 0.0040
+    fill_between     n=27   fisico= 85.2%  |errK| p50= 0.0035  NRMSE p50= 0.0025
+    nenhum           n=52   fisico= 82.7%  |errK| p50= 0.0029  NRMSE p50= 0.0026
+
+  por ordem verdadeira:
+    fopdt            n=67   fisico= 83.6%  |errK| p50= 0.0028  NRMSE p50= 0.0022
+    second           n=72   fisico= 83.3%  |errK| p50= 0.0082  NRMSE p50= 0.0038
+
+6. CONTRASTE — a mesma populacao SEM a linha de entrada desenhada
+----------------------------------------------------------------------------
+                                n   fisico   estrut  |errK| p50  trunc espuria
+  COM entrada (hoje)          139    83.5%    94.0%      0.0035       31/116  
+  SEM entrada                 100    93.0%    97.8%      0.0021       10/93   
+
+  A diferenca entre as duas linhas e o CUSTO do distrator, nao um defeito
+  da fisica: a mesma planta, o mesmo estilo, o mesmo ajuste.

@@ -1,0 +1,33 @@
+VALIDACAO NO REAL — cabeca de contagem, encoder CONGELADO
+============================================================================
+  treinada em data/train_multi (sintetico, n=1500)
+  avaliada em 299 figuras dos tres geradores reais (53.5% multi-degrau)
+  limiar escolhido no SINTETICO, aplicado ao real (nao selecionado nele)
+
+  AUC sintetico (data/val_multi) = 0.9733
+  AUC REAL                       = 0.5913
+
+  limiar                      precisao  revocacao      F1   acerto
+  melhor F1 no sintetico         78.1%      46.9%   0.586    64.5%
+  precisao>=95% no sintetico     78.1%      46.9%   0.586    64.5%
+
+  Referencias medidas nas MESMAS 299 figuras:
+  gate de residuo (producao)     69,9%      48,3%   0.571
+  gate de residuo (sem piso)     78,2%      70,3%   0.740
+  contagem PERFEITA             100,0%      70,3%   0.825
+
+  matriz no limiar de melhor F1: TP=75 FP=21 FN=85 TN=118
+
+  estratificado (limiar de melhor F1):
+    por familia:
+      multi          n=115  AUC= 0.564  prec= 82.5% rev= 45.8% acerto= 60.0%
+      neg            n=86   AUC= 0.767  prec= 66.7% rev= 64.0% acerto= 80.2%
+      rg             n=98   AUC= 0.512  prec= 81.2% rev= 41.3% acerto= 56.1%
+    por tema escuro:
+      False          n=213  AUC= 0.548  prec= 81.9% rev= 43.7% acerto= 58.2%
+      True           n=86   AUC= 0.767  prec= 66.7% rev= 64.0% acerto= 80.2%
+    por tipo de linha:
+      -              n=82   AUC= 0.525  prec= 72.7% rev= 41.0% acerto= 64.6%
+      --             n=77   AUC= 0.559  prec= 81.5% rev= 44.0% acerto= 57.1%
+      -.             n=71   AUC= 0.507  prec= 66.7% rev= 40.0% acerto= 60.6%
+      :              n=69   AUC= 0.773  prec= 88.5% rev= 63.9% acerto= 76.8%
