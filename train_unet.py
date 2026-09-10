@@ -10,6 +10,8 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 from dataset.generator import load_sample
+import torch.nn.functional as F
+
 from identify.extract import UNet, dice_bce_loss, letterbox
 
 
@@ -61,7 +63,25 @@ class MaskDataset(Dataset):
             x, _ = letterbox(gray, self.size)
             xt = torch.from_numpy(x.astype(np.float32) / 255.0)[None]
         y, _ = letterbox(m["mask"], self.size)
-        return xt, torch.from_numpy(y.astype(np.float32) / 255.0)[None]
+        yt = torch.from_numpy(y.astype(np.float32) / 255.0)[None]
+        # Rotulo da cabeca de contagem: BINARIO, "ha mais de um degrau?".
+        # Amostra do corpus base nao tem a chave (schema v1) e vale 1 degrau —
+        # e o que ela sempre foi. Sai SEMPRE, mesmo com a cabeca desligada:
+        # o custo e um float por amostra e o `collate` fica uniforme.
+        n = int(m.get("n_degraus", 1))
+        # PESO da perda de contagem. Zero nas amostras FORA DA FAMILIA
+        # (`fase_nao_minima`, schema v3), e o motivo nao e' delicadeza: elas
+        # tem `n_degraus = 1` e uma FORMA de dois eventos — mergulha e depois
+        # sobe. Treinar a cabeca binaria contra elas ensina exatamente o
+        # contrario do que ela existe para aprender, e o alvo do estagio A
+        # nessas amostras e' so a MASCARA. A perda de segmentacao continua
+        # valendo cheia; e' so a de contagem que se cala.
+        # Sai sempre, com a cabeca ligada ou nao, pelo mesmo motivo que `n`:
+        # `collate` uniforme por um float por amostra.
+        peso = 0.0 if m.get("fora_da_familia") else 1.0
+        return (xt, yt,
+                torch.tensor([1.0 if n > 1 else 0.0], dtype=torch.float32),
+                torch.tensor([peso], dtype=torch.float32))
 
 
 def iou(logits, target, thr: float = 0.5) -> float:
@@ -95,6 +115,14 @@ def main() -> None:
                          "MaskDataset.__getitem__ para o porque.")
     ap.add_argument("--base", type=int, default=16,
                     help="canais da primeira camada da UNet (16, 24, 32)")
+    ap.add_argument("--contagem", action="store_true",
+                    help="liga a cabeca de contagem de degraus (saida binaria "
+                         "'ha mais de um degrau?'). Sem este flag o treino e "
+                         "byte a byte o de antes.")
+    ap.add_argument("--lambda-contagem", type=float, default=0.2,
+                    help="peso da perda de contagem. As duas perdas tem escalas "
+                         "diferentes; este valor precisa ser VARRIDO, nao "
+                         "chutado — reportar (IoU, acerto) em cada valor.")
     # Hipotese (b) do Ruling 10: tamanho do dataset. Aceita mais de um
     # diretorio para somar um split extra (seed-base >= 4) ao data/train atual
     # sem tocar em data/val e data/test, que ficam fixos para os numeros
@@ -105,6 +133,10 @@ def main() -> None:
     # vez (diversidade de dados E numero de passos de gradiente por epoca).
     # Fixando os passos, a unica diferenca entre as duas curvas de IoU_val e a
     # diversidade -- que e exatamente a hipotese (b) do Ruling 10.
+    ap.add_argument("--workers", type=int, default=4,
+                    help="workers do DataLoader de treino (validacao usa "
+                         "metade). Baixe para 2 se a maquina estiver sob "
+                         "pressao de memoria — ver o comentario no codigo.")
     ap.add_argument("--batches-per-epoch", type=int, default=0,
                     help="limita os passos de gradiente por epoca (0 = split inteiro)")
     # Scheduler de LR — ver Ruling no HANDOFF_P2_3.md: sem ele, o treino sobe
@@ -147,11 +179,19 @@ def main() -> None:
     passos = a.batches_per_epoch or (len(ds_tr) // a.batch)
     print(f"treino: {len(ds_tr)} amostras de {train_dirs}  base={a.base}  "
           f"{passos} passos/epoca", flush=True)
+    # `--workers` existe por causa de MEMORIA, nao de velocidade. Medido nesta
+    # maquina (16 GB) com a receita cheia — base 32, batch 6, size 512 — a
+    # arvore de treino chega a 3,6 GB de RSS com os 4+2 workers padrao. Numa
+    # sessao com swap alto isso e' o processo que o OOM killer escolhe, e o
+    # treino morre depois de horas. Cair para `--workers 2` corta os forks pela
+    # metade; o padrao segue 4 (+2 na validacao) para nao mudar nenhum numero
+    # historico.
+    n_val = max(1, a.workers // 2)
     tr = DataLoader(ds_tr, batch_size=a.batch,
-                    shuffle=True, num_workers=4, drop_last=True)
+                    shuffle=True, num_workers=a.workers, drop_last=True)
     va = DataLoader(MaskDataset(a.val_dir or ["data/val"], a.size, in_ch=a.in_ch), batch_size=a.batch,
-                    num_workers=2)
-    model = UNet(base=a.base, in_ch=a.in_ch).to(a.device)
+                    num_workers=n_val)
+    model = UNet(base=a.base, in_ch=a.in_ch, com_contagem=a.contagem).to(a.device)
     n_par = sum(p.numel() for p in model.parameters())
     print(f"parametros: {n_par}", flush=True)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr)
@@ -162,23 +202,51 @@ def main() -> None:
     for ep in range(a.epochs):
         t0 = time.perf_counter()
         model.train()
-        for nb, (x, y) in enumerate(tr):
+        for nb, (x, y, n, w) in enumerate(tr):
             if a.batches_per_epoch and nb >= a.batches_per_epoch:
                 break
             x, y = x.to(a.device), y.to(a.device)
             opt.zero_grad()
-            loss = dice_bce_loss(model(x), y)
+            if a.contagem:
+                logits, conta = model(x, com_contagem=True)
+                wd = w.to(a.device)
+                # Media PONDERADA, nao media simples vezes peso: com media
+                # simples um lote com muitas amostras fora da familia teria a
+                # perda de contagem diluida em vez de restrita, e o peso
+                # efetivo de `lambda_contagem` mudaria de lote para lote.
+                bce = F.binary_cross_entropy_with_logits(
+                    conta, n.to(a.device), reduction="none")
+                perda_conta = (bce * wd).sum() / wd.sum().clamp(min=1.0)
+                loss = dice_bce_loss(logits, y) + a.lambda_contagem * perda_conta
+            else:
+                loss = dice_bce_loss(model(x), y)
             loss.backward()
             opt.step()
         model.eval()
+        acertos = []
         with torch.no_grad():
-            ious = [iou(model(x.to(a.device)), y.to(a.device)) for x, y in va]
+            ious = []
+            for x, y, n, w in va:
+                x = x.to(a.device)
+                if a.contagem:
+                    logits, conta = model(x, com_contagem=True)
+                    # So conta onde o rotulo vale: a amostra fora da familia
+                    # nao tem resposta certa aqui, e inclui-la mediria o vies
+                    # da cabeca contra um rotulo que ninguem treinou.
+                    sel = w.squeeze(1) > 0
+                    if bool(sel.any()):
+                        certo = ((conta.cpu() > 0).float() == n).float()
+                        acertos.append(float(certo[sel].mean()))
+                else:
+                    logits = model(x)
+                ious.append(iou(logits, y.to(a.device)))
         m = float(np.mean(ious))
         lr_antes = opt.param_groups[0]["lr"]
         sched.step(m)
         lr_depois = opt.param_groups[0]["lr"]
         marca = " (LR reduzido)" if lr_depois < lr_antes else ""
-        print(f"epoca {ep:02d}  IoU_val={m:.4f}  lr={lr_depois:.2e}{marca}  "
+        extra = (f"  acerto_contagem={np.mean(acertos):.4f}" if acertos else "")
+        print(f"epoca {ep:02d}  IoU_val={m:.4f}{extra}  lr={lr_depois:.2e}{marca}  "
               f"{time.perf_counter()-t0:.0f}s", flush=True)
         if dir_epocas is not None:
             torch.save(model.state_dict(), dir_epocas / f"epoca_{ep:02d}.pt")
