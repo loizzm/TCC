@@ -29,6 +29,12 @@ def _blocos(coluna: np.ndarray) -> list[tuple[int, int]]:
     return blocos
 
 
+# Salto máximo tolerado entre colunas vizinhas no caminho de RAMO ÚNICO, em
+# múltiplos da espessura mediana do traço. Ver a `GUARDA DE CONTINUIDADE` em
+# `mask_to_polyline` para a medição que fixa este valor.
+SALTO_MAX_ESPESSURA: float = 8.0
+
+
 def mask_to_polyline(mask: np.ndarray,
                      bbox: tuple[int, int, int, int] | None = None
                      ) -> tuple[np.ndarray, np.ndarray]:
@@ -117,6 +123,47 @@ def mask_to_polyline(mask: np.ndarray,
             # comportamento anterior. O Ruling 46 mediu que mexer aqui PIORA
             # o sintético.
             v = float(np.median(linhas))
+            # GUARDA DE CONTINUIDADE. Aceitar o bloco único INCONDICIONALMENTE
+            # era o defeito: numa curva TRACEJADA, no vão do traço a única
+            # tinta da coluna é a LINHA DE ENTRADA desenhada no mesmo quadro.
+            # O bloco único passa a ser o distrator, vira o novo `anterior`, e
+            # da coluna seguinte em diante a desambiguação por ramos segue o
+            # objeto errado com confiança. A polilinha fica AGARRADA na
+            # entrada.
+            #
+            # Evidência do mecanismo (n=139 figuras de um degrau, geradores
+            # reais): curva SÓLIDA — que não tem vãos — falha em 8/43
+            # (18,6 %); tracejada ou pontilhada, em 46/96 (47,9 %). Fisher
+            # OR=0,248, p=0,0012. Se a causa fosse "a máscara confunde os
+            # objetos por proximidade", o estilo do traço não importaria.
+            #
+            # A guarda pula a coluna e PRESERVA `anterior`. O vão deixa de
+            # corromper a referência, a interpolação final cobre o buraco, e
+            # quando a tinta da curva volta a referência ainda está correta.
+            # É conservador por construção: troca um ponto provavelmente
+            # errado por um interpolado.
+            #
+            # Medido nas 297 figuras que calibram: extrações sujas
+            # (NRMSE >= 0,05 contra a verdade analítica) caem de 115 para 48;
+            # 113 figuras melhoram, 5 pioram, NENHUMA perde a polilinha — e as
+            # 5 que pioram já estavam sujas, então a guarda não quebra
+            # extração limpa nenhuma. Ponta a ponta: entrega física de 88,6 %
+            # para 95,7 %, recusas de 34 para 13, truncagem espúria de 31 para
+            # 17, e o núcleo de 1 degrau sem truncagem espúria vai de n=85
+            # para n=116 com o MESMO |erro de K| mediano (0,0024).
+            #
+            # SALTO_MAX = 8 é o CENTRO de um platô, não a beira dele: entre 5 e
+            # 12 o resultado é praticamente idêntico (5 vs 8 diferem em 9 de
+            # 297 figuras; 8 vs 12, em 4), porque o salto para o distrator é
+            # ordens de grandeza maior que o limiar. Mesma disciplina que
+            # `_GANHO_MIN` documenta em `identify/classical.py`.
+            #
+            # ATENÇÃO: como toda constante a jusante do Estágio A, este 8
+            # precisa ser REMEDIDO se a máscara mudar — as bordas do platô são
+            # artefato do extrator atual, não do problema.
+            if (anterior is not None
+                    and abs(v - anterior) > SALTO_MAX_ESPESSURA * espessura_mediana):
+                continue
         else:
             # Ramo múltiplo de verdade (HANDOFF_P2_7 §34.2): a coluna tem mais
             # de um objeto — no caso real, a curva e a amostra de linha da

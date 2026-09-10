@@ -1033,7 +1033,35 @@ _N_MIN_PREFIXO = 30
 # Medido em `data/test`, série EXTRAÍDA DA IMAGEM (n=837): p98 = 0,0246, e este
 # piso dispara em 16 amostras (1,91 %). As duas figuras de dois degraus da
 # fixture disparam, com 0,069 e 0,593.
-_PISO_SUSPEITA = 0.030
+#
+# REVISADO (guarda de continuidade de `polyline.py`). O valor de 0,030 foi
+# calibrado quando a polilinha ainda pulava para a linha de entrada desenhada,
+# e nesse regime o residuo inflado pelo distrator abria o portao POR ACIDENTE.
+# Com a extracao limpa esse empurrao some, e o piso passa a barrar quase tudo:
+# medido em 100 figuras novas com a guarda ativa, 48 % das multi-degrau tem
+# `nrmse_full` ABAIXO de 0,030 e nem chegam a varredura de cortes.
+#
+# Varredura do piso nessas 100 (`_GANHO_MIN` fixo em 0,60):
+#     piso    TP  FN  FP  TN   precisao  revocacao      F1
+#     0,030   19  31   6  44      76,0%      38,0%   0,507   <- valor antigo
+#     0,020   27  23   7  43      79,4%      54,0%   0,643
+#     0,010   28  22   7  43      80,0%      56,0%   0,659
+#     0,007   29  21   7  43      80,6%      58,0%   0,674   <- satura aqui
+#     0,000   29  21   7  43      80,6%      58,0%   0,674
+#
+# OS FALSOS POSITIVOS QUASE NAO SE MOVEM (6 -> 7). Os que existem ja tem
+# residuo bem acima de qualquer piso testado, entao baixar o piso nao cria
+# deteccao espuria — ele so custava revocacao. A precisao ate SOBE, porque os
+# 10 verdadeiros positivos recuperados diluem os mesmos falsos.
+#
+# 0,005 fica na regiao onde o beneficio ja saturou (<= 0,007) sem zerar o
+# portao: ele continua poupando a varredura de 13 ajustes nas figuras de
+# residuo muito baixo, que e a funcao de CUSTO que o piso sempre teve. Nao e
+# classificador — quem decide continua sendo `_GANHO_MIN`.
+#
+# ATENCAO: este numero e valido para o Estagio A COM a guarda de continuidade.
+# Qualquer mudanca na mascara ou na polilinha obriga a remedir a tabela acima.
+_PISO_SUSPEITA = 0.005
 
 # Ganho relativo de nrmse exigido para ACEITAR a truncagem.
 #
