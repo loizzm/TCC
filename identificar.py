@@ -100,6 +100,25 @@ def _relatorio(caminho: Path, r: dict) -> str:
             L.append(f"    wn           {_fmt(p.get('wn'), unidade=' rad/s')}")
             L.append(f"    zeta         {_fmt(p.get('zeta'))}")
         L.append(f"    theta        {_fmt(p.get('theta'), unidade=' s')}")
+        if r.get("repouso_observado") is False:
+            # A ressalva vem ANTES da janela e depois dos parâmetros, de
+            # propósito: quem lê a saída precisa ver o número e a ressalva
+            # juntos. Ver `repouso_observado` em identify/pipeline.py para a
+            # medição — |erro K| mediano 3,0 % neste regime contra 0,3 % fora.
+            L.append("")
+            L.append("  \033[1mRepouso nao observado\033[0m — a curva ja esta em "
+                     "movimento nas primeiras")
+            L.append("  colunas extraidas, entao o nivel de partida foi estimado "
+                     "de um trecho")
+            L.append("  do transitorio. Consequencias, nesta ordem de gravidade:")
+            L.append("    K       sai de 'valor final menos repouso' e herda o "
+                     "erro do repouso")
+            L.append("    theta   e o inicio do trecho VISIVEL, nao "
+                     "necessariamente o da resposta")
+            L.append("    a verificacao de resposta inversa (fase nao-minima) "
+                     "NAO se aplica aqui")
+            L.append(f"    (planura inicial {_fmt(r.get('planura_inicial'))}, "
+                     f"limite 0.03)")
         L.append("")
         L.append(f"  Janela lida    {_fmt(cal.get('T_s'), unidade=' s')}"
                  f"   ·   faixa de y  {_fmt(cal.get('y_faixa'))}")

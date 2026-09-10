@@ -32,6 +32,27 @@ def _nivel_de_repouso(y: np.ndarray) -> float:
     return float(np.median(y[:max(1, n)]))
 
 
+def planura_inicial(y: np.ndarray) -> float:
+    """Dispersão de `y` nas `_N_REPOUSO` primeiras colunas, em fração da faixa.
+
+    É literalmente a condição que `_nivel_de_repouso` PRECISA: ele lê as 5
+    primeiras colunas e SUPÕE a curva parada ali. Quando essa suposição é
+    falsa, o "repouso" devolvido é um ponto qualquer do transitório.
+
+    Extraída para função porque agora tem dois consumidores: o portão da
+    referência de tempo pela moldura (que já existia) e a marca
+    `repouso_observado` da saída (§67).
+    """
+    y = np.asarray(y, dtype=float)
+    if y.size == 0:
+        return 0.0
+    faixa = float(np.ptp(y))
+    if not np.isfinite(faixa) or faixa <= 0:
+        return 0.0
+    n = int(min(_N_REPOUSO, y.size))
+    return float(np.ptp(y[:max(1, n)])) / faixa
+
+
 # Cobertura mínima (extensão observada da polilinha / largura da moldura)
 # abaixo da qual `_serie_normalizada` troca a extensão observada pela largura
 # da moldura. Todos os números abaixo foram medidos na fix round 2 e vêm com a
@@ -245,10 +266,7 @@ def _serie_normalizada(x_px: np.ndarray, y_px: np.ndarray, bbox_px=None):
                 # risco. Sem truncagem o corpus mostra planura mediana 0,0044,
                 # e aplicar a guarda sempre recusaria ~6 % das amostras sem
                 # ganho medido.
-                n_rep = int(min(_N_REPOUSO, y.size))
-                faixa_y = float(np.ptp(y))
-                planura = (float(np.ptp(y[:max(1, n_rep)])) / faixa_y
-                           if faixa_y > 0 else 0.0)
+                planura = planura_inicial(y)
                 if not np.isfinite(planura) or planura > _PLANURA_MAX_FRAC:
                     return None, None
             # A ÂNCORA É SEMPRE A MOLDURA quando ela existe.
@@ -423,10 +441,40 @@ _UNDERSHOOT_MAX = 0.08
 #   limiar 0,100 -> 2/900 (0,22 %), mas NÃO pega a imagem de fase não-mínima
 # 0,08 fica no MEIO do platô de propósito: não é escolha na beira de um
 # precipício, e deixa 14 % de folga sobre o 0,0916 observado.
-# ATENÇÃO ao que CONTINUA sem medição: o gerador não produz fase não-mínima,
-# então o corpus dá só o CUSTO. O benefício segue apoiado em n=1, e este
-# episódio mostra o que isso custa — qualquer mudança no Estágio A exige
-# remedir este número.
+# REMEDIDO DUAS VEZES, E O VALOR FICA (§65, §66). A ressalva histórica — "o
+# gerador não produz fase não-mínima, então o corpus dá só o CUSTO, e o
+# benefício segue apoiado em n=1" — deixou de valer: o estrato opt-in
+# `fase_nao_minima` dá positivos, e as 40 figuras de
+# `reports/amostras_aleatorias/fase_nao_minima` dão positivos de RENDER REAL.
+#
+# Varredura com a MÁSCARA PROMOVIDA (época 17 do retreino do §65), nas séries
+# que ESTA função de fato recebe — a extraída, não a do meta. Positivos: 40
+# figuras de fase não-mínima. Negativos: 300 de fase mínima, mesmo render.
+#   limiar     pega NMP        falso positivo
+#    0,020    27/40 (68 %)    24/300 (8,0 %)
+#    0,030    25/40 (62 %)    16/300 (5,3 %)
+#    0,040    23/40 (57 %)    15/300 (5,0 %)
+#    0,060    22/40 (55 %)    14/300 (4,7 %)
+#    0,080    20/40 (50 %)     9/300 (3,0 %)   <- atual, MANTIDO
+#    0,100    20/40 (50 %)     7/300 (2,3 %)
+#
+# 0,08 FICA. Descer daqui é troca RUIM com esta máscara: de 0,08 para 0,04
+# são +3 detecções contra +6 falsos positivos; para 0,02, +7 contra +15. Cada
+# detecção a mais custa dois erros do outro lado.
+#
+# E 0,08 com esta máscara DOMINA o comportamento anterior ao retreino, que no
+# mesmo limiar dava 3/40 (7,5 %) de detecção com 12/300 (4,0 %) de falso
+# positivo: agora são 50 % de detecção com 3,0 % de falso positivo. Melhor nos
+# dois eixos — quem mudou foi a máscara, não a constante.
+#
+# ATENÇÃO: a varredura equivalente com a época 16 (NÃO promovida, ver §66)
+# dava um ótimo em 0,04, e recomendá-lo teria sido errado aqui. O limiar não
+# transfere entre checkpoints do Estágio A. Remedir a cada promoção.
+#
+# O que o limiar NÃO resolve: 40 % das figuras de fase não-mínima de render
+# real ainda saem `ok` — resposta confiante e errada. O teto é a MÁSCARA, e a
+# lacuna é de render: no render de TREINO (`data/val_nmp`) a mesma rede recusa
+# 96,7 %. Fechar isso é trabalho de corpus, não de constante.
 
 
 def _undershoot(y: np.ndarray, frac_alvo: float = 0.10) -> float:
@@ -508,7 +556,8 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     """
     t0 = time.perf_counter()
 
-    def _saida(order, params, ok, reason, dim, cal, n_pts, trunc=None):
+    def _saida(order, params, ok, reason, dim, cal, n_pts, trunc=None,
+               planura=None):
         fis = dict(params) if (ok and params) else None
         # `physical` mantem o contrato antigo: existe se e so se `ok` (o teste
         # 2.11 assevera isso). `physical_parcial` e ADITIVO e entrega o que
@@ -533,6 +582,36 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
             "ganho_truncagem": None if trunc is None else trunc.ganho,
             "nrmse_full": None if trunc is None else _num_ou_none(trunc.nrmse_full),
             "nrmse_final": None if trunc is None else _num_ou_none(trunc.fit.nrmse),
+            # REPOUSO OBSERVADO (§67). ADITIVO: sempre presente, `None`
+            # quando não houve série para medir.
+            #
+            # `_nivel_de_repouso` lê as 5 primeiras colunas e SUPÕE a curva
+            # parada ali. Quando a máscara perde o patamar do tempo morto —
+            # defeito conhecido, `curva rente à moldura`, já registrado como
+            # xfail em test_caso_real_rg.py — essas colunas já estão no
+            # transitório, e TRÊS coisas passam a mentir juntas:
+            #
+            #   K      é `final - repouso`, e o repouso está errado;
+            #   theta  vira o início do trecho VISÍVEL, não o da resposta;
+            #   `resposta_inversa` fica CEGA, porque mede excursão contra esse
+            #          mesmo repouso — `y0 - y` dá ~0 quando `y0` já é o fundo.
+            #
+            # MEDIDO em 282 figuras de fase mínima que entregam parâmetro
+            # (render `rg_aleatorio`, 3 lotes):
+            #   com repouso observado (n=264): |erro K| mediano 0,0031,
+            #                                  |dtheta|/T mediano 0,0013
+            #   sem repouso observado (n=18):  |erro K| mediano 0,0302,
+            #                                  |dtheta|/T mediano 0,0063
+            #   Mann-Whitney: K p=0,0082;  theta p=0,011
+            # Dez vezes o erro de K. Marcar é obrigação, não zelo.
+            #
+            # NÃO RECUSA, e é decisão consciente: mesmo nesse regime `K` erra
+            # 3 % na mediana, o que serve para muito uso. Recusar trocaria erro
+            # silencioso por perda de informação boa. Quem precisa de garantia
+            # lê o campo.
+            "repouso_observado": (None if planura is None
+                                  else bool(planura <= _PLANURA_MAX_FRAC)),
+            "planura_inicial": _num_ou_none(planura),
             "latency_ms": (time.perf_counter() - t0) * 1e3,
             "n_points": int(n_pts),
         }
@@ -565,13 +644,13 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
             # adimensional. Devolver so o adimensional aqui seria trocar um
             # numero errado por outro — os dois saem do MESMO ajuste.
             return _saida("", {}, False, mau, _vazio_adimensional(), cal,
-                          x_px.size, tr)
+                          x_px.size, tr, planura_inicial(y_fit))
         dim = (_adimensional(fit.params, float(t_fit[-1] - t_fit[0]),
                              float(np.ptp(y_fit)))
                if fit.success else _vazio_adimensional())
         return _saida(fit.order, fit.params, bool(fit.success),
                       "" if fit.success else "ajuste_falhou", dim, cal,
-                      x_px.size, tr)
+                      x_px.size, tr, planura_inicial(y_fit))
 
     # Calibração falhou: só o nível adimensional é possível. No quadro
     # normalizado T = 1 e a faixa de y = 1, então `_adimensional` recebe as duas
@@ -586,7 +665,8 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     g = identify(tn, yn)
     mau = _implausivel(yn, g.nrmse) if g.success else ""
     if mau:
-        return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
+        return _saida("", {}, False, mau, _vazio_adimensional(), cal,
+                      x_px.size, planura=planura_inicial(yn))
     dim = _adimensional(g.params, 1.0, 1.0) if g.success else _vazio_adimensional()
     # `order` É adimensional — o PLANO §1.7 lista a estrutura como não dependente
     # de calibração —, então sai preenchido mesmo sem nível físico. Já `params`
@@ -594,4 +674,4 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     # Consumidores antigos não se confundem porque todos passam por `ok`, que
     # continua falso; quem quer a estrutura sem calibração lê `order`.
     return _saida(g.order if g.success else "", {}, False, cal.reason,
-                  dim, cal, x_px.size)
+                  dim, cal, x_px.size, planura=planura_inicial(yn))
