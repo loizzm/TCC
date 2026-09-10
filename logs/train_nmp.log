@@ -1,0 +1,21 @@
+treino: 16050 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta', 'data/train_kneg', 'data/train_multi', 'data/train_plato', 'data/train_plato_kneg', 'data/train_nmp', 'data/train_nmp_kneg']  base=32  2675 passos/epoca
+parametros: 7948578
+epoca 00  IoU_val=0.7073  acerto_contagem=0.8965  lr=3.00e-04  1192s
+epoca 01  IoU_val=0.7385  acerto_contagem=0.9546  lr=3.00e-04  1200s
+epoca 02  IoU_val=0.7465  acerto_contagem=0.9650  lr=3.00e-04  1249s
+epoca 03  IoU_val=0.7494  acerto_contagem=0.9632  lr=3.00e-04  1258s
+epoca 04  IoU_val=0.7333  acerto_contagem=0.9718  lr=3.00e-04  1265s
+epoca 05  IoU_val=0.7570  acerto_contagem=0.9755  lr=3.00e-04  1256s
+epoca 06  IoU_val=0.7535  acerto_contagem=0.9718  lr=3.00e-04  1216s
+epoca 07  IoU_val=0.7633  acerto_contagem=0.9777  lr=3.00e-04  1265s
+epoca 08  IoU_val=0.7586  acerto_contagem=0.9737  lr=3.00e-04  1215s
+epoca 09  IoU_val=0.7605  acerto_contagem=0.9832  lr=1.50e-04 (LR reduzido)  1195s
+epoca 10  IoU_val=0.7682  acerto_contagem=0.9837  lr=1.50e-04  1194s
+epoca 11  IoU_val=0.7756  acerto_contagem=0.9800  lr=1.50e-04  1194s
+epoca 12  IoU_val=0.7683  acerto_contagem=0.9846  lr=1.50e-04  1194s
+epoca 13  IoU_val=0.7772  acerto_contagem=0.9823  lr=7.50e-05 (LR reduzido)  1194s
+epoca 14  IoU_val=0.7712  acerto_contagem=0.9859  lr=7.50e-05  1194s
+epoca 15  IoU_val=0.7714  acerto_contagem=0.9868  lr=3.75e-05 (LR reduzido)  1194s
+epoca 16  IoU_val=0.7730  acerto_contagem=0.9864  lr=3.75e-05  1194s
+epoca 17  IoU_val=0.7728  acerto_contagem=0.9832  lr=1.87e-05 (LR reduzido)  1194s
+melhor IoU_val=0.7772 -> models/unet_stageA_nmp.pt

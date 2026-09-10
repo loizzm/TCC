@@ -219,20 +219,21 @@ def test_neg_super_recupera_o_theta(modelo):
                       f"esperado {NEG_SUPER['theta']} (erro {e:.1%})")
 
 
-@pytest.mark.xfail(strict=True, reason=
-                   "OCLUSAO PELA LEGENDA, e nao o §39.3 como esta versao antes "
-                   "afirmava. A caixa da legenda ('lower left') ocupa t 0,3..5,6 "
-                   "e y -2,4..-3,05, e a curva atravessa essa faixa exatamente na "
-                   "ACOMODACAO: a polilinha segue a borda da caixa e cria um "
-                   "patamar falso em -2,93 onde a resposta ainda esta em -2,52. "
-                   "Isso antecipa a acomodacao em ~0,7 s, e o ajuste compensa com "
-                   "polo dominante mais lento e menos amortecimento. Medido por "
-                   "faixa: acomodacao rms 0,1674 contra 0,0090 na variante de "
-                   "legenda movida; TODAS as outras faixas identicas, inclusive a "
-                   "cauda (0,0073). O Estagio D esta inocente — o oraculo na MESMA "
-                   "grade de 593 pontos recupera wn=4,0000 e zeta=1,2500 com NRMSE "
-                   "zero. Nao precisa de retreino nem de estrato de cauda: precisa "
-                   "que o Estagio A atravesse a legenda. Ver §43.")
+# PORTÃO NOVO (§66). Era `xfail(strict=True)` por OCLUSÃO PELA LEGENDA: a caixa
+# ('lower left') ocupa t 0,3..5,6 e y -2,4..-3,05, a curva atravessa essa faixa
+# exatamente na ACOMODAÇÃO, e a polilinha seguia a borda da caixa criando um
+# patamar falso em -2,93 onde a resposta ainda estava em -2,52. O ajuste
+# compensava com polo dominante mais lento e menos amortecimento.
+#
+# O `xfail` dizia: "não precisa de retreino nem de estrato de cauda: precisa
+# que o Estágio A atravesse a legenda". O retreino do estrato `fase_nao_minima`
+# (§65) fez a rede atravessar — sem que isso fosse objetivo dele. Medido na
+# mesma imagem, com o mesmo código:
+#     modelo anterior   wn = 3,0780   zeta = 0,9728   (verdade 4,0 e 1,25)
+#     época 17          wn = 3,9467   zeta = 1,2528
+# Vira portão porque agora passa, e porque a oclusão por legenda é geometria
+# real que vai reaparecer: se voltar a falhar, é regressão do Estágio A, não
+# limitação conhecida.
 @pytest.mark.parametrize("nome", ["wn", "zeta"])
 def test_neg_super_recupera_a_dinamica(nome, modelo):
     r = _roda(NEG_SUPER, modelo)
