@@ -26,12 +26,12 @@ __all__ = [
     "fit_fopdt",
     "fit_second",
     "identify",
+    "TruncResult",
+    "identify_com_truncagem",
     "identify_both",
     "baseline_tangent",
     "baseline_smith",
     "baseline_sundaresan_krishnaswamy",
-    "TruncResult",
-    "identify_com_truncagem",
 ]
 
 # Amplitude do degrau: sempre 1.0 neste trabalho (contract.md §1).
@@ -89,6 +89,52 @@ _TINY = 1e-300
 # ordem rebaixadas) e por ser a janela mais curta — trecho menor é afirmação
 # mais forte de localidade, que é o que a guarda quer dizer.
 TRECHO_FRAC = 0.03
+
+# SEGUNDO TERMO DA MESMA GUARDA: o polo extra e' RESOLUVEL pela amostragem?
+#
+# `_polo_rapido_e_artefato` pergunta ONDE o ganho aconteceu, e responde bem
+# quando o ganho esta concentrado. Mas ela decide por uma razao que fica em
+# cima do limiar estrutural 1,0, e essa razao se mexe com a mascara. Medido na
+# figura real `caso_real_rg_fopdt_atraso.png` (FOPDT verdadeiro, K=5, tau=1,
+# theta=4), com duas mascaras diferentes da MESMA imagem:
+#
+#     mascara promovida ....... trecho = 1,039  -> rebaixa, `fopdt`  (certo)
+#     mascara `render2` ep.17 . trecho = 0,973  -> NAO rebaixa, `second` (erro)
+#
+# Seis centesimos separam acertar de errar, e o limiar 1,0 nao e calibravel:
+# ele e a fronteira do enunciado ("fora do trecho o 2a ordem nao vence").
+#
+# O POLO RAPIDO EM AMOSTRAS e' o mesmo julgamento por outra via, e nao se mexe:
+# 1,48 e 1,42 amostras nas duas mascaras acima — 4 % de diferenca, contra 7 %
+# do trecho em torno de um limiar que ele cruza. Um polo cujo tau nao chega a
+# alguns intervalos de amostragem nao e' distinguivel de um canto instantaneo:
+# nao ha exponencial observavel ali, so' o arredondamento do proprio traco.
+#
+# MEDIDO nas figuras reais (duas mascaras cada):
+#     FOPDT verdadeiro  sistema1 1,48 / 1,42 ; neg_fopdt 1,30 / 1,33
+#     2a ordem real     neg_super 5,22 / 10,33 ; sistema2 9,89 / 10,17
+#
+# MEDIDO em `data/test` (n=837, o mesmo n com que `TRECHO_FRAC` foi fixado),
+# acuracia de selecao de estrutura com o termo ligado:
+#
+#   limiar   1a ordem   2a ordem   global
+#   -------  ---------  ---------  --------
+#   (so trecho)  91,9 %    95,3 %   93,55 %
+#   2,5          92,3 %    95,1 %   93,67 %
+#   3,0          93,3 %    94,8 %   94,03 %   <- escolhido
+#   4,0          94,2 %    94,3 %   94,27 %
+#   5,0          95,3 %    93,4 %   94,38 %
+#
+# A acuracia NAO escolhe o limiar: 1 sigma em n=837 e' 0,82 p.p. e a faixa
+# inteira de 93,55 % a 94,38 % cabe dentro dela. Quem escolhe e' a MARGEM ate
+# as figuras reais. Em 3,0 o `sistema1` (1,48) entra com fator 2,0 de folga e o
+# `neg_super` (5,22) fica de fora com fator 1,7; em 5,0 a folga do `neg_super`
+# cai para 4 %, e foi exatamente ai que uma tentativa anterior deste criterio
+# quebrou 8 testes e teve de ser revertida.
+#
+# Como `_polo_rapido_e_artefato`, SO' VALE PARA `zeta > 1`, e pela mesma razao:
+# com polos complexos nao existe polo rapido separado para descartar.
+POLO_MIN_AMOSTRAS = 3.0
 
 
 # --------------------------------------------------------------------------- #
@@ -967,6 +1013,32 @@ def _polo_rapido_e_artefato(t: np.ndarray, y: np.ndarray,
     return _ganho_num_trecho_so(t, y, r1, r2) > 1.0
 
 
+def _polo_abaixo_da_resolucao(t: np.ndarray, r2: FitResult) -> bool:
+    """O polo extra do 2a ordem tem constante de tempo menor que
+    `POLO_MIN_AMOSTRAS` intervalos de amostragem?
+
+    Segundo termo da guarda de polo rapido, por uma via que nao depende de
+    onde o ganho de SSE caiu. Ver o bloco de `POLO_MIN_AMOSTRAS` para a
+    medicao que fixa o limiar e para o que a tentativa anterior errou.
+
+    `t` precisa estar ordenado — `_clean` garante isso.
+    """
+    z = r2.params.get("zeta")
+    wn = r2.params.get("wn")
+    if z is None or wn is None:
+        return False
+    z, wn = float(z), float(wn)
+    if not (np.isfinite(z) and np.isfinite(wn)) or z <= 1.0 or wn <= 0.0:
+        return False
+    if t.size < 3:
+        return False
+    dt = float(np.median(np.diff(t)))
+    if not np.isfinite(dt) or dt <= 0.0:
+        return False
+    tau_rapido = 1.0 / (wn * (z + np.sqrt(z * z - 1.0)))
+    return bool(tau_rapido / dt < POLO_MIN_AMOSTRAS)
+
+
 def identify(t, y) -> FitResult:
     """Estágio D: ajusta FOPDT e 2ª ordem e escolhe pela verossimilhança
     penalizada com nº de pontos EFETIVO (ver `_n_efetivo`), com uma guarda
@@ -1015,7 +1087,9 @@ def _identify_ascendente(t, y) -> FitResult:
     ganho = n_eff * np.log(max(r1.sse, 1e-300) / max(r2.sse, 1e-300))
     if ganho <= 2.0 * (r2.n_params - r1.n_params):
         return r1
-    return r1 if _polo_rapido_e_artefato(tc, yc, r1, r2) else r2
+    if _polo_rapido_e_artefato(tc, yc, r1, r2):
+        return r1
+    return r1 if _polo_abaixo_da_resolucao(tc, r2) else r2
 
 
 # --------------------------------------------------------------------------- #
