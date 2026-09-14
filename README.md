@@ -10,6 +10,32 @@ trabalho. Ele **não é uma biblioteca de uso geral**: é o artefato de um TCC, 
 suíte de testes é, ao mesmo tempo, o portão de aprovação e a fábrica dos números
 que vão para a monografia.
 
+
+## Onde está a documentação
+
+**Tudo em `specs/tcc/`.** Este README é a única exceção, e é o ponto de entrada.
+
+| arquivo | o que é |
+|---|---|
+| [`specs/tcc/PLANO.md`](specs/tcc/PLANO.md) | plano das três partes, decisões e critérios de aceitação |
+| [`specs/tcc/PLANO_PARTE2.md`](specs/tcc/PLANO_PARTE2.md) | plano de execução da Parte 2, em blocos |
+| [`specs/tcc/PLANO_CNN_FIM_A_FIM.md`](specs/tcc/PLANO_CNN_FIM_A_FIM.md) | o baseline fim-a-fim: prós, contras e passos |
+| [`specs/tcc/ARQUITETURA.md`](specs/tcc/ARQUITETURA.md) | mapa detalhado, fluxo de dados e glossário |
+| [`specs/tcc/TIMELINE.md`](specs/tcc/TIMELINE.md) | cronologia das decisões e problemas (Rulings) |
+| [`specs/tcc/nextSteps.md`](specs/tcc/nextSteps.md) | o que está aberto agora (documento vivo) |
+| [`specs/tcc/REFERENCIAS.md`](specs/tcc/REFERENCIAS.md) | bibliografia mapeada decisão por decisão |
+| [`specs/tcc/MULTI_DEGRAU.md`](specs/tcc/MULTI_DEGRAU.md) | a frente de multi-degrau: o que foi medido e por que saiu do código |
+| [`specs/tcc/OCLUSAO_LEGENDA.md`](specs/tcc/OCLUSAO_LEGENDA.md) | a frente de oclusão por legenda: o que foi medido e onde ela parou |
+
+`specs/tcc/` é também um vault do Obsidian — as notas de estudo (`Anatomia da
+U-Net`, `AIC e seleção de ordem`, `Módulos/`) ficam ao lado dos documentos de
+projeto, e os `[[wiki-links]]` entre elas continuam valendo.
+
+Comentários de código e os próprios documentos citam esses arquivos pelo nome
+puro — `ver ARQUITETURA.md`, `PLANO_PARTE2.md §4.2`. As citações continuam
+válidas: não há ambiguidade, cada nome ocorre uma vez só no repositório. Reescrevê-las
+para o caminho completo seria um diff de ~90 ocorrências sem ganho de clareza.
+
 ---
 
 ## O pipeline em três estágios
@@ -73,13 +99,18 @@ TCC/
 ├── reports/
 │   └── part1_metrics.md        GERADO pela suíte — não editar à mão
 │
-├── PLANO.md                    plano das 3 partes, decisões e critérios de aceitação
-├── PLANO_PARTE2.md             plano de execução da Parte 2, em blocos
-├── PLANO_CNN_FIM_A_FIM.md      plano do baseline fim-a-fim: prós, contras e passos
-├── TIMELINE.md                 cronologia das decisões e problemas (Rulings)
-├── nextSteps.md                o que está aberto agora (documento vivo)
-├── ARQUITETURA.md              mapa detalhado, fluxo de dados e glossário
-├── REFERENCIAS.md              bibliografia mapeada decisão por decisão
+├── specs/tcc/                  TODA A DOCUMENTAÇÃO — este README é a única exceção
+│   ├── PLANO.md                plano das 3 partes, decisões e critérios de aceitação
+│   ├── PLANO_PARTE2.md         plano de execução da Parte 2, em blocos
+│   ├── PLANO_CNN_FIM_A_FIM.md  plano do baseline fim-a-fim: prós, contras e passos
+│   ├── TIMELINE.md             cronologia das decisões e problemas (Rulings)
+│   ├── nextSteps.md            o que está aberto agora (documento vivo)
+│   ├── ARQUITETURA.md          mapa detalhado, fluxo de dados e glossário
+│   ├── REFERENCIAS.md          bibliografia mapeada decisão por decisão
+│   ├── MULTI_DEGRAU.md         frente encerrada: multi-degrau (§68)
+│   ├── OCLUSAO_LEGENDA.md      frente encerrada: oclusão por legenda (§74)
+│   └── (vault do Obsidian)     notas de estudo e fichas de módulo
+│
 ├── img.py               (264)  LEGADO DEFEITUOSO — evidência, não código
 ├── pytest.ini                  testpaths e marcador `slow`
 ├── requirements.txt            ambiente PINADO (um critério compara sha256 de PNG)
