@@ -135,18 +135,17 @@ def _relatorio(caminho: Path, r: dict) -> str:
             L.append("    cauda de extracao ruim — a pipeline nao distingue as")
             L.append("    duas, e os parametros acima descrevem so o trecho lido.")
             L.append("    theta e o INSTANTE DE PARTIDA (degrau + tempo morto);")
-            L.append("    os dois nao se separam sem ler a entrada do grafico")
+            L.append("    os dois nao se separam sem ler a entrada do grafico.")
+            L.append("    O sistema nao MODELA mais de um degrau (MULTI_DEGRAU.md),")
+            L.append("    mas figuras com dois degraus continuam existindo — por")
+            L.append("    isso a causa segue sendo declarada como possivel, nao")
+            L.append("    como verificada.")
     else:
         motivo = MOTIVOS.get(cal["reason"], cal["reason"] or "desconhecido")
         L.append("")
         L.append(f"  \033[1mSem parametros fisicos\033[0m — {motivo}")
         L.append(f"  Eixos aprovados: x={'sim' if cal['ok_x'] else 'nao'}, "
                  f"y={'sim' if cal['ok_y'] else 'nao'}")
-        if r.get("truncado_em") is not None:
-            L.append(f"  nota: serie truncada em t = "
-                     f"{_fmt(r['truncado_em'], unidade=' s')} antes desta "
-                     f"avaliacao — o veredito acima e sobre um PREFIXO, nao a "
-                     f"serie inteira")
         L.append("")
         L.append("  \033[1mAdimensional\033[0m (independe da escala dos eixos)")
         if dim.get("zeta") is not None:

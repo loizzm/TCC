@@ -176,6 +176,9 @@ def sorteia_planta(rng) -> dict:
 
 
 def sorteia_degraus(rng, p: dict, n_degraus: int, sinal: int) -> tuple[list, float]:
+    # `n_degraus` continua no parametro e vale sempre 1 desde §68 — mantido
+    # porque a assinatura entra no stream de RNG e mexer nela mudaria TODA
+    # figura ja gerada. Ver MULTI_DEGRAU.md.
     """Lista [(amplitude, instante)] e o fim da janela.
 
     O primeiro degrau cai cedo na janela; os seguintes ficam separados por pelo
@@ -356,15 +359,16 @@ def figura_multi(caminho: Path, p, degraus, t, y, u, st) -> None:
 # a cada processo (PYTHONHASHSEED), e a geracao deixaria de ser reproduzivel.
 IDX_FAMILIA = {"rg": 0, "neg": 1, "multi": 2}
 
+# UM DEGRAU SEMPRE (§68). As familias eram definidas tambem pelo numero de
+# degraus — "rg" dava 2, "neg" dava 1, "multi" sorteava 1/2/3. Com a frente de
+# multi-degrau fora do codigo, o que distingue as familias e so o RENDER, que
+# e o papel que elas devem ter nesta avaliacao. Ver MULTI_DEGRAU.md.
 FAMILIAS = {
     "rg": {"render": figura_rg, "escuro": False,
-           "n_degraus": lambda rng: 2,
            "sinal": lambda rng: 1 if rng.random() < 0.6 else -1},
     "neg": {"render": figura_neg, "escuro": True,
-            "n_degraus": lambda rng: 1,
             "sinal": lambda rng: -1},
     "multi": {"render": figura_multi, "escuro": False,
-              "n_degraus": lambda rng: int(rng.choice([1, 2, 3], p=[0.2, 0.55, 0.25])),
               "sinal": lambda rng: 1 if rng.random() < 0.5 else -1},
 }
 
@@ -378,12 +382,12 @@ FAMILIAS = {
 # com "o problema e multi-degrau". Aqui as duas variaveis viram um fatorial
 # 2x2 e a ASSINATURA DE RENDER passa a ser ruido sorteado uniformemente entre
 # as tres — que e o papel certo dela nesta pergunta.
-CELULAS = [("K+", 1, +1, 1), ("K-", 1, -1, 1), ("K+", 2, +1, 2), ("K-", 2, -1, 2)]
+CELULAS = [("K+", 1, +1, 1), ("K-", 1, -1, 1)]
 
 
-def _uma_amostra(rng, render, escuro, n_deg, sinal):
+def _uma_amostra(rng, render, escuro, sinal):
     p = sorteia_planta(rng)
-    degraus, t_fim = sorteia_degraus(rng, p, n_deg, sinal)
+    degraus, t_fim = sorteia_degraus(rng, p, 1, sinal)
     sistema = planta(p["ordem"], p["K_planta"], p["tau"], p["wn"], p["zeta"])
     t = np.linspace(0.0, t_fim, int(rng.integers(800, 2001)))
     y, u = resposta_multi_degrau(sistema, p["theta_sistema"], degraus, t)
@@ -422,7 +426,7 @@ def lote_por_familia(n, seed, out):
             rng = np.random.default_rng([seed, IDX_FAMILIA[familia], i])
             p, degraus, t_fim, t, y, u, st = _uma_amostra(
                 rng, cfg["render"], cfg["escuro"],
-                cfg["n_degraus"](rng), cfg["sinal"](rng))
+                cfg["sinal"](rng))
             nome = f"{familia}_{i:02d}.png"
             cfg["render"](out / nome, p, degraus, t, y, u, st)
             verdades.append(_registro(nome, familia, p, degraus, t_fim, st,
@@ -431,7 +435,7 @@ def lote_por_familia(n, seed, out):
     return verdades
 
 
-def lote_balanceado(n, seed, out, so_1_degrau=False):
+def lote_balanceado(n, seed, out):
     """Fatorial 2x2 (sinal de K) x (1 ou 2 degraus), render sorteado.
 
     `so_1_degrau` restringe as celulas ao caso de UM degrau, mantendo o
@@ -441,14 +445,14 @@ def lote_balanceado(n, seed, out, so_1_degrau=False):
     """
     nomes_fam = list(FAMILIAS)
     verdades = []
-    celulas = [c for c in CELULAS if c[3] == 1] if so_1_degrau else CELULAS
+    celulas = CELULAS
     for c, (rot_sinal, rot_deg, sinal, n_deg) in enumerate(celulas):
         for i in range(n):
             rng = np.random.default_rng([seed, 100 + c, i])
             fam = nomes_fam[int(rng.integers(len(nomes_fam)))]
             cfg = FAMILIAS[fam]
             p, degraus, t_fim, t, y, u, st = _uma_amostra(
-                rng, cfg["render"], cfg["escuro"], n_deg, sinal)
+                rng, cfg["render"], cfg["escuro"], sinal)
             celula = f"{rot_sinal}_{rot_deg}deg"
             nome = f"bal_{celula}_{i:02d}.png"
             cfg["render"](out / nome, p, degraus, t, y, u, st)
@@ -464,9 +468,6 @@ def main() -> None:
                     help="figuras por familia (ou por celula, no modo balanceado)")
     ap.add_argument("--seed", type=int, default=20260908)
     ap.add_argument("--modo", choices=("familia", "balanceado"), default="familia")
-    ap.add_argument("--so-1-degrau", action="store_true",
-                    help="no modo balanceado, gera so figuras de UM degrau "
-                         "(mantendo o balanceamento por sinal de K)")
     ap.add_argument("--entrada", choices=("desenha", "omite", "omite_fit"),
                     default="desenha",
                     help="se a linha do degrau de entrada e desenhada; "
@@ -484,7 +485,7 @@ def main() -> None:
     if a.modo == "familia":
         verdades = lote_por_familia(a.n, a.seed, out)
     else:
-        verdades = lote_balanceado(a.n, a.seed, out, so_1_degrau=a.so_1_degrau)
+        verdades = lote_balanceado(a.n, a.seed, out)
 
     (out / "verdade.json").write_text(
         json.dumps(verdades, indent=2, ensure_ascii=False), encoding="utf-8")

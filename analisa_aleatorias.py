@@ -87,7 +87,7 @@ def main() -> None:
 
         reg = {
             "arquivo": nome, "familia": v["familia"],
-            "n_degraus": v["n_degraus"], "linestyle": v["linestyle"],
+            "linestyle": v["linestyle"],
             "preenchimento": v["preenchimento"], "fundo_escuro": v["fundo_escuro"],
             "legenda_loc": v["legenda_loc"], "dpi": v["dpi"],
             "order_true": v["order"], "order_hat": ordem_hat,
@@ -95,7 +95,6 @@ def main() -> None:
             "reason": s.get("reason"),
             "cal_ok": bool(s["calibration"]["ok"]),
             "cal_reason": s["calibration"]["reason"],
-            "truncado_em": s.get("truncado_em"),
             "n_points": s.get("n_points"), "latency_ms": s.get("latency_ms"),
             "K_true": v["K"], "theta_true": v["theta"], "T_true": v["t_fim"],
             "t_dom_true": v["t_dom"],
@@ -126,13 +125,10 @@ def main() -> None:
                     reg["err_wn"] = erro_rel(p.get("wn"), v["wn"])
                     reg["err_zeta"] = erro_rel(p.get("zeta"), v["zeta"])
 
-            # --- nivel 3: erro de CURVA no trecho do 1o degrau
-            # limite superior do trecho valido: onde o 2o degrau entra (ou o
-            # fim da janela, quando so ha um degrau)
-            if v["n_degraus"] > 1:
-                t_lim = float(v["degraus"][1][1]) + v["theta_sistema"]
-            else:
-                t_lim = float(v["t_fim"])
+            # --- nivel 3: erro de CURVA na janela inteira
+            # Era o trecho ate o 2o degrau enquanto a frente de multi-degrau
+            # existia (§68); sem ela, a janela desenhada e a janela valida.
+            t_lim = float(v["t_fim"])
             t = np.linspace(0.0, t_lim, 600)
             y_true = resposta(v["order"], v["K"], v["tau"], v["wn"], v["zeta"],
                               v["theta"], t)
@@ -142,10 +138,9 @@ def main() -> None:
             reg["nrmse_curva"] = (None if faixa <= 0 else
                                   float(np.sqrt(np.mean((y_hat - y_true) ** 2)) / faixa))
             reg["t_lim_curva"] = t_lim
-            # JANELA EFETIVA DO 1o DEGRAU, em constantes de tempo dominantes.
-            # E o quanto da resposta do primeiro degrau esta de fato desenhado
-            # antes de o proximo entrar. Assentar a 1 % leva ~4,6 t_dom; abaixo
-            # disso o patamar nao aparece e K deixa de ser observavel.
+            # JANELA EFETIVA, em constantes de tempo dominantes. Assentar a
+            # 1 % leva ~4,6 t_dom; abaixo disso o patamar nao aparece e K
+            # deixa de ser observavel.
             reg["janela_ef"] = float((t_lim - v["theta"]) / v["t_dom"])
             # ZETA_BOUNDS = (1e-3, 10.0) em identify/classical.py. Encostar no
             # limite nao e um valor, e o otimizador dizendo que nao ha minimo
@@ -178,6 +173,13 @@ def main() -> None:
     P("=" * 78)
     for fam in ("rg", "neg", "multi", "TODAS"):
         sub = linhas if fam == "TODAS" else [x for x in linhas if x["familia"] == fam]
+        if not sub:
+            # Lote sem esta familia. Acontece desde que o multi-degrau saiu do
+            # gerador (ver MULTI_DEGRAU.md): `gera_lote_ruidoso.py` nao produz
+            # amostra `multi` nenhuma, e a divisao por zero derrubava o
+            # relatorio inteiro DEPOIS de `analise.json` ja ter sido escrito —
+            # entao o numero conjuntivo saia e o texto nao.
+            continue
         nr = sum(x["respondeu"] for x in sub)
         nok = sum(x["ok"] for x in sub)
         ncal = sum(x["cal_ok"] for x in sub)
@@ -265,118 +267,9 @@ def main() -> None:
 
     estrato("familia", "familia")
     estrato("linestyle", "tipo de linha da curva")
-    estrato("n_degraus", "numero de degraus")
     estrato("preenchimento", "preenchimento")
     estrato("fundo_escuro", "fundo escuro")
     estrato("order_true", "ordem verdadeira")
-
-    P("=" * 78)
-    P("5. TRUNCAGEM (o mecanismo de multi-degrau)")
-    P("=" * 78)
-    for nd in sorted({x["n_degraus"] for x in linhas}):
-        g = [x for x in linhas if x["n_degraus"] == nd]
-        tr = [x for x in g if x["truncado_em"] is not None]
-        P(f"  {nd} degrau(s): n={len(g)}  truncou={len(tr)} ({len(tr)/len(g):.1%})")
-        if nd > 1 and tr:
-            # onde DEVERIA truncar: no instante em que o 2o degrau age
-            certos = 0
-            for x in tr:
-                v = verdades[x["arquivo"]]
-                alvo = float(v["degraus"][1][1]) + v["theta_sistema"]
-                if abs(x["truncado_em"] - alvo) <= 0.20 * v["t_fim"]:
-                    certos += 1
-            P(f"      truncou a menos de 20% da janela do 2o degrau: "
-              f"{certos}/{len(tr)}")
-    P()
-
-    P("=" * 78)
-    P("5b. TRUNCAGEM COMO DETECTOR DE 'MAIS DE UM DEGRAU'")
-    P("=" * 78)
-    TP = sum(1 for x in oks if x["n_degraus"] > 1 and x["truncado_em"] is not None)
-    FN = sum(1 for x in oks if x["n_degraus"] > 1 and x["truncado_em"] is None)
-    FP = sum(1 for x in oks if x["n_degraus"] == 1 and x["truncado_em"] is not None)
-    TN = sum(1 for x in oks if x["n_degraus"] == 1 and x["truncado_em"] is None)
-    P(f"  TP={TP}  FN={FN}  FP={FP}  TN={TN}")
-    P(f"  precisao={TP/max(1,TP+FP):.1%}   revocacao={TP/max(1,TP+FN):.1%}")
-    for rot, g in (("1 degrau  ", [x for x in oks if x["n_degraus"] == 1]),
-                   ("2+ degraus", [x for x in oks if x["n_degraus"] > 1])):
-        for sub, gg in (("truncou   ", [x for x in g if x["truncado_em"] is not None]),
-                        ("nao trunc ", [x for x in g if x["truncado_em"] is None])):
-            if not gg:
-                continue
-            nr = [x["nrmse_curva"] for x in gg if x.get("nrmse_curva") is not None]
-            ek = [abs(x["err_K"]) for x in gg if x.get("err_K") is not None]
-            P(f"    {rot} {sub} n={len(gg):<3d} NRMSE med={np.median(nr):7.4f}  "
-              f"|errK| med={np.median(ek):7.4f}")
-    # O que o ajuste NAO-truncado de uma figura multi-degrau esta descrevendo:
-    # a excursao TOTAL (soma dos degraus), nao a do primeiro. Nao e um numero
-    # errado, e a resposta a outra pergunta — o mal-entendido do Ruling 65.
-    fn = [x for x in oks if x["n_degraus"] > 1 and x["truncado_em"] is None]
-    if fn:
-        e1, eT = [], []
-        for x in fn:
-            v = verdades[x["arquivo"]]
-            k_tot = v["K_planta"] * sum(u for u, _ in v["degraus"])
-            e1.append(abs(x["K_hat"] - v["K"]) / abs(v["K"]))
-            eT.append(abs(x["K_hat"] - k_tot) / abs(k_tot))
-        P(f"  as {len(fn)} multi-degrau NAO truncadas, contra que K elas batem:")
-        P(f"    contra K do 1o degrau: |erro| mediana = {np.median(e1):.4f}")
-        P(f"    contra K TOTAL (soma): |erro| mediana = {np.median(eT):.4f}")
-        P(f"    mais perto do TOTAL em {sum(1 for a, b in zip(e1, eT) if b < a)}"
-          f"/{len(fn)} — o ajuste descreve a excursao inteira, nao a do 1o degrau")
-    P()
-
-    P("=" * 78)
-    P("5c. JANELA EFETIVA DO 1o DEGRAU (em constantes de tempo dominantes)")
-    P("=" * 78)
-    P("  assentar a 1% leva ~4,6 t_dom; abaixo disso o patamar nao esta na figura")
-    P("  ATENCAO ao confundimento: nas figuras de 1 degrau a janela curta NAO")
-    P("  estraga o ajuste (|errK| 3,5% em 0-2 t_dom); nas de 2+ degraus estraga")
-    P("  (46%) — e cai para 2% quando a truncagem dispara. O que pesa e a")
-    P("  truncagem, nao o tamanho da janela. Ver o corte por n_degraus abaixo.")
-    faixas = [(0, 2), (2, 3), (3, 4.6), (4.6, 8), (8, 1e9)]
-    P(f"  {'faixa (t_dom)':<16}{'n':>4}{'NRMSE med':>12}{'|errK| med':>12}"
-      f"{'|errK|>50%':>12}{'zeta no lim':>13}")
-    for lo, hi in faixas:
-        g = [x for x in oks if x.get("janela_ef") is not None
-             and lo <= x["janela_ef"] < hi]
-        if not g:
-            continue
-        nr = [x["nrmse_curva"] for x in g if x.get("nrmse_curva") is not None]
-        ek = [abs(x["err_K"]) for x in g if x.get("err_K") is not None]
-        ruim = sum(1 for e in ek if e > 0.5)
-        lim = sum(1 for x in g if x.get("zeta_no_limite"))
-        rot = f"{lo:g}-{hi:g}" if hi < 1e9 else f">= {lo:g}"
-        P(f"  {rot:<16}{len(g):>4}{np.median(nr):>12.4f}{np.median(ek):>12.4f}"
-          f"{ruim:>8}/{len(g):<3}{lim:>9}/{len(g):<3}")
-    P()
-    for rotulo, sub in (("so 1 degrau", [x for x in oks if x["n_degraus"] == 1]),
-                        ("2+ degraus", [x for x in oks if x["n_degraus"] > 1]),
-                        ("2+ degraus truncadas",
-                         [x for x in oks if x["n_degraus"] > 1
-                          and x["truncado_em"] is not None])):
-        P(f"  -- {rotulo}")
-        for lo, hi in faixas:
-            g = [x for x in sub if lo <= x["janela_ef"] < hi]
-            if not g:
-                continue
-            rot = f"{lo:g}-{hi:g}" if hi < 1e9 else f">= {lo:g}"
-            P(f"     {rot:<12} n={len(g):<3d} NRMSE med="
-              f"{np.median([x['nrmse_curva'] for x in g]):7.4f}  |errK| med="
-              f"{np.median([abs(x['err_K']) for x in g]):7.4f}")
-    P()
-    pin = [x for x in oks if x.get("zeta_no_limite")]
-    P(f"  ajustes com zeta ENCOSTADO no limite da caixa (1e-3 ou 10): "
-      f"{len(pin)}/{len(oks)} ({len(pin)/len(oks):.1%})")
-    if pin:
-        nr = [x["nrmse_curva"] for x in pin if x.get("nrmse_curva") is not None]
-        ek = [abs(x["err_K"]) for x in pin if x.get("err_K") is not None]
-        P(f"    entre eles: NRMSE med={np.median(nr):.4f}  |errK| med={np.median(ek):.4f}")
-        livres = [x for x in oks if not x.get("zeta_no_limite")]
-        nr2 = [x["nrmse_curva"] for x in livres if x.get("nrmse_curva") is not None]
-        ek2 = [abs(x["err_K"]) for x in livres if x.get("err_K") is not None]
-        P(f"    os demais:  NRMSE med={np.median(nr2):.4f}  |errK| med={np.median(ek2):.4f}")
-    P()
 
     P("=" * 78)
     P("6. LATENCIA")
@@ -392,15 +285,14 @@ def main() -> None:
     piores = sorted([x for x in oks if x.get("nrmse_curva") is not None],
                     key=lambda z: -z["nrmse_curva"])[:12]
     P(f"  {'arquivo':<16}{'ordem v->p':<20}{'NRMSE':>9}{'errK':>9}"
-      f"{'err t_dom':>11}{'dth/T':>9}  trunc")
+      f"{'err t_dom':>11}{'dth/T':>9}")
     for x in piores:
         P(f"  {x['arquivo']:<16}"
           f"{x['order_true']+' -> '+str(x['order_hat']):<20}"
           f"{x['nrmse_curva']:>9.4f}"
           f"{(x.get('err_K') or 0):>9.3f}"
           f"{(x.get('err_t_dom') or 0):>11.3f}"
-          f"{(x.get('err_theta_T') or 0):>9.3f}  "
-          f"{'sim' if x['truncado_em'] is not None else 'nao'}")
+          f"{(x.get('err_theta_T') or 0):>9.3f}")
     P()
     P("  RECUSADAS / sem fisica:")
     for x in linhas:

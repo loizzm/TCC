@@ -1,0 +1,85 @@
+# Estrato MULTI-DEGRAU. Numeros escolhidos para que o transitorio do PRIMEIRO
+# degrau — a verdade declarada — esteja de fato visivel antes do proximo
+# entrar, e para que o corpus cubra a faixa em que a deteccao e dificil.
+#
+# `_MULTI_SEP` e a separacao entre degraus em constantes de tempo dominantes.
+# Medido no corpus aleatorio de 297 figuras: os multi-degrau que a heuristica
+# NAO detecta tem separacao mediana de 1,41 t_dom contra 1,98 dos detectados, e
+# razao |U2/U1| mediana de 0,535 contra 0,771. O estrato tem de cobrir os dois
+# regimes, senao ensina so o caso facil — por isso a faixa comeca em 0,8.
+# 0,4 e nao 0,8 no piso. A primeira versao usava (0.8, 3.0), copiado do
+# gerador aleatorio, e o corpus saia SISTEMATICAMENTE MAIS FACIL que o real:
+# separacao p10/p50 de 1,12/2,22 t_dom contra 0,89/1,72 do real. Medido na
+# cabeca treinada nesse corpus e avaliada no real, a AUC por faixa de separacao
+# e monotona e denuncia o buraco:
+#     0,0 - 1,2 t_dom -> AUC 0,518  (acaso; e a faixa que o corpus nao cobre)
+#     1,2 - 2,0 t_dom -> AUC 0,666
+#     2,0 - 3,5 t_dom -> AUC 0,739
+# Separacao apertada e o caso DIFICIL — o segundo degrau entra antes de o
+# primeiro transitorio terminar — e e justamente onde o corpus tinha menos
+# amostras. NECESSARIO, NAO SUFICIENTE: mesmo na faixa bem coberta a AUC real
+# fica em 0,739 contra 0,99 in-distribution, entao sobra um componente de
+# dominio nao identificado.
+_MULTI_SEP = (0.4, 3.0)
+_MULTI_RAZAO = (0.25, 1.5)      # |U_i / U_1|
+_MULTI_N = (1, 2, 3)
+_MULTI_P = (0.20, 0.55, 0.25)
+
+
+# Janela do estrato, em constantes de tempo dominantes DEPOIS do tempo morto.
+# Sorteada IGUAL para 1, 2 e 3 degraus — ver o aviso de vazamento abaixo.
+_MULTI_JANELA = (2.5, 9.0)
+
+
+def sorteia_degraus(rng: np.random.Generator, spec: SystemSpec) -> tuple:
+    """`((amplitude, instante), ...)` e a janela, para o estrato multi-degrau.
+
+    Todos os degraus tem o MESMO SINAL, que e o caso dificil: a soma continua
+    monotona e em forma de S, e por isso o residuo de um ajuste de degrau unico
+    quase nao denuncia o segundo degrau (medido: o piso de residuo barra 80,7 %
+    dos nao detectados). Degraus de sinais opostos criariam uma inversao
+    visivel e tornariam o estrato facil demais para ser util.
+
+    VAZAMENTO QUE ESTA FUNCAO EXISTE PARA EVITAR. A primeira versao sorteava as
+    separacoes e depois ESTICAVA `t_end` para caber o ultimo degrau. Efeito
+    medido em 1900 amostras: `janela/t_dom` passava a separar 1 degrau de 2+
+    sozinha, com AUC 0,822 — um atalho. Uma cabeca treinada assim aprende a ler
+    "quantas constantes de tempo cabem no quadro" em vez de "ha uma
+    re-aceleracao", chega a AUC 0,98 na validacao sintetica e desaba para 0,60
+    no corpus real. E o mesmo tipo de defeito que a regra anti-vazamento de
+    `randomize.py` existe para impedir, so que pelo eixo do tempo em vez do
+    estilo.
+
+    A correcao: a JANELA e sorteada PRIMEIRO, da mesma distribuicao para
+    qualquer numero de degraus, e os degraus sao colocados DENTRO dela. Com
+    isso `janela/t_dom` fica identica nas duas classes e deixa de informar.
+    """
+    t_dom = dominant_time_constant(spec.order, spec.tau, spec.wn, spec.zeta)
+    janela = float(_loguniform(rng, *_MULTI_JANELA))          # em t_dom
+    n = int(rng.choice(_MULTI_N, p=_MULTI_P))
+    U1 = float(spec.step_amplitude)
+    degraus = [(U1, 0.0)]
+    # O PISO E EM t_dom, NAO EM FRACAO DA JANELA. A versao anterior usava
+    # `lo = 0.25 * janela`, e era ELE — nao `_MULTI_SEP[0]` — que amarrava a
+    # separacao minima: com `janela` mediana de 4,85 t_dom, `0,25*janela` da
+    # 1,2 t_dom, exatamente o p10 medido. Baixar `_MULTI_SEP[0]` de 0,8 para
+    # 0,4 nao mudou uma virgula da distribuicao, porque ele so agia como piso
+    # de desempate entre posicoes sorteadas. Ancorar `lo` em `_MULTI_SEP[0]`
+    # faz a faixa dificil (segundo degrau entrando antes de o primeiro
+    # transitorio terminar) aparecer de fato no corpus.
+    lo, hi = _MULTI_SEP[0], 0.80 * janela
+    if hi <= lo:
+        hi = lo + 0.1
+    if n > 1 and hi - lo > 0:
+        pos = np.sort(rng.uniform(lo, hi, size=n - 1))
+        anterior = 0.0
+        for x in pos:
+            inst = float(max(x, anterior + _MULTI_SEP[0]))
+            if inst > janela * 0.90:      # nao cabe mais: para de acrescentar
+                break
+            degraus.append((U1 * float(_loguniform(rng, *_MULTI_RAZAO)),
+                            inst * t_dom))
+            anterior = inst
+    return tuple(degraus), float(janela * t_dom)
+
+

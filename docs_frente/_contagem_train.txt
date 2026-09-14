@@ -1,0 +1,20 @@
+        # Rotulo da cabeca de contagem: BINARIO, "ha mais de um degrau?".
+        # Amostra do corpus base nao tem a chave (schema v1) e vale 1 degrau —
+        # e o que ela sempre foi. Sai SEMPRE, mesmo com a cabeca desligada:
+        # o custo e um float por amostra e o `collate` fica uniforme.
+        n = int(m.get("n_degraus", 1))
+        # PESO da perda de contagem. Zero nas amostras FORA DA FAMILIA
+        # (`fase_nao_minima`, schema v3), e o motivo nao e' delicadeza: elas
+        # tem `n_degraus = 1` e uma FORMA de dois eventos — mergulha e depois
+        # sobe. Treinar a cabeca binaria contra elas ensina exatamente o
+        # contrario do que ela existe para aprender, e o alvo do estagio A
+        # nessas amostras e' so a MASCARA. A perda de segmentacao continua
+        # valendo cheia; e' so a de contagem que se cala.
+        # Sai sempre, com a cabeca ligada ou nao, pelo mesmo motivo que `n`:
+        # `collate` uniforme por um float por amostra.
+        peso = 0.0 if m.get("fora_da_familia") else 1.0
+        return (xt, yt,
+                torch.tensor([1.0 if n > 1 else 0.0], dtype=torch.float32),
+                torch.tensor([peso], dtype=torch.float32))
+
+

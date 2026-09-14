@@ -71,13 +71,8 @@ def main() -> None:
                 f"NRMSE<={c['nrmse']:.0%}, "
                 + ("estrutura exata" if c["estrutura"] else f"t_dom<={c['t_dom']:.0%}"))
         print(f"  {nome}  ({crit})")
-        for rot, g in (("TODAS", A),
-                       ("1 degrau", [x for x in A if x["n_degraus"] == 1]),
-                       ("2+ degraus", [x for x in A if x["n_degraus"] > 1])):
-            if not g:          # lote de um degrau so: o grupo multi fica vazio
-                continue
-            bons = sum(1 for x in g if not avalia(x, c))
-            print(f"    {rot:<12} {bons:>3}/{len(g):<4} = {bons/len(g):6.1%}")
+        bons = sum(1 for x in A if not avalia(x, c))
+        print(f"    {'TODAS':<12} {bons:>3}/{len(A):<4} = {bons/len(A):6.1%}")
         print()
 
     print("  QUAL CRITERIO REPROVA (nivel PRATICO, contando cada reprovacao):")
@@ -97,12 +92,6 @@ def main() -> None:
         print(f"    {k:<22}{v:>9}{sozinho.get(k, 0):>10}")
     print()
     print("    'sozinho' = era o UNICO criterio reprovado; corrigi-lo salvaria a figura.")
-    print()
-    print("  E se o multi-degrau fosse resolvido? (so as de 1 degrau, nivel PRATICO)")
-    g = [x for x in A if x["n_degraus"] == 1]
-    if g:
-        bons = sum(1 for x in g if not avalia(x, c))
-        print(f"    {bons}/{len(g)} = {bons/len(g):.1%}")
 
 
 if __name__ == "__main__":

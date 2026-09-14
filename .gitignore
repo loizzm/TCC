@@ -69,6 +69,9 @@ models/unet_stageA_nmp.pt
 # modelos utilizaveis, e os numeros deles vivem nos logs e em
 # reports/selecao_*.json.
 models/unet_stageA_multi.pt
+models/unet_stageA_ruido.pt
+models/unet_stageA_render2.pt
+models/unet_stageA_combinado2.pt
 models/unet_stageA_multi_thr01_abortado.pt
 models/cabeca_contagem_congelada.pt
 
