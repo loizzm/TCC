@@ -477,7 +477,7 @@ _UNDERSHOOT_MAX = 0.08
 # 96,7 %. Fechar isso é trabalho de corpus, não de constante.
 
 
-_K_SIGMA = 8.0
+_K_SIGMA = 10.0
 # Multiplo do RUIDO ESTIMADO que o mergulho tambem precisa superar (§69).
 #
 # O PROBLEMA. `_UNDERSHOOT_MAX` e' fracao da FAIXA DE Y e nao sabe quanto
@@ -687,7 +687,29 @@ def _perfil_do_mergulho(y: np.ndarray) -> tuple[float, float, int]:
 
 
 _PERSIST_W = 9
-_PERSISTENCIA_MIN = 0.65
+_PERSISTENCIA_MIN = 0.60
+#
+# REMEDIDO NA PROMOCAO DA EPOCA 17 DO `render2` (14/09/2026). Toda constante a
+# jusante do Estagio A tem de ser remedida quando a mascara muda, e esta nao e'
+# excecao. Varredura com a mascara NOVA, quatro populacoes, n=919 (POS = fase
+# nao-minima, disparar e' CERTO; NEG = fase minima, disparar e' ERRADO):
+#
+#   (u, k, pmin)          POS limpo  POS ruido  NEG limpo  NEG ruido
+#   -------------------   ---------  ---------  ---------  ---------
+#   0,08 / 8,0  / 0,65      94,9 %     78,8 %     0,4 %      9,0 %   (anterior)
+#   0,08 / 10,0 / 0,65      94,9 %     77,8 %     0,4 %      4,9 %
+#   0,075/ 10,0 / 0,65      95,3 %     77,8 %     0,4 %      4,9 %
+#   0,08 / 10,0 / 0,60      95,6 %     78,8 %     0,4 %      5,6 %   <- escolhido
+#
+# O escolhido DOMINA o anterior: melhor em POS limpo (+0,7 p.p.), igual em POS
+# ruido e em NEG limpo, e 3,4 p.p. menos falso positivo em NEG ruido. Nao e'
+# troca, e ganho nos dois lados — por isso nao precisou de criterio de
+# arbitragem entre deteccao e custo.
+#
+# `_UNDERSHOOT_MAX` FICA em 0,08. O plato de custo com a mascara nova vai de
+# 0,070 a 0,100 (NEG limpo constante em 1/279), mais largo que o anterior;
+# 0,08 continua dentro dele e preserva a folga documentada sobre a imagem real
+# de fase nao-minima. Baixar para 0,075 ganharia UMA figura em 274 — ruido.
 # COERENCIA do mergulho (§71): fracao da profundidade que SOBREVIVE a uma media
 # movel de `_PERSIST_W` amostras.
 #

@@ -161,6 +161,22 @@ def mask_to_polyline(mask: np.ndarray,
             # ATENÇÃO: como toda constante a jusante do Estágio A, este 8
             # precisa ser REMEDIDO se a máscara mudar — as bordas do platô são
             # artefato do extrator atual, não do problema.
+            #
+            # REMEDIDO na promoção da época 17 do `render2` (14/09/2026), nas
+            # mesmas 297 figuras. A guarda ficou INERTE: sem guarda, com 3, 5,
+            # 8 e 12 dão o MESMO resultado — 15/297 extrações sujas
+            # (NRMSE >= 0,05) e NRMSE p50 de 0,0033, idênticos até a quarta
+            # casa. O defeito que ela existe para pegar quase desapareceu com
+            # a máscara nova: eram 115/297 sujas SEM guarda nenhuma, hoje são
+            # 15/297 sem guarda nenhuma.
+            #
+            # O 8 FICA, e a razão é a mesma que `_NRMSE_MAX` documenta sobre a
+            # guarda de descontinuidade refutada: uma população que não contém
+            # o modo de falha mede só o CUSTO da guarda, nunca o benefício.
+            # Aqui o custo medido é ZERO e o mecanismo (polilinha agarrada na
+            # linha de entrada no vão do tracejado) continua possível. Tirar a
+            # guarda porque ela não dispara hoje seria confundir "não há
+            # evidência de benefício nesta população" com "não há benefício".
             if (anterior is not None
                     and abs(v - anterior) > SALTO_MAX_ESPESSURA * espessura_mediana):
                 continue

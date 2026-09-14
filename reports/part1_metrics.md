@@ -2,26 +2,26 @@
 
 Relatório gerado automaticamente por `tests/` (`pytest_sessionfinish` em `tests/conftest.py`). Não editar à mão.
 
-> **ATENÇÃO — relatório parcial.** A sessão rodou com seleção de testes (`paths ['tests/test_part1.py', 'tests/part2/']`), então nem todos os critérios foram medidos. Regenere com `.venv/bin/python -m pytest -q` sem filtros antes de citar estes números na monografia.
+> **ATENÇÃO — relatório parcial.** A sessão rodou com seleção de testes (`paths ['tests/test_part1.py']`), então nem todos os critérios foram medidos. Regenere com `.venv/bin/python -m pytest -q` sem filtros antes de citar estes números na monografia.
 
 - Amostras renderizadas por conjunto: **600** (`clean`, `add_noise=False`; `noisy`, SNR fixo = 20 dB) — RULING Q, elevado de 300 para 600 por poder estatístico do portão; nenhum limiar foi alterado
 - Sorteios sem renderização (critérios 1.3 e 1.4a): **20000**
 - Estrato assertado nos critérios 1.1/1.2 (RULING C): `w = (t_end - θ)/T_dom ≥ 3`
 - Workers: 16
-- Tempo total da suíte: **554.1 s**
+- Tempo total da suíte: **71.3 s**
 
 ## 1. Critérios de aceitação
 
 | # | critério | alvo | medido | veredito |
 |---|---|---|---|---|
-| **1.1** | Pipeline-oráculo, série limpa (estrato `w ≥ 3`) | MAPE < 1% em K, τ, θ, ωn, ζ | K 0.0000%, τ 0.0000%, θ 0.0000%, ωn 0.0000%, ζ 0.0000% — pior = zeta (0.0000%), n = 181 | **PASSA** |
+| **1.1** | Pipeline-oráculo, série limpa (estrato `w ≥ 3`) | MAPE < 1% em K, τ, θ, ωn, ζ | K 0.0001%, τ 0.0000%, θ 0.0189%, ωn 0.0000%, ζ 0.0000% — pior = theta (0.0189%), n = 181 | **PASSA** |
 | **1.2** | Pipeline com ruído SNR = 20 dB (estrato `w ≥ 3`) | MAPE < 5% (ωn/ζ só em ζ < 1,6 — RULING N) | K 0.384%, τ 0.979%, θ 1.613%, ωn (ζ<1.6) 3.111%, ζ (ζ<1.6) 3.557% — pior = ζ (ζ<1.6) (3.557%); n = 158 (ζ<1.6: n = 44) | **PASSA** |
 | **1.2b** | RULING N — 2ª ordem com ζ ≥ 1,6 (ωn/ζ não identificáveis) | MAPE(K) < 5%, MAPE(T_lento) < 5%, NRMSE recon. < 0,05 | K = 0.349%, T_lento = 1.798%, NRMSE = 2.731e-03 (n = 32) | **PASSA** |
 | **1.2c** | RULING N na população dedicada (n = 256 em `w ≥ 3`) | ζ < 1,6: MAPE(ωn), MAPE(ζ) < 5%; ζ ≥ 1,6: MAPE(K), MAPE(T_lento) < 5% e NRMSE recon. < 0,05 | ζ<1,6 (n = 122): ωn = 3.259%, ζ = 3.789% \| ζ≥1,6 (n = 134): K = 0.307%, T_lento = 1.479%, NRMSE = 2.513e-03 | **PASSA** |
 | **1.5** | Máscara reprojetada pela `axis_affine` × `series` | RMSE do viés normal < 1.5 px; \|viés vertical\| < 0.3 px (sólida s/ marcador) | RMSE = 0.1649 px (0.0298 px sem marcador); viés vertical = +0.0027 px; cobertura = 0.492 px (máx) | **PASSA** |
 | **1.5c** | Controle negativo do critério 1.5 | deslocar a afim em 3 px deve piorar o RMSE ≥ 10× | 0.1649 px → 2.2293 px (13.5×) | **PASSA** |
 | **1.6** | Determinismo bit-a-bit (mesma seed ⇒ mesmos bytes) | sha256 idêntico de image.png e mask.png + meta.json idêntico | 5 seeds × 2 gerações: todos idênticos | **PASSA** |
-| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 3.49 s para 200 amostras ⇒ 1.75 min | **PASSA** |
+| **1.7** | Tempo de geração extrapolado para 6000 amostras | < 15 min (folga 2× sobre os 30 min do PLANO) | 2.13 s para 200 amostras ⇒ 1.06 min | **PASSA** |
 | **B** | Baselines clássicos × `identify` (FOPDT limpo, `w ≥ 3`) | sem alvo: comparação da monografia | MAPE(τ): identify = 0.0000% vs melhor baseline = 0.0491% | **medido** |
 | **C** | RULING C — estrato truncado `w < 3` (resultado, não critério) | sem alvo: medido e reportado | limpo: MAPE(K) = 0.000% (n = 419); 20 dB: MAPE(K) = 127.622% (n = 442) | **medido** |
 | **G** | `_estimate_gain` em janela truncada (`w < 3`, FOPDT limpo) | MAPE < 1.0% e cobertura = 100%; controle positivo: o atalho max(y) erra ≥ 10.0% no mesmo estrato | MAPE = 0.0000% (n = 191, cobertura 1.000) vs max(y) = 30.48% | **PASSA** |
@@ -56,9 +56,9 @@ Erro por parâmetro, estratificado pela largura da janela `w`. `K`, `τ`, `ωn`,
 
 | estrato | n | n fopdt / second | K (MAPE) | τ (MAPE) | θ (NMAE/T_dom) | θ (MAPE, secund.) | ωn (MAPE) | ζ (MAPE) |
 |---|---|---|---|---|---|---|---|---|
-| `w>=3` | 181 | 102 / 79 | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% |
+| `w>=3` | 181 | 102 / 79 | 0.000% | 0.000% | 0.019% | 0.024% | 0.000% | 0.000% |
 | `w<3` | 419 | 191 / 228 | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% |
-| `todos` | 600 | 293 / 307 | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% |
+| `todos` | 600 | 293 / 307 | 0.000% | 0.000% | 0.006% | 0.007% | 0.000% | 0.000% |
 
 Mediana do mesmo erro (mostra quanto do MAPE vem de poucas amostras patológicas — decisivo no estrato truncado):
 
@@ -68,7 +68,7 @@ Mediana do mesmo erro (mostra quanto do MAPE vem de poucas amostras patológicas
 | `w<3` | 419 | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% |
 | `todos` | 600 | 0.000% | 0.000% | 0.000% | 0.000% | 0.000% |
 
-- Acurácia de seleção de estrutura por AIC (`identify`): **1.000** (600/600)
+- Acurácia de seleção de estrutura por AIC (`identify`): **0.998** (599/600)
 - `K` e `θ` vêm de `identify()` (o pipeline real, todas as amostras). `τ`, `ωn` e `ζ` são específicos da estrutura e por isso vêm de `identify_both()` com a ordem verdadeira imposta — assim nenhuma amostra é descartada e o número não pode ser inflado por seleção de estrutura.
 
 ## 2.2 1.2 — série com ruído (SNR = 20 dB)
@@ -214,7 +214,7 @@ As cinco menores coberturas do conjunto:
 | 1 | `b4661c5a318219d9…` | `0524022846c94495…` | sim |
 | 7 | `11f85baf11fb209f…` | `3d7eae205a3df921…` | sim |
 | 12345 | `9508b5b8148353ad…` | `39413e9fcc502536…` | sim |
-| 987654321 | `84777e639aa96b83…` | `54a6d964065df33f…` | sim |
+| 987654321 | `be19abb100c14cbc…` | `54a6d964065df33f…` | sim |
 
 Cada seed foi gerada duas vezes, em diretórios distintos; os hashes são dos dois arquivos produzidos e coincidem. O `meta.json` é comparado ignorando `sample_id`, que por contrato é o basename do diretório.
 
@@ -222,7 +222,7 @@ Cada seed foi gerada duas vezes, em diretórios distintos; os hashes são dos do
 
 | n medido | workers | tempo (s) | s/amostra | extrapolado p/ 6000 (min) | alvo |
 |---|---|---|---|---|---|
-| 200 | 16 | 3.49 | 0.0175 | **1.75** | < 15 min (folga 2× sobre os 30 min do PLANO) |
+| 200 | 16 | 2.13 | 0.0106 | **1.06** | < 15 min (folga 2× sobre os 30 min do PLANO) |
 
 ## 8. Baselines clássicos × `identify` (mesmas séries limpas, FOPDT)
 

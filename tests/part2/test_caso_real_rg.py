@@ -209,9 +209,12 @@ COBERTURA_MIN = 0.90
         strict=True, reason="§39.3 defeito A: curva rente à moldura — máscara "
                             "perde o platô do tempo morto, 65,3% de cobertura")),
     pytest.param(SISTEMA_2, "sistema2"),
-    pytest.param(SISTEMA_3, "sistema3", marks=pytest.mark.xfail(
-        strict=True, reason="§39.3 defeito B: trecho perfeitamente reto — máscara "
-                            "perde a cauda assentada, 82,2% de cobertura")),
+    # DEFEITO B RESOLVIDO na promoção da época 17 do `render2` (14/09/2026). A
+    # máscara passou a cobrir a cauda assentada do trecho perfeitamente reto, e
+    # o `xfail(strict)` passou a reprovar o CONSERTO. A descrição do defeito
+    # fica no corpo do teste como registro do que era; o que mudou foi o
+    # Estágio A, não o enunciado.
+    pytest.param(SISTEMA_3, "sistema3"),
 ])
 def test_estagio_a_cobre_a_janela_inteira(caso, rotulo, modelo):
     """O Estágio A tem de enxergar a curva no platô e na cauda assentada.
