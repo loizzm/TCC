@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import matplotlib
+import matplotlib.style  # noqa: E402  (submodulo nao vem no `import matplotlib`)
 
 matplotlib.use("Agg")
 
@@ -28,12 +29,34 @@ from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.ticker import AutoMinorLocator, LinearLocator, MaxNLocator  # noqa: E402
 from PIL import Image  # noqa: E402
 
-from dataset.randomize import RenderStyle, sample_style  # noqa: E402
+from dataset.randomize import (RenderStyle, _sample_text,  # noqa: E402
+                               luminance, sample_style)
 
 if TYPE_CHECKING:  # pragma: no cover
     from matplotlib.axes import Axes
 
-SCHEMA_VERSION: int = 1
+# 1 -> 2: entrou o estrato MULTI-DEGRAU, com as chaves `degraus`, `n_degraus`
+# e `u_final`.
+# 2 -> 2 (sem bump): a frente de multi-degrau foi REMOVIDA do codigo (§68) e
+# com ela as tres chaves. A versao NAO recua para 1: o corpus em disco gerado
+# na v2 continua valido e continua declarando 2, e recuar faria dois conteudos
+# diferentes compartilharem o mesmo numero. Um leitor deve usar
+# `meta.get("n_degraus", 1)`. Ver MULTI_DEGRAU.md.
+SCHEMA_VERSION: int = 2
+
+# 2 -> 3: entra o estrato FORA DA FAMILIA (fase nao-minima). As chaves novas
+# (`fora_da_familia` e `params.a`) sao CONDICIONAIS: so aparecem na amostra que
+# de fato esta fora da familia. Por isso a versao tambem e' condicional — a
+# amostra declara o schema a que ELA obedece, e o corpus base continua v2 byte
+# a byte. Bumpar a versao global reescreveria todo meta.json do corpus base
+# para nao dizer nada de novo sobre ele, e quebraria a igualdade de bytes que
+# `test_o_padrao_nao_muda_um_byte` protege.
+#
+# Um leitor v2 que caia numa amostra v3 ve `schema_version == 3` e chaves que
+# nao conhece. O contrato e': se `meta.get("fora_da_familia")` for verdadeiro,
+# `params` NAO descreve a curva inteira — descreve so a parte de POLOS do
+# sistema, e ha um zero de fase nao-minima em `params["a"]` por cima.
+SCHEMA_VERSION_FORA_DA_FAMILIA: int = 3
 
 ORDERS: tuple[str, str] = ("fopdt", "second")
 N_SERIES: int = 512
@@ -67,7 +90,17 @@ def dominant_time_constant(
 
 @dataclass(frozen=True)
 class SystemSpec:
-    """Sistema sorteado e janela de observacao."""
+    """Sistema sorteado e janela de observacao.
+
+    `a_zero` e o estrato FORA DA FAMILIA (opt-in). `None` e' o comportamento
+    historico. Preenchido, multiplica a planta por `(1 - a*s)` — um zero no
+    SEMIPLANO DIREITO, que produz resposta inversa. Os polos nao mudam: `order`,
+    `tau`/`wn`/`zeta` e portanto `t_dom` continuam descrevendo a mesma dinamica
+    de polos, e e' por isso que `order` continua sendo `fopdt` ou `second` em
+    vez de ganhar um terceiro valor. O que muda e' que a curva inteira ja nao
+    e' membro da familia de modelos do Estagio D, e o meta diz isso na chave
+    `fora_da_familia`.
+    """
 
     order: str
     K: float
@@ -78,6 +111,7 @@ class SystemSpec:
     t_start: float
     t_end: float
     step_amplitude: float
+    a_zero: float | None = None
 
     @property
     def t_dom(self) -> float:
@@ -116,6 +150,304 @@ def _loguniform(rng: np.random.Generator, lo: float, hi: float) -> float:
 _T_DOM_ESTRATO = 20.0
 
 
+# Estrato FORA DA FAMILIA (fase nao-minima). O que se SORTEIA e' a
+# PROFUNDIDADE DO MERGULHO, nao o zero `a` — e `a` sai resolvido por bissecao
+# para produzi-la. A primeira versao sorteava `a` em constantes de tempo
+# dominantes e falhou na medicao: com o mesmo `a/t_dom`, `fopdt` mergulha
+# `K*a/tau` (grau relativo ZERO, ha salto) e `second` mergulha muito menos
+# (grau relativo 1, a curva sai de zero com derivada finita). Em 60 amostras,
+# TODAS as 9 abaixo do limiar da guarda eram de 2a ordem. Sortear o mergulho
+# poe as duas ordens na MESMA escala de severidade, que e' o que o estrato
+# precisa declarar.
+#
+# O mergulho e' medido como `-min(y) / ptp(y)` na serie limpa, com o repouso em
+# zero por construcao (antes de `theta` a resposta e' identicamente nula). E' a
+# mesma razao que `pipeline._undershoot` calcula, mas com aritmetica propria:
+# o gerador nao importa a pipeline, senao o corpus passaria a ser definido pelo
+# codigo que ele existe para testar.
+#
+# O PISO E' 1,5x O LIMIAR DA GUARDA (`_UNDERSHOOT_MAX = 0,08`). O estrato so
+# serve como conjunto positivo se toda amostra dele DEVE mesmo ser recusada;
+# uma amostra em cima do limiar mediria o arredondamento da guarda, nao a
+# guarda. O teto de 0,45 e' onde o mergulho para de ser um detalhe da curva e
+# passa a ser metade do desenho.
+_NMP_MERGULHO = (0.12, 0.45)
+
+# Janela MINIMA do estrato fora-da-familia, em t_dom depois do tempo morto.
+# Nao e' folga estetica: sem ela o estrato produz amostras que NAO exibem
+# resposta inversa. Medido em 24 amostras com a janela padrao
+# (`loguniform(0.5, 6) * t_dom`), 2 saem com a curva ainda MERGULHADA na ultima
+# coluna — ela desce, cruza o zero e o quadro acaba antes de ela assentar acima
+# do repouso. Nessas, `_undershoot` da pipeline le 0,000 e ACERTA: o que esta
+# desenhado e' um decaimento monotono, nao uma resposta inversa, e recusar por
+# `resposta_inversa` seria acertar pelo motivo errado.
+# O cruzamento de volta pelo zero acontece em `tau * ln(1 + a/tau)`, que na
+# faixa util vale ~0,6 t_dom; assentar a 1% depois disso leva ~4,6 t_dom (mesmo
+# numero que `_T_DOM_ESTRATO` cita). 5,5 = 0,6 + 4,6, arredondado para cima.
+# Amostra que ja tem janela maior fica como esta — o `max` so levanta o piso,
+# como em `janela_assentada`.
+_NMP_T_DOM_MIN = 5.5
+
+
+# Estrato RUIDO ALTO. `dataset/randomize.py` sorteia `snr_db` em U(20, 60) e
+# NUNCA desce de 20 — medido nos quatro corpora, minimo 20,0 a 20,3 dB, mediana
+# 40. Metade das amostras de treino e praticamente limpa, e a rede aprendeu a
+# segmentar curva NITIDA.
+#
+# O DANO, medido num lote de 100 figuras de avaliacao com ruido em cinco niveis
+# de SNR (o gerador de avaliacao tambem nao tinha ruido — foi acrescentado em
+# `gera_lote_ruidoso.py`). Entrega fisica, com a guarda adaptativa ja ligada:
+#     30 dB  95 %      25 dB  95 %      20 dB  80 %
+#     15 dB  80 %      10 dB  85 %
+# e o acerto CONJUNTIVO no nivel PRATICO: 90 %, 90 %, 70 %, 60 %, 55 %. O
+# joelho cai exatamente na borda da distribuicao de treino, e abaixo dela a
+# mascara esta extrapolando.
+#
+# A FAIXA e' U(5, 20), CONTIGUA com a base: a uniao cobre 5 a 60 dB sem buraco.
+# Uniforme em dB, e nao em razao de potencia, porque dB ja e' escala
+# logaritmica — uniforme ali distribui o esforco por igual entre "levemente
+# ruidoso" e "muito ruidoso". O piso de 5 dB deixa margem abaixo dos 10 dB que
+# o lote de avaliacao usa: treinar ate exatamente o limite do teste seria
+# treinar PARA o teste.
+#
+# CONVERSAO para o que se ve na figura (desvio do ruido / faixa de y, medido):
+#     30 dB -> 0,011    20 dB -> 0,035    15 dB -> 0,062    10 dB -> 0,114
+_SNR_BAIXO = (5.0, 20.0)
+
+
+# Estrato LEGENDA OCLUSORA. O corpus tem legenda em ~47 % das amostras e ela
+# NUNCA cobre a curva: medido em 120 amostras, a fracao da curva coberta pela
+# caixa tem mediana 0,0000, p90 0,0000 e MAXIMO 0,0028 — zero amostras acima de
+# 1 %. A culpa e' do matplotlib: `loc="best"` procura ativamente o espaco livre,
+# e as outras cinco posicoes sao CANTOS, onde uma resposta ao degrau raramente
+# passa. A legenda existe no corpus como DISTRATOR ADJACENTE, nunca como
+# OCLUSOR.
+#
+# O DANO, medido numa imagem real (`caso_real_neg_super`, legenda em
+# 'lower left' atravessando a faixa da ACOMODACAO): a rede segue a BORDA da
+# caixa e cria um patamar falso, o que antecipa a acomodacao e o ajuste
+# compensa com polo dominante mais lento e menos amortecimento. O par
+# controlado — a MESMA imagem com a legenda movida — recupera tudo com erro
+# <= 3 %, entao a causa esta isolada numa unica variavel.
+#
+# COMO — SEGUNDA VERSAO. A primeira ancorava o CENTRO da caixa no valor da
+# curva num ponto qualquer do transitorio, e falhou no unico teste que
+# importava: pareando 80 amostras com e sem a caixa, a penalidade ponta a ponta
+# foi NULA nos dois modelos (79,1 % contra 78,3 % no promovido; 76,5 % contra
+# 79,7 % no `ruido/epoca_17`). A caixa tapava a curva — 100 % das amostras
+# acima de 1 % dos pixels — e mesmo assim nao produzia o defeito. Tapar nao
+# basta: o corpus tinha OCLUSAO, mas nao ESSA oclusao.
+#
+# A geometria que importa, medida na figura real: a caixa vai de x 106 a 357
+# (0,00 a 0,43 da largura da curva) e de y 333 a 405; o patamar assentado esta
+# em y=394, ou seja a ONZE pixels da borda INFERIOR da caixa e paralelo a ela.
+# A curva cai dentro da faixa vertical da caixa em so 28,7 % das colunas: ela
+# entra pela esquerda por cima, DESCE atravessando a caixa e assenta raspando a
+# borda de baixo. O que a caixa esconde e' a CHEGADA ao patamar, e o que a rede
+# poe no lugar e' um segmento horizontal no nivel do patamar — acomodacao
+# antecipada.
+#
+# Entao a ancora precisa de tres coisas, e nao de uma:
+#   HORIZONTAL — sobre o JOELHO, que e' `theta`: onde a curva troca repouso
+#     por transitorio.
+#   VERTICAL   — no nivel ASSENTADO, nao no valor da curva no ponto. E' o que
+#     poe a borda da caixa PARALELA ao patamar.
+#   LADO       — a caixa se estende para o lado LIVRE (para baixo se a resposta
+#     assenta em cima, para cima se assenta embaixo), como um plotador real
+#     faria, deixando a curva logo para dentro da borda vizinha.
+#
+# O QUE A SEGUNDA VERSAO ERROU, e e' um ERRO DE UNIDADE. Ela punha o CENTRO da
+# caixa em `theta + U(0,6; 3,0) * t_dom` — de 0,6 a 3 constantes de tempo
+# DEPOIS do inicio, que e' o patamar assentado e nao o joelho. `t_dom` e' uma
+# escala da DINAMICA; a caixa e' um objeto de LAYOUT, medido em fracao do eixo,
+# e os dois nao se convertem: na figura real `t_dom` = 0,5 s numa janela de
+# 10 s, entao a caixa (0,43 do eixo) tem quase NOVE `t_dom` de largura e
+# qualquer deslocamento medido em `t_dom` some diante dela.
+#
+# MEDIDO nos 200 pares de `val_parleg_canto` x `val_parleg_ocl`:
+#   o joelho cai em 0,14 da largura do eixo (p50; p10 0,07, p90 0,36);
+#   a ancora MAIS PROXIMA possivel (u = 0,6) cai em 0,42 (p50);
+#   em 12 % das amostras ate ela ja passa de 0,88 e era grampeada na borda,
+#     para QUALQUER sorteio de `u`.
+# Resultado: o joelho ficou DENTRO da caixa em 6 de 193 pares (3,1 %), e a
+# 298 px dela (p50) nos outros. O estrato ensinou "caixa sobre uma reta
+# assentada" — que a rede ja acertava: a deformacao da serie no joelho entre as
+# duas metades do par deu p50 = 0,0 px e p90 entre 1,0 e 2,0 px nos sete
+# checkpoints medidos, contra 6,8 px do modelo promovido na figura REAL. Sem
+# dano no corpus nao ha o que aprender nem o que medir, e foi por isso que os
+# quatro instrumentos sinteticos de oclusao nao ordenaram os checkpoints.
+#
+# ONDE O JOELHO CAI DENTRO DA CAIXA, medido no par real: a caixa vai de 0,00 a
+# 0,43 do eixo, centro em 0,215, e o joelho em 0,35 — a +0,63 MEIA-LARGURA do
+# centro, perto da borda DIREITA. A caixa cobre o tempo morto, o joelho e o
+# comeco do transitorio, e a curva sai pela direita ainda em movimento.
+#
+# A CORRECAO: medir a caixa depois de desenhada e deslocar em MEIAS-LARGURAS
+# dela. Com `u < 1` o joelho fica dentro da caixa POR CONSTRUCAO, qualquer que
+# seja o rotulo, a fonte, o dpi ou a janela — o que a versao anterior nao
+# garantia em nenhum desses casos.
+# A TERCEIRA VERSAO, e o que a segunda ainda errava. Ancorar no JOELHO e' o
+# alvo certo mas a REFERENCIA errada: medida na figura real pela serie extraida
+# da metade de controle, ela tem repouso em y=72, patamar em y=317, e o
+# transitorio inteiro cabe em x 248..281 — 33 px de uma curva de 577, ou 5,7 %
+# da largura. A caixa tem 254 px, quase OITO vezes o transitorio: ela cobre o
+# tempo morto (144 px), o transitorio todo e mais 77 px de patamar. Ancorar o
+# CENTRO no joelho joga a caixa para tras, sobre o repouso, onde ela nao toca a
+# curva — medido na correcao intermediaria: a fracao da curva tapada caiu de
+# 0,051 (p50) para 0,000, o oposto do que se queria.
+#
+# A referencia que funciona nos DOIS regimes e' a CHEGADA ao patamar. No corpus
+# o transitorio ocupa boa parte da janela (o joelho cai em 0,14 do eixo e
+# `3*t_dom` atravessa quase tudo); na figura real ele ocupa 5,7 %. `theta` e
+# `t_dom` nao normalizam entre os dois; a chegada sim, porque e' o ponto a
+# partir do qual existe patamar para a borda da caixa imitar.
+#
+# E' ASSIM que a caixa real faz o estrago, e a leitura esta no proprio
+# `_OCLUSAO_FOLGA`: a borda de CIMA dela corre 14 px abaixo do patamar e se
+# estende 144 px PARA TRAS, cruzando o joelho. A rede segue essa borda
+# horizontal como se fosse patamar e antecipa a acomodacao — `theta` sai tarde,
+# o joelho em S some, e o ajuste vira FOPDT. Medido: `theta` >= 3,57 da `fopdt`,
+# `theta` <= 3,48 da `second` com zeta 0,75-0,96, e a faixa inteira entre os
+# checkpoints e' de 0,18 s, 1,8 % da janela.
+_OCLUSAO_CHEGADA = 0.95         # fracao da excursao que define "chegou"
+_OCLUSAO_JOELHO = (0.20, 0.80)  # a CHEGADA, em MEIAS-LARGURAS da caixa a
+                                # direita do centro dela (o par real: 0,39)
+_OCLUSAO_FOLGA = (0.01, 0.06)  # curva para dentro da borda, em fracao do eixo
+                               # (o caso real: 11 px de ~464 = 0,024)
+
+# QUANTOS textos do sorteio neutro sao concatenados no rotulo da legenda do
+# estrato. A LARGURA da caixa e' a variavel causal, nao so a posicao: o defeito
+# e' a rede seguir a BORDA HORIZONTAL da caixa como se fosse patamar, e uma
+# borda longa e' um patamar mais convincente. Medido no par real
+# `caso_real_neg_super`: a caixa que quebra o ajuste ocupa 43 % da largura da
+# curva e tapa 48,1 % das colunas dela; com o rotulo curto que `sample_style`
+# sorteia, a caixa do corpus ocupava 17 % (p50) e tapava 16,3 %. Concatenar de
+# 1 a 3 textos cobre a faixa real. O rotulo continua semanticamente vazio, e
+# continua vindo do MESMO gerador de texto do corpus base — o que muda e' so o
+# comprimento.
+_OCLUSAO_N_TEXTOS = (2, 5)   # `randint`: 2 a 4. Era (1, 4) — remedido
+                             # com a ancora corrigida, a caixa ficava em
+                             # 0,245 do eixo (p50) contra 0,43 da real, e
+                             # a curva tapada em 0,072 contra 0,1505.
+
+
+# --------------------------------------------------------------------------
+# TERCEIRA FAMILIA DE RENDER (§73)
+# --------------------------------------------------------------------------
+# POR QUE ELA EXISTE. A rede treina no render deste arquivo e e' avaliada no do
+# `rg_aleatorio.py`, e a lacuna entre as duas familias foi MEDIDA: a cobertura
+# da mascara sobre a curva verdadeira tem mediana 0,713 na avaliacao contra
+# 0,925 no treino (Mann-Whitney p = 1,05e-12; 79 % das figuras de avaliacao
+# abaixo de 80 % de cobertura contra 29 % das de treino). Isso e' o dobro do
+# custo de qualquer outro fator que se mediu neste estrato.
+#
+# O QUE A LACUNA NAO E'. Seis decomposicoes vieram NEGATIVAS, e elas estao aqui
+# para ninguem refazer:
+#   fisica        |K| nao prediz a falha (Mann-Whitney p = 0,68)
+#   traco         espessura p = 0,30; dpi p = 0,17; o CONTRASTE ate vai na
+#                 direcao contraria (0,594 nas ruins contra 0,570 nas boas)
+#   estilo        pontilhado piora de verdade (par controlado, 23 pioram
+#                 contra 1, p < 1e-4) mas explica so ~1/3 dos casos
+#   posicao       a perda e' uniforme: 33 % no repouso, 33 % no transitorio,
+#                 40 % na cauda; e nao ha efeito de moldura
+#   elementos     desligar linha de entrada, preenchimentos E o tema de uma vez
+#                 nao recupera nada (0,692 contra 0,711 do base)
+#   geometria     largura, altura, dpi, aspecto e espessura relativa da
+#                 avaliacao caem 100 % dentro de [p1, p99] do treino
+#
+# A HIPOTESE, E ELA NAO ESTA CONFIRMADA. O que separa as familias nao e' um
+# parametro e sim a COMBINACAO: temas do matplotlib produzem conjuntos de
+# pixels (grade, fonte, marca de tick, cor de eixo) que o corpus nao gera mesmo
+# cobrindo cada parametro isolado. Este estrato testa isso gerando uma TERCEIRA
+# familia — nem a deste arquivo, nem a do `rg_aleatorio`.
+#
+# NAO COPIAR O `rg_aleatorio`. Os temas aqui excluem de proposito os dois que
+# ele usa (`seaborn-v0_8-darkgrid` e `dark_background`): treinar no render de
+# avaliacao transformaria os lotes de controle em memorizacao de familia e
+# invalidaria todo numero da Parte 2.
+_TEMAS_ALT: tuple[str, ...] = (
+    "ggplot", "bmh", "fivethirtyeight", "Solarize_Light2",
+    "tableau-colorblind10", "petroff10", "grayscale", "classic",
+)
+_ALT_COMPANHEIRO = 0.6   # probabilidade de desenhar o SINAL COMPANHEIRO
+_ALT_SOMBRA = 0.5        # probabilidade de sombrear o trecho de tempo morto
+_ALT_ALPHA = (0.35, 1.00)        # opacidade da curva
+_ALT_FATOR_TRACO = (0.45, 1.00)  # espessura, em fracao da sorteada por `sample_style`
+_ALT_GRADE_POR_CIMA = 0.5
+_ALT_PAINEL = 0.75              # probabilidade de pintar o PAINEL
+_ALT_PAINEL_DELTA = (0.10, 0.30)  # afastamento de luminancia do fundo da figura
+# O PAINEL e' a diferenca estrutural, e ela foi encontrada medindo APARENCIA e
+# nao desempenho. Estatisticas de imagem das figuras que falham no lote contra
+# as duas familias:
+#     medida        familia 1   familia 3 (so tinta)   rg que FALHAM
+#     tinta            0,021           0,024               0,380
+#     entropia         0,288           0,443               1,239
+# `_new_figure` pinta a figura E o painel com `style.bg_color` — a MESMA cor —,
+# entao o corpus nunca produziu contraste entre painel e moldura. O
+# `seaborn-darkgrid` do `rg_aleatorio` pinta o painel de cinza sobre figura
+# branca, e sao esses ~40 % de pixels que separam as familias. Mexer em
+# opacidade e espessura (a primeira tentativa) deixou a distancia ate o
+# centroide das figuras que falham em 3,74 contra 3,93 da familia 1: andou 0,19
+# de uma distancia de 1,4, ou seja, nada.
+#
+# O corpus JA tem fundo escuro em 35 % das amostras (luminancia < 0,3), entao
+# fundo escuro nao era a lacuna — medido antes de mexer.
+# TINTA POR COLUNA e' o que move a agulha, e isso foi varrido. So os temas
+# deixavam a familia em cobertura 0,968 — indistinguivel da familia de treino
+# (0,944) e longe da de avaliacao (0,713). Medido em 40 sistemas, um botao de
+# cada vez:
+#     so temas                     0,968
+#     + grade por cima             0,967   <- ZERO. A hipotese de que linha de
+#                                             grade cortando o traco apaga
+#                                             tinta esta ERRADA.
+#     + alpha 0,55                 0,958
+#     + traco fino                 0,920
+#     alpha + fino                 0,874
+#     os tres, alpha 0,40          0,788
+# As faixas acima SORTEIAM os dois em vez de fixar, para a familia ABRANGER de
+# facil a dificil. O alvo nao e' o minimo: afundar abaixo de 0,713 seria pior,
+# porque uma familia que a rede nao ve de jeito nenhum ensina a desistir, nao a
+# segmentar. A grade por cima FICA, apesar de medir zero na cobertura, porque o
+# objetivo declarado do estrato e' diversidade de render — mas o numero esta
+# aqui para ninguem lhe atribuir ganho.
+# O SINAL COMPANHEIRO e' um degrau em `steps-post` no mesmo quadro — a forma
+# que o `polyline.py` documenta como o pior confusor ("a polilinha fica AGARRADA
+# na entrada", Fisher OR = 0,248, p = 0,0012). O corpus base tem distratores,
+# mas nenhum com essa forma.
+
+
+def _mergulho_relativo(spec: SystemSpec, t: np.ndarray) -> float:
+    """`-min(y)/ptp(y)` da serie limpa, no sentido do degrau. 0 se nao mergulha."""
+    y = step_response(spec, t)
+    faixa = float(np.ptp(y))
+    if faixa < 1e-15:
+        return 0.0
+    d = 1.0 if float(spec.K) * float(spec.step_amplitude) >= 0.0 else -1.0
+    return max(0.0, -float(np.min(y * d)) / faixa)
+
+
+def _resolve_a_zero(spec: SystemSpec, t: np.ndarray, alvo: float) -> float:
+    """Menor `a > 0` cuja resposta mergulha `alvo` da faixa. Bissecao.
+
+    Monotona em `a`: o mergulho tende a zero com `a -> 0` e a 1 com `a` grande
+    (a parcela `-a*y0'` domina numerador e denominador). 60 iteracoes levam o
+    intervalo relativo a 1e-18, muito abaixo de qualquer coisa que a
+    rasterizacao distinga.
+    """
+    lo, hi = 0.0, 1.0 * spec.t_dom
+    for _ in range(80):                     # expande ate cobrir o alvo
+        if _mergulho_relativo(replace(spec, a_zero=hi), t) >= alvo:
+            break
+        hi *= 2.0
+    for _ in range(60):
+        meio = 0.5 * (lo + hi)
+        if _mergulho_relativo(replace(spec, a_zero=meio), t) < alvo:
+            lo = meio
+        else:
+            hi = meio
+    return float(hi)
+
+
 def sample_system(rng: np.random.Generator) -> SystemSpec:
     """Sorteia (order, K, tau|wn/zeta, theta) e a janela temporal."""
     order = ORDERS[int(rng.integers(0, 2))]
@@ -144,8 +476,60 @@ def sample_system(rng: np.random.Generator) -> SystemSpec:
     )
 
 
+def _derivada_degrau(spec: SystemSpec, t: np.ndarray) -> np.ndarray:
+    """d/dt da resposta ao degrau dos POLOS (= resposta ao impulso, escalada).
+
+    Analitica, nao numerica: a diferenca finita erraria justamente no salto em
+    `t = theta`, que e' a geometria que o estrato fora-da-familia existe para
+    exibir. Fonte da forma fechada: derivar termo a termo a expressao de
+    `step_response`; para `zeta > 1` usa-se `r1*r2 = wn^2`.
+
+    """
+    t = np.asarray(t, dtype=float)
+    u = t - spec.theta
+    active = u >= 0.0
+    uu = np.where(active, u, 0.0)
+    s = spec.step_amplitude * spec.K
+
+    if spec.order == "fopdt":
+        tau = float(spec.tau)
+        d = (s / tau) * np.exp(-uu / tau)
+    else:
+        wn = float(spec.wn)
+        zeta = float(spec.zeta)
+        if abs(zeta - 1.0) <= 1e-6:
+            d = s * wn * wn * uu * np.exp(-wn * uu)
+        elif zeta < 1.0:
+            wd = wn * np.sqrt(1.0 - zeta * zeta)
+            d = s * (wn * wn / wd) * np.exp(-zeta * wn * uu) * np.sin(wd * uu)
+        else:
+            rad = np.sqrt(zeta * zeta - 1.0)
+            r1 = wn * (-zeta + rad)
+            r2 = wn * (-zeta - rad)
+            d = s * (wn * wn) * (np.exp(r1 * uu) - np.exp(r2 * uu)) / (r1 - r2)
+    return np.where(active, d, 0.0)
+
+
 def step_response(spec: SystemSpec, t: np.ndarray) -> np.ndarray:
-    """Resposta analitica limpa ao degrau (contrato §1). Vetorizada."""
+    """Resposta analitica limpa ao degrau (contrato §1). Vetorizada.
+
+    Com `spec.a_zero` preenchido a planta vira `(1 - a*s) * G_polos(s)`, e a
+    resposta ao degrau e' `y0(t) - a * y0\'(t)` — exata, porque derivar e'
+    linear. Para `fopdt` o resultado tem grau relativo ZERO: ha um SALTO em
+    `t = theta` para `-K*a/tau`, e depois a subida. Para `second` o grau
+    relativo e' 1: nao ha salto, a curva mergulha e volta. Os dois sao fase
+    nao-minima; o primeiro e' o que quebra o prior "aproximacao monotona a um
+    patamar" com mais forca, porque nenhuma curva DENTRO da familia e'
+    descontinua em `t = theta` (ali o valor e' 0, igual ao repouso).
+
+    """
+    if spec.a_zero:
+        # Antes da superposicao de proposito: o zero e' da PLANTA, entao ele
+        # multiplica cada parcela igualmente e `y0 - a*y0\'` da o mesmo
+        # resultado somando antes ou depois. Fazer aqui evita recursao dupla.
+        base = replace(spec, a_zero=None)
+        return (step_response(base, t)
+                - float(spec.a_zero) * _derivada_degrau(base, t))
     t = np.asarray(t, dtype=float)
     u = t - spec.theta
     active = u >= 0.0
@@ -219,6 +603,41 @@ def _axis_limits(
         span_y = max(abs(y1), 1.0) * 0.1
     ylim = (y0 - style.y_margin_lo * span_y, y1 + style.y_margin_hi * span_y)
     return xlim, ylim
+
+
+def _ylim_plato_no_meio(y: np.ndarray, ylim: tuple[float, float],
+                        rng: np.random.Generator) -> tuple[float, float]:
+    """Estica o quadro para que o NIVEL DE REPOUSO caia longe da borda.
+
+    Estrato OOD opt-in que ataca um PRIOR DE POSICAO medido. No corpus atual o
+    repouso esta sempre colado numa borda: em `data/train` (K > 0) ele ocupa a
+    fracao 0,038 a 0,137 da altura do quadro; em `data/train_kneg` (K < 0),
+    0,864 a 0,963. Na faixa do meio (0,25 a 0,75) o corpus tem **0,0 %** das
+    amostras, nos dois. A rede aprende "o repouso fica na borda" e perde o
+    plato quando ele nao esta la — medido em 40 figuras de fase nao-minima,
+    onde o repouso cai no MEIO por construcao: zero de 60 colunas iniciais com
+    tinta, `_nivel_de_repouso` mede o pico, e a guarda `_UNDERSHOOT_MAX` deixa
+    de funcionar (deteccao de 3 em 40, correlacao -0,11 com o undershoot real).
+
+    So o QUADRO muda. A serie, o spec e o estilo ficam identicos aos da mesma
+    seed sem o flag, entao o estrato e comparavel AMOSTRA A AMOSTRA com o base
+    — a mesma disciplina do `ganho_negativo` (§40.5). Nao se acrescenta
+    fenomeno fisico nenhum: o modelo continua na familia FOPDT/2a ordem e o
+    `meta.json` nao muda de contrato.
+    """
+    lo, hi = float(ylim[0]), float(ylim[1])
+    repouso = float(np.median(y[:max(1, min(5, y.size))]))
+    alvo = float(rng.uniform(0.25, 0.75))
+    if not (lo < repouso < hi):
+        return ylim
+    frac = (repouso - lo) / max(hi - lo, 1e-12)
+    if frac < 0.5:
+        # repouso perto do rodape: estica PARA BAIXO ate ele subir ate `alvo`
+        altura = (hi - repouso) / max(1.0 - alvo, 1e-6)
+        return (repouso - alvo * altura, hi)
+    # repouso perto do topo: estica PARA CIMA
+    altura = (repouso - lo) / max(alvo, 1e-6)
+    return (lo, lo + altura)
 
 
 def _new_figure(style: RenderStyle, facecolor: str) -> tuple[Figure, Axes]:
@@ -313,7 +732,11 @@ def _cor_colidente(hex_curva: str) -> str:
             break
     return hex_curva
 
-def _plot_curve(ax, t: np.ndarray, y: np.ndarray, style: RenderStyle, color: str, label=None):
+def _plot_curve(ax, t: np.ndarray, y: np.ndarray, style: RenderStyle, color: str,
+                label=None, alt: dict | None = None):
+    """`alt` so' e' passado pela figura de VERDADE do estrato da terceira
+    familia (§73). A figura-MASCARA chama sem ele, de proposito: alpha e
+    marcador mudam a aparencia e nao podem mudar a verdade."""
     kwargs = dict(
         color=color,
         linewidth=style.line_width,
@@ -321,6 +744,17 @@ def _plot_curve(ax, t: np.ndarray, y: np.ndarray, style: RenderStyle, color: str
         solid_capstyle="round",
         antialiased=True,
     )
+    if alt:
+        # ALPHA e ESPESSURA sao os dois eixos que mexem em quanta TINTA a curva
+        # deposita por coluna — que e' a grandeza que o instrumento de
+        # cobertura mede. Os temas sozinhos nao mexiam neles, e por isso a
+        # primeira versao da familia ficou a 4 pontos da familia de treino
+        # (0,903 contra 0,944, p = 0,23) em vez de se aproximar dos 0,713 da
+        # familia de avaliacao.
+        if alt.get("alpha") is not None:
+            kwargs["alpha"] = float(alt["alpha"])
+        if alt.get("fator_traco") is not None:
+            kwargs["linewidth"] = max(style.line_width * float(alt["fator_traco"]), 0.35)
     if style.marker is not None:
         kwargs.update(
             marker=style.marker,
@@ -384,8 +818,18 @@ def render_sample(
     reta_no_patamar: bool = False,
     anotacao_com_seta: bool = False,
     banda_de_acomodacao: bool = False,
+    plato_no_meio: bool = False,
+    legenda_oclusora: bool = False,
+    legenda_no_canto: bool = False,
+    alt: dict | None = None,
 ) -> dict:
-    """Escreve image.png, mask.png e meta.json em out_dir. Devolve o dict do meta."""
+    """Escreve image.png, mask.png e meta.json em out_dir. Devolve o dict do meta.
+
+    `alt` traz as escolhas da TERCEIRA FAMILIA DE RENDER (§73) ja sorteadas por
+    `generate_sample`: `{"tema", "companheiro", "sombra"}`. Vem pronto de fora
+    porque o sorteio precisa de `rng_style`, que so existe la — o mesmo molde do
+    `ruido_alto`, e o que garante que `rng_noise` nao se desloca.
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     if rng is None:
@@ -399,17 +843,57 @@ def render_sample(
     style = replace(style, has_reference_line=bool(reta_no_patamar),
                     has_annotation_arrow=bool(anotacao_com_seta),
                     has_settling_band=bool(banda_de_acomodacao))
+    if legenda_oclusora or legenda_no_canto:
+        # OS DOIS estratos FORCAM a legenda. `sample_style` so a sorteia em
+        # metade das amostras; sem forcar, metade do corpus novo sairia byte a
+        # byte igual ao base — nao seria material novo, seria o base com peso
+        # dobrado. Mesmo molde do `ruido_alto`, que sobrescreve `snr_db` depois
+        # de `sample_style`: quem decide e uma flag EXTERNA, entao o estilo
+        # continua sem ver o spec (anti-vazamento estrutural).
+        #
+        # `legenda_no_canto` e' a METADE DE CONTROLE do par (§74): mesma
+        # amostra, mesma legenda, mesmo rotulo, so a POSICAO muda. Sem ela o
+        # par contrastaria "tem legenda" contra "nao tem", que e' outra
+        # variavel — e o defeito medido e' de POSICAO, nao de existencia
+        # (`caso_real_neg_super` contra `_legenda_movida`: 32 % contra 2,6 %).
+        style = replace(style, has_legend=True)
 
     t = np.linspace(spec.t_start, spec.t_end, N_SERIES)
     y_clean = step_response(spec, t)
     y_draw = _apply_noise(y_clean, style, rng) if add_noise else y_clean.copy()
 
     xlim, ylim = _axis_limits(t, y_draw, style)
+    if plato_no_meio:
+        # Depois de `_axis_limits` e antes de qualquer plotagem: a figura da
+        # imagem e a da mascara usam os MESMOS limites (linhas ~413 e ~601),
+        # entao a verdade fica consistente.
+        ylim = _ylim_plato_no_meio(y_draw, ylim, rng)
 
     # ---------------- figura de verdade ----------------
+    # TEMA DA TERCEIRA FAMILIA. `rcParams` e' GLOBAL e por processo; o
+    # `rg_aleatorio._estilo` documenta o estrago de deixar vazar entre figuras
+    # (29 de 33 amostras sem moldura porque um estilo zerou `axes.linewidth` e o
+    # seguinte nao restaurou). Aqui o estado e' salvo e restaurado no `finally`,
+    # e a FIGURA-MASCARA fica FORA do bloco: a geometria dela tem de continuar
+    # identica a da imagem, e ela ja e' explicita (`figsize`, `dpi`,
+    # `axes_rect`, `xlim`, `ylim`), entao nada do tema pode alcanca-la.
+    _rc_salvo = None
+    if alt:
+        _rc_salvo = matplotlib.rcParams.copy()
+        try:
+            matplotlib.style.use(alt["tema"])
+        except Exception:  # pragma: no cover - tema ausente na versao instalada
+            matplotlib.rcParams.update(_rc_salvo)
+            _rc_salvo = None
     fig, ax = _new_figure(style, style.bg_color)
+    if alt and alt.get("painel"):
+        # So o PAINEL (retangulo dos eixos). A figura continua com `bg_color`,
+        # e e' o contraste entre os dois que o corpus nunca teve. A
+        # figura-MASCARA nao passa por aqui: ela usa `_new_figure(style,
+        # "#000000")` e `set_axis_off()`, entao a verdade nao se mexe.
+        ax.set_facecolor(alt["painel"])
     _plot_curve(ax, t, y_draw, style, style.line_color,
-                label=style.legend_text if style.has_legend else None)
+                label=style.legend_text if style.has_legend else None, alt=alt)
     ax.set_xlim(*xlim)
     ax.set_ylim(*ylim)
     _apply_locators(ax, style, xlim, ylim)
@@ -481,8 +965,15 @@ def render_sample(
             )
 
     if style.has_grid:
+        # GRADE POR CIMA (§73). O corpus sempre desenhou a grade ATRAS da curva
+        # (`zorder=0`); o tema `seaborn-darkgrid` da familia de avaliacao a
+        # desenha clara sobre fundo cinza, cruzando o traco. Linha de grade
+        # cortando o traco e' exatamente o que apaga tinta na coluna.
+        por_cima = bool(alt and alt.get("grade_por_cima"))
+        ax.set_axisbelow(not por_cima)
         ax.grid(True, color=style.axes_color, alpha=style.grid_alpha,
-                linestyle=style.grid_style, linewidth=0.6, zorder=0)
+                linestyle=style.grid_style, linewidth=0.6,
+                zorder=3 if por_cima else 0)
     if style.has_minor_ticks:
         ax.xaxis.set_minor_locator(AutoMinorLocator())
         ax.yaxis.set_minor_locator(AutoMinorLocator())
@@ -505,9 +996,86 @@ def render_sample(
         ax.set_xlabel(style.xlabel_text, color=style.axes_color, fontsize=style.font_size)
     if style.has_ylabel:
         ax.set_ylabel(style.ylabel_text, color=style.axes_color, fontsize=style.font_size)
+    if alt and alt.get("companheiro"):
+        # SINAL COMPANHEIRO: um degrau em `steps-post` no mesmo quadro. E' a
+        # forma que o `polyline.py` mede como o pior confusor da extracao, e o
+        # corpus base nao tem nenhum distrator com ela.
+        alvo = float(spec.K * spec.step_amplitude)
+        u = np.where(t >= float(spec.theta), alvo, 0.0)
+        ax.plot(t, u, drawstyle="steps-post", color=style.axes_color,
+                linewidth=max(style.line_width * 0.7, 0.8), linestyle="--",
+                alpha=0.85, zorder=2,
+                label="referencia" if style.has_legend else None)
+    if alt and alt.get("sombra") and float(spec.theta) > float(spec.t_start):
+        ax.axvspan(float(spec.t_start), float(spec.theta),
+                   color=style.axes_color, alpha=0.12, zorder=0)
     if style.has_legend:
-        leg = ax.legend(loc=style.legend_loc, fontsize=style.font_size * 0.8,
-                        framealpha=style.legend_alpha)
+        if legenda_oclusora:
+            # CORPO SOBRE O JOELHO, BORDA NO NIVEL DO PATAMAR, PELO LADO
+            # LIVRE — a caixa e' ancorada na CHEGADA e se estende para tras.
+            # Ver o bloco de `_OCLUSAO_CHEGADA` para a medicao da figura real
+            # que fixa as tres escolhas, e para os dois erros das versoes
+            # anteriores (unidade, e referencia).
+            r = rng if rng is not None else np.random.default_rng(0)
+
+            # Nivel ASSENTADO como a figura o DESENHA: mediana do ultimo quinto
+            # da serie. Nao `K * degrau`, que e' o setpoint comandado e nao o
+            # que aparece quando a janela nao assenta; nao `y_draw[-1]`, que e'
+            # uma amostra ruidosa so.
+            y_fim = float(np.median(y_clean[max(int(0.8 * y_clean.size), 1):]))
+            fy = (y_fim - ylim[0]) / max(ylim[1] - ylim[0], 1e-12)
+            folga = float(r.uniform(*_OCLUSAO_FOLGA))
+
+            # Lado LIVRE: se a resposta assenta ACIMA do repouso, o espaco esta
+            # embaixo e a caixa desce (ancora no topo dela); se assenta abaixo,
+            # a caixa sobe. Nos dois casos a ancora fica deslocada de `folga`
+            # para o lado de fora, de modo que o patamar caia logo para DENTRO
+            # da borda vizinha — os 11 px do caso real.
+            sobe = float(spec.K) * float(spec.step_amplitude) >= 0.0
+            loc = "upper center" if sobe else "lower center"
+            fy_anc = float(np.clip(fy + folga if sobe else fy - folga,
+                                   -0.05, 1.05))
+
+            # A CHEGADA ao patamar, em fracao do eixo: o primeiro instante
+            # em que a curva LIMPA alcanca `_OCLUSAO_CHEGADA` da excursao.
+            # Medida na serie desenhada, nao em `theta + k*t_dom`, que nao
+            # normaliza entre um transitorio de 5 % da janela e um de 60 %.
+            y_rep = float(np.median(y_clean[:max(int(0.02 * y_clean.size), 3)]))
+            sentido = float(np.sign(y_fim - y_rep)) or 1.0
+            passou = np.nonzero((y_clean - y_rep) * sentido
+                                >= _OCLUSAO_CHEGADA * abs(y_fim - y_rep))[0]
+            t_arr = float(t[passou[0]]) if passou.size else float(t[-1])
+            fx_arr = (t_arr - xlim[0]) / max(xlim[1] - xlim[0], 1e-12)
+
+            # DESENHA PARA MEDIR, e so entao posiciona. A largura da caixa
+            # depende do rotulo, da fonte e do dpi, e so existe depois do
+            # layout — e e' ela que da sentido a "deslocar". Medir custa um
+            # `draw()` por figura, e so neste estrato: o corpus base nao passa
+            # por aqui.
+            leg = ax.legend(loc=loc, bbox_to_anchor=(fx_arr, fy_anc),
+                            bbox_transform=ax.transAxes,
+                            fontsize=style.font_size * 0.8,
+                            framealpha=style.legend_alpha)
+            rend = fig.canvas.get_renderer()
+            meia = 0.5 * float(leg.get_window_extent(rend).transformed(
+                ax.transAxes.inverted()).width)
+
+            # A chegada fica `u` MEIAS-LARGURAS a direita do centro, entao
+            # o centro recua `u * meia` e o corpo da caixa se estende PARA TRAS
+            # sobre o transitorio e o tempo morto — a borda longa da figura
+            # real. Com `u < 1` a chegada cai dentro da caixa por construcao,
+            # qualquer que sejam rotulo, fonte, dpi ou janela. O grampo e' a
+            # caixa nao sair do quadro, agora exato porque a meia-largura e'
+            # conhecida (`_OCLUSAO_FX_LIM`, que chutava 0,12 e 0,88, deixou de
+            # existir); quando a caixa e' mais larga que o eixo o grampo
+            # degenera no centro, que e' o unico lugar possivel.
+            u = float(r.uniform(*_OCLUSAO_JOELHO))
+            lo, hi = min(meia, 0.5), max(1.0 - meia, 0.5)
+            fx = float(np.clip(fx_arr - u * meia, lo, hi))
+            leg.set_bbox_to_anchor((fx, fy_anc), transform=ax.transAxes)
+        else:
+            leg = ax.legend(loc=style.legend_loc, fontsize=style.font_size * 0.8,
+                            framealpha=style.legend_alpha)
         leg.get_frame().set_facecolor(style.bg_color)
         leg.get_frame().set_edgecolor(style.axes_color)
         for txt in leg.get_texts():
@@ -594,6 +1162,9 @@ def render_sample(
 
     fig.savefig(out / "image.png", dpi=style.dpi, facecolor=style.bg_color,
                 metadata={"Software": None})
+    if _rc_salvo is not None:
+        matplotlib.rcParams.update(_rc_salvo)
+        _rc_salvo = None
 
     # ---------------- figura-mascara (mesma geometria) ----------------
     mfig, max_ = _new_figure(style, "#000000")
@@ -641,6 +1212,40 @@ def render_sample(
         },
         "render": style.to_meta(),
     }
+    if legenda_oclusora:
+        # CONDICIONAL pela mesma razao de `fora_da_familia` abaixo: os outros
+        # tres flags de render (`has_reference_line`, `has_annotation_arrow`,
+        # `has_settling_band`) ja saem SEMPRE em `render`, entao acrescentar
+        # mais um ali mudaria os bytes de todo meta.json do corpus base so
+        # para dizer `false`. Sem esta chave o estrato seria INVISIVEL no
+        # meta: `render.has_legend` vira `true`, mas isso tambem acontece em
+        # metade do corpus base, e nada distinguiria uma legenda no canto de
+        # uma por cima da curva.
+        meta["render"]["legenda_oclusora"] = True
+        meta["render"]["par_legenda"] = "oclusora"
+    if legenda_no_canto:
+        meta["render"]["par_legenda"] = "canto"
+    if alt:
+        # CONDICIONAL, como as demais: o corpus base nao ganha chave nenhuma.
+        # Guarda o NOME DO TEMA, nao um booleano, porque e' a chave que permite
+        # separar as familias depois sem reidentificar amostra por amostra —
+        # que e' o requisito de conseguir voltar atras.
+        meta["render"]["familia_alt"] = str(alt["tema"])
+        meta["render"]["companheiro"] = bool(alt.get("companheiro"))
+    if spec.a_zero:
+        # CONDICIONAIS de proposito. Se `fora_da_familia` e `params["a"]`
+        # saissem em toda amostra, todo meta.json do corpus base mudaria de
+        # bytes para dizer `false`/`null` — quebrando a igualdade que
+        # `test_o_padrao_nao_muda_um_byte` protege, sem informar nada. Um
+        # leitor le `meta.get("fora_da_familia", False)`.
+        #
+        # `order` continua sendo a estrutura de POLOS e `params` continua
+        # descrevendo-a corretamente; o que NAO vale mais e' tratar `params`
+        # como um modelo da curva inteira. Quem compara ajuste contra verdade
+        # (os oraculos) tem de olhar esta chave ANTES de comparar.
+        meta["schema_version"] = SCHEMA_VERSION_FORA_DA_FAMILIA
+        meta["fora_da_familia"] = True
+        meta["params"]["a"] = float(spec.a_zero)
     with open(out / "meta.json", "w", encoding="utf-8") as fh:
         json.dump(meta, fh, ensure_ascii=False)
     return meta
@@ -656,7 +1261,13 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
                     janela_assentada: bool = False,
                     anotacao_com_seta: bool = False,
                     banda_de_acomodacao: bool = False,
-                    ganho_negativo: bool = False) -> dict:
+                    ganho_negativo: bool = False,
+                    plato_no_meio: bool = False,
+                    fase_nao_minima: bool = False,
+                    ruido_alto: bool = False,
+                    legenda_oclusora: bool = False,
+                    legenda_no_canto: bool = False,
+                    familia_alt: bool = False) -> dict:
     """Sorteia sistema+estilo com streams independentes, renderiza e devolve o meta."""
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
@@ -666,6 +1277,31 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
 
     spec = sample_system(rng_sys)
     style = sample_style(rng_style)  # nao ve o spec: anti-vazamento estrutural
+    if ruido_alto:
+        # Estrato opt-in, molde do `ganho_negativo` (§40.5). Sorteado de
+        # `rng_style` DEPOIS de `sample_style` — que nao consome mais nada
+        # dali —, entao o corpus base fica byte a byte identico e `rng_noise`
+        # nao se desloca: a REALIZACAO do ruido para um dado sigma continua a
+        # mesma sequencia.
+        #
+        # E o unico estrato que mexe no ESTILO e nao no SPEC, e isso nao fere o
+        # anti-vazamento: a regra e que o estilo nao pode ver o SISTEMA, e aqui
+        # quem decide e uma flag externa. O `snr_db` continua sem saber nada de
+        # `K`, `tau` ou ordem.
+        style = replace(style, snr_db=float(rng_style.uniform(*_SNR_BAIXO)))
+    if legenda_oclusora or legenda_no_canto:
+        # Alargamento do ROTULO — vive aqui, e nao em `render_sample`, porque
+        # precisa de `rng_style`, que so existe neste escopo. Consumido DEPOIS
+        # de `sample_style` e de `ruido_alto`, pelo mesmo motivo deles: o
+        # corpus base nao se desloca um byte e `rng_noise` nao se move, entao a
+        # realizacao do ruido continua a mesma sequencia.
+        #
+        # O `has_legend=True` fica em `render_sample` de proposito: e' garantia
+        # de render (o flag sem legenda nao desenharia nada e o estrato sairia
+        # igual ao base), e vale mesmo para quem chama `render_sample` direto.
+        n = int(rng_style.integers(*_OCLUSAO_N_TEXTOS))
+        style = replace(style, legend_text=" ".join(
+            _sample_text(rng_style) for _ in range(n)))
     if janela_assentada:
         # Janela longa o bastante para o PATAMAR ficar visivel. Eixo separado de
         # `reta_no_patamar` de proposito: sao dois fenomenos distintos e o
@@ -697,17 +1333,77 @@ def generate_sample(out_dir: str | Path, seed: int, add_noise: bool = True,
         # do sinal do ganho ensinaria a rede a ler o sinal do RENDER em vez da
         # forma da curva.
         spec = replace(spec, K=-spec.K)
+    if fase_nao_minima:
+        # Estrato OOD opt-in, molde do `ganho_negativo` (§40.5) — e o unico que
+        # sai FORA da familia de modelos do Estagio D. Sorteado com `rng_sys`
+        # (nunca `rng_style`) e APLICADO POR ULTIMO,
+        # para que a ordem dos consumos de `rng_sys` seja estavel: quem liga so
+        # este flag ve exatamente o spec do mesmo seed sem flag, mais o zero.
+        # E' o que torna o estrato comparavel amostra a amostra com o base.
+        #
+        # O zero NAO mexe nos polos. `order`, `tau`/`wn`/`zeta` e `t_dom`
+        # continuam validos e continuam no meta com o mesmo significado; por
+        # isso `order` nao ganha um terceiro valor. O que o meta ganha e' a
+        # chave `fora_da_familia`, que diz ao leitor que `params` ja nao
+        # descreve a curva inteira.
+        # A janela SOBE ao piso de `_NMP_T_DOM_MIN` ANTES de resolver o zero
+        # (ver la o porque): o mergulho e' medido em fracao da faixa de y, e a
+        # faixa depende da janela. Resolver primeiro daria um `a` calibrado
+        # contra um quadro que nao e' o que sera desenhado.
+        # Isso quebra o pareamento pixel a pixel com o mesmo seed sem o flag
+        # nas amostras de janela curta — mesmo custo que `janela_assentada`
+        # paga, pelo mesmo motivo. Nas que ja tinham janela suficiente o
+        # pareamento continua exato.
+        spec = replace(spec, t_end=float(max(
+            spec.t_end, spec.theta + _NMP_T_DOM_MIN * spec.t_dom)))
+        alvo_merg = float(rng_sys.uniform(*_NMP_MERGULHO))
+        grade = np.linspace(spec.t_start, spec.t_end, N_SERIES)
+        spec = replace(spec, a_zero=_resolve_a_zero(spec, grade, alvo_merg))
+    alt = None
+    if familia_alt:
+        # Sorteado de `rng_style` e por ULTIMO, pelo mesmo motivo dos outros
+        # estratos: o corpus base fica byte a byte identico e `rng_noise` nao
+        # se desloca, entao a realizacao do ruido continua a mesma sequencia.
+        # Nao ve o `spec` — o tema do grafico nao pode depender da planta, ou a
+        # rede aprenderia a ler a fisica do estilo (anti-vazamento estrutural).
+        alt = {
+            "tema": _TEMAS_ALT[int(rng_style.integers(0, len(_TEMAS_ALT)))],
+            "companheiro": bool(rng_style.random() < _ALT_COMPANHEIRO),
+            "sombra": bool(rng_style.random() < _ALT_SOMBRA),
+            "alpha": float(rng_style.uniform(*_ALT_ALPHA)),
+            "fator_traco": float(rng_style.uniform(*_ALT_FATOR_TRACO)),
+            "grade_por_cima": bool(rng_style.random() < _ALT_GRADE_POR_CIMA),
+        }
+        if rng_style.random() < _ALT_PAINEL:
+            # Luminancia do painel afastada da do fundo, para QUALQUER lado que
+            # caiba em [0, 1]. Cinza puro de proposito: a cor do painel nao pode
+            # virar pista da fisica (anti-vazamento), e um cinza nao compete com
+            # a cor da curva, que `_sample_palette` ja escolheu com contraste
+            # garantido contra `bg_color`.
+            lb = luminance(style.bg_color)
+            d = float(rng_style.uniform(*_ALT_PAINEL_DELTA))
+            alvo = lb - d if lb > 0.5 else lb + d
+            v = int(round(float(np.clip(alvo, 0.04, 0.96)) * 255))
+            alt["painel"] = f"#{v:02x}{v:02x}{v:02x}"
     return render_sample(spec, style, out_dir, add_noise=add_noise, rng=rng_noise,
                          seed=int(seed), reta_no_patamar=reta_no_patamar,
                          anotacao_com_seta=anotacao_com_seta,
-                         banda_de_acomodacao=banda_de_acomodacao)
+                         banda_de_acomodacao=banda_de_acomodacao,
+                         plato_no_meio=plato_no_meio,
+                         legenda_oclusora=legenda_oclusora,
+                         legenda_no_canto=legenda_no_canto, alt=alt)
 
 
 def _generate_one(args: tuple) -> str:
-    out_dir, seed, add_noise, reta, janela, seta, banda, kneg = args
+    (out_dir, seed, add_noise, reta, janela, seta, banda, kneg, plato,
+     nmp, ruido, legenda, canto, alt) = args
     generate_sample(out_dir, seed, add_noise=add_noise, reta_no_patamar=reta,
                     janela_assentada=janela, anotacao_com_seta=seta,
-                    banda_de_acomodacao=banda, ganho_negativo=kneg)
+                    banda_de_acomodacao=banda, ganho_negativo=kneg,
+                    plato_no_meio=plato,
+                    fase_nao_minima=nmp, ruido_alto=ruido,
+                    legenda_oclusora=legenda, legenda_no_canto=canto,
+                    familia_alt=alt)
     return str(out_dir)
 
 
@@ -722,6 +1418,12 @@ def generate_dataset(
     anotacao_com_seta: bool = False,
     banda_de_acomodacao: bool = False,
     ganho_negativo: bool = False,
+    plato_no_meio: bool = False,
+    fase_nao_minima: bool = False,
+    ruido_alto: bool = False,
+    legenda_oclusora: bool = False,
+    legenda_no_canto: bool = False,
+    familia_alt: bool = False,
 ) -> list[str]:
     """Gera n amostras em paralelo. Resultado independe do numero de workers."""
     root = Path(out_dir)
@@ -730,7 +1432,9 @@ def generate_dataset(
         (str(root / f"sample_{i:05d}"), int(seed) * 1_000_003 + i, bool(add_noise),
          bool(reta_no_patamar), bool(janela_assentada),
          bool(anotacao_com_seta), bool(banda_de_acomodacao),
-         bool(ganho_negativo))
+         bool(ganho_negativo), bool(plato_no_meio),
+         bool(fase_nao_minima), bool(ruido_alto), bool(legenda_oclusora),
+         bool(legenda_no_canto), bool(familia_alt))
         for i in range(int(n))
     ]
     if workers is not None and workers <= 1:

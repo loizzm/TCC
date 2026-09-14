@@ -6,7 +6,7 @@ import time
 import numpy as np
 
 from identify.calibrate import calibrate
-from identify.classical import identify
+from identify.classical import identify, identify_com_truncagem
 from identify.extract import predict_mask
 from identify.polyline import mask_to_polyline, polyline_to_series
 
@@ -30,6 +30,27 @@ def _nivel_de_repouso(y: np.ndarray) -> float:
     """Nível de repouso em pixels, a partir do início da série ordenada por x."""
     n = int(min(_N_REPOUSO, y.size))
     return float(np.median(y[:max(1, n)]))
+
+
+def planura_inicial(y: np.ndarray) -> float:
+    """Dispersão de `y` nas `_N_REPOUSO` primeiras colunas, em fração da faixa.
+
+    É literalmente a condição que `_nivel_de_repouso` PRECISA: ele lê as 5
+    primeiras colunas e SUPÕE a curva parada ali. Quando essa suposição é
+    falsa, o "repouso" devolvido é um ponto qualquer do transitório.
+
+    Extraída para função porque agora tem dois consumidores: o portão da
+    referência de tempo pela moldura (que já existia) e a marca
+    `repouso_observado` da saída (§67).
+    """
+    y = np.asarray(y, dtype=float)
+    if y.size == 0:
+        return 0.0
+    faixa = float(np.ptp(y))
+    if not np.isfinite(faixa) or faixa <= 0:
+        return 0.0
+    n = int(min(_N_REPOUSO, y.size))
+    return float(np.ptp(y[:max(1, n)])) / faixa
 
 
 # Cobertura mínima (extensão observada da polilinha / largura da moldura)
@@ -245,10 +266,7 @@ def _serie_normalizada(x_px: np.ndarray, y_px: np.ndarray, bbox_px=None):
                 # risco. Sem truncagem o corpus mostra planura mediana 0,0044,
                 # e aplicar a guarda sempre recusaria ~6 % das amostras sem
                 # ganho medido.
-                n_rep = int(min(_N_REPOUSO, y.size))
-                faixa_y = float(np.ptp(y))
-                planura = (float(np.ptp(y[:max(1, n_rep)])) / faixa_y
-                           if faixa_y > 0 else 0.0)
+                planura = planura_inicial(y)
                 if not np.isfinite(planura) or planura > _PLANURA_MAX_FRAC:
                     return None, None
             # A ÂNCORA É SEMPRE A MOLDURA quando ela existe.
@@ -423,10 +441,109 @@ _UNDERSHOOT_MAX = 0.08
 #   limiar 0,100 -> 2/900 (0,22 %), mas NÃO pega a imagem de fase não-mínima
 # 0,08 fica no MEIO do platô de propósito: não é escolha na beira de um
 # precipício, e deixa 14 % de folga sobre o 0,0916 observado.
-# ATENÇÃO ao que CONTINUA sem medição: o gerador não produz fase não-mínima,
-# então o corpus dá só o CUSTO. O benefício segue apoiado em n=1, e este
-# episódio mostra o que isso custa — qualquer mudança no Estágio A exige
-# remedir este número.
+# REMEDIDO DUAS VEZES, E O VALOR FICA (§65, §66). A ressalva histórica — "o
+# gerador não produz fase não-mínima, então o corpus dá só o CUSTO, e o
+# benefício segue apoiado em n=1" — deixou de valer: o estrato opt-in
+# `fase_nao_minima` dá positivos, e as 40 figuras de
+# `reports/amostras_aleatorias/fase_nao_minima` dão positivos de RENDER REAL.
+#
+# Varredura com a MÁSCARA PROMOVIDA (época 17 do retreino do §65), nas séries
+# que ESTA função de fato recebe — a extraída, não a do meta. Positivos: 40
+# figuras de fase não-mínima. Negativos: 300 de fase mínima, mesmo render.
+#   limiar     pega NMP        falso positivo
+#    0,020    27/40 (68 %)    24/300 (8,0 %)
+#    0,030    25/40 (62 %)    16/300 (5,3 %)
+#    0,040    23/40 (57 %)    15/300 (5,0 %)
+#    0,060    22/40 (55 %)    14/300 (4,7 %)
+#    0,080    20/40 (50 %)     9/300 (3,0 %)   <- atual, MANTIDO
+#    0,100    20/40 (50 %)     7/300 (2,3 %)
+#
+# 0,08 FICA. Descer daqui é troca RUIM com esta máscara: de 0,08 para 0,04
+# são +3 detecções contra +6 falsos positivos; para 0,02, +7 contra +15. Cada
+# detecção a mais custa dois erros do outro lado.
+#
+# E 0,08 com esta máscara DOMINA o comportamento anterior ao retreino, que no
+# mesmo limiar dava 3/40 (7,5 %) de detecção com 12/300 (4,0 %) de falso
+# positivo: agora são 50 % de detecção com 3,0 % de falso positivo. Melhor nos
+# dois eixos — quem mudou foi a máscara, não a constante.
+#
+# ATENÇÃO: a varredura equivalente com a época 16 (NÃO promovida, ver §66)
+# dava um ótimo em 0,04, e recomendá-lo teria sido errado aqui. O limiar não
+# transfere entre checkpoints do Estágio A. Remedir a cada promoção.
+#
+# O que o limiar NÃO resolve: 40 % das figuras de fase não-mínima de render
+# real ainda saem `ok` — resposta confiante e errada. O teto é a MÁSCARA, e a
+# lacuna é de render: no render de TREINO (`data/val_nmp`) a mesma rede recusa
+# 96,7 %. Fechar isso é trabalho de corpus, não de constante.
+
+
+_K_SIGMA = 10.0
+# Multiplo do RUIDO ESTIMADO que o mergulho tambem precisa superar (§69).
+#
+# O PROBLEMA. `_UNDERSHOOT_MAX` e' fracao da FAIXA DE Y e nao sabe quanto
+# daquela faixa e ruido. Medido num lote de 100 figuras de fase MINIMA com
+# ruido de medicao em cinco niveis de SNR: a 15 dB o desvio do ruido ja vale
+# 6,2 % da faixa e a 10 dB vale 11,4 % — o ruido sozinho atravessa o 0,08, e a
+# guarda recusa figura de fase minima alegando fase nao-minima. Eram 27 recusas
+# em 100, TODAS falso positivo.
+#
+# A REGRA. Dispara quando `mergulho > max(_UNDERSHOOT_MAX * faixa, _K_SIGMA *
+# sigma)`. E' estritamente MAIS conservadora que a anterior: so pode reduzir
+# disparo. Em figura limpa `sigma ~ 0`, o `max` devolve o termo antigo e o
+# comportamento e IDENTICO — nao ha regressao possivel no que ja funcionava, e
+# isso foi verificado, nao suposto (ver a tabela abaixo, colunas "limpo").
+#
+# VARREDURA, 600 figuras em quatro populacoes. POS = fase nao-minima, disparar
+# e' CERTO. NEG = fase minima, disparar e' ERRADO.
+#     k      POS limpo   POS ruido   NEG limpo   NEG ruido
+#   atual        52 %        84 %         2 %        27 %
+#     4          52 %        83 %         2 %        24 %
+#     6          52 %        81 %         2 %        18 %
+#     8          52 %        81 %         2 %        11 %   <- escolhido
+#    10          52 %        80 %         2 %         8 %
+# As colunas limpas NAO se movem em nenhum k, como o formato garante. De k=1 a
+# k=10 o falso positivo em ruido cai 19 pontos e a deteccao cai 4: razao de
+# quase 5:1, contra o 1:1 que a varredura do limiar FIXO dava. O motivo e
+# estrutural — o mergulho de fase nao-minima e' 12 a 45 % da faixa por
+# construcao, muito acima de qualquer sigma plausivel.
+#
+# PONTA A PONTA no lote ruidoso (100 figuras, entrega fisica):
+#     SNR      atual    k=8     falso resposta_inversa
+#    30 dB      95 %    95 %       0/20  ->  0
+#    25 dB      95 %    95 %       0/20  ->  0
+#    20 dB      80 %    80 %       4/20  ->  4
+#    15 dB      40 %    80 %      12/20  ->  4
+#    10 dB      45 %    85 %      11/20  ->  3
+#   total     71/100  87/100      27     ->  11
+# As 16 figuras resgatadas tem |erro K| mediano de 1,4 % — nao eram figuras a
+# recusar, eram figuras que o sistema resolvia e recusava por alarme falso.
+#
+# O QUE ISTO NAO RESOLVE. A 20 dB os 4 falsos positivos NAO se movem: ali o
+# sigma e pequeno demais para o termo novo morder, e a causa deles e outra
+# (provavelmente a estimativa do repouso). E o corpus de treino PARA EM 20 dB
+# — minimo medido 20,0 dB nos quatro corpora —, entao abaixo disso a mascara
+# esta extrapolando. Esta guarda impede a pipeline de mentir sobre o motivo;
+# ela nao devolve a mascara a capacidade de achar a curva.
+
+
+def _sigma_ruido(y: np.ndarray) -> float:
+    """Desvio do ruido, pela MAD das PRIMEIRAS DIFERENCAS.
+
+    Separa ruido de sinal pela CORRELACAO: o ruido e independente amostra a
+    amostra e aparece inteiro em `diff`, a resposta e suave e quase some. A
+    mediana absoluta dos desvios, dividida por `0,6745*sqrt(2)`, e o estimador
+    gaussiano equivalente — robusto a outlier, e o fator `sqrt(2)` desfaz a
+    soma de variancias que a diferenca introduz.
+
+    NAO usa o trecho de repouso, de proposito: e' justamente o trecho que a
+    mascara as vezes perde (ver `repouso_observado`), e um estimador que
+    dependesse dele herdaria essa cegueira.
+    """
+    d = np.diff(np.asarray(y, dtype=float))
+    if d.size < 8:
+        return 0.0
+    mad = float(np.median(np.abs(d - np.median(d))))
+    return mad / (0.6745 * np.sqrt(2.0))
 
 
 def _undershoot(y: np.ndarray, frac_alvo: float = 0.10) -> float:
@@ -456,13 +573,271 @@ def _undershoot(y: np.ndarray, frac_alvo: float = 0.10) -> float:
     return max(float(np.max((y0 - y[:fim]) * d)), 0.0) / faixa
 
 
+_CORRIDA_MIN = 10
+# Numero MINIMO de amostras CONTIGUAS abaixo do repouso para o mergulho contar
+# como resposta inversa (§70).
+#
+# POR QUE DURACAO, E NAO SO AMPLITUDE. Amplitude nao separa os dois casos: a
+# 5-10 dB o ruido produz mergulho mediano de 11,4 % da faixa, e o estrato de
+# fase nao-minima gera 12 a 45 % por construcao. As distribuicoes se
+# SOBREPOEM, e isso foi medido comparando a serie extraida com a serie que o
+# gerador desenhou — nos falsos positivos a curva VERDADEIRA tambem mergulha
+# acima de 0,08 em 21 de 25. A guarda nao estava vendo artefato: o mergulho
+# esta na figura.
+#
+# A duracao nao se sobrepoe. Um zero no semiplano direito mantem a curva abaixo
+# do repouso por `tau*ln(1+a/tau)` — um intervalo CONTINUO. Ruido branco produz
+# travessias independentes, e a chance de N amostras seguidas ficarem abaixo
+# cai exponencialmente com N. Medido: corrida mediana de 33 amostras nos
+# positivos contra 3 nos negativos ruidosos.
+#
+# VARREDURA (237 positivos de fase nao-minima identificavel, 236 negativos de
+# fase minima ruidosa). "razao" e' quantos falsos positivos se evitam por
+# deteccao perdida:
+#      N    pega NMP   erra    razao
+#    atual     80 %    36 %      —
+#      5       80 %    33 %     inf
+#      8       79 %    29 %     8:1
+#     10       79 %    25 %    13:1   <- escolhido
+#     12       78 %    23 %    10:1
+#     15       76 %    20 %     4,8:1
+#     20       70 %    17 %     1,9:1
+# 10 esta num PLATO (8 a 12 dao praticamente o mesmo), nao na beira de um
+# precipicio — mesma disciplina de `SALTO_MAX_ESPESSURA`.
+#
+# SEM PISO DE TRECHO, e isso foi medido contra a minha propria proposta. A
+# versao em FRACAO do trecho inverte quando o trecho e curto (corrida mediana
+# 0,000 nos positivos contra 0,133 nos negativos abaixo de 30 amostras), e eu
+# ia abster a regra ali. Mas a corrida ABSOLUTA nao sofre disso: com piso de
+# trecho em 30 o falso positivo fica em 25 %, sem piso nenhum cai para 17 %,
+# ao custo de 1 ponto de deteccao. Transferir a conclusao de uma grandeza para
+# a outra teria piorado justamente a populacao de theta pequeno.
+#
+# ONDE A REGRA E FORTE: restrita a trecho >= 30 amostras (201 positivos, 160
+# negativos), ela da 93 % de deteccao com 23 % de falso positivo. As figuras de
+# trecho curto e' que puxam o agregado — e elas sao o caso que nenhum criterio
+# resolve.
+
+
+def _segmento_do_mergulho(y: np.ndarray, margem: float = 0.02):
+    """(tre, faixa, a0, a1) do MAIOR mergulho contiguo, ou None.
+
+    Extraido de `_perfil_do_mergulho` para que a PERSISTENCIA (§71) e a
+    DURACAO enxerguem exatamente o mesmo trecho. Ter duas definicoes do
+    "mergulho" seria repetir o erro que o comentario de `_CORRIDA_MIN` ja
+    registra: transferir uma conclusao de uma grandeza para outra que parece a
+    mesma e nao e.
+
+    `tre` e' a excursao CONTRA o sentido do degrau no trecho anterior ao
+    arranque, positiva quando a curva esta abaixo do repouso.
+
+    `margem` e' o piso, em fracao da faixa, para uma amostra contar como
+    "abaixo". Os dois usos pedem valores DIFERENTES, e isso foi medido:
+
+      DURACAO usa 0,02. Sem piso, uma amostra um pixel abaixo do repouso ja
+      contaria como travessia e a corrida viraria contagem de ruido.
+
+      PERSISTENCIA usa 0. O piso recorta justamente os OMBROS do mergulho — a
+      entrada e a saida —, e e' ali que a coerencia se ve: uma excursao
+      dinamica entra e sai devagar, uma de ruido e' um pico. Recortado, so
+      sobra o pico nos dois casos. Medido nas mesmas 235 figuras: com piso de
+      0,02 a AUC na zona de decisao cai de 0,993 para 0,892 e o falso positivo
+      no corte 0,70 sobe de 0 % para 44 %.
+    """
+    y = np.asarray(y, dtype=float)
+    if y.size < 10:
+        return None
+    y0 = _nivel_de_repouso(y)
+    faixa = float(np.ptp(y))
+    if not np.isfinite(faixa) or faixa < 1e-12:
+        return None
+    d = np.sign(float(np.median(y[y.size // 2:])) - y0)
+    if d == 0:
+        return None
+    subiu = np.flatnonzero((y - y0) * d > 0.10 * faixa)
+    fim = int(subiu[0]) if subiu.size else y.size
+    if fim < 2:
+        return None
+    tre = (y0 - y[:fim]) * d
+    # A margem de 2 % da faixa tira a travessia trivial: sem ela, uma amostra
+    # um pixel abaixo do repouso ja contaria como "abaixo".
+    abaixo = tre > float(margem) * faixa
+    if not abaixo.any():
+        return tre, faixa, 0, 0
+    bordas = np.flatnonzero(np.diff(np.r_[0, abaixo.view(np.int8), 0]))
+    ini, fin = bordas[0::2], bordas[1::2]
+    j = int(np.argmax(fin - ini))
+    return tre, faixa, int(ini[j]), int(fin[j])
+
+
+def _perfil_do_mergulho(y: np.ndarray) -> tuple[float, float, int]:
+    """(mergulho absoluto, faixa de y, maior corrida contigua abaixo do repouso).
+
+    Mesmo recorte de `_undershoot` — so o trecho ANTES de a resposta arrancar —,
+    mas devolvendo tambem a DURACAO, que e' o que separa fase nao-minima de
+    ruido quando a amplitude nao separa.
+    """
+    seg = _segmento_do_mergulho(y)
+    if seg is None:
+        y = np.asarray(y, dtype=float)
+        faixa = float(np.ptp(y)) if y.size else 0.0
+        return 0.0, (faixa if np.isfinite(faixa) and faixa >= 1e-12 else 0.0), 0
+    tre, faixa, a0, a1 = seg
+    return max(float(np.max(tre)), 0.0), faixa, int(a1 - a0)
+
+
+_PERSIST_W = 9
+_PERSISTENCIA_MIN = 0.60
+#
+# REMEDIDO NA PROMOCAO DA EPOCA 17 DO `render2` (14/09/2026). Toda constante a
+# jusante do Estagio A tem de ser remedida quando a mascara muda, e esta nao e'
+# excecao. Varredura com a mascara NOVA, quatro populacoes, n=919 (POS = fase
+# nao-minima, disparar e' CERTO; NEG = fase minima, disparar e' ERRADO):
+#
+#   (u, k, pmin)          POS limpo  POS ruido  NEG limpo  NEG ruido
+#   -------------------   ---------  ---------  ---------  ---------
+#   0,08 / 8,0  / 0,65      94,9 %     78,8 %     0,4 %      9,0 %   (anterior)
+#   0,08 / 10,0 / 0,65      94,9 %     77,8 %     0,4 %      4,9 %
+#   0,075/ 10,0 / 0,65      95,3 %     77,8 %     0,4 %      4,9 %
+#   0,08 / 10,0 / 0,60      95,6 %     78,8 %     0,4 %      5,6 %   <- escolhido
+#
+# O escolhido DOMINA o anterior: melhor em POS limpo (+0,7 p.p.), igual em POS
+# ruido e em NEG limpo, e 3,4 p.p. menos falso positivo em NEG ruido. Nao e'
+# troca, e ganho nos dois lados — por isso nao precisou de criterio de
+# arbitragem entre deteccao e custo.
+#
+# `_UNDERSHOOT_MAX` FICA em 0,08. O plato de custo com a mascara nova vai de
+# 0,070 a 0,100 (NEG limpo constante em 1/279), mais largo que o anterior;
+# 0,08 continua dentro dele e preserva a folga documentada sobre a imagem real
+# de fase nao-minima. Baixar para 0,075 ganharia UMA figura em 274 — ruido.
+# COERENCIA do mergulho (§71): fracao da profundidade que SOBREVIVE a uma media
+# movel de `_PERSIST_W` amostras.
+#
+# POR QUE UMA QUARTA ESTATISTICA, E NAO OUTRO LIMIAR. As tres que a guarda ja
+# usa estao na fronteira, e isso foi medido, nao suposto. Subir
+# `_UNDERSHOOT_MAX` para 0,10 parecia de graca olhando so as figuras que
+# disparam (vao de 0,0024 entre o maior negativo e o menor positivo), mas na
+# distribuicao INTEIRA as populacoes se interpenetram — ha tantos negativos
+# acima de 0,10 quanto positivos. Normalizar a corrida por `sqrt(trecho)` e'
+# honesto e caro: tira 13 pontos de falso positivo por 9 de deteccao, razao
+# 1,4:1 contra os 13:1 que a varredura do proprio `_CORRIDA_MIN` exigiu.
+#
+# A HIPOTESE FISICA. Um zero no semiplano direito segura a curva abaixo do
+# repouso por `tau*ln(1+a/tau)` — escala DINAMICA, que uma media movel de 9
+# amostras nao toca. Ruido branco produz excursao de escala AMOSTRAL, que
+# encolhe como 1/sqrt(w). E' ortogonal a amplitude e a duracao, e por isso
+# separa onde elas nao separam.
+#
+# MEDIDO em 172 figuras, quatro populacoes, na ZONA DE DECISAO (as 108 em que a
+# guarda de hoje dispara: 99 positivos, 9 negativos). AUC de cada candidata:
+#     persistencia (w=9)   0,991   <- escolhida
+#     persistencia (w=5)   0,988
+#     persistencia (w=15)  0,960
+#     amplitude/faixa      0,877   (a que a guarda ja usa)
+#     variacao total/sigma 0,844
+#     variacao total/merg  0,762
+#     minimos locais       0,728
+#
+# 0,65 SAI DA VARREDURA PONTA A PONTA, e nao da separacao de populacoes.
+#
+# A separacao sozinha apontava 0,72: ela poe o corte dentro do vao entre o
+# maior negativo da zona de decisao (0,705) e o bloco dos positivos (0,727 em
+# diante), com falso positivo zero. Mas 0,72 derruba o portao de
+# `test_a_taxa_de_recusa_nao_regride` — a recusa em `data/val_nmp` cai de
+# 91,7 % para 88,3 %, abaixo do piso de 90 %. Escolher pela estatistica e so
+# depois olhar o portao teria embarcado uma regressao real numa guarda de
+# seguranca para ganhar noutro eixo.
+#
+# VARREDURA nas DUAS populacoes que decidem (guarda instrumentada por dentro,
+# pipeline rodando inteira — reimplementar a cadeia dava 78,3 % onde o teste
+# da 88,3 %, porque a pipeline ORDENA e pode TRUNCAR a serie antes de julgar):
+#     corte        recusa val_nmp[:60]     recusas falsas <=20 dB
+#     sem termo          91,7 %                   9 de 60
+#     0,50               91,7 %                   7
+#     0,60               91,7 %                   6
+#     0,65               91,7 %                   2      <- escolhido
+#     0,68               91,7 %                   2
+#     0,70               88,3 %                   1
+#     0,72               88,3 %                   0
+#     0,80               81,7 %                   0
+#
+# De 0,40 a 0,68 a deteccao de fase nao-minima NAO se move — o termo novo custa
+# ZERO ali — e 0,65 e' onde o ganho satura dentro desse platô. 0,65 e nao 0,68
+# porque o penhasco esta em 0,70: cinco centesimos de folga contra dois, pelo
+# mesmo resultado. Mesma disciplina de `SALTO_MAX_ESPESSURA` e `_CORRIDA_MIN`.
+#
+# O QUE NAO SE COMPRA: as 2 recusas falsas que sobram so caem levando o portao
+# junto. Elas ficam.
+#
+# FORA DA AMOSTRA, calibrando numa populacao e testando na outra: o p5 dos
+# positivos RUIDOSOS (0,732) pega 100 % dos positivos limpos; o p5 dos LIMPOS
+# (0,779) pega 85 % dos ruidosos. Falso positivo zero nas duas direcoes.
+#
+# O QUE ELE NAO RESOLVE. Um positivo cai em 0,575, abaixo de todos os negativos
+# menos um: ele se perde em qualquer corte util. E "0 % de falso positivo" vem
+# de n=9 na zona — o intervalo de confianca vai a ~28 %. Quem sustenta o
+# resultado e a AUC, que usa os 891 pares; a TAXA em si pede mais negativos.
+#
+# ATENCAO: como todo limiar a jusante do Estagio A, este numero foi medido
+# contra a mascara promovida e NAO transfere entre checkpoints. Remedir a cada
+# promocao — mesma regra que `_UNDERSHOOT_MAX` ja carrega.
+
+
+def _persistencia_do_mergulho(y: np.ndarray, w: int = _PERSIST_W) -> float:
+    """Profundidade do mergulho DEPOIS de suavizar, dividida pela crua.
+
+    ~1 quando a excursao e' dinamica (media movel nao a toca), ~1/sqrt(w)
+    quando e' ruido. Usa o MESMO segmento que a duracao (`_segmento_do_mergulho`).
+    """
+    seg = _segmento_do_mergulho(y, margem=0.0)
+    if seg is None:
+        return 0.0
+    tre, _, a0, a1 = seg
+    if a1 - a0 < 3 or tre.size < w:
+        return 0.0
+    prof = float(np.max(tre[a0:a1]))
+    if prof <= 0.0:
+        return 0.0
+    suave = np.convolve(tre, np.ones(int(w)) / float(w), mode="same")
+    return float(np.max(suave[a0:a1])) / prof
+
+
+def _dispara_resposta_inversa(y: np.ndarray) -> bool:
+    """Quatro termos: amplitude, ruido, DURACAO e COERENCIA (§69, §70, §71).
+
+    O primeiro termo e' a regra historica intacta. O segundo so morde quando o
+    ruido e' grande o bastante para explicar o mergulho sozinho. O terceiro
+    exige que o mergulho DURE. O quarto exige que ele SOBREVIVA A SUAVIZACAO —
+    e' o que separa quando os tres primeiros nao separam.
+
+    Cada termo novo so pode REDUZIR disparo, nunca aumentar. Isso e' de
+    proposito: garante que nenhuma figura que a versao anterior tratava bem
+    passe a ser tratada pior por um caminho novo, e faz a regressao ser
+    verificavel num eixo so.
+    """
+    merg_abs, faixa, corrida = _perfil_do_mergulho(y)
+    if faixa <= 0.0:
+        return False
+    if corrida < _CORRIDA_MIN:
+        return False
+    if merg_abs <= max(_UNDERSHOOT_MAX * faixa, _K_SIGMA * _sigma_ruido(y)):
+        return False
+    return _persistencia_do_mergulho(y) > _PERSISTENCIA_MIN
+
+
 def _implausivel(y: np.ndarray, nrmse: float) -> str:
     """Motivo pelo qual a resposta não é confiável, ou "" se ela é."""
-    if _undershoot(y) > _UNDERSHOOT_MAX:
+    if _dispara_resposta_inversa(y):
         return "resposta_inversa"
     if not np.isfinite(nrmse) or nrmse > _NRMSE_MAX:
         return "ajuste_inconsistente"
     return ""
+
+
+def _num_ou_none(v):
+    """`nan`/`inf` viram `None` — JSON não os representa, e o `--json` do
+    `identificar.py` serializa este dicionário direto."""
+    return float(v) if v is not None and np.isfinite(v) else None
 
 
 def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
@@ -502,7 +877,8 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     """
     t0 = time.perf_counter()
 
-    def _saida(order, params, ok, reason, dim, cal, n_pts):
+    def _saida(order, params, ok, reason, dim, cal, n_pts, planura=None,
+               nrmse=None, trunc=None):
         fis = dict(params) if (ok and params) else None
         # `physical` mantem o contrato antigo: existe se e so se `ok` (o teste
         # 2.11 assevera isso). `physical_parcial` e ADITIVO e entrega o que
@@ -519,6 +895,44 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                             "T_s": T_s, "y_faixa": y_faixa_s,
                             "n_pairs_x": int(cal.n_pairs_x),
                             "n_pairs_y": int(cal.n_pairs_y)},
+            # Truncagem: SEMPRE presentes, nulos quando nao houve. Sem isto
+            # a saida afirma "FOPDT, K=2,01" sem dizer que descartou 63 % da
+            # janela. `nrmse` e o residuo do ajuste FINAL — o que a serie
+            # efetivamente usada produziu.
+            "truncado_em": None if trunc is None else trunc.truncado_em,
+            "ganho_truncagem": None if trunc is None else trunc.ganho,
+            "nrmse_full": None if trunc is None else _num_ou_none(trunc.nrmse_full),
+            "nrmse_final": _num_ou_none(nrmse),
+            # REPOUSO OBSERVADO (§67). ADITIVO: sempre presente, `None`
+            # quando não houve série para medir.
+            #
+            # `_nivel_de_repouso` lê as 5 primeiras colunas e SUPÕE a curva
+            # parada ali. Quando a máscara perde o patamar do tempo morto —
+            # defeito conhecido, `curva rente à moldura`, já registrado como
+            # xfail em test_caso_real_rg.py — essas colunas já estão no
+            # transitório, e TRÊS coisas passam a mentir juntas:
+            #
+            #   K      é `final - repouso`, e o repouso está errado;
+            #   theta  vira o início do trecho VISÍVEL, não o da resposta;
+            #   `resposta_inversa` fica CEGA, porque mede excursão contra esse
+            #          mesmo repouso — `y0 - y` dá ~0 quando `y0` já é o fundo.
+            #
+            # MEDIDO em 282 figuras de fase mínima que entregam parâmetro
+            # (render `rg_aleatorio`, 3 lotes):
+            #   com repouso observado (n=264): |erro K| mediano 0,0031,
+            #                                  |dtheta|/T mediano 0,0013
+            #   sem repouso observado (n=18):  |erro K| mediano 0,0302,
+            #                                  |dtheta|/T mediano 0,0063
+            #   Mann-Whitney: K p=0,0082;  theta p=0,011
+            # Dez vezes o erro de K. Marcar é obrigação, não zelo.
+            #
+            # NÃO RECUSA, e é decisão consciente: mesmo nesse regime `K` erra
+            # 3 % na mediana, o que serve para muito uso. Recusar trocaria erro
+            # silencioso por perda de informação boa. Quem precisa de garantia
+            # lê o campo.
+            "repouso_observado": (None if planura is None
+                                  else bool(planura <= _PLANURA_MAX_FRAC)),
+            "planura_inicial": _num_ou_none(planura),
             "latency_ms": (time.perf_counter() - t0) * 1e3,
             "n_points": int(n_pts),
         }
@@ -536,17 +950,32 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         t, y = polyline_to_series(x_px, y_px, cal)
         ordem = np.argsort(t)
         t, y = t[ordem], y[ordem]
-        fit = identify(t, y)
-        mau = _implausivel(y, fit.nrmse) if fit.success else ""
+        # A TRUNCAGEM FICA, e a razao mudou (§68). Ela nasceu na frente de
+        # multi-degrau, mas NAO e mecanismo de multi-degrau: a docstring dela
+        # sempre disse que dispara em duas situacoes que o codigo nao
+        # distingue — segundo degrau e CAUDA DE EXTRACAO RUIM. Ao remove-la
+        # junto com a frente, 6 testes de imagem REAL de um degrau quebraram,
+        # e nao por precisao: sem o corte de prefixo o ajuste ve a cauda ruim
+        # inteira e DEGENERA de 2a ordem para FOPDT, perdendo `zeta` e `wn`
+        # por completo (`caso_real_2ordem`, `neg_super_sem_oclusao`).
+        # A medicao que eu tinha feito antes olhava so taxa de entrega e nao
+        # viu isso: as figuras continuam entregando, com a estrutura errada.
+        # Ver MULTI_DEGRAU.md §3.
+        tr = identify_com_truncagem(t, y)
+        fit, t_fit, y_fit = tr.fit, tr.t, tr.y
+        mau = _implausivel(y_fit, fit.nrmse) if fit.success else ""
         if mau:
             # A serie nao sustenta resposta nenhuma: nem fisica nem
             # adimensional. Devolver so o adimensional aqui seria trocar um
             # numero errado por outro — os dois saem do MESMO ajuste.
-            return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
-        dim = (_adimensional(fit.params, float(t[-1] - t[0]), float(np.ptp(y)))
+            return _saida("", {}, False, mau, _vazio_adimensional(), cal,
+                          x_px.size, planura_inicial(y_fit), fit.nrmse, tr)
+        dim = (_adimensional(fit.params, float(t_fit[-1] - t_fit[0]),
+                             float(np.ptp(y_fit)))
                if fit.success else _vazio_adimensional())
         return _saida(fit.order, fit.params, bool(fit.success),
-                      "" if fit.success else "ajuste_falhou", dim, cal, x_px.size)
+                      "" if fit.success else "ajuste_falhou", dim, cal,
+                      x_px.size, planura_inicial(y_fit), fit.nrmse, tr)
 
     # Calibração falhou: só o nível adimensional é possível. No quadro
     # normalizado T = 1 e a faixa de y = 1, então `_adimensional` recebe as duas
@@ -561,7 +990,8 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     g = identify(tn, yn)
     mau = _implausivel(yn, g.nrmse) if g.success else ""
     if mau:
-        return _saida("", {}, False, mau, _vazio_adimensional(), cal, x_px.size)
+        return _saida("", {}, False, mau, _vazio_adimensional(), cal,
+                      x_px.size, planura=planura_inicial(yn))
     dim = _adimensional(g.params, 1.0, 1.0) if g.success else _vazio_adimensional()
     # `order` É adimensional — o PLANO §1.7 lista a estrutura como não dependente
     # de calibração —, então sai preenchido mesmo sem nível físico. Já `params`
@@ -569,4 +999,4 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     # Consumidores antigos não se confundem porque todos passam por `ok`, que
     # continua falso; quem quer a estrutura sem calibração lê `order`.
     return _saida(g.order if g.success else "", {}, False, cal.reason,
-                  dim, cal, x_px.size)
+                  dim, cal, x_px.size, planura=planura_inicial(yn))

@@ -26,6 +26,8 @@ __all__ = [
     "fit_fopdt",
     "fit_second",
     "identify",
+    "TruncResult",
+    "identify_com_truncagem",
     "identify_both",
     "baseline_tangent",
     "baseline_smith",
@@ -87,6 +89,52 @@ _TINY = 1e-300
 # ordem rebaixadas) e por ser a janela mais curta — trecho menor é afirmação
 # mais forte de localidade, que é o que a guarda quer dizer.
 TRECHO_FRAC = 0.03
+
+# SEGUNDO TERMO DA MESMA GUARDA: o polo extra e' RESOLUVEL pela amostragem?
+#
+# `_polo_rapido_e_artefato` pergunta ONDE o ganho aconteceu, e responde bem
+# quando o ganho esta concentrado. Mas ela decide por uma razao que fica em
+# cima do limiar estrutural 1,0, e essa razao se mexe com a mascara. Medido na
+# figura real `caso_real_rg_fopdt_atraso.png` (FOPDT verdadeiro, K=5, tau=1,
+# theta=4), com duas mascaras diferentes da MESMA imagem:
+#
+#     mascara promovida ....... trecho = 1,039  -> rebaixa, `fopdt`  (certo)
+#     mascara `render2` ep.17 . trecho = 0,973  -> NAO rebaixa, `second` (erro)
+#
+# Seis centesimos separam acertar de errar, e o limiar 1,0 nao e calibravel:
+# ele e a fronteira do enunciado ("fora do trecho o 2a ordem nao vence").
+#
+# O POLO RAPIDO EM AMOSTRAS e' o mesmo julgamento por outra via, e nao se mexe:
+# 1,48 e 1,42 amostras nas duas mascaras acima — 4 % de diferenca, contra 7 %
+# do trecho em torno de um limiar que ele cruza. Um polo cujo tau nao chega a
+# alguns intervalos de amostragem nao e' distinguivel de um canto instantaneo:
+# nao ha exponencial observavel ali, so' o arredondamento do proprio traco.
+#
+# MEDIDO nas figuras reais (duas mascaras cada):
+#     FOPDT verdadeiro  sistema1 1,48 / 1,42 ; neg_fopdt 1,30 / 1,33
+#     2a ordem real     neg_super 5,22 / 10,33 ; sistema2 9,89 / 10,17
+#
+# MEDIDO em `data/test` (n=837, o mesmo n com que `TRECHO_FRAC` foi fixado),
+# acuracia de selecao de estrutura com o termo ligado:
+#
+#   limiar   1a ordem   2a ordem   global
+#   -------  ---------  ---------  --------
+#   (so trecho)  91,9 %    95,3 %   93,55 %
+#   2,5          92,3 %    95,1 %   93,67 %
+#   3,0          93,3 %    94,8 %   94,03 %   <- escolhido
+#   4,0          94,2 %    94,3 %   94,27 %
+#   5,0          95,3 %    93,4 %   94,38 %
+#
+# A acuracia NAO escolhe o limiar: 1 sigma em n=837 e' 0,82 p.p. e a faixa
+# inteira de 93,55 % a 94,38 % cabe dentro dela. Quem escolhe e' a MARGEM ate
+# as figuras reais. Em 3,0 o `sistema1` (1,48) entra com fator 2,0 de folga e o
+# `neg_super` (5,22) fica de fora com fator 1,7; em 5,0 a folga do `neg_super`
+# cai para 4 %, e foi exatamente ai que uma tentativa anterior deste criterio
+# quebrou 8 testes e teve de ser revertida.
+#
+# Como `_polo_rapido_e_artefato`, SO' VALE PARA `zeta > 1`, e pela mesma razao:
+# com polos complexos nao existe polo rapido separado para descartar.
+POLO_MIN_AMOSTRAS = 3.0
 
 
 # --------------------------------------------------------------------------- #
@@ -965,6 +1013,32 @@ def _polo_rapido_e_artefato(t: np.ndarray, y: np.ndarray,
     return _ganho_num_trecho_so(t, y, r1, r2) > 1.0
 
 
+def _polo_abaixo_da_resolucao(t: np.ndarray, r2: FitResult) -> bool:
+    """O polo extra do 2a ordem tem constante de tempo menor que
+    `POLO_MIN_AMOSTRAS` intervalos de amostragem?
+
+    Segundo termo da guarda de polo rapido, por uma via que nao depende de
+    onde o ganho de SSE caiu. Ver o bloco de `POLO_MIN_AMOSTRAS` para a
+    medicao que fixa o limiar e para o que a tentativa anterior errou.
+
+    `t` precisa estar ordenado — `_clean` garante isso.
+    """
+    z = r2.params.get("zeta")
+    wn = r2.params.get("wn")
+    if z is None or wn is None:
+        return False
+    z, wn = float(z), float(wn)
+    if not (np.isfinite(z) and np.isfinite(wn)) or z <= 1.0 or wn <= 0.0:
+        return False
+    if t.size < 3:
+        return False
+    dt = float(np.median(np.diff(t)))
+    if not np.isfinite(dt) or dt <= 0.0:
+        return False
+    tau_rapido = 1.0 / (wn * (z + np.sqrt(z * z - 1.0)))
+    return bool(tau_rapido / dt < POLO_MIN_AMOSTRAS)
+
+
 def identify(t, y) -> FitResult:
     """Estágio D: ajusta FOPDT e 2ª ordem e escolhe pela verossimilhança
     penalizada com nº de pontos EFETIVO (ver `_n_efetivo`), com uma guarda
@@ -1013,7 +1087,140 @@ def _identify_ascendente(t, y) -> FitResult:
     ganho = n_eff * np.log(max(r1.sse, 1e-300) / max(r2.sse, 1e-300))
     if ganho <= 2.0 * (r2.n_params - r1.n_params):
         return r1
-    return r1 if _polo_rapido_e_artefato(tc, yc, r1, r2) else r2
+    if _polo_rapido_e_artefato(tc, yc, r1, r2):
+        return r1
+    return r1 if _polo_abaixo_da_resolucao(tc, r2) else r2
+
+
+# --------------------------------------------------------------------------- #
+# Truncagem no 1º degrau (spec de 04/09/2026)
+# --------------------------------------------------------------------------- #
+
+# Frações da série usadas como corte candidato: 13 pontos de 0,35 a 0,95.
+_FRACS_CORTE = tuple(round(0.35 + 0.05 * i, 2) for i in range(13))
+
+# Mínimo de pontos num prefixo para ele ser candidato.
+_N_MIN_PREFIXO = 30
+
+# Resíduo do ajuste de degrau único acima do qual VALE A PENA varrer cortes.
+# NÃO é classificador — é gatilho de custo, e quem decide é `_GANHO_MIN`.
+# Medido em `data/test`, série EXTRAÍDA DA IMAGEM (n=837): p98 = 0,0246, e este
+# piso dispara em 16 amostras (1,91 %). As duas figuras de dois degraus da
+# fixture disparam, com 0,069 e 0,593.
+#
+# REVISADO (guarda de continuidade de `polyline.py`). O valor de 0,030 foi
+# calibrado quando a polilinha ainda pulava para a linha de entrada desenhada,
+# e nesse regime o residuo inflado pelo distrator abria o portao POR ACIDENTE.
+# Com a extracao limpa esse empurrao some, e o piso passa a barrar quase tudo:
+# medido em 100 figuras novas com a guarda ativa, 48 % das multi-degrau tem
+# `nrmse_full` ABAIXO de 0,030 e nem chegam a varredura de cortes.
+#
+# Varredura do piso nessas 100 (`_GANHO_MIN` fixo em 0,60):
+#     piso    TP  FN  FP  TN   precisao  revocacao      F1
+#     0,030   19  31   6  44      76,0%      38,0%   0,507   <- valor antigo
+#     0,020   27  23   7  43      79,4%      54,0%   0,643
+#     0,010   28  22   7  43      80,0%      56,0%   0,659
+#     0,007   29  21   7  43      80,6%      58,0%   0,674   <- satura aqui
+#     0,000   29  21   7  43      80,6%      58,0%   0,674
+#
+# OS FALSOS POSITIVOS QUASE NAO SE MOVEM (6 -> 7). Os que existem ja tem
+# residuo bem acima de qualquer piso testado, entao baixar o piso nao cria
+# deteccao espuria — ele so custava revocacao. A precisao ate SOBE, porque os
+# 10 verdadeiros positivos recuperados diluem os mesmos falsos.
+#
+# 0,005 fica na regiao onde o beneficio ja saturou (<= 0,007) sem zerar o
+# portao: ele continua poupando a varredura de 13 ajustes nas figuras de
+# residuo muito baixo, que e a funcao de CUSTO que o piso sempre teve. Nao e
+# classificador — quem decide continua sendo `_GANHO_MIN`.
+#
+# ATENCAO: este numero e valido para o Estagio A COM a guarda de continuidade.
+# Qualquer mudanca na mascara ou na polilinha obriga a remedir a tabela acima.
+_PISO_SUSPEITA = 0.005
+
+# Ganho relativo de nrmse exigido para ACEITAR a truncagem.
+#
+# ATENÇÃO à população: medido na série EXTRAÍDA DA IMAGEM (n=378), não na série
+# gravada no `meta.json`. A primeira medição foi feita na série gravada e deu
+# teto de 7,9 % no corpus; na população certa o teto é 97,5 %, e três amostras de
+# degrau único ganham MAIS que as figuras de dois degraus. Ou seja: as duas
+# populações se SOBREPÕEM e não existe classificador. Este limiar não separa
+# multi-degrau de degrau único — ele LIMITA O DANO.
+#
+# Os ganhos do corpus têm uma banda vazia larga:
+#     0,97500  0,94008  0,92097  0,79675   <- borda direita
+#                     36,4 pp SEM NENHUMA AMOSTRA
+#     0,43246  <- borda esquerda           0,21918  ...
+# Qualquer limiar dentro dela dá comportamento idêntico (os mesmos 4 disparos,
+# todos auditados e sem dano) e captura as duas figuras (93,5 % e 99,1 %).
+# 0,60 é o CENTRO da banda, e não a beira dela — a mesma disciplina que o
+# `_UNDERSHOOT_MAX` já registra em `identify/pipeline.py`. Abaixo de 0,4325
+# entra o `sample_00193`, que a truncagem degrada de 0,8 % para 7,3 %.
+#
+# Qualquer mudança no Estágio A obriga a REMAPEAR A BANDA e a reauditar as
+# quatro amostras: as bordas são artefatos do extrator atual, não do problema.
+#
+# Propriedade de segurança não documentada até agora: `_metrics` normaliza o
+# nrmse pela FAIXA da série que está sendo ajustada, e como `faixa(prefixo) <=
+# faixa(inteira)`, o `ganho` reportado aqui é sempre <= o ganho de RMSE puro —
+# o gate SUBFIRE, nunca sobrefire. Uma "limpeza" futura que normalizasse os
+# dois nrmse pela mesma faixa (a inteira) afrouxaria o gate em silêncio, sem
+# derrubar teste nenhum.
+_GANHO_MIN = 0.60
+
+
+@dataclass
+class TruncResult:
+    """Ajuste escolhido, mais a série que ele de fato descreve.
+
+    `t`/`y` são o PREFIXO quando houve truncagem, e a série inteira quando não.
+    A pipeline julga a guarda e deriva o bloco adimensional a partir deles.
+    """
+
+    fit: FitResult
+    t: np.ndarray
+    y: np.ndarray
+    truncado_em: float | None = None
+    ganho: float | None = None
+    nrmse_full: float = float("nan")
+
+
+def identify_com_truncagem(t, y) -> TruncResult:
+    """`identify`, com truncagem quando um PREFIXO ajusta decisivamente melhor.
+
+    Dispara em duas situações que este código NÃO distingue: entrada com mais de
+    um degrau, e cauda de extração ruim. Chamar isto de "detector de
+    multi-degrau" seria afirmar causa não verificada — ver a spec §5.2.
+
+    `identify` não é tocado: abaixo do piso, o caminho é byte a byte o de antes.
+    """
+    t = np.asarray(t, dtype=float)
+    y = np.asarray(y, dtype=float)
+    full = identify(t, y)
+
+    if not (full.success and np.isfinite(full.nrmse)):
+        # Sem denominador o ganho não é definível. Comportamento de hoje.
+        return TruncResult(full, t, y, None, None, full.nrmse)
+    if full.nrmse <= _PISO_SUSPEITA:
+        return TruncResult(full, t, y, None, None, full.nrmse)
+
+    candidatos = []                      # em ordem CRESCENTE de corte
+    for fr in _FRACS_CORTE:
+        k = int(fr * t.size)
+        if k < _N_MIN_PREFIXO:
+            continue
+        r = identify(t[:k], y[:k])
+        if r.success and np.isfinite(r.nrmse):
+            candidatos.append((1.0 - r.nrmse / full.nrmse, k, r))
+
+    if not candidatos or max(g for g, _, _ in candidatos) < _GANHO_MIN:
+        return TruncResult(full, t, y, None, None, full.nrmse)
+
+    # A ACEITAÇÃO olha o ganho máximo (acima); o corte REPORTADO é o mais
+    # precoce que já alcança o mínimo. O de maior ganho cai sistematicamente na
+    # borda direita do platô, que é onde começa o despenhadeiro — medido: no
+    # `Figure_222` ele cai 19 ms antes de a resposta ao 2º degrau arrancar.
+    ganho, k, r = next(c for c in candidatos if c[0] >= _GANHO_MIN)
+    return TruncResult(r, t[:k], y[:k], float(t[k - 1]), float(ganho), full.nrmse)
 
 
 # --------------------------------------------------------------------------- #

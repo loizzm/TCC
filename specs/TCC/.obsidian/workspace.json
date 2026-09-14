@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "c451ca286e6e78c0",
+    "type": "split",
+    "children": [
+      {
+        "id": "50585066e88d63a1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "d7e63264d038a045",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Anatomia da U-Net.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Anatomia da U-Net"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5a8080db33349a3b",
+    "type": "split",
+    "children": [
+      {
+        "id": "6513b8d4ddcc6973",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5943bc16c9a61949",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "7979965fd2e50dbe",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "81a4ba0cf2c98af8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "9ed1896e12781e2f",
+    "type": "split",
+    "children": [
+      {
+        "id": "66015af95f04913e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "de59acef4f8f09ff",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Anatomia da U-Net.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "94ef79056498c8e1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Anatomia da U-Net.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "d5a4d26dd2c193d3",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "23b0864890b8e07c",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "5ff9802a0a5c368e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Anatomia da U-Net.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "d7e63264d038a045",
+  "lastOpenFiles": [
+    "Arquitetura do projeto.md",
+    "TCC — Índice.md",
+    "Anatomia da U-Net.md",
+    "Decisões de projeto.md",
+    "Módulos/identify.pipeline.md",
+    "Módulos/identify.polyline.md",
+    "Proveniência.md",
+    "Módulos.md",
+    "sedxitsEJ",
+    "AIC e seleção de ordem.md",
+    "Módulos/train_unet.md",
+    "sedcqgs1y",
+    "sedcqJJij",
+    "sedljI1r1",
+    "Módulos/dataset.randomize.md",
+    "Welcome.md",
+    "Critérios de qualidade.md",
+    "Módulos/identify.extract_classical.md",
+    "Módulos/identify.extract.md",
+    "Módulos/identify.classical.md",
+    "Módulos/identify.calibrate.md",
+    "Módulos/identificar.md",
+    "Módulos/dataset.generator.md",
+    "Módulos"
+  ]
+}

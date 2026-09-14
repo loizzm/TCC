@@ -100,11 +100,46 @@ def _relatorio(caminho: Path, r: dict) -> str:
             L.append(f"    wn           {_fmt(p.get('wn'), unidade=' rad/s')}")
             L.append(f"    zeta         {_fmt(p.get('zeta'))}")
         L.append(f"    theta        {_fmt(p.get('theta'), unidade=' s')}")
+        if r.get("repouso_observado") is False:
+            # A ressalva vem ANTES da janela e depois dos parâmetros, de
+            # propósito: quem lê a saída precisa ver o número e a ressalva
+            # juntos. Ver `repouso_observado` em identify/pipeline.py para a
+            # medição — |erro K| mediano 3,0 % neste regime contra 0,3 % fora.
+            L.append("")
+            L.append("  \033[1mRepouso nao observado\033[0m — a curva ja esta em "
+                     "movimento nas primeiras")
+            L.append("  colunas extraidas, entao o nivel de partida foi estimado "
+                     "de um trecho")
+            L.append("  do transitorio. Consequencias, nesta ordem de gravidade:")
+            L.append("    K       sai de 'valor final menos repouso' e herda o "
+                     "erro do repouso")
+            L.append("    theta   e o inicio do trecho VISIVEL, nao "
+                     "necessariamente o da resposta")
+            L.append("    a verificacao de resposta inversa (fase nao-minima) "
+                     "NAO se aplica aqui")
+            L.append(f"    (planura inicial {_fmt(r.get('planura_inicial'))}, "
+                     f"limite 0.03)")
         L.append("")
         L.append(f"  Janela lida    {_fmt(cal.get('T_s'), unidade=' s')}"
                  f"   ·   faixa de y  {_fmt(cal.get('y_faixa'))}")
         L.append(f"  Rotulos        {cal['n_pairs_x']} no eixo x, "
                  f"{cal['n_pairs_y']} no eixo y")
+        if r.get("truncado_em") is not None:
+            L.append("")
+            L.append(f"  \033[1mSerie truncada\033[0m em t = "
+                     f"{_fmt(r['truncado_em'], unidade=' s')}")
+            L.append(f"    o prefixo ajusta melhor que a serie inteira "
+                     f"(residuo {_fmt(r['nrmse_full'])} -> "
+                     f"{_fmt(r['nrmse_final'])})")
+            L.append("    causa possivel: entrada com mais de um degrau, OU")
+            L.append("    cauda de extracao ruim — a pipeline nao distingue as")
+            L.append("    duas, e os parametros acima descrevem so o trecho lido.")
+            L.append("    theta e o INSTANTE DE PARTIDA (degrau + tempo morto);")
+            L.append("    os dois nao se separam sem ler a entrada do grafico.")
+            L.append("    O sistema nao MODELA mais de um degrau (MULTI_DEGRAU.md),")
+            L.append("    mas figuras com dois degraus continuam existindo — por")
+            L.append("    isso a causa segue sendo declarada como possivel, nao")
+            L.append("    como verificada.")
     else:
         motivo = MOTIVOS.get(cal["reason"], cal["reason"] or "desconhecido")
         L.append("")

@@ -51,3 +51,43 @@ models/unet_stageA_kneg.pt
 # execucao gerados por agente), nao documentacao do trabalho. O registro que
 # sobrevive esta em TIMELINE.md e nextSteps.md.
 docs/
+
+# Espaco de trabalho do fluxo subagent-driven-development: ledger, briefs e
+# pacotes de revisao de uma execucao. Mesma razao de `docs/`: artefato de
+# sessao, nao documentacao do trabalho.
+.superpowers/
+
+# Saida `--out` do retreino do estrato fora-da-familia. MESMA razao do
+# `unet_stageA_kneg.pt`, com um detalhe a mais: aqui ela nem e' o modelo
+# promovido. O `--out` guarda o melhor por `IoU_val` (epoca 13); a promocao
+# foi da epoca 17, escolhida por `seleciona_checkpoint_nmp.py` contra o
+# objetivo do retreino e tres guardas. Versiona-la sugeriria que o IoU_val
+# decidiu, que e exatamente o erro que o seletor existe para evitar.
+models/unet_stageA_nmp.pt
+
+# Checkpoints de retreinos NAO promovidos. Mesma razao dos `piloto_*`: nao sao
+# modelos utilizaveis, e os numeros deles vivem nos logs e em
+# reports/selecao_*.json.
+models/unet_stageA_multi.pt
+models/unet_stageA_ruido.pt
+models/unet_stageA_render2.pt
+models/unet_stageA_combinado2.pt
+models/unet_stageA_multi_thr01_abortado.pt
+models/cabeca_contagem_congelada.pt
+
+# LOGS de treino, geracao e medicao. Sao saida de execucao, nao fonte: o que
+# importa deles (as tabelas de epoca, as varreduras) esta citado nas mensagens
+# de commit, nos comentarios do codigo e nos relatorios. Versiona-los enchia o
+# historico de ruido que ninguem le duas vezes.
+logs/
+
+# CODIGO DE FRENTES ENCERRADAS, preservado como texto. Nao e executavel nem
+# importado por nada — e evidencia do que foi tentado. Fica no disco e no
+# historico (ver MULTI_DEGRAU.md), fora do versionamento corrente.
+docs_frente/
+
+# RELATORIOS E LOTES DE AVALIACAO. Saida de medicao: os .md de criterio sao
+# REGERADOS pelos conftest a cada rodada de teste, os JSON e as figuras dos
+# lotes sao derivados dos scripts com a semente registrada. Fica so no disco.
+# Historico: `git checkout 77dfb74 -- reports/` traz tudo de volta.
+reports/

@@ -10,6 +10,8 @@ import torch
 from torch.utils.data import DataLoader, Dataset
 
 from dataset.generator import load_sample
+import torch.nn.functional as F
+
 from identify.extract import UNet, dice_bce_loss, letterbox
 
 
@@ -61,7 +63,8 @@ class MaskDataset(Dataset):
             x, _ = letterbox(gray, self.size)
             xt = torch.from_numpy(x.astype(np.float32) / 255.0)[None]
         y, _ = letterbox(m["mask"], self.size)
-        return xt, torch.from_numpy(y.astype(np.float32) / 255.0)[None]
+        yt = torch.from_numpy(y.astype(np.float32) / 255.0)[None]
+        return xt, yt
 
 
 def iou(logits, target, thr: float = 0.5) -> float:
@@ -95,16 +98,16 @@ def main() -> None:
                          "MaskDataset.__getitem__ para o porque.")
     ap.add_argument("--base", type=int, default=16,
                     help="canais da primeira camada da UNet (16, 24, 32)")
-    # Hipotese (b) do Ruling 10: tamanho do dataset. Aceita mais de um
-    # diretorio para somar um split extra (seed-base >= 4) ao data/train atual
-    # sem tocar em data/val e data/test, que ficam fixos para os numeros
-    # continuarem comparaveis com as rodadas 1-5.
     ap.add_argument("--train-dir", action="append", default=None,
                     help="diretorio de treino (repetivel; padrao: data/train)")
     # Sem isto, comparar 4.200 com 8.400 amostras mudaria DUAS variaveis de uma
     # vez (diversidade de dados E numero de passos de gradiente por epoca).
     # Fixando os passos, a unica diferenca entre as duas curvas de IoU_val e a
     # diversidade -- que e exatamente a hipotese (b) do Ruling 10.
+    ap.add_argument("--workers", type=int, default=4,
+                    help="workers do DataLoader de treino (validacao usa "
+                         "metade). Baixe para 2 se a maquina estiver sob "
+                         "pressao de memoria — ver o comentario no codigo.")
     ap.add_argument("--batches-per-epoch", type=int, default=0,
                     help="limita os passos de gradiente por epoca (0 = split inteiro)")
     # Scheduler de LR — ver Ruling no HANDOFF_P2_3.md: sem ele, o treino sobe
@@ -147,10 +150,18 @@ def main() -> None:
     passos = a.batches_per_epoch or (len(ds_tr) // a.batch)
     print(f"treino: {len(ds_tr)} amostras de {train_dirs}  base={a.base}  "
           f"{passos} passos/epoca", flush=True)
+    # `--workers` existe por causa de MEMORIA, nao de velocidade. Medido nesta
+    # maquina (16 GB) com a receita cheia — base 32, batch 6, size 512 — a
+    # arvore de treino chega a 3,6 GB de RSS com os 4+2 workers padrao. Numa
+    # sessao com swap alto isso e' o processo que o OOM killer escolhe, e o
+    # treino morre depois de horas. Cair para `--workers 2` corta os forks pela
+    # metade; o padrao segue 4 (+2 na validacao) para nao mudar nenhum numero
+    # historico.
+    n_val = max(1, a.workers // 2)
     tr = DataLoader(ds_tr, batch_size=a.batch,
-                    shuffle=True, num_workers=4, drop_last=True)
+                    shuffle=True, num_workers=a.workers, drop_last=True)
     va = DataLoader(MaskDataset(a.val_dir or ["data/val"], a.size, in_ch=a.in_ch), batch_size=a.batch,
-                    num_workers=2)
+                    num_workers=n_val)
     model = UNet(base=a.base, in_ch=a.in_ch).to(a.device)
     n_par = sum(p.numel() for p in model.parameters())
     print(f"parametros: {n_par}", flush=True)
@@ -172,7 +183,9 @@ def main() -> None:
             opt.step()
         model.eval()
         with torch.no_grad():
-            ious = [iou(model(x.to(a.device)), y.to(a.device)) for x, y in va]
+            ious = []
+            for x, y in va:
+                ious.append(iou(model(x.to(a.device)), y.to(a.device)))
         m = float(np.mean(ious))
         lr_antes = opt.param_groups[0]["lr"]
         sched.step(m)

@@ -56,7 +56,13 @@ def _block(cin: int, cout: int) -> nn.Sequential:
 
 
 class UNet(nn.Module):
-    """4 níveis, base 16 canais. Saída = logits, mesma resolução da entrada."""
+    """4 níveis, base 16 canais. Saída = logits, mesma resolução da entrada.
+
+    UMA saída. A cabeça de contagem de degraus (`com_contagem`) foi REMOVIDA
+    junto com a frente de multi-degrau — ver `MULTI_DEGRAU.md`, que
+    guarda o que ela mediu e por que o número sintético dela não servia.
+    `load_model` ignora as chaves `cabeca_conta.*` de checkpoints antigos.
+    """
 
     def __init__(self, base: int = 16, levels: int = 4, in_ch: int = 1):
         super().__init__()
@@ -75,16 +81,24 @@ class UNet(nn.Module):
             self.dec.append(_block(chs[i] * 2, chs[i]))
         self.head = nn.Conv2d(chs[0], 1, 1)
         self.pool = nn.MaxPool2d(2)
+    def gargalo(self, x: torch.Tensor) -> torch.Tensor:
+        """Ativação do gargalo. Existe separada para que a sondagem possa
+        CACHEAR features sem refazer o decoder — o experimento de encoder
+        congelado roda em segundos assim, em vez de horas."""
+        for e in self.enc:
+            x = e(x)
+            x = self.pool(x)
+        return self.bott(x)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: torch.Tensor):
         skips = []
         for e in self.enc:
             x = e(x)
             skips.append(x)
             x = self.pool(x)
         x = self.bott(x)
-        for up, dec, s in zip(self.up, self.dec, reversed(skips)):
-            x = dec(torch.cat([up(x), s], dim=1))
+        for up, dec, s_ in zip(self.up, self.dec, reversed(skips)):
+            x = dec(torch.cat([up(x), s_], dim=1))
         return self.head(x)
 
 
@@ -108,6 +122,14 @@ def load_model(path: str | Path, device: str = "cpu") -> UNet:
     # `in_ch` tambem sai do checkpoint: um modelo de 1 canal (cinza) e um de 3
     # (RGB) convivem, e trocar de um para o outro nao exige mexer no chamador.
     in_ch = int(state["enc.0.0.weight"].shape[1])
+    # COMPATIBILIDADE com checkpoints da frente de multi-degrau (§68). Eles
+    # carregam `cabeca_conta.*` no state_dict, e a classe nao tem mais esses
+    # modulos. As chaves sao DESCARTADAS explicitamente, e nao por
+    # `strict=False`: assim um checkpoint truncado de verdade — faltando peso
+    # de segmentacao — continua sendo recusado alto. Ver MULTI_DEGRAU.md.
+    conta = [k for k in state if k.startswith("cabeca_conta.")]
+    if conta:
+        state = {k: v for k, v in state.items() if k not in conta}
     model = UNet(base=base, levels=levels, in_ch=in_ch)
     model.load_state_dict(state)
     model.to(device).eval()
