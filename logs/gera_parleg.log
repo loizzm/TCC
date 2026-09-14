@@ -1,0 +1,5 @@
+data/train_parleg_canto: 1500 em 19s
+data/train_parleg_ocl: 1500 em 19s
+data/val_parleg_canto: 300 em 4s
+data/val_parleg_ocl: 300 em 4s
+FIM

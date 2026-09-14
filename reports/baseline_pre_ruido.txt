@@ -1,0 +1,15 @@
+RUIDO — unet_stageA.pt
+
+  data/val           n=150  recall p10=0.653 p50=0.792   entrega 92%
+  data/val_ruido     n=150  recall p10=0.655 p50=0.833   entrega 76%
+
+  POR FAIXA DE SNR (as duas populacoes juntas)
+           SNR    n  recall p50  entrega  motivos de recusa
+       5-10 dB   57       0.781      81%   resposta_inversa=4, ocr_insuficiente=4, bbox_not_found=1
+      10-15 dB   43       0.844      74%   resposta_inversa=10, ocr_insuficiente=1
+      15-20 dB   50       0.890      72%   resposta_inversa=11, ocr_insuficiente=2, calibration_failed=1
+      20-60 dB  150       0.792      92%   ocr_insuficiente=8, sinal_de_escala_invalido=1, resposta_inversa=1
+
+  ALVO do retreino: a faixa 5-20 dB subir, e a 20-60 NAO cair.
+  Toda recusa aqui e FALSO POSITIVO: as plantas sao de fase minima
+  e dentro da familia, por construcao do estrato.

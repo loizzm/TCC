@@ -1,0 +1,5170 @@
+[
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_00.png",
+    "order": "second",
+    "params": {
+      "K": 2.071970647205776,
+      "tau": null,
+      "theta": 1.3717334891290964,
+      "wn": 0.5270979175309076,
+      "zeta": 1.0015999202191903
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.0015999202191903,
+      "wn_T": 5.916312168533513,
+      "tau_T": null,
+      "theta_T": 0.12221090519410055,
+      "theta_tau": null,
+      "K_yrange": 0.7302198155346167
+    },
+    "physical": {
+      "K": 2.071970647205776,
+      "tau": null,
+      "theta": 1.3717334891290964,
+      "wn": 0.5270979175309076,
+      "zeta": 1.0015999202191903
+    },
+    "physical_parcial": {
+      "K": 2.071970647205776,
+      "tau": null,
+      "theta": 1.3717334891290964,
+      "wn": 0.5270979175309076,
+      "zeta": 1.0015999202191903
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 11.247697290583556,
+      "y_faixa": 3.8556893744407037,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.058347928870225996,
+    "nrmse_final": 0.058347928870225996,
+    "repouso_observado": false,
+    "planura_inicial": 0.19776714513556612,
+    "latency_ms": 1912.6032409840263,
+    "n_points": 961
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_01.png",
+    "order": "second",
+    "params": {
+      "K": -2.591342454638349,
+      "tau": null,
+      "theta": 0.22312550292825045,
+      "wn": 4.931881062918396,
+      "zeta": 0.7224433441158203
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7224433441158203,
+      "wn_T": 5.865729371972963,
+      "tau_T": null,
+      "theta_T": 0.18760300258718682,
+      "theta_tau": null,
+      "K_yrange": -0.677046911873483
+    },
+    "physical": {
+      "K": -2.591342454638349,
+      "tau": null,
+      "theta": 0.22312550292825045,
+      "wn": 4.931881062918396,
+      "zeta": 0.7224433441158203
+    },
+    "physical_parcial": {
+      "K": -2.591342454638349,
+      "tau": null,
+      "theta": 0.22312550292825045,
+      "wn": 4.931881062918396,
+      "zeta": 0.7224433441158203
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.1986290252307878,
+      "y_faixa": 6.283162409099389,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.051024059312833846,
+    "nrmse_final": 0.051024059312833846,
+    "repouso_observado": true,
+    "planura_inicial": 0.011560693641618417,
+    "latency_ms": 1178.6749659804627,
+    "n_points": 770
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -5.0181364000454325,
+      "tau": 0.4708953817221565,
+      "theta": 0.17900151038506656,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4516582522179553,
+      "theta_T": 0.17168889834769283,
+      "theta_tau": 0.3801301039106033,
+      "K_yrange": -0.8743032566322353
+    },
+    "physical": {
+      "K": -5.0181364000454325,
+      "tau": 0.4708953817221565,
+      "theta": 0.17900151038506656,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -5.0181364000454325,
+      "tau": 0.4708953817221565,
+      "theta": 0.17900151038506656,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.047592666442111,
+      "y_faixa": 10.27083333333333,
+      "n_pairs_x": 6,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04649605884408949,
+    "nrmse_final": 0.04649605884408949,
+    "repouso_observado": false,
+    "planura_inicial": 0.0907441016333938,
+    "latency_ms": 946.7239379882812,
+    "n_points": 835
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": -8.261713504381106,
+      "tau": 7.591540945863261,
+      "theta": 7.886531538604146,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24097854761092957,
+      "theta_T": 0.2503424442301425,
+      "theta_tau": 1.0388578017091024,
+      "K_yrange": -0.6569678943362932
+    },
+    "physical": {
+      "K": -8.261713504381106,
+      "tau": 7.591540945863261,
+      "theta": 7.886531538604146,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -8.261713504381106,
+      "tau": 7.591540945863261,
+      "theta": 7.886531538604146,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 31.578340074319225,
+      "y_faixa": 15.137563294597648,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.07572789613106473,
+    "nrmse_final": 0.07572789613106473,
+    "repouso_observado": false,
+    "planura_inicial": 0.18040435458786935,
+    "latency_ms": 1332.1213150047697,
+    "n_points": 837
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_04.png",
+    "order": "second",
+    "params": {
+      "K": 1.747912022608728,
+      "tau": null,
+      "theta": 5.043920692598632,
+      "wn": 0.2731444497831222,
+      "zeta": 0.4479069581339736
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.4479069581339736,
+      "wn_T": 6.156291935966072,
+      "tau_T": null,
+      "theta_T": 0.22379038496870116,
+      "theta_tau": null,
+      "K_yrange": 0.5853042708676187
+    },
+    "physical": {
+      "K": 1.747912022608728,
+      "tau": null,
+      "theta": 5.043920692598632,
+      "wn": 0.2731444497831222,
+      "zeta": 0.4479069581339736
+    },
+    "physical_parcial": {
+      "K": 1.747912022608728,
+      "tau": null,
+      "theta": 5.043920692598632,
+      "wn": 0.2731444497831222,
+      "zeta": 0.4479069581339736
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.53859428904447,
+      "y_faixa": 4.734720569058724,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04885213274414181,
+    "nrmse_final": 0.04885213274414181,
+    "repouso_observado": false,
+    "planura_inicial": 0.09959623149394374,
+    "latency_ms": 1481.762698967941,
+    "n_points": 935
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.1453840084338602,
+      "tau": 0.11753261741638861,
+      "theta": 0.10317717758755492,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.26446739409888326,
+      "theta_T": 0.23216533322309457,
+      "theta_tau": 0.8778599494812919,
+      "K_yrange": -0.711118860375224
+    },
+    "physical": {
+      "K": -1.1453840084338602,
+      "tau": 0.11753261741638861,
+      "theta": 0.10317717758755492,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.1453840084338602,
+      "tau": 0.11753261741638861,
+      "theta": 0.10317717758755492,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.4469617175041645,
+      "y_faixa": 4.17504876052889,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.06149042947342757,
+    "nrmse_final": 0.06149042947342757,
+    "repouso_observado": false,
+    "planura_inicial": 0.22697368421052633,
+    "latency_ms": 1774.373336986173,
+    "n_points": 524
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_06.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 14.168081774108996,
+      "y_faixa": 5.291696140073383,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.06263167754348868,
+    "nrmse_final": 0.06263167754348868,
+    "repouso_observado": false,
+    "planura_inicial": 0.06114398422090738,
+    "latency_ms": 811.1291800159961,
+    "n_points": 883
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_07.png",
+    "order": "second",
+    "params": {
+      "K": -7.472051462208813,
+      "tau": null,
+      "theta": 28.300856043242977,
+      "wn": 0.12338273122546146,
+      "zeta": 0.33938229511839807
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.33938229511839807,
+      "wn_T": 13.827404438576306,
+      "tau_T": null,
+      "theta_T": 0.25253017875807865,
+      "theta_tau": null,
+      "K_yrange": -0.565869646019256
+    },
+    "physical": {
+      "K": -7.472051462208813,
+      "tau": null,
+      "theta": 28.300856043242977,
+      "wn": 0.12338273122546146,
+      "zeta": 0.33938229511839807
+    },
+    "physical_parcial": {
+      "K": -7.472051462208813,
+      "tau": null,
+      "theta": 28.300856043242977,
+      "wn": 0.12338273122546146,
+      "zeta": 0.33938229511839807
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 112.31659708408932,
+      "y_faixa": 20.81818181818182,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05172865561327011,
+    "nrmse_final": 0.05172865561327011,
+    "repouso_observado": false,
+    "planura_inicial": 0.13597246127366605,
+    "latency_ms": 1006.4970229868777,
+    "n_points": 907
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_08.png",
+    "order": "second",
+    "params": {
+      "K": 8.338602141096048,
+      "tau": null,
+      "theta": 0.5711638514970313,
+      "wn": 1.4957917513333838,
+      "zeta": 1.5035388744542562
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.5035388744542562,
+      "wn_T": 10.608824529423162,
+      "tau_T": null,
+      "theta_T": 0.08053127614276025,
+      "theta_tau": null,
+      "K_yrange": 0.7789120213773156
+    },
+    "physical": {
+      "K": 8.338602141096048,
+      "tau": null,
+      "theta": 0.5711638514970313,
+      "wn": 1.4957917513333838,
+      "zeta": 1.5035388744542562
+    },
+    "physical_parcial": {
+      "K": 8.338602141096048,
+      "tau": null,
+      "theta": 0.5711638514970313,
+      "wn": 1.4957917513333838,
+      "zeta": 1.5035388744542562
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.10888426818695,
+      "y_faixa": 17.511188146409573,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.055632443095524196,
+    "nrmse_final": 0.055632443095524196,
+    "repouso_observado": false,
+    "planura_inicial": 0.14010507880910675,
+    "latency_ms": 1370.1576080056839,
+    "n_points": 864
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_09.png",
+    "order": "second",
+    "params": {
+      "K": -10.100465789845096,
+      "tau": null,
+      "theta": 0.14621436989769657,
+      "wn": 0.9139350403802143,
+      "zeta": 0.9031668479958995
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.9031668479958995,
+      "wn_T": 4.670394573698073,
+      "tau_T": null,
+      "theta_T": 0.028612236920875136,
+      "theta_tau": null,
+      "K_yrange": -0.7290245670919757
+    },
+    "physical": {
+      "K": -10.100465789845096,
+      "tau": null,
+      "theta": 0.14621436989769657,
+      "wn": 0.9139350403802143,
+      "zeta": 0.9031668479958995
+    },
+    "physical_parcial": {
+      "K": -10.100465789845096,
+      "tau": null,
+      "theta": 0.14621436989769657,
+      "wn": 0.9139350403802143,
+      "zeta": 0.9031668479958995
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.134693877551019,
+      "y_faixa": 16.75846113975444,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.07489859281928903,
+    "nrmse_final": 0.07489859281928903,
+    "repouso_observado": false,
+    "planura_inicial": 0.1808383233532934,
+    "latency_ms": 935.6880240375176,
+    "n_points": 627
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_00.png",
+    "order": "second",
+    "params": {
+      "K": -1.1076542895416732,
+      "tau": null,
+      "theta": 8.288949403481737,
+      "wn": 0.04593481457957363,
+      "zeta": 1.102946482255308
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.102946482255308,
+      "wn_T": 4.320299250398213,
+      "tau_T": null,
+      "theta_T": 0.08813078257792126,
+      "theta_tau": null,
+      "K_yrange": -0.975650827284965
+    },
+    "physical": {
+      "K": -1.1076542895416732,
+      "tau": null,
+      "theta": 8.288949403481737,
+      "wn": 0.04593481457957363,
+      "zeta": 1.102946482255308
+    },
+    "physical_parcial": {
+      "K": -1.1076542895416732,
+      "tau": null,
+      "theta": 8.288949403481737,
+      "wn": 0.04593481457957363,
+      "zeta": 1.102946482255308
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 94.7847574021556,
+      "y_faixa": 4.917600326039223,
+      "n_pairs_x": 5,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03585655521327572,
+    "nrmse_final": 0.03585655521327572,
+    "repouso_observado": false,
+    "planura_inicial": 0.09625668449197852,
+    "latency_ms": 962.7759470022283,
+    "n_points": 515
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_01.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.179648595538374,
+      "tau": 14.95825767003336,
+      "theta": 1.1149306406191655,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4796709788802316,
+      "theta_T": 0.035752818514468473,
+      "theta_tau": 0.0745361301572417,
+      "K_yrange": -0.9978400790951207
+    },
+    "physical": {
+      "K": -3.179648595538374,
+      "tau": 14.95825767003336,
+      "theta": 1.1149306406191655,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.179648595538374,
+      "tau": 14.95825767003336,
+      "theta": 1.1149306406191655,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 31.432399876488205,
+      "y_faixa": 4.548481514319591,
+      "n_pairs_x": 5,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.029662285929487393,
+    "nrmse_final": 0.029662285929487393,
+    "repouso_observado": false,
+    "planura_inicial": 0.07055630936227947,
+    "latency_ms": 935.0663279765286,
+    "n_points": 1007
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.7144950361503506,
+      "tau": 0.7962600081396423,
+      "theta": 0.18667395351953622,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3661158865612017,
+      "theta_T": 0.08583163701812316,
+      "theta_tau": 0.2344384392174556,
+      "K_yrange": -0.8835210846761234
+    },
+    "physical": {
+      "K": -2.7144950361503506,
+      "tau": 0.7962600081396423,
+      "theta": 0.18667395351953622,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.7144950361503506,
+      "tau": 0.7962600081396423,
+      "theta": 0.18667395351953622,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.1888985942576342,
+      "y_faixa": 4.295168356469537,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03952944007532452,
+    "nrmse_final": 0.03952944007532452,
+    "repouso_observado": true,
+    "planura_inicial": 0.01854493580599139,
+    "latency_ms": 809.7003879956901,
+    "n_points": 777
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_03.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.644144144144146,
+      "y_faixa": 12.164663843788135,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04151444561559543,
+    "nrmse_final": 0.04151444561559543,
+    "repouso_observado": false,
+    "planura_inicial": 0.06481481481481481,
+    "latency_ms": 802.4364119628444,
+    "n_points": 579
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.6342168259424694,
+      "tau": 1.669350971974438,
+      "theta": 1.5014744061783758,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3597173733510071,
+      "theta_T": 0.3235427651894157,
+      "theta_tau": 0.899436027165992,
+      "K_yrange": -0.9480775534792556
+    },
+    "physical": {
+      "K": -1.6342168259424694,
+      "tau": 1.669350971974438,
+      "theta": 1.5014744061783758,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.6342168259424694,
+      "tau": 1.669350971974438,
+      "theta": 1.5014744061783758,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.659035973983646,
+      "y_faixa": 2.5973808743893,
+      "n_pairs_x": 5,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.042637621486499105,
+    "nrmse_final": 0.042637621486499105,
+    "repouso_observado": false,
+    "planura_inicial": 0.12842465753424653,
+    "latency_ms": 943.2091939961538,
+    "n_points": 508
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -15.067249999755408,
+      "tau": 1.0570476577690997,
+      "theta": 0.5920748008380141,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2864535277872515,
+      "theta_T": 0.16044869327077318,
+      "theta_tau": 0.5601211984023394,
+      "K_yrange": -0.8947097711368766
+    },
+    "physical": {
+      "K": -15.067249999755408,
+      "tau": 1.0570476577690997,
+      "theta": 0.5920748008380141,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -15.067249999755408,
+      "tau": 1.0570476577690997,
+      "theta": 0.5920748008380141,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.698947218774761,
+      "y_faixa": 25.724670631023667,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03174637807166759,
+    "nrmse_final": 0.03174637807166759,
+    "repouso_observado": false,
+    "planura_inicial": 0.05984251968503934,
+    "latency_ms": 814.8298520245589,
+    "n_points": 837
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_06.png",
+    "order": "second",
+    "params": {
+      "K": 1.9203399171460813,
+      "tau": null,
+      "theta": 27.785787947861696,
+      "wn": 0.11921176674552483,
+      "zeta": 1.4364358850204353
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.4364358850204353,
+      "wn_T": 14.857658670380342,
+      "tau_T": null,
+      "theta_T": 0.22294178007229112,
+      "theta_tau": null,
+      "K_yrange": 0.8547111214498986
+    },
+    "physical": {
+      "K": 1.9203399171460813,
+      "tau": null,
+      "theta": 27.785787947861696,
+      "wn": 0.11921176674552483,
+      "zeta": 1.4364358850204353
+    },
+    "physical_parcial": {
+      "K": 1.9203399171460813,
+      "tau": null,
+      "theta": 27.785787947861696,
+      "wn": 0.11921176674552483,
+      "zeta": 1.4364358850204353
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 124.87448931797758,
+      "y_faixa": 3.0888246784958495,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03085636240132955,
+    "nrmse_final": 0.03085636240132955,
+    "repouso_observado": false,
+    "planura_inicial": 0.0967184801381692,
+    "latency_ms": 741.3858940126374,
+    "n_points": 516
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": -5.77332071738274,
+      "tau": 0.17856532946687279,
+      "theta": 0.04227523201887682,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5098543129857204,
+      "theta_T": 0.12070769528244328,
+      "theta_tau": 0.23674938547754124,
+      "K_yrange": -1.0819678006990265
+    },
+    "physical": {
+      "K": -5.77332071738274,
+      "tau": 0.17856532946687279,
+      "theta": 0.04227523201887682,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -5.77332071738274,
+      "tau": 0.17856532946687279,
+      "theta": 0.04227523201887682,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.35351667061836384,
+      "y_faixa": 6.798389233561136,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03513745634448744,
+    "nrmse_final": 0.03513745634448744,
+    "repouso_observado": false,
+    "planura_inicial": 0.11407407407407406,
+    "latency_ms": 782.9292690148577,
+    "n_points": 640
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_08.png",
+    "order": "second",
+    "params": {
+      "K": 1.6416424560216907,
+      "tau": null,
+      "theta": 29.900830660959848,
+      "wn": 0.12273568625725288,
+      "zeta": 1.600374511933948
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.600374511933948,
+      "wn_T": 8.897048278488395,
+      "tau_T": null,
+      "theta_T": 0.4124850013130793,
+      "theta_tau": null,
+      "K_yrange": 1.0126382884119558
+    },
+    "physical": {
+      "K": 1.6416424560216907,
+      "tau": null,
+      "theta": 29.900830660959848,
+      "wn": 0.12273568625725288,
+      "zeta": 1.600374511933948
+    },
+    "physical_parcial": {
+      "K": 1.6416424560216907,
+      "tau": null,
+      "theta": 29.900830660959848,
+      "wn": 0.12273568625725288,
+      "zeta": 1.600374511933948
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 72.48949795938127,
+      "y_faixa": 2.46923076923077,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.030363859783694293,
+    "nrmse_final": 0.030363859783694293,
+    "repouso_observado": false,
+    "planura_inicial": 0.08422301304863576,
+    "latency_ms": 1398.3054630225524,
+    "n_points": 1082
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_15dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.130793785762987,
+      "tau": 0.5447392266720925,
+      "theta": 0.08659860773336418,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.42240940933010535,
+      "theta_T": 0.06715151938833908,
+      "theta_tau": 0.15897259366176045,
+      "K_yrange": -0.896108398161435
+    },
+    "physical": {
+      "K": -2.130793785762987,
+      "tau": 0.5447392266720925,
+      "theta": 0.08659860773336418,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.130793785762987,
+      "tau": 0.5447392266720925,
+      "theta": 0.08659860773336418,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2976702124360364,
+      "y_faixa": 3.337789764663321,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.042326830424113074,
+    "nrmse_final": 0.042326830424113074,
+    "repouso_observado": false,
+    "planura_inicial": 0.04060324825986079,
+    "latency_ms": 765.1034170412458,
+    "n_points": 800
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_00.png",
+    "order": "second",
+    "params": {
+      "K": 16.458700168268155,
+      "tau": null,
+      "theta": 0.041715300625255684,
+      "wn": 8.77695935178829,
+      "zeta": 0.5369122939537624
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5369122939537624,
+      "wn_T": 2.862228527130157,
+      "tau_T": null,
+      "theta_T": 0.1279190303866496,
+      "theta_tau": null,
+      "K_yrange": 0.9468091759051155
+    },
+    "physical": {
+      "K": 16.458700168268155,
+      "tau": null,
+      "theta": 0.041715300625255684,
+      "wn": 8.77695935178829,
+      "zeta": 0.5369122939537624
+    },
+    "physical_parcial": {
+      "K": 16.458700168268155,
+      "tau": null,
+      "theta": 0.041715300625255684,
+      "wn": 8.77695935178829,
+      "zeta": 0.5369122939537624
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.3279920853354343,
+      "y_faixa": 24.29092202737206,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.020289053250615603,
+    "nrmse_final": 0.020289053250615603,
+    "repouso_observado": true,
+    "planura_inicial": 0.022368421052631596,
+    "latency_ms": 1659.9397319951095,
+    "n_points": 866
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_01.png",
+    "order": "fopdt",
+    "params": {
+      "K": -11.983370737650517,
+      "tau": 0.23878610973394684,
+      "theta": 0.13495765373304242,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.33943979211443354,
+      "theta_T": 0.19184532123094042,
+      "theta_tau": 0.5651821786594325,
+      "K_yrange": -0.9807446438353827
+    },
+    "physical": {
+      "K": -11.983370737650517,
+      "tau": 0.23878610973394684,
+      "theta": 0.13495765373304242,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -11.983370737650517,
+      "tau": 0.23878610973394684,
+      "theta": 0.13495765373304242,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.705364772687557,
+      "y_faixa": 16.783853160601296,
+      "n_pairs_x": 8,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.025092409976976107,
+    "nrmse_final": 0.025092409976976107,
+    "repouso_observado": false,
+    "planura_inicial": 0.05824175824175822,
+    "latency_ms": 827.2666370030493,
+    "n_points": 744
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_02.png",
+    "order": "second",
+    "params": {
+      "K": -7.090646562554475,
+      "tau": null,
+      "theta": 0.13016026476690662,
+      "wn": 1.8908667680984477,
+      "zeta": 0.17069223419799637
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.17069223419799637,
+      "wn_T": 16.122895044405585,
+      "tau_T": null,
+      "theta_T": 0.015264983025491913,
+      "theta_tau": null,
+      "K_yrange": -0.6091691038494411
+    },
+    "physical": {
+      "K": -7.090646562554475,
+      "tau": null,
+      "theta": 0.13016026476690662,
+      "wn": 1.8908667680984477,
+      "zeta": 0.17069223419799637
+    },
+    "physical_parcial": {
+      "K": -7.090646562554475,
+      "tau": null,
+      "theta": 0.13016026476690662,
+      "wn": 1.8908667680984477,
+      "zeta": 0.17069223419799637
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 8.590354133206475,
+      "y_faixa": 13.662443064023003,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013101935430665453,
+    "nrmse_final": 0.013101935430665453,
+    "repouso_observado": true,
+    "planura_inicial": 0.01956271576524739,
+    "latency_ms": 872.7477409993298,
+    "n_points": 805
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_03.png",
+    "order": "second",
+    "params": {
+      "K": 2.096969738151183,
+      "tau": null,
+      "theta": 6.9038622482682115,
+      "wn": 0.23467344119035427,
+      "zeta": 1.3720634523825967
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.3720634523825967,
+      "wn_T": 5.848552470866291,
+      "tau_T": null,
+      "theta_T": 0.2770177953221474,
+      "theta_tau": null,
+      "K_yrange": 1.0767384037736885
+    },
+    "physical": {
+      "K": 2.096969738151183,
+      "tau": null,
+      "theta": 6.9038622482682115,
+      "wn": 0.23467344119035427,
+      "zeta": 1.3720634523825967
+    },
+    "physical_parcial": {
+      "K": 2.096969738151183,
+      "tau": null,
+      "theta": 6.9038622482682115,
+      "wn": 0.23467344119035427,
+      "zeta": 1.3720634523825967
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 25.171310249733317,
+      "y_faixa": 3.0030040442768366,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.022462799747846103,
+    "nrmse_final": 0.022462799747846103,
+    "repouso_observado": false,
+    "planura_inicial": 0.04551920341394006,
+    "latency_ms": 1375.0549069955014,
+    "n_points": 801
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": 2.4512222292028407,
+      "tau": 2.8606650928810415,
+      "theta": 2.055480897234054,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.39180428673479917,
+      "theta_T": 0.2815241213807069,
+      "theta_tau": 0.7185325197099294,
+      "K_yrange": 1.115620373547447
+    },
+    "physical": {
+      "K": 2.4512222292028407,
+      "tau": 2.8606650928810415,
+      "theta": 2.055480897234054,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 2.4512222292028407,
+      "tau": 2.8606650928810415,
+      "theta": 2.055480897234054,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.301260322394946,
+      "y_faixa": 2.795774647887323,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01956069920317799,
+    "nrmse_final": 0.01956069920317799,
+    "repouso_observado": false,
+    "planura_inicial": 0.04967948717948728,
+    "latency_ms": 991.6806429973803,
+    "n_points": 622
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -2.933564094775986,
+      "tau": 0.29527637844449267,
+      "theta": 0.20805478979621386,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.26301479629721397,
+      "theta_T": 0.18532294538825647,
+      "theta_tau": 0.7046103413088457,
+      "K_yrange": -0.9443080542241292
+    },
+    "physical": {
+      "K": -2.933564094775986,
+      "tau": 0.29527637844449267,
+      "theta": 0.20805478979621386,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -2.933564094775986,
+      "tau": 0.29527637844449267,
+      "theta": 0.20805478979621386,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.1240467127531133,
+      "y_faixa": 3.9160032405315714,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.020237891374211968,
+    "nrmse_final": 0.020237891374211968,
+    "repouso_observado": false,
+    "planura_inicial": 0.03784570596797673,
+    "latency_ms": 780.9307440184057,
+    "n_points": 811
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_06.png",
+    "order": "second",
+    "params": {
+      "K": -2.556470577328504,
+      "tau": null,
+      "theta": 9.563528651733e-18,
+      "wn": 1.5593508995232355,
+      "zeta": 2.0256714588689255
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.0256714588689255,
+      "wn_T": 17.04478607003615,
+      "tau_T": null,
+      "theta_T": 8.74924269769052e-19,
+      "theta_tau": null,
+      "K_yrange": -0.9725420139526839
+    },
+    "physical": {
+      "K": -2.556470577328504,
+      "tau": null,
+      "theta": 9.563528651733e-18,
+      "wn": 1.5593508995232355,
+      "zeta": 2.0256714588689255
+    },
+    "physical_parcial": {
+      "K": -2.556470577328504,
+      "tau": null,
+      "theta": 9.563528651733e-18,
+      "wn": 1.5593508995232355,
+      "zeta": 2.0256714588689255
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 10.970297029702966,
+      "y_faixa": 3.6778013071871634,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.017765407354607212,
+    "nrmse_final": 0.017765407354607212,
+    "repouso_observado": true,
+    "planura_inicial": 0.024122807017543862,
+    "latency_ms": 620.2119149966165,
+    "n_points": 553
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_07.png",
+    "order": "second",
+    "params": {
+      "K": -5.789080325909819,
+      "tau": null,
+      "theta": 0.11245239483839219,
+      "wn": 18.00876367255297,
+      "zeta": 2.242609260420816
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.242609260420816,
+      "wn_T": 9.12601435085394,
+      "tau_T": null,
+      "theta_T": 0.22190723411121144,
+      "theta_tau": null,
+      "K_yrange": -1.0752330223492548
+    },
+    "physical": {
+      "K": -5.789080325909819,
+      "tau": null,
+      "theta": 0.11245239483839219,
+      "wn": 18.00876367255297,
+      "zeta": 2.242609260420816
+    },
+    "physical_parcial": {
+      "K": -5.789080325909819,
+      "tau": null,
+      "theta": 0.11245239483839219,
+      "wn": 18.00876367255297,
+      "zeta": 2.242609260420816
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5088437810803021,
+      "y_faixa": 6.987935957831422,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.026677122938201715,
+    "nrmse_final": 0.026677122938201715,
+    "repouso_observado": false,
+    "planura_inicial": 0.11188811188811187,
+    "latency_ms": 1038.7240879936144,
+    "n_points": 971
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_08.png",
+    "order": "second",
+    "params": {
+      "K": -12.22752698563292,
+      "tau": null,
+      "theta": 0.09480884353784638,
+      "wn": 2.7525020781083276,
+      "zeta": 0.5230140902110529
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5230140902110529,
+      "wn_T": 3.409587958988156,
+      "tau_T": null,
+      "theta_T": 0.07653755879006961,
+      "theta_tau": null,
+      "K_yrange": -0.7869388881569666
+    },
+    "physical": {
+      "K": -12.22752698563292,
+      "tau": null,
+      "theta": 0.09480884353784638,
+      "wn": 2.7525020781083276,
+      "zeta": 0.5230140902110529
+    },
+    "physical_parcial": {
+      "K": -12.22752698563292,
+      "tau": null,
+      "theta": 0.09480884353784638,
+      "wn": 2.7525020781083276,
+      "zeta": 0.5230140902110529
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2449635376405177,
+      "y_faixa": 21.224940891957935,
+      "n_pairs_x": 7,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.025532502420889797,
+    "nrmse_final": 0.025532502420889797,
+    "repouso_observado": false,
+    "planura_inicial": 0.10374639769452453,
+    "latency_ms": 1701.6712239710614,
+    "n_points": 795
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_20dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": 4.914720835660875,
+      "tau": 0.27576066313887343,
+      "theta": 0.08494769090494338,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.29884299160150396,
+      "theta_T": 0.09205817026516473,
+      "theta_tau": 0.30804861700729086,
+      "K_yrange": 0.94715517957278
+    },
+    "physical": {
+      "K": 4.914720835660875,
+      "tau": 0.27576066313887343,
+      "theta": 0.08494769090494338,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 4.914720835660875,
+      "tau": 0.27576066313887343,
+      "theta": 0.08494769090494338,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.9254951246747061,
+      "y_faixa": 7.6014935535401,
+      "n_pairs_x": 5,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.02180950546727663,
+    "nrmse_final": 0.02180950546727663,
+    "repouso_observado": false,
+    "planura_inicial": 0.07933579335793367,
+    "latency_ms": 740.2004990144633,
+    "n_points": 676
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_00.png",
+    "order": "fopdt",
+    "params": {
+      "K": 4.160767815825813,
+      "tau": 15.124673051832447,
+      "theta": 15.451869373766101,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4075742585233039,
+      "theta_T": 0.4163914275190664,
+      "theta_tau": 1.0216332823071512,
+      "K_yrange": 1.197065450492809
+    },
+    "physical": {
+      "K": 4.160767815825813,
+      "tau": 15.124673051832447,
+      "theta": 15.451869373766101,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 4.160767815825813,
+      "tau": 15.124673051832447,
+      "theta": 15.451869373766101,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 37.7027437315037,
+      "y_faixa": 4.741935483870969,
+      "n_pairs_x": 8,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.011738520842492732,
+    "nrmse_final": 0.011738520842492732,
+    "repouso_observado": true,
+    "planura_inicial": 0.004640371229698499,
+    "latency_ms": 1000.0527390511706,
+    "n_points": 501
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_01.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.1735095586482451,
+      "tau": 7.7060784955571595,
+      "theta": 2.4675722826055773,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3237567878500097,
+      "theta_T": 0.10367053443131805,
+      "theta_tau": 0.3202111533159472,
+      "K_yrange": -1.0120024854493046
+    },
+    "physical": {
+      "K": -1.1735095586482451,
+      "tau": 7.7060784955571595,
+      "theta": 2.4675722826055773,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.1735095586482451,
+      "tau": 7.7060784955571595,
+      "theta": 2.4675722826055773,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 23.80206001774158,
+      "y_faixa": 1.3355729552428317,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.011730395616569125,
+    "nrmse_final": 0.011730395616569125,
+    "repouso_observado": true,
+    "planura_inicial": 0.02168021680216804,
+    "latency_ms": 659.5267769880593,
+    "n_points": 761
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_02.png",
+    "order": "second",
+    "params": {
+      "K": -25.431637010103042,
+      "tau": null,
+      "theta": 3.319372019134213,
+      "wn": 0.5075510400719526,
+      "zeta": 2.397597125980384
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.397597125980384,
+      "wn_T": 9.347514022292517,
+      "tau_T": null,
+      "theta_T": 0.1802351637750328,
+      "theta_tau": null,
+      "K_yrange": -1.1559835004592292
+    },
+    "physical": {
+      "K": -25.431637010103042,
+      "tau": null,
+      "theta": 3.319372019134213,
+      "wn": 0.5075510400719526,
+      "zeta": 2.397597125980384
+    },
+    "physical_parcial": {
+      "K": -25.431637010103042,
+      "tau": null,
+      "theta": 3.319372019134213,
+      "wn": 0.5075510400719526,
+      "zeta": 2.397597125980384
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 18.58652391854956,
+      "y_faixa": 31.30769230769231,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01365007941176312,
+    "nrmse_final": 0.01365007941176312,
+    "repouso_observado": true,
+    "planura_inicial": 0.013986013986014017,
+    "latency_ms": 827.9154709889553,
+    "n_points": 761
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": -3.15982708787036,
+      "tau": 3.5087869603399153,
+      "theta": 1.1811920796420592,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4870003755299398,
+      "theta_T": 0.16394297883019568,
+      "theta_tau": 0.3366383006415501,
+      "K_yrange": -1.132737984472817
+    },
+    "physical": {
+      "K": -3.15982708787036,
+      "tau": 3.5087869603399153,
+      "theta": 1.1811920796420592,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -3.15982708787036,
+      "tau": 3.5087869603399153,
+      "theta": 1.1811920796420592,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.244159537506902,
+      "y_faixa": 3.440790909941473,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01380038664084682,
+    "nrmse_final": 0.01380038664084682,
+    "repouso_observado": false,
+    "planura_inicial": 0.03995006242197251,
+    "latency_ms": 1405.5964360013604,
+    "n_points": 735
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_04.png",
+    "order": "second",
+    "params": {
+      "K": 20.843693371026536,
+      "tau": null,
+      "theta": 1.1169719140458554,
+      "wn": 2.8076703088652732,
+      "zeta": 0.1557822037355869
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.1557822037355869,
+      "wn_T": 13.33941585222834,
+      "tau_T": null,
+      "theta_T": 0.2350994161696429,
+      "theta_tau": null,
+      "K_yrange": 0.5786548595735561
+    },
+    "physical": {
+      "K": 20.843693371026536,
+      "tau": null,
+      "theta": 1.1169719140458554,
+      "wn": 2.8076703088652732,
+      "zeta": 0.1557822037355869
+    },
+    "physical_parcial": {
+      "K": 20.843693371026536,
+      "tau": null,
+      "theta": 1.1169719140458554,
+      "wn": 2.8076703088652732,
+      "zeta": 0.1557822037355869
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.751062049596378,
+      "y_faixa": 50.890052356020966,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.012102207669342595,
+    "nrmse_final": 0.012102207669342595,
+    "repouso_observado": true,
+    "planura_inicial": 0.023255813953488337,
+    "latency_ms": 929.4441239908338,
+    "n_points": 669
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_05.png",
+    "order": "second",
+    "params": {
+      "K": -2.077115763735536,
+      "tau": null,
+      "theta": 2.3735258066834892,
+      "wn": 1.18863236234932,
+      "zeta": 1.3851274936741353
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.3851274936741353,
+      "wn_T": 9.210794250479406,
+      "tau_T": null,
+      "theta_T": 0.3062981877538335,
+      "theta_tau": null,
+      "K_yrange": -1.0148519416788733
+    },
+    "physical": {
+      "K": -2.077115763735536,
+      "tau": null,
+      "theta": 2.3735258066834892,
+      "wn": 1.18863236234932,
+      "zeta": 1.3851274936741353
+    },
+    "physical_parcial": {
+      "K": -2.077115763735536,
+      "tau": null,
+      "theta": 2.3735258066834892,
+      "wn": 1.18863236234932,
+      "zeta": 1.3851274936741353
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.74906904963816,
+      "y_faixa": 3.700914788486356,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013033539450710641,
+    "nrmse_final": 0.013033539450710641,
+    "repouso_observado": true,
+    "planura_inicial": 0.01369863013698629,
+    "latency_ms": 1232.160898973234,
+    "n_points": 876
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_06.png",
+    "order": "second",
+    "params": {
+      "K": -8.303908137093567,
+      "tau": null,
+      "theta": 1.181706921937864,
+      "wn": 0.07113704881869919,
+      "zeta": 0.5553749126422054
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5553749126422054,
+      "wn_T": 4.867229520689962,
+      "tau_T": null,
+      "theta_T": 0.01727125105523523,
+      "theta_tau": null,
+      "K_yrange": -0.8286277758883176
+    },
+    "physical": {
+      "K": -8.303908137093567,
+      "tau": null,
+      "theta": 1.181706921937864,
+      "wn": 0.07113704881869919,
+      "zeta": 0.5553749126422054
+    },
+    "physical_parcial": {
+      "K": -8.303908137093567,
+      "tau": null,
+      "theta": 1.181706921937864,
+      "wn": 0.07113704881869919,
+      "zeta": 0.5553749126422054
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 68.5640484701787,
+      "y_faixa": 12.234042553191493,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013994926567967103,
+    "nrmse_final": 0.013994926567967103,
+    "repouso_observado": false,
+    "planura_inicial": 0.0498938428874735,
+    "latency_ms": 1496.0459580179304,
+    "n_points": 954
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": -7.40331945475918,
+      "tau": 0.42590580556696783,
+      "theta": 0.49716328381712094,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.29593769586964286,
+      "theta_T": 0.34545046054952167,
+      "theta_tau": 1.167308069809696,
+      "K_yrange": -1.0695751084486507
+    },
+    "physical": {
+      "K": -7.40331945475918,
+      "tau": 0.42590580556696783,
+      "theta": 0.49716328381712094,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -7.40331945475918,
+      "tau": 0.42590580556696783,
+      "theta": 0.49716328381712094,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.4494831606106986,
+      "y_faixa": 9.922591921169445,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01302492501453771,
+    "nrmse_final": 0.01302492501453771,
+    "repouso_observado": true,
+    "planura_inicial": 0.007453416149068318,
+    "latency_ms": 1055.0521350232884,
+    "n_points": 699
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_08.png",
+    "order": "fopdt",
+    "params": {
+      "K": 7.6569600585171065,
+      "tau": 1.836093096806995,
+      "theta": 1.189303142619045,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.40820770395670947,
+      "theta_T": 0.26441072405385335,
+      "theta_tau": 0.6477357519001996,
+      "K_yrange": 1.104395966536237
+    },
+    "physical": {
+      "K": 7.6569600585171065,
+      "tau": 1.836093096806995,
+      "theta": 1.189303142619045,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 7.6569600585171065,
+      "tau": 1.836093096806995,
+      "theta": 1.189303142619045,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.523278873403365,
+      "y_faixa": 8.135238025031986,
+      "n_pairs_x": 4,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013911087339112093,
+    "nrmse_final": 0.013911087339112093,
+    "repouso_observado": true,
+    "planura_inicial": 0.021015761821365938,
+    "latency_ms": 908.538464049343,
+    "n_points": 711
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_25dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": 1.6188063092493863,
+      "tau": 10.998913043715719,
+      "theta": 7.1486508693097495,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.20985506155762904,
+      "theta_T": 0.13639352927607068,
+      "theta_tau": 0.6499415752172134,
+      "K_yrange": 0.9426837531844742
+    },
+    "physical": {
+      "K": 1.6188063092493863,
+      "tau": 10.998913043715719,
+      "theta": 7.1486508693097495,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 1.6188063092493863,
+      "tau": 10.998913043715719,
+      "theta": 7.1486508693097495,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 52.868273188625665,
+      "y_faixa": 2.4620549133607805,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.012397336238342717,
+    "nrmse_final": 0.012397336238342717,
+    "repouso_observado": true,
+    "planura_inicial": 0.024096385542168742,
+    "latency_ms": 687.8427530173212,
+    "n_points": 805
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_00.png",
+    "order": "second",
+    "params": {
+      "K": -1.7465033638520966,
+      "tau": null,
+      "theta": 0.9427774176586963,
+      "wn": 1.493964184176602,
+      "zeta": 1.790654996877189
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.790654996877189,
+      "wn_T": 9.080578607288794,
+      "tau_T": null,
+      "theta_T": 0.15510858465583277,
+      "theta_tau": null,
+      "K_yrange": -1.0706160149122286
+    },
+    "physical": {
+      "K": -1.7465033638520966,
+      "tau": null,
+      "theta": 0.9427774176586963,
+      "wn": 1.493964184176602,
+      "zeta": 1.790654996877189
+    },
+    "physical_parcial": {
+      "K": -1.7465033638520966,
+      "tau": null,
+      "theta": 0.9427774176586963,
+      "wn": 1.493964184176602,
+      "zeta": 1.790654996877189
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 6.106513398189506,
+      "y_faixa": 2.1919109088985294,
+      "n_pairs_x": 7,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007583699764016883,
+    "nrmse_final": 0.007583699764016883,
+    "repouso_observado": true,
+    "planura_inicial": 0.00928792569659439,
+    "latency_ms": 770.9040449699387,
+    "n_points": 859
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_01.png",
+    "order": "second",
+    "params": {
+      "K": -4.977525505298539,
+      "tau": null,
+      "theta": 2.510841995697631,
+      "wn": 0.8168482676786148,
+      "zeta": 0.37402227284258643
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.37402227284258643,
+      "wn_T": 10.62495426686283,
+      "tau_T": null,
+      "theta_T": 0.19303395413163568,
+      "theta_tau": null,
+      "K_yrange": -0.7480734999076959
+    },
+    "physical": {
+      "K": -4.977525505298539,
+      "tau": null,
+      "theta": 2.510841995697631,
+      "wn": 0.8168482676786148,
+      "zeta": 0.37402227284258643
+    },
+    "physical_parcial": {
+      "K": -4.977525505298539,
+      "tau": null,
+      "theta": 2.510841995697631,
+      "wn": 0.8168482676786148,
+      "zeta": 0.37402227284258643
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 13.05464094340171,
+      "y_faixa": 8.492183790817492,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013785722491866182,
+    "nrmse_final": 0.013785722491866182,
+    "repouso_observado": true,
+    "planura_inicial": 0.014260249554367244,
+    "latency_ms": 826.6026040073484,
+    "n_points": 550
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_02.png",
+    "order": "second",
+    "params": {
+      "K": -6.317547442096747,
+      "tau": null,
+      "theta": 0.11491288270059867,
+      "wn": 8.752589417123772,
+      "zeta": 1.8837397753430614
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.8837397753430614,
+      "wn_T": 14.592849471564175,
+      "tau_T": null,
+      "theta_T": 0.06892315876870601,
+      "theta_tau": null,
+      "K_yrange": -0.9936602985870581
+    },
+    "physical": {
+      "K": -6.317547442096747,
+      "tau": null,
+      "theta": 0.11491288270059867,
+      "wn": 8.752589417123772,
+      "zeta": 1.8837397753430614
+    },
+    "physical_parcial": {
+      "K": -6.317547442096747,
+      "tau": null,
+      "theta": 0.11491288270059867,
+      "wn": 8.752589417123772,
+      "zeta": 1.8837397753430614
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.6750517656251658,
+      "y_faixa": 7.33376477030507,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006515805260575622,
+    "nrmse_final": 0.006515805260575622,
+    "repouso_observado": true,
+    "planura_inicial": 0.020890099909173475,
+    "latency_ms": 677.1204069955274,
+    "n_points": 857
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": 5.433961022878361,
+      "tau": 1.3148890597308545,
+      "theta": 0.07265162867162019,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.44977715140254193,
+      "theta_T": 0.02485155865192555,
+      "theta_tau": 0.055253048258300436,
+      "K_yrange": 1.0842254235500477
+    },
+    "physical": {
+      "K": 5.433961022878361,
+      "tau": 1.3148890597308545,
+      "theta": 0.07265162867162019,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 5.433961022878361,
+      "tau": 1.3148890597308545,
+      "theta": 0.07265162867162019,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.9279279279279278,
+      "y_faixa": 6.909062272234823,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006063399231786778,
+    "nrmse_final": 0.006063399231786778,
+    "repouso_observado": true,
+    "planura_inicial": 0.003154574132492081,
+    "latency_ms": 733.1997469882481,
+    "n_points": 650
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_04.png",
+    "order": "second",
+    "params": {
+      "K": -6.1235033977814695,
+      "tau": null,
+      "theta": 0.07740839640164988,
+      "wn": 36.258820111163345,
+      "zeta": 3.0307710241128407
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 3.0307710241128407,
+      "wn_T": 16.00815627756289,
+      "tau_T": null,
+      "theta_T": 0.17533169164240253,
+      "theta_tau": null,
+      "K_yrange": -1.0674055728328609
+    },
+    "physical": {
+      "K": -6.1235033977814695,
+      "tau": null,
+      "theta": 0.07740839640164988,
+      "wn": 36.258820111163345,
+      "zeta": 3.0307710241128407
+    },
+    "physical_parcial": {
+      "K": -6.1235033977814695,
+      "tau": null,
+      "theta": 0.07740839640164988,
+      "wn": 36.258820111163345,
+      "zeta": 3.0307710241128407
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.4431320626539288,
+      "y_faixa": 7.447530218746079,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007586628039914729,
+    "nrmse_final": 0.007586628039914729,
+    "repouso_observado": true,
+    "planura_inicial": 0.005141388174807173,
+    "latency_ms": 751.5637860051356,
+    "n_points": 811
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -4.7442561570127815,
+      "tau": 0.7261770342744202,
+      "theta": 0.4104402508878781,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.42949965223464487,
+      "theta_T": 0.24275615545399754,
+      "theta_tau": 0.5652068731393864,
+      "K_yrange": -1.1539948996664304
+    },
+    "physical": {
+      "K": -4.7442561570127815,
+      "tau": 0.7261770342744202,
+      "theta": 0.4104402508878781,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -4.7442561570127815,
+      "tau": 0.7261770342744202,
+      "theta": 0.4104402508878781,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.69696715466628,
+      "y_faixa": 4.6094809525722775,
+      "n_pairs_x": 9,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007194384143921935,
+    "nrmse_final": 0.007194384143921935,
+    "repouso_observado": true,
+    "planura_inicial": 0.02331002331002334,
+    "latency_ms": 992.0875770039856,
+    "n_points": 545
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": 3.038309765676646,
+      "tau": 5.354815458237275,
+      "theta": 2.6266930871497904,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.28143047861044596,
+      "theta_T": 0.13804985408827875,
+      "theta_tau": 0.4905291522435506,
+      "K_yrange": 1.0034976411926326
+    },
+    "physical": {
+      "K": 3.038309765676646,
+      "tau": 5.354815458237275,
+      "theta": 2.6266930871497904,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 3.038309765676646,
+      "tau": 5.354815458237275,
+      "theta": 2.6266930871497904,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 19.14590523097426,
+      "y_faixa": 3.3641332087522833,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00699489580472603,
+    "nrmse_final": 0.00699489580472603,
+    "repouso_observado": true,
+    "planura_inicial": 0.012210012210012075,
+    "latency_ms": 847.6138459518552,
+    "n_points": 802
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_07.png",
+    "order": "second",
+    "params": {},
+    "ok": false,
+    "reason": "sinal_de_escala_invalido",
+    "dimensionless": {
+      "zeta": 0.5850948564707038,
+      "wn_T": 4.6575393282288164,
+      "tau_T": null,
+      "theta_T": 0.2074739080241712,
+      "theta_tau": null,
+      "K_yrange": -0.8871119299066575
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": 18.210887979622974,
+      "wn": 0.05306264512115853,
+      "zeta": 0.5850948564707038
+    },
+    "calibration": {
+      "ok": false,
+      "reason": "sinal_de_escala_invalido",
+      "ok_x": true,
+      "ok_y": false,
+      "T_s": 87.77435270319081,
+      "y_faixa": null,
+      "n_pairs_x": 8,
+      "n_pairs_y": 2
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": null,
+    "nrmse_final": null,
+    "repouso_observado": false,
+    "planura_inicial": 0.04071661237785017,
+    "latency_ms": 492.44281701976433,
+    "n_points": 632
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_08.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.9652751763870002,
+      "tau": 1.133601602486108,
+      "theta": 0.9374967570025228,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3180062879256434,
+      "theta_T": 0.2629935093447918,
+      "theta_tau": 0.8270072615868692,
+      "K_yrange": -1.0615892646810245
+    },
+    "physical": {
+      "K": -1.9652751763870002,
+      "tau": 1.133601602486108,
+      "theta": 0.9374967570025228,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.9652751763870002,
+      "tau": 1.133601602486108,
+      "theta": 0.9374967570025228,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.573637366870959,
+      "y_faixa": 2.5316343016864216,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.008635174080000908,
+    "nrmse_final": 0.008635174080000908,
+    "repouso_observado": true,
+    "planura_inicial": 0.01709401709401707,
+    "latency_ms": 794.3983579752967,
+    "n_points": 800
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_30dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": -1.7631825098625955,
+      "tau": 2.7185494044507745,
+      "theta": 3.0896106829570558,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.27764917208502404,
+      "theta_T": 0.3155461684027693,
+      "theta_tau": 1.1364923800534155,
+      "K_yrange": -1.026931810798431
+    },
+    "physical": {
+      "K": -1.7631825098625955,
+      "tau": 2.7185494044507745,
+      "theta": 3.0896106829570558,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -1.7631825098625955,
+      "tau": 2.7185494044507745,
+      "theta": 3.0896106829570558,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 9.813871666565934,
+      "y_faixa": 2.285123966942149,
+      "n_pairs_x": 4,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00854560943463024,
+    "nrmse_final": 0.00854560943463024,
+    "repouso_observado": false,
+    "planura_inicial": 0.04572803850782187,
+    "latency_ms": 1675.9085629601032,
+    "n_points": 869
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_00.png",
+    "order": "second",
+    "params": {
+      "K": 0.20253299631455313,
+      "tau": null,
+      "theta": 0.16350048969915734,
+      "wn": 6.40674030044459,
+      "zeta": 0.4552829408384567
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.4552829408384567,
+      "wn_T": 5.528268857652604,
+      "tau_T": null,
+      "theta_T": 0.1894815906154762,
+      "theta_tau": null,
+      "K_yrange": 0.32832512426299654
+    },
+    "physical": {
+      "K": 0.20253299631455313,
+      "tau": null,
+      "theta": 0.16350048969915734,
+      "wn": 6.40674030044459,
+      "zeta": 0.4552829408384567
+    },
+    "physical_parcial": {
+      "K": 0.20253299631455313,
+      "tau": null,
+      "theta": 0.16350048969915734,
+      "wn": 6.40674030044459,
+      "zeta": 0.4552829408384567
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.8637664413539736,
+      "y_faixa": 0.7532701641619942,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05931203420915162,
+    "nrmse_final": 0.05931203420915162,
+    "repouso_observado": false,
+    "planura_inicial": 0.0946094609460946,
+    "latency_ms": 1497.5699670030735,
+    "n_points": 978
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_01.png",
+    "order": "second",
+    "params": {
+      "K": 0.4690411925871743,
+      "tau": null,
+      "theta": 4.906650331467674,
+      "wn": 0.22365449573815394,
+      "zeta": 1.456724181964446
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.456724181964446,
+      "wn_T": 3.53185757218545,
+      "tau_T": null,
+      "theta_T": 0.3107130973486002,
+      "theta_tau": null,
+      "K_yrange": 1.3247021891248847
+    },
+    "physical": {
+      "K": 0.4690411925871743,
+      "tau": null,
+      "theta": 4.906650331467674,
+      "wn": 0.22365449573815394,
+      "zeta": 1.456724181964446
+    },
+    "physical_parcial": {
+      "K": 0.4690411925871743,
+      "tau": null,
+      "theta": 4.906650331467674,
+      "wn": 0.22365449573815394,
+      "zeta": 1.456724181964446
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 15.938249714685956,
+      "y_faixa": 1.6688472617877352,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04939227422379043,
+    "nrmse_final": 0.04939227422379043,
+    "repouso_observado": false,
+    "planura_inicial": 0.2307692307692306,
+    "latency_ms": 2279.6709110261872,
+    "n_points": 647
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.28368875999597076,
+      "tau": 6.045527589201918,
+      "theta": 4.280788172139661,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.49140558955944563,
+      "theta_T": 0.3479602407681829,
+      "theta_tau": 0.7080917436859759,
+      "K_yrange": 0.913733396229344
+    },
+    "physical": {
+      "K": 0.28368875999597076,
+      "tau": 6.045527589201918,
+      "theta": 4.280788172139661,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.28368875999597076,
+      "tau": 6.045527589201918,
+      "theta": 4.280788172139661,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.33613445378151,
+      "y_faixa": 0.8477836945923655,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.06561280270131793,
+    "nrmse_final": 0.06561280270131793,
+    "repouso_observado": false,
+    "planura_inicial": 0.2619926199261992,
+    "latency_ms": 1327.5778620154597,
+    "n_points": 733
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_03.png",
+    "order": "second",
+    "params": {
+      "K": -0.8211988796649852,
+      "tau": null,
+      "theta": 0.18137101884697163,
+      "wn": 4.775518908623015,
+      "zeta": 1.0410617985885666
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.0410617985885666,
+      "wn_T": 8.55755340422568,
+      "tau_T": null,
+      "theta_T": 0.10121359330953611,
+      "theta_tau": null,
+      "K_yrange": -0.7031289583636594
+    },
+    "physical": {
+      "K": -0.8211988796649852,
+      "tau": null,
+      "theta": 0.18137101884697163,
+      "wn": 4.775518908623015,
+      "zeta": 1.0410617985885666
+    },
+    "physical_parcial": {
+      "K": -0.8211988796649852,
+      "tau": null,
+      "theta": 0.18137101884697163,
+      "wn": 4.775518908623015,
+      "zeta": 1.0410617985885666
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.7984556645757908,
+      "y_faixa": 1.978314689846973,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.06378482264468963,
+    "nrmse_final": 0.06378482264468963,
+    "repouso_observado": false,
+    "planura_inicial": 0.09387755102040816,
+    "latency_ms": 878.2878800411709,
+    "n_points": 553
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_04.png",
+    "order": "second",
+    "params": {
+      "K": 0.7613618571594752,
+      "tau": null,
+      "theta": 0.11163452823408282,
+      "wn": 3.610862231776733,
+      "zeta": 1.2134488510623203
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2134488510623203,
+      "wn_T": 4.771825368474069,
+      "tau_T": null,
+      "theta_T": 0.08447436161972646,
+      "theta_tau": null,
+      "K_yrange": 0.8535012259329858
+    },
+    "physical": {
+      "K": 0.7613618571594752,
+      "tau": null,
+      "theta": 0.11163452823408282,
+      "wn": 3.610862231776733,
+      "zeta": 1.2134488510623203
+    },
+    "physical_parcial": {
+      "K": 0.7613618571594752,
+      "tau": null,
+      "theta": 0.11163452823408282,
+      "wn": 3.610862231776733,
+      "zeta": 1.2134488510623203
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.3408967641501233,
+      "y_faixa": 1.507682395250523,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05409520964451508,
+    "nrmse_final": 0.05409520964451508,
+    "repouso_observado": false,
+    "planura_inicial": 0.13480885311871219,
+    "latency_ms": 1115.1696250308305,
+    "n_points": 683
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_05.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.8001160788615014,
+      "y_faixa": 2.1359151199144137,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.039132377855700305,
+    "nrmse_final": 0.039132377855700305,
+    "repouso_observado": true,
+    "planura_inicial": 0.016155088852988653,
+    "latency_ms": 904.7734629712068,
+    "n_points": 937
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.8510620459054321,
+      "tau": 7.904368089174745,
+      "theta": 3.8191558489652295,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.45096225350891045,
+      "theta_T": 0.21789156435032772,
+      "theta_tau": 0.48317029342240164,
+      "K_yrange": -0.8330856175213456
+    },
+    "physical": {
+      "K": -0.8510620459054321,
+      "tau": 7.904368089174745,
+      "theta": 3.8191558489652295,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.8510620459054321,
+      "tau": 7.904368089174745,
+      "theta": 3.8191558489652295,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 17.58113906607416,
+      "y_faixa": 1.4991451395752353,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.061753658844198527,
+    "nrmse_final": 0.061753658844198527,
+    "repouso_observado": false,
+    "planura_inicial": 0.24999999999999994,
+    "latency_ms": 951.5974179957993,
+    "n_points": 658
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.8815015146262802,
+      "tau": 1.9705188852085298,
+      "theta": 0.08536492678496573,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.28777367766086165,
+      "theta_T": 0.012466654904228493,
+      "theta_tau": 0.04332103966409436,
+      "K_yrange": -0.7663225313773965
+    },
+    "physical": {
+      "K": -0.8815015146262802,
+      "tau": 1.9705188852085298,
+      "theta": 0.08536492678496573,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.8815015146262802,
+      "tau": 1.9705188852085298,
+      "theta": 0.08536492678496573,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 6.866428515412235,
+      "y_faixa": 1.586959062782951,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04829452525043169,
+    "nrmse_final": 0.04829452525043169,
+    "repouso_observado": false,
+    "planura_inicial": 0.17705382436260628,
+    "latency_ms": 818.6730000306852,
+    "n_points": 1084
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_08.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.40038059462884984,
+      "tau": 1.6172306664566012,
+      "theta": 1.6130940512315621,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3048351454630498,
+      "theta_T": 0.3040554263234095,
+      "theta_tau": 0.9974421612755449,
+      "K_yrange": -0.7122019468965365
+    },
+    "physical": {
+      "K": -0.40038059462884984,
+      "tau": 1.6172306664566012,
+      "theta": 1.6130940512315621,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.40038059462884984,
+      "tau": 1.6172306664566012,
+      "theta": 1.6130940512315621,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.3122807017543865,
+      "y_faixa": 1.147334170442758,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.05692395867179828,
+    "nrmse_final": 0.05692395867179828,
+    "repouso_observado": false,
+    "planura_inicial": 0.1394052044609666,
+    "latency_ms": 1274.8596649616957,
+    "n_points": 757
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_10dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.837575348782075,
+      "tau": 13.55138518595571,
+      "theta": 2.7349404774346993,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5061852560616833,
+      "theta_T": 0.1021583053604355,
+      "theta_tau": 0.20181999403788758,
+      "K_yrange": 0.7689008418923691
+    },
+    "physical": {
+      "K": 0.837575348782075,
+      "tau": 13.55138518595571,
+      "theta": 2.7349404774346993,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.837575348782075,
+      "tau": 13.55138518595571,
+      "theta": 2.7349404774346993,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 26.81533649915954,
+      "y_faixa": 3.126245966296164,
+      "n_pairs_x": 5,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03947060083379741,
+    "nrmse_final": 0.03947060083379741,
+    "repouso_observado": false,
+    "planura_inicial": 0.07723577235772348,
+    "latency_ms": 779.0646480279975,
+    "n_points": 613
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_00.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.8420778738325059,
+      "tau": 7.57095681095299,
+      "theta": 3.584226048004792,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4277051959411785,
+      "theta_T": 0.20248327159145435,
+      "theta_tau": 0.4734178436759078,
+      "K_yrange": 1.015542504364592
+    },
+    "physical": {
+      "K": 0.8420778738325059,
+      "tau": 7.57095681095299,
+      "theta": 3.584226048004792,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.8420778738325059,
+      "tau": 7.57095681095299,
+      "theta": 3.584226048004792,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 17.73920785385985,
+      "y_faixa": 1.3668263964717486,
+      "n_pairs_x": 9,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0350662735919295,
+    "nrmse_final": 0.0350662735919295,
+    "repouso_observado": false,
+    "planura_inicial": 0.04516129032258072,
+    "latency_ms": 966.1937250057235,
+    "n_points": 936
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_01.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.3556803192149856,
+      "y_faixa": 1.0672783861749806,
+      "n_pairs_x": 5,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.028041093560043254,
+    "nrmse_final": 0.028041093560043254,
+    "repouso_observado": true,
+    "planura_inicial": 0.020942408376963345,
+    "latency_ms": 772.2816729801707,
+    "n_points": 925
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.408687434787582,
+      "tau": 0.2873183871256881,
+      "theta": 0.1470597562662741,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.21960434723629454,
+      "theta_T": 0.11240130540429422,
+      "theta_tau": 0.5118355206481877,
+      "K_yrange": 0.8123439064906345
+    },
+    "physical": {
+      "K": 0.408687434787582,
+      "tau": 0.2873183871256881,
+      "theta": 0.1470597562662741,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.408687434787582,
+      "tau": 0.2873183871256881,
+      "theta": 0.1470597562662741,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.312559299369772,
+      "y_faixa": 0.8644270999673986,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04224518982445774,
+    "nrmse_final": 0.04224518982445774,
+    "repouso_observado": false,
+    "planura_inicial": 0.1580756013745703,
+    "latency_ms": 684.2962200171314,
+    "n_points": 622
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_03.png",
+    "order": "second",
+    "params": {
+      "K": 0.7529705104830027,
+      "tau": null,
+      "theta": 6.429296148042168,
+      "wn": 0.09983505457730107,
+      "zeta": 0.7930179334858769
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7930179334858769,
+      "wn_T": 3.1812370803568304,
+      "tau_T": null,
+      "theta_T": 0.2017671476913078,
+      "theta_tau": null,
+      "K_yrange": 0.9698504546789183
+    },
+    "physical": {
+      "K": 0.7529705104830027,
+      "tau": null,
+      "theta": 6.429296148042168,
+      "wn": 0.09983505457730107,
+      "zeta": 0.7930179334858769
+    },
+    "physical_parcial": {
+      "K": 0.7529705104830027,
+      "tau": null,
+      "theta": 6.429296148042168,
+      "wn": 0.09983505457730107,
+      "zeta": 0.7930179334858769
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 32.05209607246408,
+      "y_faixa": 1.083464566929134,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03944161707901919,
+    "nrmse_final": 0.03944161707901919,
+    "repouso_observado": false,
+    "planura_inicial": 0.06896551724137942,
+    "latency_ms": 2212.686049984768,
+    "n_points": 682
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.5708293918469952,
+      "tau": 5.963875550727397,
+      "theta": 3.138249192176954,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.19016730337922516,
+      "theta_T": 0.100067880547161,
+      "theta_tau": 0.526209704659949,
+      "K_yrange": 0.7974519575314489
+    },
+    "physical": {
+      "K": 0.5708293918469952,
+      "tau": 5.963875550727397,
+      "theta": 3.138249192176954,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.5708293918469952,
+      "tau": 5.963875550727397,
+      "theta": 3.138249192176954,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 31.66816497646104,
+      "y_faixa": 1.556287395179748,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.031786915768522224,
+    "nrmse_final": 0.031786915768522224,
+    "repouso_observado": false,
+    "planura_inicial": 0.12401055408970978,
+    "latency_ms": 801.0309140081517,
+    "n_points": 614
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": -9.966660388559978,
+      "tau": 3.0503215561432224,
+      "theta": 2.237492506591187,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.24098053704872197,
+      "theta_T": 0.17676567403030818,
+      "theta_tau": 0.7335267660830606,
+      "K_yrange": -0.8199522021794026
+    },
+    "physical": {
+      "K": -9.966660388559978,
+      "tau": 3.0503215561432224,
+      "theta": 2.237492506591187,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -9.966660388559978,
+      "tau": 3.0503215561432224,
+      "theta": 2.237492506591187,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.74150904231135,
+      "y_faixa": 30.17241379310344,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.041259665455821465,
+    "nrmse_final": 0.041259665455821465,
+    "repouso_observado": false,
+    "planura_inicial": 0.10283687943262414,
+    "latency_ms": 857.4843730311841,
+    "n_points": 607
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.8984149515536309,
+      "tau": 1.8218710926397903,
+      "theta": 1.4661673040885284,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.32160117827412804,
+      "theta_T": 0.25881146830134094,
+      "theta_tau": 0.804759079833762,
+      "K_yrange": 0.8757494978740115
+    },
+    "physical": {
+      "K": 0.8984149515536309,
+      "tau": 1.8218710926397903,
+      "theta": 1.4661673040885284,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.8984149515536309,
+      "tau": 1.8218710926397903,
+      "theta": 1.4661673040885284,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.702970476472401,
+      "y_faixa": 2.3537741702708534,
+      "n_pairs_x": 6,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03917448905582502,
+    "nrmse_final": 0.03917448905582502,
+    "repouso_observado": false,
+    "planura_inicial": 0.0864485981308413,
+    "latency_ms": 1315.6153109739535,
+    "n_points": 747
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_07.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5313010117246723,
+      "y_faixa": 0.8908090756093003,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03994049254416992,
+    "nrmse_final": 0.03994049254416992,
+    "repouso_observado": false,
+    "planura_inicial": 0.15384615384615383,
+    "latency_ms": 906.5880679991096,
+    "n_points": 1006
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_08.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.3967632032240986,
+      "tau": 0.6272663814230296,
+      "theta": 0.04859953810729184,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.5158663810874438,
+      "theta_T": 0.03996845453291098,
+      "theta_tau": 0.07747830833375434,
+      "K_yrange": -0.9795922262319924
+    },
+    "physical": {
+      "K": -0.3967632032240986,
+      "tau": 0.6272663814230296,
+      "theta": 0.04859953810729184,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.3967632032240986,
+      "tau": 0.6272663814230296,
+      "theta": 0.04859953810729184,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.2204732521786494,
+      "y_faixa": 1.0615170947581347,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03341954491856464,
+    "nrmse_final": 0.03341954491856464,
+    "repouso_observado": false,
+    "planura_inicial": 0.13747228381374724,
+    "latency_ms": 854.792456026189,
+    "n_points": 807
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_15dB_09.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.9785934506975567,
+      "tau": 10.227256028141904,
+      "theta": 5.2407186710237115,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4436446039351797,
+      "theta_T": 0.2273353236434452,
+      "theta_tau": 0.5124266623034615,
+      "K_yrange": 0.996869389505151
+    },
+    "physical": {
+      "K": 0.9785934506975567,
+      "tau": 10.227256028141904,
+      "theta": 5.2407186710237115,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.9785934506975567,
+      "tau": 10.227256028141904,
+      "theta": 5.2407186710237115,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 23.20936845897815,
+      "y_faixa": 1.4400000000000002,
+      "n_pairs_x": 5,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03330562612509832,
+    "nrmse_final": 0.03330562612509832,
+    "repouso_observado": false,
+    "planura_inicial": 0.061120543293717994,
+    "latency_ms": 1003.9904600125737,
+    "n_points": 590
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_00.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.789473684210526,
+      "y_faixa": 0.7788760674756137,
+      "n_pairs_x": 4,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.017953608834294952,
+    "nrmse_final": 0.017953608834294952,
+    "repouso_observado": true,
+    "planura_inicial": 0.0,
+    "latency_ms": 820.1569959637709,
+    "n_points": 878
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_01.png",
+    "order": "second",
+    "params": {
+      "K": 0.8546287089102831,
+      "tau": null,
+      "theta": 1.9822619702870008,
+      "wn": 0.6225665018826079,
+      "zeta": 0.8636943334782218
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.8636943334782218,
+      "wn_T": 4.687600545066467,
+      "tau_T": null,
+      "theta_T": 0.2632668651673701,
+      "theta_tau": null,
+      "K_yrange": 0.962976224110253
+    },
+    "physical": {
+      "K": 0.8546287089102831,
+      "tau": null,
+      "theta": 1.9822619702870008,
+      "wn": 0.6225665018826079,
+      "zeta": 0.8636943334782218
+    },
+    "physical_parcial": {
+      "K": 0.8546287089102831,
+      "tau": null,
+      "theta": 1.9822619702870008,
+      "wn": 0.6225665018826079,
+      "zeta": 0.8636943334782218
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 7.537513352021404,
+      "y_faixa": 1.2723663113010577,
+      "n_pairs_x": 6,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.02240736857655194,
+    "nrmse_final": 0.02240736857655194,
+    "repouso_observado": false,
+    "planura_inicial": 0.07908163265306109,
+    "latency_ms": 1796.8466800521128,
+    "n_points": 938
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": 9.338851019705912,
+      "tau": 10.65075663244089,
+      "theta": 6.659357602552026,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2477977125886001,
+      "theta_T": 0.1549348687768971,
+      "theta_tau": 0.6252473727799248,
+      "K_yrange": 0.6440119387863391
+    },
+    "physical": {
+      "K": 9.338851019705912,
+      "tau": 10.65075663244089,
+      "theta": 6.659357602552026,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 9.338851019705912,
+      "tau": 10.65075663244089,
+      "theta": 6.659357602552026,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 43.47999645883802,
+      "y_faixa": 18.50947368421054,
+      "n_pairs_x": 9,
+      "n_pairs_y": 2
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0780778477406337,
+    "nrmse_final": 0.0780778477406337,
+    "repouso_observado": false,
+    "planura_inicial": 0.03861788617886191,
+    "latency_ms": 706.109709048178,
+    "n_points": 691
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_03.png",
+    "order": "second",
+    "params": {
+      "K": 0.3201564711925797,
+      "tau": null,
+      "theta": 28.70214523592951,
+      "wn": 0.056568795554350806,
+      "zeta": 0.26347041662162574
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.26347041662162574,
+      "wn_T": 8.57532167412885,
+      "tau_T": null,
+      "theta_T": 0.18933934463601607,
+      "theta_tau": null,
+      "K_yrange": 0.6345812468425489
+    },
+    "physical": {
+      "K": 0.3201564711925797,
+      "tau": null,
+      "theta": 28.70214523592951,
+      "wn": 0.056568795554350806,
+      "zeta": 0.26347041662162574
+    },
+    "physical_parcial": {
+      "K": 0.3201564711925797,
+      "tau": null,
+      "theta": 28.70214523592951,
+      "wn": 0.056568795554350806,
+      "zeta": 0.26347041662162574
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 157.0741041336387,
+      "y_faixa": 1.224637429856375,
+      "n_pairs_x": 8,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.04285717596577064,
+    "nrmse_final": 0.04285717596577064,
+    "repouso_observado": false,
+    "planura_inicial": 0.07122507122507156,
+    "latency_ms": 957.892926002387,
+    "n_points": 941
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_04.png",
+    "order": "second",
+    "params": {
+      "K": 0.30187072975392454,
+      "tau": null,
+      "theta": 0.24086431740170258,
+      "wn": 1.6767050043663376,
+      "zeta": 0.5799831591981599
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5799831591981599,
+      "wn_T": 6.647991921696321,
+      "tau_T": null,
+      "theta_T": 0.06074893157476445,
+      "theta_tau": null,
+      "K_yrange": 0.8133302931284461
+    },
+    "physical": {
+      "K": 0.30187072975392454,
+      "tau": null,
+      "theta": 0.24086431740170258,
+      "wn": 1.6767050043663376,
+      "zeta": 0.5799831591981599
+    },
+    "physical_parcial": {
+      "K": 0.30187072975392454,
+      "tau": null,
+      "theta": 0.24086431740170258,
+      "wn": 1.6767050043663376,
+      "zeta": 0.5799831591981599
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.9649144628209294,
+      "y_faixa": 1.171279719770574,
+      "n_pairs_x": 8,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.020073422599291617,
+    "nrmse_final": 0.020073422599291617,
+    "repouso_observado": false,
+    "planura_inicial": 0.03517587939698461,
+    "latency_ms": 686.0265730065294,
+    "n_points": 577
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.6804516637839789,
+      "tau": 9.003875915213252,
+      "theta": 3.1611855446973154,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.22184478207437544,
+      "theta_T": 0.07788784795169315,
+      "theta_tau": 0.35109163814175515,
+      "K_yrange": 0.9318554206124454
+    },
+    "physical": {
+      "K": 0.6804516637839789,
+      "tau": 9.003875915213252,
+      "theta": 3.1611855446973154,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.6804516637839789,
+      "tau": 9.003875915213252,
+      "theta": 3.1611855446973154,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 41.10077954243556,
+      "y_faixa": 1.9304445339007408,
+      "n_pairs_x": 9,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.018804348355686406,
+    "nrmse_final": 0.018804348355686406,
+    "repouso_observado": true,
+    "planura_inicial": 0.025862068965517123,
+    "latency_ms": 683.2643040106632,
+    "n_points": 790
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_06.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 14.894528175261007,
+      "y_faixa": 0.9673843891889713,
+      "n_pairs_x": 7,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.028945679934333775,
+    "nrmse_final": 0.028945679934333775,
+    "repouso_observado": false,
+    "planura_inicial": 0.03430079155672823,
+    "latency_ms": 1137.6167819835246,
+    "n_points": 898
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_07.png",
+    "order": "second",
+    "params": {
+      "K": -0.32965512043280054,
+      "tau": null,
+      "theta": 0.0886552505477033,
+      "wn": 7.725619453827384,
+      "zeta": 0.4208864072860322
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.4208864072860322,
+      "wn_T": 8.884777606807292,
+      "tau_T": null,
+      "theta_T": 0.07708878698218756,
+      "theta_tau": null,
+      "K_yrange": -0.7531446571685707
+    },
+    "physical": {
+      "K": -0.32965512043280054,
+      "tau": null,
+      "theta": 0.0886552505477033,
+      "wn": 7.725619453827384,
+      "zeta": 0.4208864072860322
+    },
+    "physical_parcial": {
+      "K": -0.32965512043280054,
+      "tau": null,
+      "theta": 0.0886552505477033,
+      "wn": 7.725619453827384,
+      "zeta": 0.4208864072860322
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 1.151996655542764,
+      "y_faixa": 0.7852459016393442,
+      "n_pairs_x": 6,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.017226280597478685,
+    "nrmse_final": 0.017226280597478685,
+    "repouso_observado": false,
+    "planura_inicial": 0.05430711610486889,
+    "latency_ms": 710.0709020160139,
+    "n_points": 589
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_08.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 22.852150873697934,
+      "y_faixa": 2.7279256541650345,
+      "n_pairs_x": 3,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.018830667708458846,
+    "nrmse_final": 0.018830667708458846,
+    "repouso_observado": false,
+    "planura_inicial": 0.032608695652173794,
+    "latency_ms": 2009.7760030184872,
+    "n_points": 654
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_20dB_09.png",
+    "order": "",
+    "params": {},
+    "ok": false,
+    "reason": "resposta_inversa",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": null,
+      "theta_T": null,
+      "theta_tau": null,
+      "K_yrange": null
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": null,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.387504021489943,
+      "y_faixa": 0.6797408130923739,
+      "n_pairs_x": 4,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.025915213303094684,
+    "nrmse_final": 0.025915213303094684,
+    "repouso_observado": true,
+    "planura_inicial": 0.026548672566371702,
+    "latency_ms": 1195.5693900235929,
+    "n_points": 758
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_00.png",
+    "order": "second",
+    "params": {
+      "K": 0.5337403885035444,
+      "tau": null,
+      "theta": 0.6451942405847176,
+      "wn": 0.46550897186480933,
+      "zeta": 0.7095363008611674
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.7095363008611674,
+      "wn_T": 5.625894753990091,
+      "tau_T": null,
+      "theta_T": 0.05338594494229981,
+      "theta_tau": null,
+      "K_yrange": 0.8850865055005245
+    },
+    "physical": {
+      "K": 0.5337403885035444,
+      "tau": null,
+      "theta": 0.6451942405847176,
+      "wn": 0.46550897186480933,
+      "zeta": 0.7095363008611674
+    },
+    "physical_parcial": {
+      "K": 0.5337403885035444,
+      "tau": null,
+      "theta": 0.6451942405847176,
+      "wn": 0.46550897186480933,
+      "zeta": 0.7095363008611674
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 12.119658119658126,
+      "y_faixa": 1.4408454187563606,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.012823631480239519,
+    "nrmse_final": 0.012823631480239519,
+    "repouso_observado": false,
+    "planura_inicial": 0.030534351145038028,
+    "latency_ms": 778.424961026758,
+    "n_points": 708
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_01.png",
+    "order": "second",
+    "params": {
+      "K": 0.5657031043676061,
+      "tau": null,
+      "theta": 0.19006587811708697,
+      "wn": 3.7935131311407906,
+      "zeta": 1.1811843841769198
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.1811843841769198,
+      "wn_T": 8.18504647169493,
+      "tau_T": null,
+      "theta_T": 0.08808959202765146,
+      "theta_tau": null,
+      "K_yrange": 0.9416069239269055
+    },
+    "physical": {
+      "K": 0.5657031043676061,
+      "tau": null,
+      "theta": 0.19006587811708697,
+      "wn": 3.7935131311407906,
+      "zeta": 1.1811843841769198
+    },
+    "physical_parcial": {
+      "K": 0.5657031043676061,
+      "tau": null,
+      "theta": 0.19006587811708697,
+      "wn": 3.7935131311407906,
+      "zeta": 1.1811843841769198
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.1676203859884358,
+      "y_faixa": 0.7981121315089059,
+      "n_pairs_x": 9,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.012225949017217413,
+    "nrmse_final": 0.012225949017217413,
+    "repouso_observado": true,
+    "planura_inicial": 0.01831501831501834,
+    "latency_ms": 704.9336860072799,
+    "n_points": 866
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.7569791596287521,
+      "tau": 0.21348192037491756,
+      "theta": 0.0695162304802741,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.4838860513872918,
+      "theta_T": 0.15756807047338575,
+      "theta_tau": 0.32563052814116294,
+      "K_yrange": -1.1201933752353728
+    },
+    "physical": {
+      "K": -0.7569791596287521,
+      "tau": 0.21348192037491756,
+      "theta": 0.0695162304802741,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.7569791596287521,
+      "tau": 0.21348192037491756,
+      "theta": 0.0695162304802741,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.4420807539781028,
+      "y_faixa": 1.7575757575757576,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.01267509157895553,
+    "nrmse_final": 0.01267509157895553,
+    "repouso_observado": true,
+    "planura_inicial": 0.004484304932735454,
+    "latency_ms": 773.8649190287106,
+    "n_points": 983
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_03.png",
+    "order": "second",
+    "params": {
+      "K": -0.8996051820464631,
+      "tau": null,
+      "theta": 0.7204743572735031,
+      "wn": 2.5748012390523622,
+      "zeta": 0.29139427364003684
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.29139427364003684,
+      "wn_T": 7.597184257732538,
+      "tau_T": null,
+      "theta_T": 0.2441797124934993,
+      "theta_tau": null,
+      "K_yrange": -0.675793568601812
+    },
+    "physical": {
+      "K": -0.8996051820464631,
+      "tau": null,
+      "theta": 0.7204743572735031,
+      "wn": 2.5748012390523622,
+      "zeta": 0.29139427364003684
+    },
+    "physical_parcial": {
+      "K": -0.8996051820464631,
+      "tau": null,
+      "theta": 0.7204743572735031,
+      "wn": 2.5748012390523622,
+      "zeta": 0.29139427364003684
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.96064369033081,
+      "y_faixa": 1.7218567923784582,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013239568846365738,
+    "nrmse_final": 0.013239568846365738,
+    "repouso_observado": true,
+    "planura_inicial": 0.0108695652173913,
+    "latency_ms": 1408.0214739660732,
+    "n_points": 588
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_04.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.6945487618528517,
+      "tau": 0.5180299172289659,
+      "theta": 0.11365408061943146,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.22293086160466413,
+      "theta_T": 0.04891030667284226,
+      "theta_tau": 0.21939675072703782,
+      "K_yrange": -0.9669208253245586
+    },
+    "physical": {
+      "K": -0.6945487618528517,
+      "tau": 0.5180299172289659,
+      "theta": 0.11365408061943146,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.6945487618528517,
+      "tau": 0.5180299172289659,
+      "theta": 0.11365408061943146,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.329729011443387,
+      "y_faixa": 2.2910798122065725,
+      "n_pairs_x": 4,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.010169737301975566,
+    "nrmse_final": 0.010169737301975566,
+    "repouso_observado": true,
+    "planura_inicial": 0.02941176470588232,
+    "latency_ms": 785.1771229761653,
+    "n_points": 775
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_05.png",
+    "order": "second",
+    "params": {},
+    "ok": false,
+    "reason": "calibration_failed",
+    "dimensionless": {
+      "zeta": 0.692431210488714,
+      "wn_T": 4.102098410120291,
+      "tau_T": null,
+      "theta_T": 0.1083865103384426,
+      "theta_tau": null,
+      "K_yrange": -0.9464940481371548
+    },
+    "physical": null,
+    "physical_parcial": {
+      "K": null,
+      "tau": null,
+      "theta": 7.411179924871199,
+      "wn": 0.05999208442447023,
+      "zeta": 0.692431210488714
+    },
+    "calibration": {
+      "ok": false,
+      "reason": "calibration_failed",
+      "ok_x": true,
+      "ok_y": false,
+      "T_s": 68.37732760035726,
+      "y_faixa": null,
+      "n_pairs_x": 7,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": null,
+    "nrmse_final": null,
+    "repouso_observado": true,
+    "planura_inicial": 0.023999999999999997,
+    "latency_ms": 235.44727102853358,
+    "n_points": 747
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_06.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.3585659740731766,
+      "tau": 10.828557199598455,
+      "theta": 5.024055082238362,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.20698724821780337,
+      "theta_T": 0.09603452400895574,
+      "theta_tau": 0.46396348004927784,
+      "K_yrange": -0.9559012486469011
+    },
+    "physical": {
+      "K": -0.3585659740731766,
+      "tau": 10.828557199598455,
+      "theta": 5.024055082238362,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.3585659740731766,
+      "tau": 10.828557199598455,
+      "theta": 5.024055082238362,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 52.91329081872634,
+      "y_faixa": 0.9317192694132151,
+      "n_pairs_x": 6,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.010797195406968062,
+    "nrmse_final": 0.010797195406968062,
+    "repouso_observado": true,
+    "planura_inicial": 0.004608294930875581,
+    "latency_ms": 767.8780290298164,
+    "n_points": 963
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": -0.25711090824020644,
+      "tau": 1.7519913813511538,
+      "theta": 0.4219274432975483,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2970524346088922,
+      "theta_T": 0.07153835092680805,
+      "theta_tau": 0.24082735097255642,
+      "K_yrange": -1.0019362908400342
+    },
+    "physical": {
+      "K": -0.25711090824020644,
+      "tau": 1.7519913813511538,
+      "theta": 0.4219274432975483,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": -0.25711090824020644,
+      "tau": 1.7519913813511538,
+      "theta": 0.4219274432975483,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.971643612191226,
+      "y_faixa": 1.0514047015247812,
+      "n_pairs_x": 3,
+      "n_pairs_y": 3
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.012193725574908857,
+    "nrmse_final": 0.012193725574908857,
+    "repouso_observado": true,
+    "planura_inicial": 0.024305555555555598,
+    "latency_ms": 770.4277260345407,
+    "n_points": 961
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_08.png",
+    "order": "second",
+    "params": {
+      "K": -0.48569863458406237,
+      "tau": null,
+      "theta": 0.5037380465339031,
+      "wn": 5.157920584512683,
+      "zeta": 2.323040961683459
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.323040961683459,
+      "wn_T": 11.050516783306193,
+      "tau_T": null,
+      "theta_T": 0.2351239213847935,
+      "theta_tau": null,
+      "K_yrange": -1.0883454521180658
+    },
+    "physical": {
+      "K": -0.48569863458406237,
+      "tau": null,
+      "theta": 0.5037380465339031,
+      "wn": 5.157920584512683,
+      "zeta": 2.323040961683459
+    },
+    "physical_parcial": {
+      "K": -0.48569863458406237,
+      "tau": null,
+      "theta": 0.5037380465339031,
+      "wn": 5.157920584512683,
+      "zeta": 2.323040961683459
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 2.1687418897213466,
+      "y_faixa": 2.040721773345748,
+      "n_pairs_x": 9,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.013953308885360172,
+    "nrmse_final": 0.013953308885360172,
+    "repouso_observado": true,
+    "planura_inicial": 0.019417475728155376,
+    "latency_ms": 945.8238179795444,
+    "n_points": 734
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_25dB_09.png",
+    "order": "second",
+    "params": {
+      "K": -0.761962814199074,
+      "tau": null,
+      "theta": 0.04709650298511944,
+      "wn": 9.310803366591394,
+      "zeta": 0.8035834935834091
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.8035834935834091,
+      "wn_T": 5.438745960628813,
+      "tau_T": null,
+      "theta_T": 0.08062635793671688,
+      "theta_tau": null,
+      "K_yrange": -0.9034535873549746
+    },
+    "physical": {
+      "K": -0.761962814199074,
+      "tau": null,
+      "theta": 0.04709650298511944,
+      "wn": 9.310803366591394,
+      "zeta": 0.8035834935834091
+    },
+    "physical_parcial": {
+      "K": -0.761962814199074,
+      "tau": null,
+      "theta": 0.04709650298511944,
+      "wn": 9.310803366591394,
+      "zeta": 0.8035834935834091
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5913344720366221,
+      "y_faixa": 1.2161172354960095,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.03633227989370263,
+    "nrmse_final": 0.03633227989370263,
+    "repouso_observado": true,
+    "planura_inicial": 0.0069324090121317145,
+    "latency_ms": 924.2198469582945,
+    "n_points": 731
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_00.png",
+    "order": "second",
+    "params": {
+      "K": 0.5236114685712049,
+      "tau": null,
+      "theta": 13.45254034755841,
+      "wn": 0.4465127464835017,
+      "zeta": 2.48006837624859
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 2.48006837624859,
+      "wn_T": 13.773944122259392,
+      "tau_T": null,
+      "theta_T": 0.4360937349862807,
+      "theta_tau": null,
+      "K_yrange": 1.2065355837292477
+    },
+    "physical": {
+      "K": 0.5236114685712049,
+      "tau": null,
+      "theta": 13.45254034755841,
+      "wn": 0.4465127464835017,
+      "zeta": 2.48006837624859
+    },
+    "physical_parcial": {
+      "K": 0.5236114685712049,
+      "tau": null,
+      "theta": 13.45254034755841,
+      "wn": 0.4465127464835017,
+      "zeta": 2.48006837624859
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 30.892525395414243,
+      "y_faixa": 0.8545759792616274,
+      "n_pairs_x": 7,
+      "n_pairs_y": 7
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006973005176552303,
+    "nrmse_final": 0.006973005176552303,
+    "repouso_observado": true,
+    "planura_inicial": 0.013215859030836882,
+    "latency_ms": 1170.9017240209505,
+    "n_points": 691
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_01.png",
+    "order": "second",
+    "params": {
+      "K": -0.5236409650624386,
+      "tau": null,
+      "theta": 0.3185938841847474,
+      "wn": 0.14043271192216214,
+      "zeta": 0.5877399490973942
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.5877399490973942,
+      "wn_T": 3.058550223185347,
+      "tau_T": null,
+      "theta_T": 0.01462817344594182,
+      "theta_tau": null,
+      "K_yrange": -0.9199565864355997
+    },
+    "physical": {
+      "K": -0.5236409650624386,
+      "tau": null,
+      "theta": 0.3185938841847474,
+      "wn": 0.14043271192216214,
+      "zeta": 0.5877399490973942
+    },
+    "physical_parcial": {
+      "K": -0.5236409650624386,
+      "tau": null,
+      "theta": 0.3185938841847474,
+      "wn": 0.14043271192216214,
+      "zeta": 0.5877399490973942
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 21.941280181483133,
+      "y_faixa": 0.774023948658905,
+      "n_pairs_x": 8,
+      "n_pairs_y": 8
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0069145110763821835,
+    "nrmse_final": 0.0069145110763821835,
+    "repouso_observado": true,
+    "planura_inicial": 0.021868787276341957,
+    "latency_ms": 1149.6529140276834,
+    "n_points": 674
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_02.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.48636103772643374,
+      "tau": 0.170791093046373,
+      "theta": 0.031228684791031906,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.41316172641157584,
+      "theta_T": 0.07554549298611488,
+      "theta_tau": 0.18284726816844443,
+      "K_yrange": 1.1133565923858113
+    },
+    "physical": {
+      "K": 0.48636103772643374,
+      "tau": 0.170791093046373,
+      "theta": 0.031228684791031906,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.48636103772643374,
+      "tau": 0.170791093046373,
+      "theta": 0.031228684791031906,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.4174048866547081,
+      "y_faixa": 0.9973684210526323,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006072466582675061,
+    "nrmse_final": 0.006072466582675061,
+    "repouso_observado": true,
+    "planura_inicial": 0.006024096385541929,
+    "latency_ms": 639.0961110009812,
+    "n_points": 514
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_03.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.4942186442953017,
+      "tau": 1.879538090180038,
+      "theta": 0.12281406230302504,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.3280279530811285,
+      "theta_T": 0.02143422667373584,
+      "theta_tau": 0.06534268336709306,
+      "K_yrange": 1.0384001281425703
+    },
+    "physical": {
+      "K": 0.4942186442953017,
+      "tau": 1.879538090180038,
+      "theta": 0.12281406230302504,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.4942186442953017,
+      "tau": 1.879538090180038,
+      "theta": 0.12281406230302504,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.817288771503281,
+      "y_faixa": 0.9016030803995299,
+      "n_pairs_x": 6,
+      "n_pairs_y": 9
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.0065720090149035655,
+    "nrmse_final": 0.0065720090149035655,
+    "repouso_observado": true,
+    "planura_inicial": 0.0036429872495445954,
+    "latency_ms": 764.581393043045,
+    "n_points": 656
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_04.png",
+    "order": "second",
+    "params": {
+      "K": 0.6771195435401823,
+      "tau": null,
+      "theta": 5.013278558671067,
+      "wn": 0.4348052618076507,
+      "zeta": 1.328546881415162
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.328546881415162,
+      "wn_T": 6.965614198045666,
+      "tau_T": null,
+      "theta_T": 0.3129372133227303,
+      "theta_tau": null,
+      "K_yrange": 1.1049512949312428
+    },
+    "physical": {
+      "K": 0.6771195435401823,
+      "tau": null,
+      "theta": 5.013278558671067,
+      "wn": 0.4348052618076507,
+      "zeta": 1.328546881415162
+    },
+    "physical_parcial": {
+      "K": 0.6771195435401823,
+      "tau": null,
+      "theta": 5.013278558671067,
+      "wn": 0.4348052618076507,
+      "zeta": 1.328546881415162
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 16.232733877199056,
+      "y_faixa": 2.4939024390243905,
+      "n_pairs_x": 9,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.007412673503213566,
+    "nrmse_final": 0.007412673503213566,
+    "repouso_observado": true,
+    "planura_inicial": 0.0,
+    "latency_ms": 1176.4367260038853,
+    "n_points": 905
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_05.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.5571765971438691,
+      "tau": 1.2221642429814314,
+      "theta": 0.2418431870937269,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.29351868479631127,
+      "theta_T": 0.05808179597001797,
+      "theta_tau": 0.1978810855272267,
+      "K_yrange": 1.0122361626052556
+    },
+    "physical": {
+      "K": 0.5571765971438691,
+      "tau": 1.2221642429814314,
+      "theta": 0.2418431870937269,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.5571765971438691,
+      "tau": 1.2221642429814314,
+      "theta": 0.2418431870937269,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 4.178788908499917,
+      "y_faixa": 0.768057638786533,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006246747802110529,
+    "nrmse_final": 0.006246747802110529,
+    "repouso_observado": true,
+    "planura_inicial": 0.018604651162790805,
+    "latency_ms": 634.3897700426169,
+    "n_points": 558
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_06.png",
+    "order": "second",
+    "params": {
+      "K": 0.8844234209475821,
+      "tau": null,
+      "theta": 0.6457603333517817,
+      "wn": 1.9415096147889697,
+      "zeta": 1.963921316346778
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.963921316346778,
+      "wn_T": 7.117222198939004,
+      "tau_T": null,
+      "theta_T": 0.17615719461993423,
+      "theta_tau": null,
+      "K_yrange": 1.2274835961929933
+    },
+    "physical": {
+      "K": 0.8844234209475821,
+      "tau": null,
+      "theta": 0.6457603333517817,
+      "wn": 1.9415096147889697,
+      "zeta": 1.963921316346778
+    },
+    "physical_parcial": {
+      "K": 0.8844234209475821,
+      "tau": null,
+      "theta": 0.6457603333517817,
+      "wn": 1.9415096147889697,
+      "zeta": 1.963921316346778
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 3.676459655691271,
+      "y_faixa": 1.3947490933080773,
+      "n_pairs_x": 8,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.006427689714112618,
+    "nrmse_final": 0.006427689714112618,
+    "repouso_observado": true,
+    "planura_inicial": 0.019271948608137024,
+    "latency_ms": 839.1699880012311,
+    "n_points": 690
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_07.png",
+    "order": "fopdt",
+    "params": {
+      "K": 0.8525987931285505,
+      "tau": 0.1183458964264383,
+      "theta": 0.053258746434790755,
+      "wn": null,
+      "zeta": null
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": null,
+      "wn_T": null,
+      "tau_T": 0.2066738685396967,
+      "theta_T": 0.09300864239171029,
+      "theta_tau": 0.45002613561591,
+      "K_yrange": 0.970680559816172
+    },
+    "physical": {
+      "K": 0.8525987931285505,
+      "tau": 0.1183458964264383,
+      "theta": 0.053258746434790755,
+      "wn": null,
+      "zeta": null
+    },
+    "physical_parcial": {
+      "K": 0.8525987931285505,
+      "tau": 0.1183458964264383,
+      "theta": 0.053258746434790755,
+      "wn": null,
+      "zeta": null
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 0.5750932271328455,
+      "y_faixa": 1.2634866596635965,
+      "n_pairs_x": 6,
+      "n_pairs_y": 4
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.00691047028593156,
+    "nrmse_final": 0.00691047028593156,
+    "repouso_observado": true,
+    "planura_inicial": 0.019064124783362123,
+    "latency_ms": 591.0607549594715,
+    "n_points": 696
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_08.png",
+    "order": "second",
+    "params": {
+      "K": 0.5287527944925988,
+      "tau": null,
+      "theta": 0.610538544497104,
+      "wn": 0.5962658220271003,
+      "zeta": 0.18966948902835604
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 0.18966948902835604,
+      "wn_T": 18.815546537697536,
+      "tau_T": null,
+      "theta_T": 0.019348003863954896,
+      "theta_tau": null,
+      "K_yrange": 0.6055609395185413
+    },
+    "physical": {
+      "K": 0.5287527944925988,
+      "tau": null,
+      "theta": 0.610538544497104,
+      "wn": 0.5962658220271003,
+      "zeta": 0.18966948902835604
+    },
+    "physical_parcial": {
+      "K": 0.5287527944925988,
+      "tau": null,
+      "theta": 0.610538544497104,
+      "wn": 0.5962658220271003,
+      "zeta": 0.18966948902835604
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 31.833964568489094,
+      "y_faixa": 1.016874436224801,
+      "n_pairs_x": 7,
+      "n_pairs_y": 5
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.08502305063431653,
+    "nrmse_final": 0.08502305063431653,
+    "repouso_observado": true,
+    "planura_inicial": 0.002493765586034822,
+    "latency_ms": 1023.7742890021764,
+    "n_points": 908
+  },
+  {
+    "imagem": "reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_09.png",
+    "order": "second",
+    "params": {
+      "K": -0.33816698491151437,
+      "tau": null,
+      "theta": 0.8856873861060764,
+      "wn": 1.3498373128556893,
+      "zeta": 1.2922068421751773
+    },
+    "ok": true,
+    "reason": "",
+    "dimensionless": {
+      "zeta": 1.2922068421751773,
+      "wn_T": 7.846868611454619,
+      "tau_T": null,
+      "theta_T": 0.1523580858160925,
+      "theta_tau": null,
+      "K_yrange": -0.9905406944694745
+    },
+    "physical": {
+      "K": -0.33816698491151437,
+      "tau": null,
+      "theta": 0.8856873861060764,
+      "wn": 1.3498373128556893,
+      "zeta": 1.2922068421751773
+    },
+    "physical_parcial": {
+      "K": -0.33816698491151437,
+      "tau": null,
+      "theta": 0.8856873861060764,
+      "wn": 1.3498373128556893,
+      "zeta": 1.2922068421751773
+    },
+    "calibration": {
+      "ok": true,
+      "reason": "",
+      "ok_x": true,
+      "ok_y": true,
+      "T_s": 5.857124241948157,
+      "y_faixa": 1.2301106844660257,
+      "n_pairs_x": 6,
+      "n_pairs_y": 6
+    },
+    "truncado_em": null,
+    "ganho_truncagem": null,
+    "nrmse_full": 0.008738284222128655,
+    "nrmse_final": 0.008738284222128655,
+    "repouso_observado": true,
+    "planura_inicial": 0.02380952380952379,
+    "latency_ms": 736.1410550074652,
+    "n_points": 795
+  }
+]

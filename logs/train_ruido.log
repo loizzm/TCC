@@ -1,0 +1,21 @@
+treino: 17850 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta', 'data/train_kneg', 'data/train_multi', 'data/train_plato', 'data/train_plato_kneg', 'data/train_nmp', 'data/train_nmp_kneg', 'data/train_ruido', 'data/train_ruido_kneg']  base=32  2975 passos/epoca
+parametros: 7763041
+epoca 00  IoU_val=0.7198  lr=3.00e-04  1370s
+epoca 01  IoU_val=0.7509  lr=3.00e-04  1332s
+epoca 02  IoU_val=0.7530  lr=3.00e-04  1324s
+epoca 03  IoU_val=0.7344  lr=3.00e-04  1324s
+epoca 04  IoU_val=0.7665  lr=3.00e-04  1323s
+epoca 05  IoU_val=0.7611  lr=3.00e-04  1323s
+epoca 06  IoU_val=0.7550  lr=1.50e-04 (LR reduzido)  1324s
+epoca 07  IoU_val=0.7699  lr=1.50e-04  1324s
+epoca 08  IoU_val=0.7741  lr=1.50e-04  1324s
+epoca 09  IoU_val=0.7788  lr=1.50e-04  1323s
+epoca 10  IoU_val=0.7678  lr=1.50e-04  1324s
+epoca 11  IoU_val=0.7887  lr=1.50e-04  1323s
+epoca 12  IoU_val=0.7736  lr=1.50e-04  1323s
+epoca 13  IoU_val=0.7771  lr=7.50e-05 (LR reduzido)  1324s
+epoca 14  IoU_val=0.7768  lr=7.50e-05  1323s
+epoca 15  IoU_val=0.7774  lr=3.75e-05 (LR reduzido)  1323s
+epoca 16  IoU_val=0.7822  lr=3.75e-05  1323s
+epoca 17  IoU_val=0.7810  lr=1.87e-05 (LR reduzido)  1323s
+melhor IoU_val=0.7887 -> models/unet_stageA_ruido.pt

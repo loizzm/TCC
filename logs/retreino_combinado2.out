@@ -1,0 +1,53 @@
+treino: 22650 amostras de ['data/train', 'data/train_reta', 'data/train_janela', 'data/train_banda_seta', 'data/train_banda', 'data/train_seta', 'data/train_reta_banda', 'data/train_reta_seta', 'data/train_reta_banda_seta', 'data/train_kneg', 'data/train_multi', 'data/train_plato', 'data/train_plato_kneg', 'data/train_nmp', 'data/train_nmp_kneg', 'data/train_ruido', 'data/train_ruido_kneg', 'data/train_render2', 'data/train_render2_kneg', 'data/train_parleg2_canto', 'data/train_parleg2_ocl']  base=32  3775 passos/epoca
+parametros: 7763041
+epoca 00  IoU_val=0.7082  lr=3.00e-04  1867s
+epoca 01  IoU_val=0.7141  lr=3.00e-04  1767s
+epoca 02  IoU_val=0.7138  lr=3.00e-04  1678s
+epoca 03  IoU_val=0.7378  lr=3.00e-04  1678s
+epoca 04  IoU_val=0.7445  lr=3.00e-04  1678s
+epoca 05  IoU_val=0.7446  lr=3.00e-04  1677s
+epoca 06  IoU_val=0.7444  lr=1.50e-04 (LR reduzido)  1677s
+epoca 07  IoU_val=0.7397  lr=1.50e-04  1677s
+epoca 08  IoU_val=0.7512  lr=1.50e-04  1677s
+epoca 09  IoU_val=0.7479  lr=1.50e-04  1677s
+epoca 10  IoU_val=0.7453  lr=7.50e-05 (LR reduzido)  1678s
+epoca 11  IoU_val=0.7564  lr=7.50e-05  1678s
+epoca 12  IoU_val=0.7553  lr=7.50e-05  1678s
+epoca 13  IoU_val=0.7530  lr=3.75e-05 (LR reduzido)  1677s
+epoca 14  IoU_val=0.7503  lr=3.75e-05  1677s
+epoca 15  IoU_val=0.7574  lr=1.87e-05 (LR reduzido)  1677s
+epoca 16  IoU_val=0.7551  lr=1.87e-05  1678s
+epoca 17  IoU_val=0.7588  lr=1.87e-05  1677s
+melhor IoU_val=0.7588 -> models/unet_stageA_combinado2.pt
+
+================== COMO AVALIAR, NESTA ORDEM ==================
+
+NAO promova pelo IoU_val. Ele mistura NOVE populacoes, ja anticorrelacionou
+com a metrica real neste projeto, e na corrida anterior a epoca de melhor
+IoU_val (16) nao foi a melhor ponta a ponta (17).
+
+1. PORTOES DE IMAGEM REAL — eliminatorio, e vem PRIMEIRO.
+   Foi o que reprovou a corrida anterior DEPOIS de ela passar em todas as
+   metricas agregadas. Varra os 18 checkpoints:
+     .venv/bin/python varre_legenda_epocas.py models/epocas_combinado2 \
+         --referencia models/unet_stageA_pre_render2_backup.pt
+   Quem 'quebra' esta fora, por melhor que seja no resto.
+
+2. ALVO, so nos sobreviventes:
+     .venv/bin/python mede_render2.py --modelo models/epocas_combinado2/<ep>.pt
+   lote_selecao sobe de p50 = 0,716 | val_render2 sobe de 0,810
+   GUARDA: data/val nao cai de 0,939
+
+3. PORTAO DA GUARDA, no finalista:
+     .venv/bin/python mede_fora_da_familia.py --modelo <ep>
+   recusa em val_nmp[:60] >= 90 % — a epoca 03 e a 13 da corrida anterior
+   reprovaram aqui (89 % e 88,3 %), e nenhum valor de _PERSISTENCIA_MIN
+   recupera, porque o termo so pode REDUZIR disparo.
+
+4. So entao os tres lotes de CONTROLE, e a suite inteira de tests/part2.
+
+5. SE PROMOVER: remedir _UNDERSHOOT_MAX, _K_SIGMA, _PERSISTENCIA_MIN e
+   SALTO_MAX_ESPESSURA. Todos foram calibrados contra a mascara promovida
+   e cada um diz no proprio comentario que nao transfere. Medido na
+   corrida anterior: com a mascara da epoca 17 o plato do _PERSISTENCIA_MIN
+   estreitou de 0,05 para 0,03 de folga.

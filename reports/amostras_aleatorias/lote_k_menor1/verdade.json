@@ -1,0 +1,3602 @@
+[
+  {
+    "arquivo": "bal_K+_1deg_11.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.7681048596649109,
+    "tau": null,
+    "wn": 0.24076314784683098,
+    "zeta": 2.441998158056004,
+    "theta": 0.32425774102567767,
+    "K_planta": 0.39878178758179594,
+    "U1": 1.9261282324919653,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.32425774102567767,
+    "t_dom": 19.3960622223298,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.9261282324919653,
+        0.32425774102567767
+      ]
+    ],
+    "t_fim": 38.066709852403804,
+    "janela_em_t_dom": 1.9625999038392103,
+    "linestyle": "--",
+    "linewidth": 2.357076392638027,
+    "cor": "#17becf",
+    "legenda_loc": "lower left",
+    "preenchimento": "nenhum",
+    "dpi": 94,
+    "figsize": [
+      7.762585879140738,
+      5.8429770005873465
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_72.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.43590776404835097,
+    "tau": null,
+    "wn": 0.4212772244866189,
+    "zeta": 1.9101724092730892,
+    "theta": 4.22490102036877,
+    "K_planta": 0.7018041000747867,
+    "U1": 0.621124561685945,
+    "theta_sistema": 0.0,
+    "t_degrau1": 4.22490102036877,
+    "t_dom": 8.397494418868742,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.621124561685945,
+        4.22490102036877
+      ]
+    ],
+    "t_fim": 39.94205764227793,
+    "janela_em_t_dom": 4.756425625306777,
+    "linestyle": "-.",
+    "linewidth": 1.8807998672717225,
+    "cor": "#ffa07a",
+    "legenda_loc": "best",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 94,
+    "figsize": [
+      8.74404952343042,
+      5.1687258302745835
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_148.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.17822928226080506,
+    "tau": null,
+    "wn": 3.46088596312644,
+    "zeta": 2.082807646942138,
+    "theta": 0.4495759064497016,
+    "K_planta": 0.35537949377677863,
+    "U1": 0.5015181950052375,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.4495759064497016,
+    "t_dom": 1.129725485999938,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5015181950052375,
+        0.4495759064497016
+      ]
+    ],
+    "t_fim": 2.8540911720427076,
+    "janela_em_t_dom": 2.526358135150422,
+    "linestyle": "--",
+    "linewidth": 1.8117477663962578,
+    "cor": "#b7950b",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 99,
+    "figsize": [
+      8.50151880615279,
+      4.436570291346737
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_109.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.3883438264452402,
+    "tau": 7.887585957798871,
+    "wn": null,
+    "zeta": null,
+    "theta": 9.372100985335635,
+    "K_planta": 0.38767785306299213,
+    "U1": 1.0017178525339694,
+    "theta_sistema": 7.1993881487793745,
+    "t_degrau1": 2.1727128365562596,
+    "t_dom": 7.887585957798871,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.0017178525339694,
+        2.1727128365562596
+      ]
+    ],
+    "t_fim": 21.642927826669823,
+    "janela_em_t_dom": 2.7439229115811186,
+    "linestyle": "-",
+    "linewidth": 1.4653746012737816,
+    "cor": "#b7950b",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 122,
+    "figsize": [
+      8.053910221949963,
+      4.383623461788739
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_208.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.8884963522785784,
+    "tau": null,
+    "wn": 0.07134675119410384,
+    "zeta": 0.8780559692039552,
+    "theta": 9.241256738014801,
+    "K_planta": 1.0365047661820295,
+    "U1": 0.8572043093939251,
+    "theta_sistema": 0.0,
+    "t_degrau1": 9.241256738014801,
+    "t_dom": 15.962598796038462,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8572043093939251,
+        9.241256738014801
+      ]
+    ],
+    "t_fim": 68.86617005013517,
+    "janela_em_t_dom": 4.314220443053804,
+    "linestyle": ":",
+    "linewidth": 1.6378121825528629,
+    "cor": "#d35400",
+    "legenda_loc": "lower left",
+    "preenchimento": "fill_between",
+    "dpi": 103,
+    "figsize": [
+      8.246029642012505,
+      4.925093523179221
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_47.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.6667018537324485,
+    "tau": null,
+    "wn": 9.092481085882591,
+    "zeta": 2.442903727127202,
+    "theta": 0.09654793266994739,
+    "K_planta": 0.7238341318102817,
+    "U1": 0.9210699308487326,
+    "theta_sistema": 0.07705419799958962,
+    "t_degrau1": 0.019493734670357764,
+    "t_dom": 0.5138042186424864,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.9210699308487326,
+        0.019493734670357764
+      ]
+    ],
+    "t_fim": 1.1288773619367656,
+    "janela_em_t_dom": 2.19709632770115,
+    "linestyle": ":",
+    "linewidth": 1.2882707697641536,
+    "cor": "#9467bd",
+    "legenda_loc": "lower right",
+    "preenchimento": "nenhum",
+    "dpi": 114,
+    "figsize": [
+      9.96934305116732,
+      4.514459757142751
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_94.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.4133938055875065,
+    "tau": 13.9288881528304,
+    "wn": null,
+    "zeta": null,
+    "theta": 6.862874577418426,
+    "K_planta": 0.7063914988166057,
+    "U1": 0.5852191118948225,
+    "theta_sistema": 1.2819188532714534,
+    "t_degrau1": 5.580955724146972,
+    "t_dom": 13.9288881528304,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5852191118948225,
+        5.580955724146972
+      ]
+    ],
+    "t_fim": 34.714300215158445,
+    "janela_em_t_dom": 2.4922520616338195,
+    "linestyle": "-",
+    "linewidth": 2.552992128021977,
+    "cor": "#f0e68c",
+    "legenda_loc": "center left",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 98,
+    "figsize": [
+      7.965551358889028,
+      4.918524837302778
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_110.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.9632114917711944,
+    "tau": 0.5734897904176797,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.33915333572147494,
+    "K_planta": 1.2857821992966292,
+    "U1": 0.7491249235664539,
+    "theta_sistema": 0.23120878980414722,
+    "t_degrau1": 0.10794454591732773,
+    "t_dom": 0.5734897904176797,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.7491249235664539,
+        0.10794454591732773
+      ]
+    ],
+    "t_fim": 1.9772565250767151,
+    "janela_em_t_dom": 3.4477623806287028,
+    "linestyle": "-",
+    "linewidth": 3.1909575333035463,
+    "cor": "#f0e68c",
+    "legenda_loc": "best",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 122,
+    "figsize": [
+      9.129824890184928,
+      5.810648110279276
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_59.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.29253701066754745,
+    "tau": null,
+    "wn": 0.7280894738151811,
+    "zeta": 1.7543211535325018,
+    "theta": 1.5480402385169783,
+    "K_planta": 0.35906678259442665,
+    "U1": 0.8147147685280987,
+    "theta_sistema": 1.0853837395270394,
+    "t_degrau1": 0.46265649898993894,
+    "t_dom": 4.38919158099369,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8147147685280987,
+        0.46265649898993894
+      ]
+    ],
+    "t_fim": 13.58116215225185,
+    "janela_em_t_dom": 3.094228607168053,
+    "linestyle": ":",
+    "linewidth": 2.733413604445369,
+    "cor": "#ffa07a",
+    "legenda_loc": "upper right",
+    "preenchimento": "fill_between",
+    "dpi": 92,
+    "figsize": [
+      9.096539378540534,
+      5.370364608875143
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_83.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.4774697435725582,
+    "tau": null,
+    "wn": 0.05241499651137646,
+    "zeta": 1.0406415835798692,
+    "theta": 6.171449887595961,
+    "K_planta": 0.6954553444757495,
+    "U1": 0.6865570124167872,
+    "theta_sistema": 0.0,
+    "t_degrau1": 6.171449887595961,
+    "t_dom": 25.348199608366613,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.6865570124167872,
+        6.171449887595961
+      ]
+    ],
+    "t_fim": 84.5901907682216,
+    "janela_em_t_dom": 3.3371281619662305,
+    "linestyle": "-.",
+    "linewidth": 1.8339623076755394,
+    "cor": "#d35400",
+    "legenda_loc": "lower center",
+    "preenchimento": "nenhum",
+    "dpi": 117,
+    "figsize": [
+      7.207872584821771,
+      5.9314599398162375
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_161.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.5935491515815328,
+    "tau": 0.6406428496009363,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.2379401289093673,
+    "K_planta": 0.8350446714864715,
+    "U1": 0.710799280384545,
+    "theta_sistema": 0.04786367619928001,
+    "t_degrau1": 0.1900764527100873,
+    "t_dom": 0.6406428496009363,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.710799280384545,
+        0.1900764527100873
+      ]
+    ],
+    "t_fim": 1.4266237924189857,
+    "janela_em_t_dom": 2.2268628976467086,
+    "linestyle": ":",
+    "linewidth": 2.428898071297201,
+    "cor": "#f0e68c",
+    "legenda_loc": "upper center",
+    "preenchimento": "fill_between",
+    "dpi": 136,
+    "figsize": [
+      9.357775313995884,
+      4.354176605742736
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_74.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.3130171679200233,
+    "tau": null,
+    "wn": 3.895226469117511,
+    "zeta": 2.0939821444530593,
+    "theta": 0.9461199241530356,
+    "K_planta": 0.3735181841124993,
+    "U1": 0.8380239068246975,
+    "theta_sistema": 0.3556981608927554,
+    "t_degrau1": 0.5904217632602802,
+    "t_dom": 1.0098910121206572,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8380239068246975,
+        0.5904217632602802
+      ]
+    ],
+    "t_fim": 2.833363749570231,
+    "janela_em_t_dom": 2.8056133934893497,
+    "linestyle": "--",
+    "linewidth": 1.5151644441746126,
+    "cor": "#ff66cc",
+    "legenda_loc": "center right",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 134,
+    "figsize": [
+      9.8769728829698,
+      5.470475453878786
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_106.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.837067187680244,
+    "tau": null,
+    "wn": 0.08360913280880723,
+    "zeta": 0.962805865555766,
+    "theta": 11.954720030918189,
+    "K_planta": 0.8302440444812837,
+    "U1": 1.00821823805219,
+    "theta_sistema": 9.066608904409653,
+    "t_degrau1": 2.8881111265085364,
+    "t_dom": 12.42245847346667,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.00821823805219,
+        2.8881111265085364
+      ]
+    ],
+    "t_fim": 73.05671130967878,
+    "janela_em_t_dom": 5.8810187585429885,
+    "linestyle": "-.",
+    "linewidth": 1.551000652073431,
+    "cor": "#7f8c8d",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 119,
+    "figsize": [
+      8.137069451359126,
+      5.679149593558351
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_13.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.6956000916793849,
+    "tau": null,
+    "wn": 1.1633609122705415,
+    "zeta": 0.7321071122270653,
+    "theta": 0.3474922203230574,
+    "K_planta": 0.5425276339537518,
+    "U1": 1.2821468403555676,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.3474922203230574,
+    "t_dom": 1.1741157292936775,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.2821468403555676,
+        0.3474922203230574
+      ]
+    ],
+    "t_fim": 4.881966024046606,
+    "janela_em_t_dom": 4.157993886159323,
+    "linestyle": ":",
+    "linewidth": 1.121257657377242,
+    "cor": "#1f77b4",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 115,
+    "figsize": [
+      7.353446956425479,
+      4.808559326667396
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_200.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.4330504060639896,
+    "tau": 7.298038822789884,
+    "wn": null,
+    "zeta": null,
+    "theta": 7.92889602748159,
+    "K_planta": 0.49417609327186324,
+    "U1": 0.8763078828780042,
+    "theta_sistema": 5.841758911847925,
+    "t_degrau1": 2.0871371156336656,
+    "t_dom": 7.298038822789884,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8763078828780042,
+        2.0871371156336656
+      ]
+    ],
+    "t_fim": 24.065345698953507,
+    "janela_em_t_dom": 3.2975085887188853,
+    "linestyle": ":",
+    "linewidth": 1.2320439357553585,
+    "cor": "#b7950b",
+    "legenda_loc": "upper center",
+    "preenchimento": "fill_between",
+    "dpi": 114,
+    "figsize": [
+      8.992769331727349,
+      4.839603968582664
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_16.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.4049194116615964,
+    "tau": 4.111486337965419,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.1158410629376843,
+    "K_planta": 0.781939766212317,
+    "U1": 0.5178396459141716,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.1158410629376843,
+    "t_dom": 4.111486337965419,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5178396459141716,
+        1.1158410629376843
+      ]
+    ],
+    "t_fim": 14.9282493408943,
+    "janela_em_t_dom": 3.630864391557625,
+    "linestyle": "-",
+    "linewidth": 3.2338510788201944,
+    "cor": "#adff2f",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 116,
+    "figsize": [
+      6.841745969749362,
+      5.4711551527008275
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_78.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.7044849433786354,
+    "tau": 0.2172909751979938,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.0686539948189482,
+    "K_planta": 0.38393267442865936,
+    "U1": 1.8349179173848609,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.0686539948189482,
+    "t_dom": 0.2172909751979938,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.8349179173848609,
+        0.0686539948189482
+      ]
+    ],
+    "t_fim": 0.43777304694512104,
+    "janela_em_t_dom": 2.014685821839705,
+    "linestyle": "-",
+    "linewidth": 2.7305213135137527,
+    "cor": "#ff66cc",
+    "legenda_loc": "best",
+    "preenchimento": "fill_between",
+    "dpi": 116,
+    "figsize": [
+      9.952034300869084,
+      5.337663568018481
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_36.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.7171584887604724,
+    "tau": 3.15330918771146,
+    "wn": null,
+    "zeta": null,
+    "theta": 2.323414072056018,
+    "K_planta": 0.7920342740719286,
+    "U1": 0.9054639581106607,
+    "theta_sistema": 0.932064046133565,
+    "t_degrau1": 1.3913500259224532,
+    "t_dom": 3.15330918771146,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.9054639581106607,
+        1.3913500259224532
+      ]
+    ],
+    "t_fim": 9.456162792621564,
+    "janela_em_t_dom": 2.9988060890040575,
+    "linestyle": ":",
+    "linewidth": 1.9067052722338613,
+    "cor": "#d35400",
+    "legenda_loc": "lower center",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 130,
+    "figsize": [
+      7.77806696867242,
+      4.381690572191227
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_23.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6170026603838936,
+    "tau": 3.493811592530385,
+    "wn": null,
+    "zeta": null,
+    "theta": 2.1838262033506393,
+    "K_planta": 0.3320946816673468,
+    "U1": 1.8579118981554001,
+    "theta_sistema": 0.359869105414045,
+    "t_degrau1": 1.8239570979365942,
+    "t_dom": 3.493811592530385,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.8579118981554001,
+        1.8239570979365942
+      ]
+    ],
+    "t_fim": 17.30051725024574,
+    "janela_em_t_dom": 4.95176021718901,
+    "linestyle": "-",
+    "linewidth": 3.3469485599521125,
+    "cor": "#c0392b",
+    "legenda_loc": "center left",
+    "preenchimento": "nenhum",
+    "dpi": 133,
+    "figsize": [
+      8.883032938292299,
+      4.71674803215863
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_186.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6180796439037115,
+    "tau": 8.475827754660777,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.239920121194239,
+    "K_planta": 0.4945843669722394,
+    "U1": 1.2496950675725742,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.239920121194239,
+    "t_dom": 8.475827754660777,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.2496950675725742,
+        1.239920121194239
+      ]
+    ],
+    "t_fim": 19.721573240664107,
+    "janela_em_t_dom": 2.3268020317920453,
+    "linestyle": "-",
+    "linewidth": 3.3769063510430257,
+    "cor": "#d35400",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 99,
+    "figsize": [
+      7.422572488686091,
+      5.93970416387764
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_282.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.7404639513821424,
+    "tau": null,
+    "wn": 0.060348611218001835,
+    "zeta": 2.0804929756097494,
+    "theta": 7.666972096508657,
+    "K_planta": 1.0331397490462992,
+    "U1": 0.7167122860829539,
+    "theta_sistema": 0.0,
+    "t_degrau1": 7.666972096508657,
+    "t_dom": 64.70566909565932,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.7167122860829539,
+        7.666972096508657
+      ]
+    ],
+    "t_fim": 205.8234679564747,
+    "janela_em_t_dom": 3.1809186247991685,
+    "linestyle": "-",
+    "linewidth": 2.158184264342607,
+    "cor": "#16a085",
+    "legenda_loc": "best",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 124,
+    "figsize": [
+      9.144177156503527,
+      4.03449396596601
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_275.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6350388965542992,
+    "tau": 0.6330207102728858,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.6208144652888015,
+    "K_planta": 0.5137749413930582,
+    "U1": 1.2360254371932657,
+    "theta_sistema": 0.4582058815866556,
+    "t_degrau1": 0.16260858370214584,
+    "t_dom": 0.6330207102728858,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.2360254371932657,
+        0.16260858370214584
+      ]
+    ],
+    "t_fim": 1.6734944088420365,
+    "janela_em_t_dom": 2.643664546331538,
+    "linestyle": "-",
+    "linewidth": 1.2128316637651215,
+    "cor": "#ff9966",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 113,
+    "figsize": [
+      8.291944929602781,
+      5.1547494638171365
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_50.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.5012804533038159,
+    "tau": 0.11290428530188411,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.040176862059564646,
+    "K_planta": 0.5697182124300443,
+    "U1": 0.8798743701130463,
+    "theta_sistema": 0.037325715225779155,
+    "t_degrau1": 0.0028511468337854926,
+    "t_dom": 0.11290428530188411,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8798743701130463,
+        0.0028511468337854926
+      ]
+    ],
+    "t_fim": 0.4675702212154671,
+    "janela_em_t_dom": 4.141297382692564,
+    "linestyle": "-.",
+    "linewidth": 1.4728742815549651,
+    "cor": "#16a085",
+    "legenda_loc": "best",
+    "preenchimento": "axhspan_ref",
+    "dpi": 139,
+    "figsize": [
+      8.045784077518988,
+      4.101243486185126
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_33.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.6564921998265993,
+    "tau": null,
+    "wn": 0.05834442641883267,
+    "zeta": 1.8762445893884478,
+    "theta": 45.40028793900987,
+    "K_planta": 0.369869907266499,
+    "U1": 1.774927310735726,
+    "theta_sistema": 14.761353962314683,
+    "t_degrau1": 30.638933976695192,
+    "t_dom": 59.36793128995161,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.774927310735726,
+        30.638933976695192
+      ]
+    ],
+    "t_fim": 238.0326296985187,
+    "janela_em_t_dom": 4.009447938079108,
+    "linestyle": "-.",
+    "linewidth": 1.6188795684095045,
+    "cor": "#66ccff",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 124,
+    "figsize": [
+      9.465553918420513,
+      5.812042385148646
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_22.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.42778592392790665,
+    "tau": null,
+    "wn": 0.6352808816572253,
+    "zeta": 0.8969723543018759,
+    "theta": 0.4334417653101768,
+    "K_planta": 0.793064541967899,
+    "U1": 0.5394087130240431,
+    "theta_sistema": 0.18576229640327027,
+    "t_degrau1": 0.24767946890690654,
+    "t_dom": 1.754911243520048,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5394087130240431,
+        0.24767946890690654
+      ]
+    ],
+    "t_fim": 3.200515570067974,
+    "janela_em_t_dom": 1.8237478287781062,
+    "linestyle": "--",
+    "linewidth": 2.4043181853130746,
+    "cor": "#8e44ad",
+    "legenda_loc": "lower center",
+    "preenchimento": "fill_between",
+    "dpi": 101,
+    "figsize": [
+      8.10428793660495,
+      5.080469351630565
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_293.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.6734301987387178,
+    "tau": null,
+    "wn": 0.575136448799769,
+    "zeta": 1.857502836921786,
+    "theta": 2.3912092759793104,
+    "K_planta": 0.36332402717489737,
+    "U1": 1.85352508606468,
+    "theta_sistema": 1.1929301820074762,
+    "t_degrau1": 1.1982790939718342,
+    "t_dom": 5.951373138727144,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.85352508606468,
+        1.1982790939718342
+      ]
+    ],
+    "t_fim": 19.779383114117262,
+    "janela_em_t_dom": 3.3234990737528514,
+    "linestyle": ":",
+    "linewidth": 3.479303617513465,
+    "cor": "#2980b9",
+    "legenda_loc": "lower center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 101,
+    "figsize": [
+      8.527167836589898,
+      5.414580811920625
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_190.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.8116508620826837,
+    "tau": 3.09284049784862,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.6211382011193785,
+    "K_planta": 0.4276400727776204,
+    "U1": 1.8979766250876002,
+    "theta_sistema": 0.22915634931861456,
+    "t_degrau1": 0.39198185180076395,
+    "t_dom": 3.09284049784862,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.8979766250876002,
+        0.39198185180076395
+      ]
+    ],
+    "t_fim": 15.641987366314362,
+    "janela_em_t_dom": 5.0574827176490125,
+    "linestyle": ":",
+    "linewidth": 3.2312098303922445,
+    "cor": "#cc99ff",
+    "legenda_loc": "lower center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 121,
+    "figsize": [
+      9.351092777561625,
+      4.888461933268206
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_276.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6321191661901641,
+    "tau": 2.2809102136504107,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.5385400575127084,
+    "K_planta": 0.7124519713537779,
+    "U1": 0.887244602592694,
+    "theta_sistema": 0.3021851201924246,
+    "t_degrau1": 1.2363549373202838,
+    "t_dom": 2.2809102136504107,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.887244602592694,
+        1.2363549373202838
+      ]
+    ],
+    "t_fim": 12.786518231400576,
+    "janela_em_t_dom": 5.60588406982351,
+    "linestyle": "-",
+    "linewidth": 2.565699170573051,
+    "cor": "#f0e68c",
+    "legenda_loc": "upper right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 121,
+    "figsize": [
+      9.755194606906795,
+      4.238072954639791
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_295.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.5952551361305324,
+    "tau": 1.9452971130902372,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.8517373337032212,
+    "K_planta": 0.6056561551214256,
+    "U1": 0.9828268582710797,
+    "theta_sistema": 0.24578906996114697,
+    "t_degrau1": 0.6059482637420743,
+    "t_dom": 1.9452971130902372,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.9828268582710797,
+        0.6059482637420743
+      ]
+    ],
+    "t_fim": 7.8019105016521255,
+    "janela_em_t_dom": 4.010652382688348,
+    "linestyle": ":",
+    "linewidth": 3.3176682017300796,
+    "cor": "#2c3e50",
+    "legenda_loc": "center left",
+    "preenchimento": "nenhum",
+    "dpi": 121,
+    "figsize": [
+      8.26648763370619,
+      4.912953558602878
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_84.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.7080085038968589,
+    "tau": 12.782305613429275,
+    "wn": null,
+    "zeta": null,
+    "theta": 18.39365389641207,
+    "K_planta": 0.3808143966838956,
+    "U1": 1.85919573961002,
+    "theta_sistema": 12.39789019736953,
+    "t_degrau1": 5.99576369904254,
+    "t_dom": 12.782305613429275,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.85919573961002,
+        5.99576369904254
+      ]
+    ],
+    "t_fim": 77.96436952357779,
+    "janela_em_t_dom": 6.099398017965342,
+    "linestyle": ":",
+    "linewidth": 1.2209382834832587,
+    "cor": "#ff66cc",
+    "legenda_loc": "lower left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 110,
+    "figsize": [
+      9.406530445945846,
+      4.789935804065819
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_142.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.9112509093928496,
+    "tau": null,
+    "wn": 0.06968505110060473,
+    "zeta": 1.7966010808077848,
+    "theta": 26.929349632244588,
+    "K_planta": 0.7339395638014395,
+    "U1": 1.2415884826715513,
+    "theta_sistema": 9.737980950621832,
+    "t_degrau1": 17.191368681622755,
+    "t_dom": 47.20057542802298,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.2415884826715513,
+        17.191368681622755
+      ]
+    ],
+    "t_fim": 103.13650957293268,
+    "janela_em_t_dom": 2.1850689030307997,
+    "linestyle": "-.",
+    "linewidth": 2.1536123897266193,
+    "cor": "#7fffd4",
+    "legenda_loc": "best",
+    "preenchimento": "axhspan_ref",
+    "dpi": 99,
+    "figsize": [
+      9.502810216928467,
+      5.291355466692143
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_117.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.30957966707996515,
+    "tau": 1.2568637072071223,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.09488084050993109,
+    "K_planta": 0.5658325084475266,
+    "U1": 0.5471224478235762,
+    "theta_sistema": 0.07847070348564317,
+    "t_degrau1": 0.016410137024287928,
+    "t_dom": 1.2568637072071223,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5471224478235762,
+        0.016410137024287928
+      ]
+    ],
+    "t_fim": 3.1750856325693864,
+    "janela_em_t_dom": 2.526197243474192,
+    "linestyle": "-.",
+    "linewidth": 2.9180686373208786,
+    "cor": "#9467bd",
+    "legenda_loc": "lower center",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 118,
+    "figsize": [
+      9.197544464282355,
+      4.082815554157385
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_221.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.484364371151016,
+    "tau": 1.3457791925401832,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.8147984381146944,
+    "K_planta": 0.5284290171721232,
+    "U1": 0.9166119864936293,
+    "theta_sistema": 0.2897745708090342,
+    "t_degrau1": 0.5250238673056603,
+    "t_dom": 1.3457791925401832,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.9166119864936293,
+        0.5250238673056603
+      ]
+    ],
+    "t_fim": 6.453004403692007,
+    "janela_em_t_dom": 4.794994928931723,
+    "linestyle": ":",
+    "linewidth": 1.4741102051404358,
+    "cor": "#ffffff",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 144,
+    "figsize": [
+      6.618063074538819,
+      5.624796612771457
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_02.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.43740408497293565,
+    "tau": 7.405204800046073,
+    "wn": null,
+    "zeta": null,
+    "theta": 2.706476494389392,
+    "K_planta": 0.30604362372909605,
+    "U1": 1.4292213627692416,
+    "theta_sistema": 0.8925215782080229,
+    "t_degrau1": 1.813954916181369,
+    "t_dom": 7.405204800046073,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.4292213627692416,
+        1.813954916181369
+      ]
+    ],
+    "t_fim": 27.482261684122804,
+    "janela_em_t_dom": 3.7112088627112403,
+    "linestyle": "-.",
+    "linewidth": 1.9529628984549405,
+    "cor": "#7f8c8d",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 97,
+    "figsize": [
+      8.761535199636397,
+      4.662051968592156
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_250.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.5808357579549793,
+    "tau": null,
+    "wn": 7.959828679859279,
+    "zeta": 2.1031381490427097,
+    "theta": 0.15245360654064885,
+    "K_planta": 1.0115344186733766,
+    "U1": 0.5742125499958204,
+    "theta_sistema": 0.031195790602760103,
+    "t_degrau1": 0.12125781593788876,
+    "t_dom": 0.496659514308496,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5742125499958204,
+        0.12125781593788876
+      ]
+    ],
+    "t_fim": 1.2026980409103423,
+    "janela_em_t_dom": 2.4215745521051195,
+    "linestyle": ":",
+    "linewidth": 2.679120047777735,
+    "cor": "#cc99ff",
+    "legenda_loc": "center right",
+    "preenchimento": "nenhum",
+    "dpi": 132,
+    "figsize": [
+      7.891887956081673,
+      5.858801430699355
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_149.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.5168826517092422,
+    "tau": null,
+    "wn": 1.0222147497738572,
+    "zeta": 0.9953427602920787,
+    "theta": 0.3059824053021231,
+    "K_planta": 0.7001747431452578,
+    "U1": 0.7382195041588497,
+    "theta_sistema": 0.0991336025865218,
+    "t_degrau1": 0.20684880271560133,
+    "t_dom": 0.9828453671789732,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.7382195041588497,
+        0.20684880271560133
+      ]
+    ],
+    "t_fim": 4.820207303498997,
+    "janela_em_t_dom": 4.904339445923493,
+    "linestyle": "--",
+    "linewidth": 2.23183865117393,
+    "cor": "#2980b9",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 142,
+    "figsize": [
+      6.896952515274671,
+      5.6093938971115955
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_292.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6166064781841976,
+    "tau": 0.537429332171641,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.14267053185221634,
+    "K_planta": 0.8200516655535709,
+    "U1": 0.7519117442045082,
+    "theta_sistema": 0.030671505422162973,
+    "t_degrau1": 0.11199902643005337,
+    "t_dom": 0.537429332171641,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.7519117442045082,
+        0.11199902643005337
+      ]
+    ],
+    "t_fim": 1.6335525634266264,
+    "janela_em_t_dom": 3.039567187049091,
+    "linestyle": "--",
+    "linewidth": 2.8832529309668735,
+    "cor": "#1f77b4",
+    "legenda_loc": "lower left",
+    "preenchimento": "fill_between",
+    "dpi": 125,
+    "figsize": [
+      8.610181946542149,
+      5.922758651410511
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_233.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.5585022951983344,
+    "tau": null,
+    "wn": 9.901543311733098,
+    "zeta": 0.3638977073432714,
+    "theta": 0.06938873205975467,
+    "K_planta": 0.9251978841674721,
+    "U1": 0.6036571254169002,
+    "theta_sistema": 0.01624212789791261,
+    "t_degrau1": 0.05314660416184206,
+    "t_dom": 0.277535018644789,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.6036571254169002,
+        0.05314660416184206
+      ]
+    ],
+    "t_fim": 1.1890907699333355,
+    "janela_em_t_dom": 4.284471111932821,
+    "linestyle": "-.",
+    "linewidth": 1.828575879418314,
+    "cor": "#66ff66",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 100,
+    "figsize": [
+      6.819336935621699,
+      5.4964975455884835
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_62.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.7683181600212001,
+    "tau": 2.3179742787327036,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.2874509661707305,
+    "K_planta": 0.4224590039224825,
+    "U1": 1.8186809912617694,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.2874509661707305,
+    "t_dom": 2.3179742787327036,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.8186809912617694,
+        1.2874509661707305
+      ]
+    ],
+    "t_fim": 7.750381643855094,
+    "janela_em_t_dom": 3.343601227573771,
+    "linestyle": "-",
+    "linewidth": 3.308831842740506,
+    "cor": "#66ccff",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 131,
+    "figsize": [
+      7.929307295807966,
+      5.5762240518303035
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_183.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.28786567123240286,
+    "tau": null,
+    "wn": 0.05656101196146198,
+    "zeta": 2.0682827333334837,
+    "theta": 30.961542813011878,
+    "K_planta": 0.350008283421539,
+    "U1": 0.8224538814291618,
+    "theta_sistema": 20.608166882780992,
+    "t_degrau1": 10.353375930230886,
+    "t_dom": 68.57639823612445,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.8224538814291618,
+        10.353375930230886
+      ]
+    ],
+    "t_fim": 313.50095321386283,
+    "janela_em_t_dom": 4.57155758070592,
+    "linestyle": "-.",
+    "linewidth": 2.789967422296784,
+    "cor": "#66ff66",
+    "legenda_loc": "center right",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 109,
+    "figsize": [
+      7.239689055731846,
+      4.682254595136648
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_144.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.36574055442044523,
+    "tau": 0.12188122081297648,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.1394968415752028,
+    "K_planta": 0.3934805325108403,
+    "U1": 0.9295010151750498,
+    "theta_sistema": 0.07131599447359169,
+    "t_degrau1": 0.06818084710161113,
+    "t_dom": 0.12188122081297648,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.9295010151750498,
+        0.06818084710161113
+      ]
+    ],
+    "t_fim": 0.4037386741875393,
+    "janela_em_t_dom": 3.312558501584634,
+    "linestyle": "--",
+    "linewidth": 1.4515977986065647,
+    "cor": "#cc99ff",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 94,
+    "figsize": [
+      6.620940999137475,
+      5.605760968210444
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_121.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.2837404911487283,
+    "tau": null,
+    "wn": 1.3725171250023234,
+    "zeta": 0.4762644449553691,
+    "theta": 0.5093023586026992,
+    "K_planta": 0.37023032566193503,
+    "U1": 0.7663891136995017,
+    "theta_sistema": 0.14638559825733832,
+    "t_degrau1": 0.36291676034536097,
+    "t_dom": 1.5297979239463635,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.7663891136995017,
+        0.36291676034536097
+      ]
+    ],
+    "t_fim": 7.985609764743313,
+    "janela_em_t_dom": 5.220042228939055,
+    "linestyle": ":",
+    "linewidth": 2.816521262542837,
+    "cor": "#c0392b",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 99,
+    "figsize": [
+      8.790478476375986,
+      5.50417584353675
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_140.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.30877369375105973,
+    "tau": null,
+    "wn": 0.7200362295367841,
+    "zeta": 2.2275705857495693,
+    "theta": 4.35153233359577,
+    "K_planta": 0.45880584984917366,
+    "U1": 0.672994238963093,
+    "theta_sistema": 1.0542136990549613,
+    "t_degrau1": 3.2973186345408094,
+    "t_dom": 5.85812977948643,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.672994238963093,
+        3.2973186345408094
+      ]
+    ],
+    "t_fim": 23.34810880811509,
+    "janela_em_t_dom": 3.985590911603527,
+    "linestyle": ":",
+    "linewidth": 2.324647950233029,
+    "cor": "#00ffcc",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 143,
+    "figsize": [
+      8.091514612294299,
+      5.428436854992395
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_38.png",
+    "familia": "neg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.5063636872240462,
+    "tau": 0.2636405901671333,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.3875804658600621,
+    "K_planta": 0.9839804105862283,
+    "U1": 0.514607487889285,
+    "theta_sistema": 0.23429568233786255,
+    "t_degrau1": 0.15328478352219957,
+    "t_dom": 0.2636405901671333,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.514607487889285,
+        0.15328478352219957
+      ]
+    ],
+    "t_fim": 1.6854800130108405,
+    "janela_em_t_dom": 6.393097557331141,
+    "linestyle": ":",
+    "linewidth": 3.2410257730552368,
+    "cor": "#cc99ff",
+    "legenda_loc": "center left",
+    "preenchimento": "nenhum",
+    "dpi": 133,
+    "figsize": [
+      6.567873266116281,
+      5.862133386872199
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K+_1deg_207.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6899426246609474,
+    "tau": 0.5640729724440103,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.10316824932907306,
+    "K_planta": 0.4358057315938049,
+    "U1": 1.5831426129659352,
+    "theta_sistema": 0.04724310627099297,
+    "t_degrau1": 0.055925143058080086,
+    "t_dom": 0.5640729724440103,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.5831426129659352,
+        0.055925143058080086
+      ]
+    ],
+    "t_fim": 2.1071966413559764,
+    "janela_em_t_dom": 3.7356809212572863,
+    "linestyle": "-.",
+    "linewidth": 2.9175191525477664,
+    "cor": "#2c3e50",
+    "legenda_loc": "upper center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 118,
+    "figsize": [
+      6.903259472918486,
+      5.281839194096001
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_67.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.7274731621923742,
+    "tau": null,
+    "wn": 0.058798318563418765,
+    "zeta": 0.6202962196055674,
+    "theta": 25.160592048651527,
+    "K_planta": 1.1543229125742394,
+    "U1": 0.6302163409110944,
+    "theta_sistema": 20.92835193838971,
+    "t_degrau1": 4.232240110261817,
+    "t_dom": 27.418011784698184,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.6302163409110944,
+        4.232240110261817
+      ]
+    ],
+    "t_fim": 67.1509109137667,
+    "janela_em_t_dom": 2.4491531859083664,
+    "linestyle": "-.",
+    "linewidth": 1.0718304563405137,
+    "cor": "#16a085",
+    "legenda_loc": "lower right",
+    "preenchimento": "fill_between",
+    "dpi": 118,
+    "figsize": [
+      8.767151554178698,
+      5.099596570409373
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_166.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.27449183218268075,
+    "tau": 0.4193571106274047,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.33836081751989494,
+    "K_planta": 0.4662371471059918,
+    "U1": 0.5887386577549543,
+    "theta_sistema": 0.08934015128789037,
+    "t_degrau1": 0.24902066623200456,
+    "t_dom": 0.4193571106274047,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.5887386577549543,
+        0.24902066623200456
+      ]
+    ],
+    "t_fim": 2.10205405994729,
+    "janela_em_t_dom": 5.012563294330182,
+    "linestyle": "-",
+    "linewidth": 2.3940493915106376,
+    "cor": "#2c3e50",
+    "legenda_loc": "center left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 92,
+    "figsize": [
+      8.497457061285422,
+      5.289014525970358
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_269.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.9652296241472321,
+    "tau": 0.22645275109102575,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.10083908979858444,
+    "K_planta": 0.498228194854622,
+    "U1": 1.9373243708716172,
+    "theta_sistema": 0.05107645786952734,
+    "t_degrau1": 0.04976263192905711,
+    "t_dom": 0.22645275109102575,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        1.9373243708716172,
+        0.04976263192905711
+      ]
+    ],
+    "t_fim": 0.6563751086144703,
+    "janela_em_t_dom": 2.898507990969964,
+    "linestyle": "-.",
+    "linewidth": 3.084088298795211,
+    "cor": "#ff7f0e",
+    "legenda_loc": "lower center",
+    "preenchimento": "nenhum",
+    "dpi": 124,
+    "figsize": [
+      7.558614286989984,
+      5.804708056610832
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_298.png",
+    "familia": "rg",
+    "celula": "K+_1deg",
+    "order": "second",
+    "K": 0.4982645199449091,
+    "tau": null,
+    "wn": 6.015663646387191,
+    "zeta": 1.575829751050431,
+    "theta": 0.24670655686128798,
+    "K_planta": 0.898182839350077,
+    "U1": 0.554747316599204,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.24670655686128798,
+    "t_dom": 0.4644064363568234,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.554747316599204,
+        0.24670655686128798
+      ]
+    ],
+    "t_fim": 0.9817692849505887,
+    "janela_em_t_dom": 2.1140303150240003,
+    "linestyle": "-.",
+    "linewidth": 2.0343977588068913,
+    "cor": "#e74c3c",
+    "legenda_loc": "lower right",
+    "preenchimento": "fill_between",
+    "dpi": 141,
+    "figsize": [
+      7.487608119171108,
+      4.800640600285163
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K+_1deg_272.png",
+    "familia": "multi",
+    "celula": "K+_1deg",
+    "order": "fopdt",
+    "K": 0.6386107716962552,
+    "tau": 3.171734605639744,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.0184579487419945,
+    "K_planta": 0.946451921656976,
+    "U1": 0.6747419040348337,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.0184579487419945,
+    "t_dom": 3.171734605639744,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        0.6747419040348337,
+        1.0184579487419945
+      ]
+    ],
+    "t_fim": 11.890196684484005,
+    "janela_em_t_dom": 3.7487993678101996,
+    "linestyle": "-",
+    "linewidth": 2.7748103193766522,
+    "cor": "#ff7f0e",
+    "legenda_loc": "upper center",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 93,
+    "figsize": [
+      7.980966260349595,
+      4.934586778148628
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_192.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.16758437931959608,
+    "tau": null,
+    "wn": 0.1920102662542422,
+    "zeta": 0.7448626377123999,
+    "theta": 2.657252130974301,
+    "K_planta": 0.3063624771350571,
+    "U1": -0.5470133969628338,
+    "theta_sistema": 2.6239744411717147,
+    "t_degrau1": 0.033277689802586295,
+    "t_dom": 6.991966833305753,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5470133969628338,
+        0.033277689802586295
+      ]
+    ],
+    "t_fim": 21.1002895746629,
+    "janela_em_t_dom": 3.0177902838659247,
+    "linestyle": "--",
+    "linewidth": 3.455069570558404,
+    "cor": "#7fffd4",
+    "legenda_loc": "lower left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 90,
+    "figsize": [
+      7.515805174224793,
+      4.514742105008122
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_98.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.6955390720258141,
+    "tau": null,
+    "wn": 0.19794849048993668,
+    "zeta": 0.3943627831846828,
+    "theta": 2.523154927603752,
+    "K_planta": 0.6296701646966756,
+    "U1": -1.1046085887853188,
+    "theta_sistema": 1.530056918755711,
+    "t_degrau1": 0.9930980088480412,
+    "t_dom": 12.810081204031682,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1046085887853188,
+        0.9930980088480412
+      ]
+    ],
+    "t_fim": 33.27571933300594,
+    "janela_em_t_dom": 2.59761970302992,
+    "linestyle": "--",
+    "linewidth": 3.4162065082585698,
+    "cor": "#8e44ad",
+    "legenda_loc": "upper center",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 114,
+    "figsize": [
+      8.13920919063998,
+      4.373571696819114
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_105.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.1800520824870452,
+    "tau": 6.808472049202701,
+    "wn": null,
+    "zeta": null,
+    "theta": 2.366319741297627,
+    "K_planta": 0.30841932793688415,
+    "U1": -0.5837898801332309,
+    "theta_sistema": 1.8011779209023364,
+    "t_degrau1": 0.5651418203952908,
+    "t_dom": 6.808472049202701,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5837898801332309,
+        0.5651418203952908
+      ]
+    ],
+    "t_fim": 35.411905066065025,
+    "janela_em_t_dom": 5.201153035534882,
+    "linestyle": "-.",
+    "linewidth": 3.4773151999603646,
+    "cor": "#8c564b",
+    "legenda_loc": "center right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 97,
+    "figsize": [
+      8.950941386181391,
+      4.811946252859448
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_180.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.8287517396453761,
+    "tau": 0.23408447419166564,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.10925534409305655,
+    "K_planta": 0.834627278262154,
+    "U1": -0.9929602844649268,
+    "theta_sistema": 0.014148451096904548,
+    "t_degrau1": 0.095106892996152,
+    "t_dom": 0.23408447419166564,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.9929602844649268,
+        0.095106892996152
+      ]
+    ],
+    "t_fim": 0.6376486458446146,
+    "janela_em_t_dom": 2.724010842865705,
+    "linestyle": ":",
+    "linewidth": 1.138549671126472,
+    "cor": "#8c564b",
+    "legenda_loc": "center right",
+    "preenchimento": "fill_between",
+    "dpi": 143,
+    "figsize": [
+      6.629053574832943,
+      5.708185958036595
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_133.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.5720560613375775,
+    "tau": null,
+    "wn": 0.6419307044328466,
+    "zeta": 1.6986900349399692,
+    "theta": 4.889857935281882,
+    "K_planta": 0.32292658998817975,
+    "U1": -1.7714740101102133,
+    "theta_sistema": 2.388103873654463,
+    "t_degrau1": 2.501754061627419,
+    "t_dom": 4.785317995660194,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.7714740101102133,
+        2.501754061627419
+      ]
+    ],
+    "t_fim": 12.991811742138346,
+    "janela_em_t_dom": 2.7149317462121894,
+    "linestyle": "-",
+    "linewidth": 1.5225976096322296,
+    "cor": "#66ccff",
+    "legenda_loc": "lower left",
+    "preenchimento": "fill_between",
+    "dpi": 133,
+    "figsize": [
+      9.568165903732702,
+      5.073644232914828
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_148.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.18361958797700484,
+    "tau": null,
+    "wn": 5.623252781597049,
+    "zeta": 0.7994484936006407,
+    "theta": 0.1653712990829821,
+    "K_planta": 0.36105927367922963,
+    "U1": -0.5085580162667008,
+    "theta_sistema": 0.09044067514980882,
+    "t_degrau1": 0.07493062393317328,
+    "t_dom": 0.22244461912037883,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5085580162667008,
+        0.07493062393317328
+      ]
+    ],
+    "t_fim": 0.9148706005525938,
+    "janela_em_t_dom": 4.112801667985053,
+    "linestyle": "-.",
+    "linewidth": 2.098250126290904,
+    "cor": "#1f77b4",
+    "legenda_loc": "upper left",
+    "preenchimento": "axhspan_ref",
+    "dpi": 122,
+    "figsize": [
+      7.646577384722704,
+      5.2228942618738605
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_42.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.7061477704696597,
+    "tau": 2.8993911269161043,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.7057259505216518,
+    "K_planta": 0.6161981396878703,
+    "U1": -1.1459751741985988,
+    "theta_sistema": 0.42810762521756823,
+    "t_degrau1": 1.2776183253040836,
+    "t_dom": 2.8993911269161043,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1459751741985988,
+        1.2776183253040836
+      ]
+    ],
+    "t_fim": 8.24910799074122,
+    "janela_em_t_dom": 2.845117346935963,
+    "linestyle": "--",
+    "linewidth": 1.7938084964312146,
+    "cor": "#e74c3c",
+    "legenda_loc": "upper center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 141,
+    "figsize": [
+      8.552377339626652,
+      5.504122696627724
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_48.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.9261806052747511,
+    "tau": null,
+    "wn": 0.39180318340751424,
+    "zeta": 0.22960892295088953,
+    "theta": 1.9338606525629545,
+    "K_planta": 0.3372752711136224,
+    "U1": -2.746067336086245,
+    "theta_sistema": 0.9794093210611522,
+    "t_degrau1": 0.9544513315018022,
+    "t_dom": 11.115865372791772,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -2.746067336086245,
+        0.9544513315018022
+      ]
+    ],
+    "t_fim": 53.55916409751937,
+    "janela_em_t_dom": 4.818263113244946,
+    "linestyle": ":",
+    "linewidth": 1.884939969525195,
+    "cor": "#8e44ad",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 144,
+    "figsize": [
+      6.692040493322752,
+      5.835409668137727
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_135.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.4178778187853898,
+    "tau": null,
+    "wn": 4.5157548378910555,
+    "zeta": 1.3254427665819861,
+    "theta": 0.08905386956068387,
+    "K_planta": 0.6978028240677457,
+    "U1": -0.5988479902523588,
+    "theta_sistema": 0.027796657729516346,
+    "t_degrau1": 0.06125721183116752,
+    "t_dom": 0.48616112386538307,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5988479902523588,
+        0.06125721183116752
+      ]
+    ],
+    "t_fim": 0.8982412602389027,
+    "janela_em_t_dom": 1.8476205030487458,
+    "linestyle": ":",
+    "linewidth": 1.516105940308735,
+    "cor": "#2ecc71",
+    "legenda_loc": "lower center",
+    "preenchimento": "nenhum",
+    "dpi": 144,
+    "figsize": [
+      9.607915808661488,
+      4.960314862587553
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_104.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.47756419106334264,
+    "tau": null,
+    "wn": 0.17168376567643173,
+    "zeta": 1.154633799323283,
+    "theta": 5.003065919937306,
+    "K_planta": 0.46576490920928565,
+    "U1": -1.0253331275515973,
+    "theta_sistema": 2.5378146514463733,
+    "t_degrau1": 2.4652512684909333,
+    "t_dom": 10.08744520486682,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.0253331275515973,
+        2.4652512684909333
+      ]
+    ],
+    "t_fim": 41.10666473686212,
+    "janela_em_t_dom": 4.075032270512823,
+    "linestyle": "-",
+    "linewidth": 1.6052257311885985,
+    "cor": "#e74c3c",
+    "legenda_loc": "lower left",
+    "preenchimento": "nenhum",
+    "dpi": 138,
+    "figsize": [
+      7.429904193051904,
+      5.856046098539899
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_10.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.5982693173734422,
+    "tau": null,
+    "wn": 3.416175876241486,
+    "zeta": 1.4521618259994604,
+    "theta": 0.5751306903734683,
+    "K_planta": 0.9011920980052859,
+    "U1": -0.6638643622127423,
+    "theta_sistema": 0.19946026086654264,
+    "t_degrau1": 0.3756704295069257,
+    "t_dom": 0.7333185651638466,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.6638643622127423,
+        0.3756704295069257
+      ]
+    ],
+    "t_fim": 3.626946915667631,
+    "janela_em_t_dom": 4.945936306490831,
+    "linestyle": "-.",
+    "linewidth": 1.1046316421964302,
+    "cor": "#005f73",
+    "legenda_loc": "upper right",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 108,
+    "figsize": [
+      9.046385469145786,
+      4.1585750098648395
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_243.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.5334720102872137,
+    "tau": 5.473655038075963,
+    "wn": null,
+    "zeta": null,
+    "theta": 5.913350680985283,
+    "K_planta": 0.8129357744748187,
+    "U1": -0.6562289753232387,
+    "theta_sistema": 3.4952103618202446,
+    "t_degrau1": 2.418140319165038,
+    "t_dom": 5.473655038075963,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.6562289753232387,
+        2.418140319165038
+      ]
+    ],
+    "t_fim": 23.408382565205734,
+    "janela_em_t_dom": 4.276554222429403,
+    "linestyle": "--",
+    "linewidth": 1.1354019145617655,
+    "cor": "#005f73",
+    "legenda_loc": "lower center",
+    "preenchimento": "nenhum",
+    "dpi": 93,
+    "figsize": [
+      8.213667630891326,
+      4.801902875178759
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_219.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.9183081951879104,
+    "tau": 2.3602396221250412,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.4018141836227829,
+    "K_planta": 1.8319588299761842,
+    "U1": -0.5012711967985921,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.4018141836227829,
+    "t_dom": 2.3602396221250412,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5012711967985921,
+        1.4018141836227829
+      ]
+    ],
+    "t_fim": 7.50012816702528,
+    "janela_em_t_dom": 3.1776977628536467,
+    "linestyle": "-.",
+    "linewidth": 1.3100081099414764,
+    "cor": "#66ccff",
+    "legenda_loc": "upper center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 92,
+    "figsize": [
+      8.804182083792595,
+      4.646792989495717
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_121.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.9561130038277154,
+    "tau": null,
+    "wn": 0.08686632140114196,
+    "zeta": 0.340174913827244,
+    "theta": 17.410310945603573,
+    "K_planta": 0.8228483292763792,
+    "U1": -1.1619553322403053,
+    "theta_sistema": 0.0,
+    "t_degrau1": 17.410310945603573,
+    "t_dom": 33.84124141319468,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1619553322403053,
+        17.410310945603573
+      ]
+    ],
+    "t_fim": 94.59728457346606,
+    "janela_em_t_dom": 2.795325485210558,
+    "linestyle": "-.",
+    "linewidth": 2.9956998673974207,
+    "cor": "#ffffff",
+    "legenda_loc": "center left",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 129,
+    "figsize": [
+      8.11660076289003,
+      4.24450048053731
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_198.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.3560285624524463,
+    "tau": null,
+    "wn": 0.11272390958309406,
+    "zeta": 0.43200435024798556,
+    "theta": 23.976784676092812,
+    "K_planta": 0.5029268149234822,
+    "U1": -0.7079132627012824,
+    "theta_sistema": 12.482189906865917,
+    "t_degrau1": 11.494594769226895,
+    "t_dom": 20.535053418416357,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7079132627012824,
+        11.494594769226895
+      ]
+    ],
+    "t_fim": 117.38343608525759,
+    "janela_em_t_dom": 5.716246931210081,
+    "linestyle": ":",
+    "linewidth": 1.9349618397199135,
+    "cor": "#9467bd",
+    "legenda_loc": "center left",
+    "preenchimento": "fill_between",
+    "dpi": 134,
+    "figsize": [
+      7.525163691516869,
+      4.214080722561606
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_257.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.7106896563947869,
+    "tau": 10.302474298652754,
+    "wn": null,
+    "zeta": null,
+    "theta": 5.916966198431445,
+    "K_planta": 0.5462853231576719,
+    "U1": -1.3009495702480436,
+    "theta_sistema": 1.2205489374573302,
+    "t_degrau1": 4.696417260974115,
+    "t_dom": 10.302474298652754,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.3009495702480436,
+        4.696417260974115
+      ]
+    ],
+    "t_fim": 22.317418703923558,
+    "janela_em_t_dom": 2.1662193039241058,
+    "linestyle": "--",
+    "linewidth": 2.919095254798581,
+    "cor": "#e377c2",
+    "legenda_loc": "center left",
+    "preenchimento": "nenhum",
+    "dpi": 117,
+    "figsize": [
+      8.107032191941276,
+      5.377369663810373
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_81.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.46893396310077595,
+    "tau": 3.851292881674244,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.1744651541170454,
+    "K_planta": 0.6847522076456161,
+    "U1": -0.6848228568887889,
+    "theta_sistema": 0.8318190787174884,
+    "t_degrau1": 0.34264607539955705,
+    "t_dom": 3.851292881674244,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.6848228568887889,
+        0.34264607539955705
+      ]
+    ],
+    "t_fim": 20.378500221320124,
+    "janela_em_t_dom": 5.291340037598265,
+    "linestyle": "-",
+    "linewidth": 2.115674889759204,
+    "cor": "#16a085",
+    "legenda_loc": "center right",
+    "preenchimento": "nenhum",
+    "dpi": 127,
+    "figsize": [
+      9.93473218932328,
+      4.321983921391512
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_162.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.885278856295007,
+    "tau": null,
+    "wn": 2.187748451321428,
+    "zeta": 1.1487490050358529,
+    "theta": 0.4319201230777527,
+    "K_planta": 0.6239939854836103,
+    "U1": -1.4187297904945264,
+    "theta_sistema": 0.04215968654664438,
+    "t_degrau1": 0.3897604365311083,
+    "t_dom": 0.7835006056936636,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.4187297904945264,
+        0.3897604365311083
+      ]
+    ],
+    "t_fim": 3.02354097957127,
+    "janela_em_t_dom": 3.8590154973708173,
+    "linestyle": ":",
+    "linewidth": 1.7810039345248865,
+    "cor": "#17becf",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 139,
+    "figsize": [
+      8.268886376538623,
+      4.951102048993992
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_269.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.8429460386565935,
+    "tau": 0.7622549429450302,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.4185741487832839,
+    "K_planta": 1.5730584765853832,
+    "U1": -0.5358644012308843,
+    "theta_sistema": 0.355410038721491,
+    "t_degrau1": 0.06316411006179291,
+    "t_dom": 0.7622549429450302,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5358644012308843,
+        0.06316411006179291
+      ]
+    ],
+    "t_fim": 1.796396767603994,
+    "janela_em_t_dom": 2.3566875941315355,
+    "linestyle": "--",
+    "linewidth": 2.243320910719324,
+    "cor": "#ffcc00",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 100,
+    "figsize": [
+      8.148721352853102,
+      4.3245063297826025
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_296.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.7284357194795368,
+    "tau": 1.0788323937428594,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.34797349264276706,
+    "K_planta": 0.3747577520900434,
+    "U1": -1.9437509041961454,
+    "theta_sistema": 0.0816995957634334,
+    "t_degrau1": 0.26627389687933367,
+    "t_dom": 1.0788323937428594,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.9437509041961454,
+        0.26627389687933367
+      ]
+    ],
+    "t_fim": 4.622190453993448,
+    "janela_em_t_dom": 4.284437954219561,
+    "linestyle": ":",
+    "linewidth": 2.1039654961658556,
+    "cor": "#1f77b4",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 144,
+    "figsize": [
+      9.246399206857102,
+      4.567040181239224
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_22.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.48267878714929263,
+    "tau": null,
+    "wn": 0.11221596496881119,
+    "zeta": 0.3596674185258184,
+    "theta": 11.696018983679917,
+    "K_planta": 0.6387320701944761,
+    "U1": -0.755682718424222,
+    "theta_sistema": 1.6772265569266986,
+    "t_degrau1": 10.018792426753217,
+    "t_dom": 24.776745150183068,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.755682718424222,
+        10.018792426753217
+      ]
+    ],
+    "t_fim": 82.23275129167357,
+    "janela_em_t_dom": 3.318948909278585,
+    "linestyle": "-.",
+    "linewidth": 1.0716173686031927,
+    "cor": "#c0392b",
+    "legenda_loc": "upper right",
+    "preenchimento": "fill_between",
+    "dpi": 97,
+    "figsize": [
+      9.007283636363388,
+      4.1473020501900155
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_23.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.9530532860135018,
+    "tau": null,
+    "wn": 0.3101209953262103,
+    "zeta": 1.0919065844584988,
+    "theta": 5.771927989928637,
+    "K_planta": 1.7600163765762329,
+    "U1": -0.5415025102592967,
+    "theta_sistema": 3.86606819889616,
+    "t_degrau1": 1.9058597910324773,
+    "t_dom": 4.934787466418847,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5415025102592967,
+        1.9058597910324773
+      ]
+    ],
+    "t_fim": 14.973303221538483,
+    "janela_em_t_dom": 3.034234670374678,
+    "linestyle": "-",
+    "linewidth": 3.3439287164222806,
+    "cor": "#ff66cc",
+    "legenda_loc": "lower left",
+    "preenchimento": "nenhum",
+    "dpi": 100,
+    "figsize": [
+      9.743252663876808,
+      4.089183652047709
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_112.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.771063872187469,
+    "tau": null,
+    "wn": 1.426492794479864,
+    "zeta": 0.28353322175663564,
+    "theta": 0.7624461128478514,
+    "K_planta": 0.5263899197646696,
+    "U1": -1.4648150415421792,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.7624461128478514,
+    "t_dom": 2.472444006836529,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.4648150415421792,
+        0.7624461128478514
+      ]
+    ],
+    "t_fim": 6.8812099667962725,
+    "janela_em_t_dom": 2.7831610939495945,
+    "linestyle": "-.",
+    "linewidth": 1.5634393416813643,
+    "cor": "#8c564b",
+    "legenda_loc": "center right",
+    "preenchimento": "nenhum",
+    "dpi": 139,
+    "figsize": [
+      9.312060235857388,
+      5.177641967587618
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_283.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.6025542619059902,
+    "tau": null,
+    "wn": 0.7208527291479209,
+    "zeta": 0.42699063740992194,
+    "theta": 1.8883922499062697,
+    "K_planta": 0.8338785305939272,
+    "U1": -0.7225923678318266,
+    "theta_sistema": 0.0,
+    "t_degrau1": 1.8883922499062697,
+    "t_dom": 3.2488906972429525,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7225923678318266,
+        1.8883922499062697
+      ]
+    ],
+    "t_fim": 7.265010344730074,
+    "janela_em_t_dom": 2.236151050232391,
+    "linestyle": ":",
+    "linewidth": 3.238918130886112,
+    "cor": "#16a085",
+    "legenda_loc": "lower left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 119,
+    "figsize": [
+      6.98225105431994,
+      5.373067709293032
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_78.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.5943335045064428,
+    "tau": 0.8423852909485036,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.6135752701387518,
+    "K_planta": 0.4480190723872082,
+    "U1": -1.3265808112579187,
+    "theta_sistema": 0.36054492282490924,
+    "t_degrau1": 0.2530303473138426,
+    "t_dom": 0.8423852909485036,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.3265808112579187,
+        0.2530303473138426
+      ]
+    ],
+    "t_fim": 2.803613098713686,
+    "janela_em_t_dom": 3.328183823766547,
+    "linestyle": "-",
+    "linewidth": 3.3516988981847344,
+    "cor": "#8c564b",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 140,
+    "figsize": [
+      7.633989408705153,
+      4.4552692157810405
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_17.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.6312936071917945,
+    "tau": null,
+    "wn": 0.5449870259929593,
+    "zeta": 0.8670987050376415,
+    "theta": 0.34484921884998854,
+    "K_planta": 0.7391071501489868,
+    "U1": -0.8541300230481337,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.34484921884998854,
+    "t_dom": 2.1161443968826212,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.8541300230481337,
+        0.34484921884998854
+      ]
+    ],
+    "t_fim": 4.912223956997373,
+    "janela_em_t_dom": 2.321308491156733,
+    "linestyle": ":",
+    "linewidth": 1.3727588549542593,
+    "cor": "#cc99ff",
+    "legenda_loc": "upper center",
+    "preenchimento": "nenhum",
+    "dpi": 93,
+    "figsize": [
+      8.426844735797959,
+      4.382110284325805
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_199.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.16144457782850774,
+    "tau": null,
+    "wn": 0.2760658899782701,
+    "zeta": 0.9594017202027755,
+    "theta": 0.9456304969616804,
+    "K_planta": 0.30550282800949125,
+    "U1": -0.5284552646546763,
+    "theta_sistema": 0.5173906841403871,
+    "t_degrau1": 0.4282398128212933,
+    "t_dom": 3.7756067824946005,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5284552646546763,
+        0.4282398128212933
+      ]
+    ],
+    "t_fim": 11.29797182269171,
+    "janela_em_t_dom": 2.9923592348319095,
+    "linestyle": "-.",
+    "linewidth": 2.71102637853497,
+    "cor": "#27ae60",
+    "legenda_loc": "lower center",
+    "preenchimento": "fill_between",
+    "dpi": 112,
+    "figsize": [
+      7.725557110919532,
+      5.516672116938553
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_46.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.4332867419232437,
+    "tau": 2.1012506768884296,
+    "wn": null,
+    "zeta": null,
+    "theta": 1.3149850699684436,
+    "K_planta": 0.3764823680170307,
+    "U1": -1.1508818970869927,
+    "theta_sistema": 0.1582707759842725,
+    "t_degrau1": 1.156714293984171,
+    "t_dom": 2.1012506768884296,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1508818970869927,
+        1.156714293984171
+      ]
+    ],
+    "t_fim": 6.108596724960174,
+    "janela_em_t_dom": 2.907124215186879,
+    "linestyle": ":",
+    "linewidth": 2.3811873618125885,
+    "cor": "#c0392b",
+    "legenda_loc": "upper left",
+    "preenchimento": "fill_between",
+    "dpi": 132,
+    "figsize": [
+      9.120218988737093,
+      4.793484953861102
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_00.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.5389978259660332,
+    "tau": null,
+    "wn": 0.15639291852949685,
+    "zeta": 1.3972142314776008,
+    "theta": 5.665693094224515,
+    "K_planta": 1.0335266552829434,
+    "U1": -0.5215132316238854,
+    "theta_sistema": 1.7464372550340672,
+    "t_degrau1": 3.9192558391904484,
+    "t_dom": 15.173484262970996,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5215132316238854,
+        3.9192558391904484
+      ]
+    ],
+    "t_fim": 62.707224657034246,
+    "janela_em_t_dom": 4.1326845944054815,
+    "linestyle": "-",
+    "linewidth": 2.131939971609203,
+    "cor": "#ff7f0e",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 125,
+    "figsize": [
+      8.829243508184334,
+      5.753493029914472
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_176.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.4081205716318723,
+    "tau": null,
+    "wn": 0.1794299447890428,
+    "zeta": 0.4058281062229827,
+    "theta": 8.963652760487292,
+    "K_planta": 0.7842096650174488,
+    "U1": -0.5204227770168983,
+    "theta_sistema": 7.589204338504963,
+    "t_degrau1": 1.3744484219823292,
+    "t_dom": 13.732922053515138,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5204227770168983,
+        1.3744484219823292
+      ]
+    ],
+    "t_fim": 74.43676433551546,
+    "janela_em_t_dom": 5.4203150680857695,
+    "linestyle": ":",
+    "linewidth": 2.1372906031868086,
+    "cor": "#e74c3c",
+    "legenda_loc": "lower left",
+    "preenchimento": "axhspan_ref",
+    "dpi": 97,
+    "figsize": [
+      7.423193037143603,
+      5.52948555888374
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_27.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.36848563760764735,
+    "tau": 0.10170503331473982,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.07957504073255729,
+    "K_planta": 0.3114483594716289,
+    "U1": -1.1831355870128262,
+    "theta_sistema": 0.02976489269907827,
+    "t_degrau1": 0.049810148033479024,
+    "t_dom": 0.10170503331473982,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1831355870128262,
+        0.049810148033479024
+      ]
+    ],
+    "t_fim": 0.5302283552046008,
+    "janela_em_t_dom": 5.213393456779452,
+    "linestyle": "-",
+    "linewidth": 3.124706922791789,
+    "cor": "#16a085",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 117,
+    "figsize": [
+      9.474032042403557,
+      4.558370148139936
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_229.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.652654949299187,
+    "tau": null,
+    "wn": 0.07943752159898457,
+    "zeta": 1.707704031995395,
+    "theta": 26.442206817807943,
+    "K_planta": 0.771068327233691,
+    "U1": -0.8464294618878621,
+    "theta_sistema": 4.979757866652591,
+    "t_degrau1": 21.462448951155352,
+    "t_dom": 38.92357031453677,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.8464294618878621,
+        21.462448951155352
+      ]
+    ],
+    "t_fim": 105.9222094732544,
+    "janela_em_t_dom": 2.7212870920449883,
+    "linestyle": "--",
+    "linewidth": 2.483469683669302,
+    "cor": "#b7950b",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 115,
+    "figsize": [
+      6.50865824493149,
+      4.652020552904204
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_50.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.32858592718628443,
+    "tau": null,
+    "wn": 0.6441482965339583,
+    "zeta": 1.6707293114834827,
+    "theta": 2.412591291604298,
+    "K_planta": 0.46824621248800147,
+    "U1": -0.7017375013891954,
+    "theta_sistema": 0.0,
+    "t_degrau1": 2.412591291604298,
+    "t_dom": 4.6714980054964945,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7017375013891954,
+        2.412591291604298
+      ]
+    ],
+    "t_fim": 11.392320779821524,
+    "janela_em_t_dom": 2.438686855140962,
+    "linestyle": "-.",
+    "linewidth": 2.456359764040605,
+    "cor": "#8c564b",
+    "legenda_loc": "upper right",
+    "preenchimento": "nenhum",
+    "dpi": 98,
+    "figsize": [
+      6.646329093795498,
+      5.044696229289786
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_206.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.720182497912108,
+    "tau": 16.74526173181174,
+    "wn": null,
+    "zeta": null,
+    "theta": 19.944725139161502,
+    "K_planta": 0.4026356022496285,
+    "U1": -1.788670683586507,
+    "theta_sistema": 16.21038266454136,
+    "t_degrau1": 3.7343424746201426,
+    "t_dom": 16.74526173181174,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.788670683586507,
+        3.7343424746201426
+      ]
+    ],
+    "t_fim": 51.176331621005104,
+    "janela_em_t_dom": 3.0561679142812728,
+    "linestyle": "-",
+    "linewidth": 1.417167262703909,
+    "cor": "#b7950b",
+    "legenda_loc": "lower right",
+    "preenchimento": "fill_between",
+    "dpi": 94,
+    "figsize": [
+      7.448431278988487,
+      4.057914271380593
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_236.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.40882309862348165,
+    "tau": null,
+    "wn": 0.0998007236211872,
+    "zeta": 1.498699791055734,
+    "theta": 17.19828571372591,
+    "K_planta": 0.47862090992878875,
+    "U1": -0.8541689051661117,
+    "theta_sistema": 2.1733770524447134,
+    "t_degrau1": 15.024908661281195,
+    "t_dom": 26.202102207276997,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.8541689051661117,
+        15.024908661281195
+      ]
+    ],
+    "t_fim": 117.12626488878077,
+    "janela_em_t_dom": 4.47010945771564,
+    "linestyle": "-",
+    "linewidth": 1.7325145090930538,
+    "cor": "#005f73",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_atraso",
+    "dpi": 136,
+    "figsize": [
+      8.121892782310383,
+      5.240272079594511
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_225.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.3245272568478724,
+    "tau": null,
+    "wn": 0.4853081466329646,
+    "zeta": 0.5819544417264118,
+    "theta": 2.691623020708351,
+    "K_planta": 0.40940009109695524,
+    "U1": -0.7926897524090121,
+    "theta_sistema": 1.0055799202172286,
+    "t_degrau1": 1.6860431004911223,
+    "t_dom": 3.540735057843301,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7926897524090121,
+        1.6860431004911223
+      ]
+    ],
+    "t_fim": 12.292165916582604,
+    "janela_em_t_dom": 3.471642389439297,
+    "linestyle": "-",
+    "linewidth": 2.3296180989582878,
+    "cor": "#ff66cc",
+    "legenda_loc": "lower center",
+    "preenchimento": "nenhum",
+    "dpi": 114,
+    "figsize": [
+      7.81806678884384,
+      4.241506098991916
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_16.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.9933700489705655,
+    "tau": null,
+    "wn": 0.8590591953071975,
+    "zeta": 1.3340818538866908,
+    "theta": 0.6721722182177563,
+    "K_planta": 0.42782121728531,
+    "U1": -2.321927966251604,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.6721722182177563,
+    "t_dom": 2.580881758216155,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -2.321927966251604,
+        0.6721722182177563
+      ]
+    ],
+    "t_fim": 5.703214718971611,
+    "janela_em_t_dom": 2.2097931068773717,
+    "linestyle": "--",
+    "linewidth": 3.416125350985098,
+    "cor": "#e74c3c",
+    "legenda_loc": "upper center",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 116,
+    "figsize": [
+      9.557304601145795,
+      4.229017288726432
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_118.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.5927784626773639,
+    "tau": null,
+    "wn": 5.6366793549631184,
+    "zeta": 2.2981022743025132,
+    "theta": 0.3900618699006809,
+    "K_planta": 0.42365166386819797,
+    "U1": -1.3992119310117541,
+    "theta_sistema": 0.08739591425197399,
+    "t_degrau1": 0.30266595564870696,
+    "t_dom": 0.7747870658880246,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.3992119310117541,
+        0.30266595564870696
+      ]
+    ],
+    "t_fim": 3.5151847630704514,
+    "janela_em_t_dom": 4.536968823868415,
+    "linestyle": "--",
+    "linewidth": 2.7806131662239744,
+    "cor": "#d35400",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 130,
+    "figsize": [
+      9.317249361967955,
+      4.558352004444678
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_235.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.27130727687968886,
+    "tau": 2.8106792130969986,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.7241329211027956,
+    "K_planta": 0.3427612099953972,
+    "U1": -0.791534365523252,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.7241329211027956,
+    "t_dom": 2.8106792130969986,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.791534365523252,
+        0.7241329211027956
+      ]
+    ],
+    "t_fim": 11.97022385406336,
+    "janela_em_t_dom": 4.2588367246910925,
+    "linestyle": ":",
+    "linewidth": 2.93036064643018,
+    "cor": "#9467bd",
+    "legenda_loc": "center left",
+    "preenchimento": "axhspan_ref",
+    "dpi": 116,
+    "figsize": [
+      7.663540601484972,
+      4.6028891521276485
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_96.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.6388262132248856,
+    "tau": null,
+    "wn": 3.951862703774905,
+    "zeta": 1.4465043710273202,
+    "theta": 0.28509253213692587,
+    "K_planta": 0.3339139877959914,
+    "U1": -1.9131460093704846,
+    "theta_sistema": 0.06934129437875045,
+    "t_degrau1": 0.21575123775817542,
+    "t_dom": 0.6305056522602946,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.9131460093704846,
+        0.21575123775817542
+      ]
+    ],
+    "t_fim": 2.2107991801878946,
+    "janela_em_t_dom": 3.5063907393413816,
+    "linestyle": "-",
+    "linewidth": 1.3172281284217378,
+    "cor": "#ffcc00",
+    "legenda_loc": "upper left",
+    "preenchimento": "nenhum",
+    "dpi": 140,
+    "figsize": [
+      7.118941060378855,
+      4.04662799515666
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_218.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.4606068341173845,
+    "tau": null,
+    "wn": 0.48963009157368936,
+    "zeta": 0.5961914974221042,
+    "theta": 4.846421793313102,
+    "K_planta": 0.38203549596862096,
+    "U1": -1.2056650206011672,
+    "theta_sistema": 2.9068562148638795,
+    "t_degrau1": 1.939565578449222,
+    "t_dom": 3.4256747076571363,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.2056650206011672,
+        1.939565578449222
+      ]
+    ],
+    "t_fim": 10.34875745930077,
+    "janela_em_t_dom": 3.0209399147470197,
+    "linestyle": "-.",
+    "linewidth": 1.2481772590140994,
+    "cor": "#ff9966",
+    "legenda_loc": "upper right",
+    "preenchimento": "fill_between",
+    "dpi": 90,
+    "figsize": [
+      7.854276414338462,
+      4.555092788151969
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_129.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.7367403733831702,
+    "tau": null,
+    "wn": 1.628609216258552,
+    "zeta": 0.47920059889258027,
+    "theta": 0.43395932920659874,
+    "K_planta": 0.33056468719541293,
+    "U1": -2.2287328378413482,
+    "theta_sistema": 0.24328327617877074,
+    "t_degrau1": 0.19067605302782797,
+    "t_dom": 1.281344059322406,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -2.2287328378413482,
+        0.19067605302782797
+      ]
+    ],
+    "t_fim": 5.56286199264195,
+    "janela_em_t_dom": 4.341427231951795,
+    "linestyle": ":",
+    "linewidth": 1.5077111582456595,
+    "cor": "#005f73",
+    "legenda_loc": "upper right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 102,
+    "figsize": [
+      6.592067143395691,
+      4.857231052517651
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_247.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.3132795902379385,
+    "tau": 1.3376383259529752,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.40692575627912103,
+    "K_planta": 0.5948476547193061,
+    "U1": -0.5266551658268996,
+    "theta_sistema": 0.1355625228971417,
+    "t_degrau1": 0.2713632333819793,
+    "t_dom": 1.3376383259529752,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.5266551658268996,
+        0.2713632333819793
+      ]
+    ],
+    "t_fim": 4.497793503861427,
+    "janela_em_t_dom": 3.3624885117261116,
+    "linestyle": ":",
+    "linewidth": 2.607861018193873,
+    "cor": "#adff2f",
+    "legenda_loc": "upper left",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 121,
+    "figsize": [
+      6.631915750284484,
+      4.360041002129229
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_286.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.4251696683695512,
+    "tau": 0.7544224971476791,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.06846258530473333,
+    "K_planta": 0.5394726275340672,
+    "U1": -0.7881209289765163,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.06846258530473333,
+    "t_dom": 0.7544224971476791,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7881209289765163,
+        0.06846258530473333
+      ]
+    ],
+    "t_fim": 1.4903960759843806,
+    "janela_em_t_dom": 1.9755456413604722,
+    "linestyle": "--",
+    "linewidth": 2.2602931923504945,
+    "cor": "#ff9966",
+    "legenda_loc": "upper right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 123,
+    "figsize": [
+      8.132979674247093,
+      4.649391276449844
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_195.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.3629181671375377,
+    "tau": 0.7668369694434076,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.21580808174340335,
+    "K_planta": 0.5705087971519264,
+    "U1": -0.6361307116547279,
+    "theta_sistema": 0.044446822285319605,
+    "t_degrau1": 0.17136125945808375,
+    "t_dom": 0.7668369694434076,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.6361307116547279,
+        0.17136125945808375
+      ]
+    ],
+    "t_fim": 2.153850305349126,
+    "janela_em_t_dom": 2.8087460453457953,
+    "linestyle": "--",
+    "linewidth": 2.2536797431225875,
+    "cor": "#27ae60",
+    "legenda_loc": "best",
+    "preenchimento": "nenhum",
+    "dpi": 119,
+    "figsize": [
+      7.092721240623174,
+      5.465969450124752
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_76.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.8761318144562236,
+    "tau": 0.6617365562365168,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.2938149804394995,
+    "K_planta": 0.5576388211199298,
+    "U1": -1.5711456614456123,
+    "theta_sistema": 0.22469522211355883,
+    "t_degrau1": 0.0691197583259407,
+    "t_dom": 0.6617365562365168,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.5711456614456123,
+        0.0691197583259407
+      ]
+    ],
+    "t_fim": 1.6917373735661867,
+    "janela_em_t_dom": 2.5565118892442276,
+    "linestyle": "--",
+    "linewidth": 1.4633607498158425,
+    "cor": "#7fffd4",
+    "legenda_loc": "lower right",
+    "preenchimento": "nenhum",
+    "dpi": 129,
+    "figsize": [
+      7.760894923753899,
+      5.094550268128362
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_202.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.33301355414087375,
+    "tau": 0.34452087007129617,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.16583914759540452,
+    "K_planta": 0.46655333854650455,
+    "U1": -0.7137738102535944,
+    "theta_sistema": 0.0,
+    "t_degrau1": 0.16583914759540452,
+    "t_dom": 0.34452087007129617,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -0.7137738102535944,
+        0.16583914759540452
+      ]
+    ],
+    "t_fim": 1.365098983455613,
+    "janela_em_t_dom": 3.962311436091275,
+    "linestyle": "--",
+    "linewidth": 2.563048601399729,
+    "cor": "#66ff66",
+    "legenda_loc": "lower center",
+    "preenchimento": "axvspan_e_fill",
+    "dpi": 130,
+    "figsize": [
+      8.394002050278107,
+      4.072095023638279
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_210.png",
+    "familia": "neg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.9027645455544526,
+    "tau": 0.8614182742016959,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.42042492653950836,
+    "K_planta": 0.8958776895549052,
+    "U1": -1.007687272581784,
+    "theta_sistema": 0.15657592778049453,
+    "t_degrau1": 0.26384899875901385,
+    "t_dom": 0.8614182742016959,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.007687272581784,
+        0.26384899875901385
+      ]
+    ],
+    "t_fim": 1.744059945398565,
+    "janela_em_t_dom": 2.0246377371258366,
+    "linestyle": "-.",
+    "linewidth": 1.5624536687309147,
+    "cor": "#ffffff",
+    "legenda_loc": "upper right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 127,
+    "figsize": [
+      8.991492065944929,
+      4.118289811371305
+    ],
+    "fundo_escuro": true
+  },
+  {
+    "arquivo": "bal_K-_1deg_226.png",
+    "familia": "multi",
+    "celula": "K-_1deg",
+    "order": "second",
+    "K": -0.9253769356305916,
+    "tau": null,
+    "wn": 5.252377402125405,
+    "zeta": 1.5806080112282088,
+    "theta": 0.29899160110969264,
+    "K_planta": 0.3833220476567869,
+    "U1": -2.41409786180403,
+    "theta_sistema": 0.07757937023257296,
+    "t_degrau1": 0.22141223087711967,
+    "t_dom": 0.5339805781202749,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -2.41409786180403,
+        0.22141223087711967
+      ]
+    ],
+    "t_fim": 1.7700505914498714,
+    "janela_em_t_dom": 3.3148220440541594,
+    "linestyle": "-.",
+    "linewidth": 3.287317525072118,
+    "cor": "#8e44ad",
+    "legenda_loc": "upper right",
+    "preenchimento": "axhspan_ref",
+    "dpi": 111,
+    "figsize": [
+      7.181219538087117,
+      4.239488313546705
+    ],
+    "fundo_escuro": false
+  },
+  {
+    "arquivo": "bal_K-_1deg_234.png",
+    "familia": "rg",
+    "celula": "K-_1deg",
+    "order": "fopdt",
+    "K": -0.8915699918260294,
+    "tau": 0.11056106679415277,
+    "wn": null,
+    "zeta": null,
+    "theta": 0.03727063810004397,
+    "K_planta": 0.7840706218830715,
+    "U1": -1.1371041930952352,
+    "theta_sistema": 0.011120793575003783,
+    "t_degrau1": 0.026149844525040183,
+    "t_dom": 0.11056106679415277,
+    "n_degraus": 1,
+    "degraus": [
+      [
+        -1.1371041930952352,
+        0.026149844525040183
+      ]
+    ],
+    "t_fim": 0.3257297654335959,
+    "janela_em_t_dom": 2.9461525189518407,
+    "linestyle": "--",
+    "linewidth": 2.9456872969494245,
+    "cor": "#8e44ad",
+    "legenda_loc": "upper center",
+    "preenchimento": "axhspan_ref",
+    "dpi": 120,
+    "figsize": [
+      8.755314756552503,
+      4.450999998157179
+    ],
+    "fundo_escuro": false
+  }
+]
