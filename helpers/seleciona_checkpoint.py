@@ -9,7 +9,7 @@ de IoU (0,7814 -> 0,7304) enquanto a cobertura do plato nele desaba 42 pontos
 curva. Selecionar por IoU_val e selecionar pelo instrumento errado.
 
 Uso:
-    .venv/bin/python seleciona_checkpoint.py CKPT_DIR [--n 120] [--base 32]
+    .venv/bin/python helpers/seleciona_checkpoint.py CKPT_DIR [--n 120] [--base 32]
 
 Mede, para cada `epoca_NN.pt` do diretorio, tres numeros sobre amostras de
 plato no TOPO e de plato no RODAPE, e reporta os dois lado a lado. O
@@ -22,6 +22,10 @@ validacao independente: se o retreino aprendeu POSICAO em vez de decorar o
 estrato, as duas sobem juntas. Se so a treinada subir, decorou.
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json

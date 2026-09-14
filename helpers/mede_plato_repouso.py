@@ -12,9 +12,13 @@ Rodar ANTES e DEPOIS do retreino, nos dois conjuntos:
                        regressao, tem de continuar alto)
 
 Uso:
-    .venv/bin/python mede_plato_repouso.py [--modelo models/unet_stageA.pt]
+    .venv/bin/python helpers/mede_plato_repouso.py [--modelo models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -26,7 +30,7 @@ from PIL import Image
 
 from identify.extract import load_model, predict_mask
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 
 
 def cobertura_do_plato(d: Path, modelo, dev, lim=200):
@@ -85,7 +89,7 @@ def main() -> None:
     print()
     print("  ALVO do retreino: `val_plato` subir para perto de `val`, e `val`")
     print("  NAO cair. Subir um as custas do outro e trocar de vies, nao")
-    print("  aprender posicao — o mesmo criterio do `seleciona_checkpoint.py`.")
+    print("  aprender posicao — o mesmo criterio do `helpers/seleciona_checkpoint.py`.")
 
 
 if __name__ == "__main__":

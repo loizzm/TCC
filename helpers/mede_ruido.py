@@ -17,9 +17,13 @@ Rodar ANTES e DEPOIS do retreino. Em `data/val` o recall tem de NAO cair —
 subir num as custas do outro e trocar de vies, nao aprender.
 
 Uso:
-    .venv/bin/python mede_ruido.py [--modelo models/unet_stageA.pt]
+    .venv/bin/python helpers/mede_ruido.py [--modelo models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -33,7 +37,7 @@ from PIL import Image
 from identify.extract import load_model, predict_mask
 from identify.pipeline import identify_from_image
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 FAIXAS = ((5, 10), (10, 15), (15, 20), (20, 60))
 
 

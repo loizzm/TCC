@@ -12,7 +12,7 @@
 #     30 dB  90 %     25 dB  90 %     20 dB  70 %     15 dB  60 %     10 dB  55 %
 # O joelho cai na borda da distribuicao de treino. Nao e coincidencia.
 #
-# O ALVO MEDIVEL: em `mede_ruido.py`, a faixa 5-20 dB subir e a faixa 20-60 dB
+# O ALVO MEDIVEL: em `helpers/mede_ruido.py`, a faixa 5-20 dB subir e a faixa 20-60 dB
 # NAO cair. Subir um as custas do outro e trocar de vies, nao aprender — mesmo
 # criterio dos retreinos anteriores.
 #
@@ -32,7 +32,7 @@
 # Medido no retreino anterior: 1.194 s/epoca com 16.050. Escalando: ~1.330 s.
 # 18 epocas = 6,6 h.  WORKERS=2 se a maquina estiver sob pressao de memoria.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 WORKERS="${WORKERS:-4}"
 EPOCAS="${EPOCAS:-18}"
@@ -77,11 +77,11 @@ echo "Treino terminado. NAO promova pelo IoU_val — ele mistura SETE populacoes
 echo "e ja anticorrelacionou com a metrica real neste projeto. A selecao e um"
 echo "passo separado:"
 echo
-echo "  .venv/bin/python seleciona_checkpoint_nmp.py models/epocas_ruido \\"
+echo "  .venv/bin/python helpers/seleciona_checkpoint_nmp.py models/epocas_ruido \\"
 echo "      --referencia models/unet_stageA.pt"
-echo "  .venv/bin/python mede_ruido.py --modelo models/epocas_ruido/<ep>.pt"
+echo "  .venv/bin/python helpers/mede_ruido.py --modelo models/epocas_ruido/<ep>.pt"
 echo
-echo "  objetivo: faixa 5-20 dB subir em mede_ruido.py"
+echo "  objetivo: faixa 5-20 dB subir em helpers/mede_ruido.py"
 echo "  guardas : faixa 20-60 dB nao cair, plato em val_nmp e val nao cairem,"
 echo "            IoU em val+val_multi nao cair"
 echo

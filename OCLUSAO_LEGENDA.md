@@ -51,7 +51,7 @@ perde é a posição de `theta`, não a estrutura.
 
 ## 2. Duas corridas de retreino, e o que elas mediram
 
-**`retreino_combinado.sh`, primeira corrida** (corpus `parleg`, morreu na época
+**`helpers/retreino_combinado.sh`, primeira corrida** (corpus `parleg`, morreu na época
 12 de 18 quando a sessão caiu e levou o grupo de processos). Dos 13
 checkpoints, 1 passa o portão. Controle: a corrida `render2`, mesmo objetivo
 SEM o estrato pareado, passa 3 de 18. **Fisher p = 0,62** — o par não mudou
@@ -137,7 +137,7 @@ fórmula antiga**.
 
 ## 5. A segunda corrida, e o resultado que encerra a frente
 
-`retreino_combinado.sh` com o corpus corrigido (`parleg2`), 18 épocas
+`helpers/retreino_combinado.sh` com o corpus corrigido (`parleg2`), 18 épocas
 completas, `models/epocas_combinado2/`.
 
 **O corpus corrigido FUNCIONOU.** Deformação da série na janela da transição

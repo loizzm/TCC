@@ -28,6 +28,10 @@ importa `mask_to_polyline` e reimplementa o laco com a guarda ao lado.
 """
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
+
 import json
 from pathlib import Path
 
@@ -42,7 +46,7 @@ from identify.extract import load_model, predict_mask
 from identify.polyline import (MAX_GAP_FRAC, MIN_COMPONENT_PX, _blocos,
                                mask_to_polyline, polyline_to_series)
 
-RAIZ = Path(__file__).resolve().parent / "reports" / "amostras_aleatorias"
+RAIZ = Path(__file__).resolve().parent.parent / "reports" / "amostras_aleatorias"
 LOTES = (RAIZ, RAIZ / "balanceado", RAIZ / "balanceado2")
 VAO_MIN_FRAC = 3.0
 
@@ -141,7 +145,7 @@ def verdade(v, t):
 
 
 def main() -> None:
-    modelo = load_model(str(Path(__file__).resolve().parent / "models" /
+    modelo = load_model(str(Path(__file__).resolve().parent.parent / "models" /
                             "unet_stageA.pt"), "cpu")
     LIMIARES = [None, 12.0, 8.0, 5.0, 3.0]
     res = {k: [] for k in LIMIARES}

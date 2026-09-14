@@ -135,3 +135,8 @@ reports/amostras_aleatorias/*.png
 !reports/amostras_aleatorias/sem_omite/bal_K-_1deg_00.png
 !reports/amostras_aleatorias/sem_omite_fit/bal_K+_1deg_00.png
 !reports/amostras_aleatorias/sem_omite_fit/bal_K-_1deg_00.png
+
+# CODIGO DE FRENTES ENCERRADAS, preservado como texto. Nao e executavel nem
+# importado por nada — e evidencia do que foi tentado. Fica no disco e no
+# historico (ver MULTI_DEGRAU.md), fora do versionamento corrente.
+docs_frente/

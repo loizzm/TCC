@@ -6,7 +6,7 @@
 #
 # O QUE JA SE SABE, medido:
 #   1. O estrato `familia_alt` FUNCIONA no que se propos. O retreino anterior
-#      (`retreino_render2.sh`) levou o ESTRITO de 77 % para 81 % nos tres lotes
+#      (`helpers/retreino_render2.sh`) levou o ESTRITO de 77 % para 81 % nos tres lotes
 #      de controle e o |K|<1 de 75 % para 82 % — a meta que nenhum caminho de
 #      codigo tinha alcancado. Pareado: 26 melhoram, 14 pioram, p = 0,08.
 #   2. E ele QUEBRA cinco portoes de imagem real:
@@ -99,7 +99,7 @@
 # CUSTO. 22.650 amostras. Medido: 1.457 s/epoca com 19.650. Escalando, ~1.680 s.
 # 18 epocas = 8,4 h.  WORKERS=2 sob pressao de memoria.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 WORKERS="${WORKERS:-4}"
 EPOCAS="${EPOCAS:-18}"
@@ -155,17 +155,17 @@ echo
 echo "1. PORTOES DE IMAGEM REAL — eliminatorio, e vem PRIMEIRO."
 echo "   Foi o que reprovou a corrida anterior DEPOIS de ela passar em todas as"
 echo "   metricas agregadas. Varra os 18 checkpoints:"
-echo "     .venv/bin/python varre_legenda_epocas.py models/epocas_combinado2 \\"
+echo "     .venv/bin/python helpers/varre_legenda_epocas.py models/epocas_combinado2 \\"
 echo "         --referencia models/unet_stageA_pre_render2_backup.pt"
 echo "   Quem 'quebra' esta fora, por melhor que seja no resto."
 echo
 echo "2. ALVO, so nos sobreviventes:"
-echo "     .venv/bin/python mede_render2.py --modelo models/epocas_combinado2/<ep>.pt"
+echo "     .venv/bin/python helpers/mede_render2.py --modelo models/epocas_combinado2/<ep>.pt"
 echo "   lote_selecao sobe de p50 = 0,716 | val_render2 sobe de 0,810"
 echo "   GUARDA: data/val nao cai de 0,939"
 echo
 echo "3. PORTAO DA GUARDA, no finalista:"
-echo "     .venv/bin/python mede_fora_da_familia.py --modelo <ep>"
+echo "     .venv/bin/python helpers/mede_fora_da_familia.py --modelo <ep>"
 echo "   recusa em val_nmp[:60] >= 90 % — a epoca 03 e a 13 da corrida anterior"
 echo "   reprovaram aqui (89 % e 88,3 %), e nenhum valor de _PERSISTENCIA_MIN"
 echo "   recupera, porque o termo so pode REDUZIR disparo."

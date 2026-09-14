@@ -1,7 +1,7 @@
 """ABLACAO: qual COMPONENTE do render do `rg_aleatorio` faz a fase nao-minima
 escapar da guarda.
 
-A sondagem por atributo (`sonda_render_nmp.py`) deu NULO: nenhum estilo
+A sondagem por atributo (`helpers/sonda_render_nmp.py`) deu NULO: nenhum estilo
 sorteado dentro do lote prevê o erro silencioso. Logo a diferenca esta no que e
 CONSTANTE no `rg_aleatorio` e ausente do treino. Duas candidatas medidas:
 
@@ -19,9 +19,13 @@ CONSTANTE no `rg_aleatorio` e ausente do treino. Duas candidatas medidas:
 Mesma fisica e mesma seed nas quatro variantes: so o componente muda.
 
 Uso:
-    .venv/bin/python ablacao_render_nmp.py [--n 150]
+    .venv/bin/python helpers/ablacao_render_nmp.py [--n 150]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -37,7 +41,7 @@ from scipy import signal, stats
 
 import rg_aleatorio as RG
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 BASE = RAIZ / "reports" / "amostras_aleatorias" / "ablacao_nmp"
 
 VARIANTES = {

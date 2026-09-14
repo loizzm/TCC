@@ -1,0 +1,124 @@
+AMOSTRAS: 400
+
+==============================================================================
+1. TAXA DE RESPOSTA
+==============================================================================
+  rg       n=100  respondeu= 98 ( 98.0%)  calibrou= 99 ( 99.0%)  fisico(ok)= 97 ( 97.0%)
+  neg      n=100  respondeu= 98 ( 98.0%)  calibrou= 98 ( 98.0%)  fisico(ok)= 96 ( 96.0%)
+  TODAS    n=400  respondeu=396 ( 99.0%)  calibrou=383 ( 95.8%)  fisico(ok)=379 ( 94.8%)
+
+  motivos de nao entregar parametro fisico:
+    ocr_insuficiente             10
+    calibration_failed           4
+    resposta_inversa             3
+    sinal_de_escala_invalido     2
+    bbox_not_found               1
+    ajuste_inconsistente         1
+
+==============================================================================
+2. ESTRUTURA (so entre as que responderam)
+==============================================================================
+  acerto estrito de rotulo: 376/396 (94.9%)
+  matriz de confusao (verdade -> predito):
+    fopdt    -> fopdt    180
+    fopdt    -> second   6
+    second   -> fopdt    14
+    second   -> second   196
+  trocas de rotulo com t_dom a menos de 15%: 16/19 — a dinamica nao muda, so o nome
+
+==============================================================================
+3. PARAMETROS FISICOS (so as ok=True)
+==============================================================================
+  n = 379
+  sinal de K correto: 379/379 (100.0%)
+
+  erro relativo (|.|):
+  K                          n=379  mediana=  0.0027  media=  0.4255  p90=  0.0461  max= 66.6186
+  t_dom (unifica ordens)     n=379  mediana=  0.0052  media=  4.9582  p90=  0.1058  max=792.5589
+  tau (mesma estrutura)      n=171  mediana=  0.0034  media=  0.0084  p90=  0.0185  max=  0.1094
+  wn (mesma estrutura)       n=189  mediana=  0.0110  media=  0.0448  p90=  0.0894  max=  0.8739
+  zeta (mesma estrutura)     n=189  mediana=  0.0220  media=  0.1639  p90=  0.1601  max=  9.7042
+  theta (relativo)           n=379  mediana=  0.0099  media=  0.0516  p90=  0.0820  max=  3.2236
+  theta (|dtheta|/T janela)  n=379  mediana=  0.0011  media=  0.0035  p90=  0.0061  max=  0.1479
+
+  erro de CURVA reconstruida (NRMSE no trecho do 1o degrau):
+  nrmse                      n=379  mediana=  0.0019  media=  0.0521  p90=  0.0049  max=  7.3404
+    NRMSE <= 0.02: 366/379 (96.6%)  [366/400 do total = 91.5%]
+    NRMSE <= 0.05: 372/379 (98.2%)  [372/400 do total = 93.0%]
+    NRMSE <= 0.10: 374/379 (98.7%)  [374/400 do total = 93.5%]
+    NRMSE <= 0.20: 374/379 (98.7%)  [374/400 do total = 93.5%]
+
+==============================================================================
+4. ESTRATIFICACAO
+==============================================================================
+  por familia:
+    gen              n=200  respondeu=100.0%  fisico= 93.0%  NRMSE med=  0.0019  NRMSE<=0.05: 182/200
+    neg              n=100  respondeu= 98.0%  fisico= 96.0%  NRMSE med=  0.0020  NRMSE<=0.05: 95/100
+    rg               n=100  respondeu= 98.0%  fisico= 97.0%  NRMSE med=  0.0016  NRMSE<=0.05: 95/100
+
+  por tipo de linha da curva:
+    -                n=112  respondeu= 99.1%  fisico= 94.6%  NRMSE med=  0.0017  NRMSE<=0.05: 105/112
+    --               n=97   respondeu=100.0%  fisico= 96.9%  NRMSE med=  0.0019  NRMSE<=0.05: 94/97
+    -.               n=105  respondeu= 99.0%  fisico= 92.4%  NRMSE med=  0.0019  NRMSE<=0.05: 95/105
+    :                n=86   respondeu= 97.7%  fisico= 95.3%  NRMSE med=  0.0020  NRMSE<=0.05: 78/86
+
+  por preenchimento:
+    axhspan_ref      n=35   respondeu=100.0%  fisico= 97.1%  NRMSE med=  0.0020  NRMSE<=0.05: 32/35
+    axvspan_atraso   n=26   respondeu= 92.3%  fisico= 92.3%  NRMSE med=  0.0018  NRMSE<=0.05: 24/26
+    axvspan_e_fill   n=28   respondeu=100.0%  fisico= 96.4%  NRMSE med=  0.0017  NRMSE<=0.05: 27/28
+    fill_between     n=33   respondeu= 97.0%  fisico= 97.0%  NRMSE med=  0.0017  NRMSE<=0.05: 32/33
+    nenhum           n=278  respondeu= 99.6%  fisico= 94.2%  NRMSE med=  0.0019  NRMSE<=0.05: 257/278
+
+  por fundo escuro:
+    False            n=100  respondeu= 98.0%  fisico= 97.0%  NRMSE med=  0.0016  NRMSE<=0.05: 95/100
+    None             n=200  respondeu=100.0%  fisico= 93.0%  NRMSE med=  0.0019  NRMSE<=0.05: 182/200
+    True             n=100  respondeu= 98.0%  fisico= 96.0%  NRMSE med=  0.0020  NRMSE<=0.05: 95/100
+
+  por ordem verdadeira:
+    fopdt            n=189  respondeu= 98.4%  fisico= 93.7%  NRMSE med=  0.0018  NRMSE<=0.05: 174/189
+    second           n=211  respondeu= 99.5%  fisico= 95.7%  NRMSE med=  0.0019  NRMSE<=0.05: 198/211
+
+==============================================================================
+6. LATENCIA
+==============================================================================
+  mediana=259 ms  p90=1086 ms  max=4934 ms
+
+==============================================================================
+7. PIORES CASOS (por NRMSE de curva)
+==============================================================================
+  arquivo         ordem v->p              NRMSE     errK  err t_dom    dth/T
+  gen_061.png     second -> fopdt        7.3404    9.002      0.012    0.015
+  rg_67.png       fopdt -> fopdt         5.8096   -8.980     -0.001    0.000
+  gen_189.png     fopdt -> fopdt         4.9387    9.105      0.022   -0.005
+  rg_87.png       second -> second       0.2784   -0.614    339.936   -0.009
+  neg_20.png      second -> second       0.2143  -59.520    133.380    0.004
+  gen_024.png     fopdt -> fopdt         0.0672    0.044      0.003    0.062
+  gen_104.png     second -> second       0.0589   -0.114     -0.315    0.096
+  neg_76.png      second -> second       0.0493    0.429    792.559   -0.148
+  rg_09.png       second -> fopdt        0.0406    0.055     -0.155    0.013
+  neg_64.png      second -> fopdt        0.0316   -0.128      0.262    0.008
+  neg_23.png      second -> second       0.0294   -0.044     -0.105    0.001
+  rg_60.png       fopdt -> fopdt         0.0226   -0.089     -0.109   -0.004
+
+  RECUSADAS / sem fisica:
+    gen_008.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=second
+    gen_012.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=second
+    gen_019.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=fopdt
+    gen_028.png      reason=calibration_failed       cal=calibration_failed     ordem_v=fopdt
+    gen_034.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=second
+    gen_047.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=fopdt
+    gen_050.png      reason=bbox_not_found           cal=bbox_not_found         ordem_v=fopdt
+    gen_068.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=fopdt
+    gen_119.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=second
+    gen_131.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=fopdt
+    gen_132.png      reason=sinal_de_escala_invalido cal=sinal_de_escala_invalido ordem_v=fopdt
+    gen_163.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=fopdt
+    gen_167.png      reason=sinal_de_escala_invalido cal=sinal_de_escala_invalido ordem_v=second
+    gen_171.png      reason=ocr_insuficiente         cal=ocr_insuficiente       ordem_v=second
+    neg_47.png       reason=calibration_failed       cal=calibration_failed     ordem_v=fopdt
+    neg_50.png       reason=calibration_failed       cal=calibration_failed     ordem_v=second
+    neg_86.png       reason=ajuste_inconsistente     cal=                       ordem_v=fopdt
+    neg_91.png       reason=resposta_inversa         cal=                       ordem_v=fopdt
+    rg_25.png        reason=resposta_inversa         cal=                       ordem_v=second
+    rg_56.png        reason=calibration_failed       cal=calibration_failed     ordem_v=second
+    rg_61.png        reason=resposta_inversa         cal=                       ordem_v=fopdt

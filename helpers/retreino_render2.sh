@@ -45,7 +45,7 @@
 # CUSTO. 17.850 + 1.800 = 19.650 amostras. Medido: 1.194 s/epoca com 16.050.
 # Escalando, ~1.460 s. 18 epocas = 7,3 h.  WORKERS=2 sob pressao de memoria.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 WORKERS="${WORKERS:-4}"
 EPOCAS="${EPOCAS:-18}"
@@ -93,7 +93,7 @@ echo "NAO promova pelo IoU_val — ele mistura OITO populacoes e ja"
 echo "anticorrelacionou com a metrica real neste projeto. A selecao e um passo"
 echo "separado, e ela NAO usa os lotes de controle:"
 echo
-echo "  .venv/bin/python mede_render2.py --modelo models/epocas_render2/<ep>.pt"
+echo "  .venv/bin/python helpers/mede_render2.py --modelo models/epocas_render2/<ep>.pt"
 echo
 echo "  ALVO  : lote_selecao (familia rg, semente nova, so para escolher epoca)"
 echo "          sobe de p50 = 0,716"

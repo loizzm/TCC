@@ -16,9 +16,13 @@ e' identica nas duas) sai a fracao dos pixels da curva que a legenda cobre.
     oclusao = |{img_com != img_sem} & {mask}| / |{mask}|
 
 Uso:
-    .venv/bin/python mede_oclusao.py [--n 120] [--seed 0]
+    .venv/bin/python helpers/mede_oclusao.py [--n 120] [--seed 0]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import shutil
@@ -32,7 +36,7 @@ from PIL import Image
 from dataset.generator import (generate_sample, render_sample, sample_style,
                                sample_system)
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 
 
 def _rngs(seed: int):

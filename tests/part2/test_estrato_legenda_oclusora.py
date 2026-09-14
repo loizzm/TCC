@@ -9,7 +9,7 @@ HORIZONTAL da caixa como se fosse patamar: isso antecipa a acomodação, e o
 ajuste compensa com polo dominante mais lento e menos amortecimento.
 
 POR QUE O CORPUS NÃO ENSINAVA ISSO. Medido em 120 amostras com o instrumento de
-`mede_oclusao.py` (diferença de render, exata — `add_axes` é retângulo fixo e
+`helpers/mede_oclusao.py` (diferença de render, exata — `add_axes` é retângulo fixo e
 `savefig` não usa `bbox_inches`, então a legenda não move os eixos): no corpus
 base a caixa tapa MEDIANA 0,0000 dos pixels da curva, e passa de 1 % em só
 14,5 % das amostras. `loc="best"` do matplotlib procura ativamente o espaço
@@ -109,7 +109,7 @@ def test_a_curva_e_a_mascara_nao_mudam():
 
 def _oclusao(seed: int, tmp: Path) -> float:
     """Fração dos pixels da curva que a caixa cobre, pelo diferencial exato de
-    `mede_oclusao.py`: a legenda não move os eixos, então tudo que difere entre
+    `helpers/mede_oclusao.py`: a legenda não move os eixos, então tudo que difere entre
     o render com e sem ela É a pegada da caixa."""
     from dataclasses import replace
 

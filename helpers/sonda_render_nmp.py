@@ -11,9 +11,13 @@ contra o desfecho. `ok` aqui e ERRO SILENCIOSO: a curva esta fora da familia e
 o sistema devolveu parametro assim mesmo.
 
 Uso:
-    .venv/bin/python sonda_render_nmp.py [--n 200] [--modelo models/unet_stageA.pt]
+    .venv/bin/python helpers/sonda_render_nmp.py [--n 200] [--modelo models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -29,7 +33,7 @@ from scipy import signal, stats
 
 import rg_aleatorio as RG
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 SAIDA = RAIZ / "reports" / "amostras_aleatorias" / "nmp_render"
 
 

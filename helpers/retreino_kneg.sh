@@ -3,7 +3,7 @@
 #
 # NAO promove nada: escreve em models/unet_stageA_kneg.pt e guarda um
 # checkpoint por epoca em models/epocas_kneg/. A promocao e decisao separada,
-# tomada DEPOIS de `seleciona_checkpoint.py` — porque o IoU_val e quase cego ao
+# tomada DEPOIS de `helpers/seleciona_checkpoint.py` — porque o IoU_val e quase cego ao
 # defeito do plato (secao 40.9) e nao pode ser quem escolhe.
 #
 # Receita: a mesma do checkpoint promovido (base=32, in_ch=3, 25 epocas, os 9
@@ -28,7 +28,7 @@
 #
 # Custo estimado: 10.950 amostras / 6 = 1825 passos/epoca, ~818 s/epoca, ~5,7 h.
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 mkdir -p models/epocas_kneg logs
 
@@ -54,4 +54,4 @@ PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
 
 echo
 echo "Treino terminado. AGORA escolha o checkpoint pela metrica certa:"
-echo "  .venv/bin/python seleciona_checkpoint.py models/epocas_kneg --tambem models/unet_stageA.pt"
+echo "  .venv/bin/python helpers/seleciona_checkpoint.py models/epocas_kneg --tambem models/unet_stageA.pt"

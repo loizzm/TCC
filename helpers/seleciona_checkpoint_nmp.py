@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Escolhe o checkpoint do retreino FORA DA FAMILIA (§65) pelo objetivo certo.
 
-POR QUE NAO REUSAR OS OUTROS DOIS SELETORES. `seleciona_checkpoint.py` mede
+POR QUE NAO REUSAR OS OUTROS DOIS SELETORES. `helpers/seleciona_checkpoint.py` mede
 cobertura do plato em `data/val` — a metrica do retreino de ganho negativo.
 e o seletor da frente de multi-degrau media AUC de contagem no corpus real.
 Nenhum dos dois olha para o defeito que ESTE retreino existe para consertar, e
@@ -24,10 +24,14 @@ anticorrelacionou com a metrica real neste projeto (Spearman -0,401 depois da
 epoca 08 do retreino multi): `train_unet.py` teria escolhido o checkpoint pior.
 
 Uso:
-    .venv/bin/python seleciona_checkpoint_nmp.py models/epocas_nmp \\
+    .venv/bin/python helpers/seleciona_checkpoint_nmp.py models/epocas_nmp \\
         [--referencia models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -43,7 +47,7 @@ from identify.extract import load_model
 from mede_plato_repouso import cobertura_do_plato
 from train_unet import MaskDataset, iou
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 
 
 @_torch.no_grad()

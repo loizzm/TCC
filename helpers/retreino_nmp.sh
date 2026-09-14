@@ -5,8 +5,8 @@
 #
 # A rede aprendeu, por acidente do corpus, que curva de dados e "aproximacao
 # monotona a um patamar" — nenhuma outra forma existia para ela ver. Medido com
-# `models/unet_stageA.pt` (base 32, promovido), em `mede_plato_repouso.py` e
-# `mede_fora_da_familia.py`:
+# `models/unet_stageA.pt` (base 32, promovido), em `helpers/mede_plato_repouso.py` e
+# `helpers/mede_fora_da_familia.py`:
 #
 #   corpus         cobertura do plato   recall da mascara   veredito
 #   data/val               0,884              0,784         92 % ok
@@ -25,7 +25,7 @@
 # O ALVO MEDIVEL: `data/val_nmp` subir (cobertura do plato de 0,286, taxa de
 # recusa por `resposta_inversa` de 55 %) e `data/val` NAO cair (0,884 / 92 %).
 # Subir um as custas do outro e trocar de vies, nao aprender — mesmo criterio
-# do `seleciona_checkpoint.py`.
+# do `helpers/seleciona_checkpoint.py`.
 #
 # O QUE ESTE RETREINO NAO RESOLVE: o limiar `_UNDERSHOOT_MAX`. Ele foi
 # remedido contra conjunto positivo real (200 amostras) e FICA em 0,08; descer
@@ -52,7 +52,7 @@
 # vem do sampler no processo principal, com `torch.manual_seed` fixo.
 #   WORKERS=2 ./retreino_nmp.sh
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 WORKERS="${WORKERS:-4}"
 EPOCAS="${EPOCAS:-25}"
@@ -96,7 +96,7 @@ echo "e ja anticorrelacionou com a metrica real neste projeto (Spearman -0,401"
 echo "depois da epoca 08 do retreino multi): train_unet.py teria escolhido o"
 echo "checkpoint PIOR. A selecao e um passo separado, com objetivo e guardas:"
 echo
-echo "  .venv/bin/python seleciona_checkpoint_nmp.py models/epocas_nmp \\"
+echo "  .venv/bin/python helpers/seleciona_checkpoint_nmp.py models/epocas_nmp \\"
 echo "      --referencia models/unet_stageA.pt --auc-minima 0.6838"
 echo
 echo "  objetivo: cobertura do plato em data/val_nmp (baseline 0,286)"
@@ -108,6 +108,6 @@ echo
 echo "  Compare contra reports/baseline_pre_nmp.txt, tirado com o mesmo script."
 echo
 echo "E DEPOIS de promover — nunca antes — remedir o limiar da guarda:"
-echo "  .venv/bin/python remede_undershoot.py"
+echo "  .venv/bin/python helpers/remede_undershoot.py"
 echo "  (o 0,08 atual foi varrido contra conjunto positivo real e FICA ate que"
 echo "   a mascara mude; ver o bloco de _UNDERSHOOT_MAX em identify/pipeline.py)"

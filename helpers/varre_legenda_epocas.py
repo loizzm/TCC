@@ -1,6 +1,6 @@
 """Varre TODOS os checkpoints de uma pasta de epocas no par real de oclusao.
 
-A PERGUNTA. O retreino de ruido (`retreino_ruido.sh`) melhorou as tres batidas
+A PERGUNTA. O retreino de ruido (`helpers/retreino_ruido.sh`) melhorou as tres batidas
 de controle e quebrou `caso_real_neg_super.png`: `wn` e `zeta` saltaram de
 1,3 %/0,2 % no modelo promovido para 32,1 %/32,2 % no epoca_17. Sondar cinco
 candidatos nao responde se o dano e INTRINSECO ao estrato de ruido ou se e uma
@@ -14,10 +14,14 @@ em 2a ordem superamortecida e nao tem nada a ver com oclusao; so a DIFERENCA
 entre as duas colunas isola a variavel.
 
 Uso:
-    .venv/bin/python varre_legenda_epocas.py [models/epocas_ruido] \
+    .venv/bin/python helpers/varre_legenda_epocas.py [models/epocas_ruido] \
         [--referencia models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import re
@@ -30,7 +34,7 @@ from PIL import Image
 from identify.extract import load_model
 from identify.pipeline import identify_from_image
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 FIX = RAIZ / "tests" / "fixtures"
 VERDADE = {"K": -3.0, "wn": 4.0, "zeta": 1.25, "theta": 3.5}
 

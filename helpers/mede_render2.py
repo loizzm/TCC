@@ -26,9 +26,13 @@ de generalizacao. `lote_selecao` e' da MESMA familia de render (que e' o que se
 quer medir) com semente nova, e existe so para escolher a epoca.
 
 Uso:
-    .venv/bin/python mede_render2.py [--modelo models/unet_stageA.pt]
+    .venv/bin/python helpers/mede_render2.py [--modelo models/unet_stageA.pt]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -42,7 +46,7 @@ from scipy import signal
 from identify.calibrate import calibrate
 from identify.extract import load_model, predict_mask
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 TOL_PX = 5.0
 
 

@@ -24,9 +24,13 @@ medidos:
               Toda NAO-deteccao ali e falso negativo.
 
 Uso:
-    .venv/bin/python remede_undershoot.py [--n 40]
+    .venv/bin/python helpers/remede_undershoot.py [--n 40]
 """
 from __future__ import annotations
+
+import sys as _sys
+from pathlib import Path as _Path
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent))
 
 import argparse
 import json
@@ -46,7 +50,7 @@ from identify.extract import load_model, predict_mask
 from identify.pipeline import _undershoot
 from identify.polyline import mask_to_polyline, polyline_to_series
 
-RAIZ = Path(__file__).resolve().parent
+RAIZ = Path(__file__).resolve().parent.parent
 MINIMA = RAIZ / "reports" / "amostras_aleatorias" / "lote100_1deg"
 NAOMIN = RAIZ / "reports" / "amostras_aleatorias" / "fase_nao_minima"
 
