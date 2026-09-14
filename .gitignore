@@ -75,68 +75,19 @@ models/unet_stageA_combinado2.pt
 models/unet_stageA_multi_thr01_abortado.pt
 models/cabeca_contagem_congelada.pt
 
-# Lotes DERIVADOS de figura: reproduziveis pelos scripts que os geram, com a
-# seed no proprio script. Os lotes de REFERENCIA (aqueles contra os quais os
-# numeros do relatorio sao citados) continuam versionados.
-# (ablacao_render_nmp.py regenera o primeiro; o segundo e' so symlinks mais
-#  analises derivadas dos lotes de referencia)
-reports/amostras_aleatorias/ablacao_nmp/
-reports/pos_nmp/
-
-# Caches de features/series: insumo de sondagem, grandes e regeneraveis.
-reports/amostras_aleatorias/*.npz
-reports/sonda_contagem_features.npz
-
 # LOGS de treino, geracao e medicao. Sao saida de execucao, nao fonte: o que
 # importa deles (as tabelas de epoca, as varreduras) esta citado nas mensagens
 # de commit, nos comentarios do codigo e nos relatorios. Versiona-los enchia o
 # historico de ruido que ninguem le duas vezes.
 logs/
 
-# FIGURAS DOS LOTES DE AVALIACAO. Ficam versionados os JSON (verdade,
-# resultado, analise) — que sao a MEDIDA — e DOIS PNGs por lote como amostra
-# do render. As demais figuras sao saida derivada: pesavam 102 MB e nenhuma
-# conclusao depende de reler o pixel. Ver reports/amostras_aleatorias/LOTES.md
-# para a receita de cada lote e para como recuperar as originais do historico.
-reports/amostras_aleatorias/**/*.png
-reports/amostras_aleatorias/*.png
-
-!reports/amostras_aleatorias/balanceado/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/balanceado/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/balanceado2/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/balanceado2/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/fase_nao_minima/nmp_00.png
-!reports/amostras_aleatorias/fase_nao_minima/nmp_20.png
-!reports/amostras_aleatorias/lote100/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote100/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/lote100_1deg/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote100_1deg/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/lote100_piso/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote100_piso/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/lote100_v2/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote100_v2/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/lote_k_maior1/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote_k_maior1/bal_K-_1deg_03.png
-!reports/amostras_aleatorias/lote_k_menor1/bal_K+_1deg_02.png
-!reports/amostras_aleatorias/lote_k_menor1/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/lote_misto2/ruido_Kmaior1_05dB_00.png
-!reports/amostras_aleatorias/lote_misto2/ruido_Kmaior1_60dB_00.png
-!reports/amostras_aleatorias/lote_ruido/ruido_Kmaior1_10dB_00.png
-!reports/amostras_aleatorias/lote_ruido/ruido_Kmenor1_30dB_00.png
-!reports/amostras_aleatorias/lote_selecao/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/lote_selecao/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/multi_00.png
-!reports/amostras_aleatorias/neg_16.png
-!reports/amostras_aleatorias/nmp_render/nmp_000.png
-!reports/amostras_aleatorias/nmp_render/nmp_100.png
-!reports/amostras_aleatorias/nmp_ruido/nmpr_10dB_00.png
-!reports/amostras_aleatorias/nmp_ruido/nmpr_20dB_10.png
-!reports/amostras_aleatorias/sem_omite/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/sem_omite/bal_K-_1deg_00.png
-!reports/amostras_aleatorias/sem_omite_fit/bal_K+_1deg_00.png
-!reports/amostras_aleatorias/sem_omite_fit/bal_K-_1deg_00.png
-
 # CODIGO DE FRENTES ENCERRADAS, preservado como texto. Nao e executavel nem
 # importado por nada — e evidencia do que foi tentado. Fica no disco e no
 # historico (ver MULTI_DEGRAU.md), fora do versionamento corrente.
 docs_frente/
+
+# RELATORIOS E LOTES DE AVALIACAO. Saida de medicao: os .md de criterio sao
+# REGERADOS pelos conftest a cada rodada de teste, os JSON e as figuras dos
+# lotes sao derivados dos scripts com a semente registrada. Fica so no disco.
+# Historico: `git checkout 77dfb74 -- reports/` traz tudo de volta.
+reports/
