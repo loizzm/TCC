@@ -49,11 +49,17 @@ def _ruido(y: np.ndarray, snr_db: float, rng) -> np.ndarray:
     return y + sigma * rng.standard_normal(y.size)
 
 
-def gera(por_celula: int, seed0: int, out: Path) -> list[dict]:
+def gera(por_celula: int, seed0: int, out: Path,
+         snrs: tuple[float, ...] = SNRS, p_escuro: float = 0.3) -> list[dict]:
+    """`snrs` e `p_escuro` sao parametrizados desde 14/09/2026; os DEFAULTS
+    reproduzem `lote_ruido` byte a byte, entao o lote de referencia continua
+    valido. `p_escuro` e a fracao de figuras no render do `rg_negativo.py` (o
+    resto vai no do `rg.py`) — 0,3 era o valor fixo original, 0,5 equilibra as
+    duas familias quando a pergunta e sobre elas e nao sobre o ruido."""
     out.mkdir(parents=True, exist_ok=True)
     verdades, i = [], 0
     for faixa, (lo, hi) in (("Kmenor1", (0.0, 1.0)), ("Kmaior1", (1.0, np.inf))):
-        for snr in SNRS:
+        for snr in snrs:
             feitas = 0
             tent = 0
             while feitas < por_celula:
@@ -74,7 +80,7 @@ def gera(por_celula: int, seed0: int, out: Path) -> list[dict]:
                 y, u = RG.resposta_multi_degrau(sistema, p["theta_sistema"],
                                                 degraus, t)
                 y_ruid = _ruido(y, snr, rng)
-                escuro = bool(rng.random() < 0.3)
+                escuro = bool(rng.random() < p_escuro)
                 st = RG.sorteia_estilo(rng, escuro)
                 RG.MODO_ENTRADA = "desenha"
                 nome = f"ruido_{faixa}_{int(snr):02d}dB_{feitas:02d}.png"
@@ -97,12 +103,16 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=20260911)
     ap.add_argument("--out", type=Path,
                     default=RAIZ / "reports" / "amostras_aleatorias" / "lote_ruido")
+    ap.add_argument("--snrs", type=float, nargs="+", default=list(SNRS),
+                    help="niveis de SNR em dB (default: os cinco originais)")
+    ap.add_argument("--p-escuro", type=float, default=0.3,
+                    help="fracao no render do rg_negativo.py (o resto vai no do rg.py)")
     a = ap.parse_args()
-    v = gera(a.por_celula, a.seed, a.out)
+    v = gera(a.por_celula, a.seed, a.out, tuple(a.snrs), a.p_escuro)
     ak = np.abs([e["K"] for e in v])
     print(f"{len(v)} figuras em {a.out}")
     print(f"  |K| < 1: {int((ak < 1).sum())}   |K| >= 1: {int((ak >= 1).sum())}")
-    for s in SNRS:
+    for s in sorted({e["snr_db"] for e in v}, reverse=True):
         g = [e for e in v if e["snr_db"] == s]
         sr = np.array([e["sigma_rel"] for e in g])
         print(f"  SNR {int(s):>2} dB: n={len(g):<4} desvio do ruido / faixa de y: "
