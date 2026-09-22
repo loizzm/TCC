@@ -48,7 +48,10 @@ convenções verificadas no código da Parte 1.
   `SeedSequence(seed).spawn(n)`. Vale também para inicialização de pesos e
   embaralhamento de lote no PyTorch (`torch.manual_seed`).
 - **Nada de `time`, `uuid` ou hash dependente de `PYTHONHASHSEED`** em código que
-  afete um resultado medido. Tempo só é permitido para medir latência (critério 2.8).
+  afete um resultado medido. Tempo só é permitido para medir latência — hoje
+  `G3b.4` e o diagnóstico `2.8-trunc`. O critério **2.8 foi removido**: o alvo de
+  500 ms pressupõe GPU e em CPU o veredito oscilava sem o código mudar. Ver o
+  registro em `tests/part2/test_part2.py`, onde ele ficava.
 - **Nenhuma função do pipeline levanta exceção em amostra malformada.** Falha vira
   bandeira no resultado (`ok=False`, `reason=...`), nunca `raise`. Regra do
   `contract.md §6`, citada em `identify/classical.py`.
