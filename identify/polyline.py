@@ -34,6 +34,41 @@ def _blocos(coluna: np.ndarray) -> list[tuple[int, int]]:
 # `mask_to_polyline` para a medição que fixa este valor.
 SALTO_MAX_ESPESSURA: float = 8.0
 
+# Tolerância da GUARDA DE EMENDA, em múltiplos da espessura mediana do traço:
+# o quanto o segmento do outro lado de um vão pode estar LONGE de onde a
+# continuação do segmento atual o colocaria. Ver `mask_to_polyline`.
+EMENDA_MAX_ESPESSURA: float = 8.0
+
+# Pontos usados para estimar a inclinação local à esquerda do vão. Curto de
+# propósito: a inclinação que interessa é a de CHEGADA ao vão, não a média da
+# curva. Oito pontos são ~8 colunas em traço sólido e ~14 em pontilhado (`:`
+# deixa 43 % das colunas sem tinta, HANDOFF §4).
+_EMENDA_JANELA: int = 8
+
+
+def _emendas_suspeitas(x_arr: np.ndarray, y_arr: np.ndarray,
+                       espessura: float) -> list[int]:
+    """Índices `i` cuja ponte de `x_arr[i]` a `x_arr[i+1]` troca de objeto.
+
+    O critério é CONTINUAÇÃO, não distância: extrapola a inclinação local da
+    esquerda através do vão e mede o quanto o primeiro ponto da direita erra a
+    previsão. Um vão dentro do mesmo traço (tracejado, pontilhado) acerta a
+    previsão por construção, por mais íngreme que a curva esteja; um vão entre
+    dois objetos diferentes erra pela distância que separa os objetos.
+    """
+    maus = []
+    for i in range(x_arr.size - 1):
+        vao = float(x_arr[i + 1] - x_arr[i])
+        if vao <= 1.0:
+            continue
+        j = max(0, i - _EMENDA_JANELA)
+        base = float(x_arr[i] - x_arr[j])
+        incl = float(y_arr[i] - y_arr[j]) / base if base > 0.0 else 0.0
+        predito = float(y_arr[i]) + incl * vao
+        if abs(float(y_arr[i + 1]) - predito) > EMENDA_MAX_ESPESSURA * espessura:
+            maus.append(i)
+    return maus
+
 
 def mask_to_polyline(mask: np.ndarray,
                      bbox: tuple[int, int, int, int] | None = None
@@ -198,6 +233,116 @@ def mask_to_polyline(mask: np.ndarray,
         return np.empty(0), np.empty(0)
 
     x_arr, y_arr = np.asarray(xs), np.asarray(ys)
+
+    # GUARDA DE EMENDA. `MAX_GAP_FRAC`, abaixo, só olha a DISTÂNCIA HORIZONTAL
+    # do vão, e por isso não vê o defeito que esta guarda pega: dois OBJETOS
+    # diferentes ligados por um vão curto.
+    #
+    # O caso que a isolou (`resposta_3.png`, matplotlib puro, um degrau, 2ª
+    # ordem sobreamortecida, figura visualmente perfeita): o Estágio A perde a
+    # cauda assentada a partir de x = 828 px — trecho perfeitamente reto, o
+    # `Defeito B` que `tests/part2/test_caso_real_rg.py` já registra — e 45
+    # colunas adiante acende a TRACEJADA DA ENTRADA `u(t) = 1`. A emenda cria
+    # uma rampa de y = 0,80 para 1,00 que o gráfico não desenha. O vão tem 45 px
+    # numa curva de 823 px: 5,5 %, bem abaixo dos 15 % de `MAX_GAP_FRAC`.
+    #
+    # O critério é CONTINUAÇÃO, não distância — ver `_emendas_suspeitas`. E o
+    # segmento REJEITADO é descartado, não só a ponte: deixar a ponte em `nan` e
+    # manter os dois lados foi medido na mesma figura e NÃO resolve (o platô
+    # órfão da tracejada continua na série, `nrmse` do degrau único fica em
+    # 0,0525 contra 0,0529 sem guarda nenhuma). Fica o segmento de maior
+    # EXTENSÃO EM X, que é a curva sempre que o distrator é um pedaço de outro
+    # objeto.
+    #
+    # MEDIDO nas 297 figuras que calibraram `SALTO_MAX_ESPESSURA`, contra a
+    # verdade analítica, com a máscara promovida:
+    #
+    #   tolerância   NRMSE p50   extrações sujas (>= 0,05)   pareado vs. hoje
+    #   ----------   ---------   -------------------------   -----------------
+    #   sem guarda     0,0033            15/297              --
+    #   4              0,0032             1/297              30 sobem / 1 cai
+    #   8              0,0033             2/297              21 sobem / 1 cai
+    #   12             0,0033             3/297              19 sobem / 0 caem
+    #
+    # NENHUMA figura perde a polilinha em nenhuma tolerância, e de 4 a 12 o
+    # resultado é o mesmo platô. 8 é o CENTRO do platô, e é o mesmo valor e a
+    # mesma unidade de `SALTO_MAX_ESPESSURA` — as duas guardas medem a mesma
+    # coisa (distância até onde a curva deveria estar), uma entre colunas
+    # vizinhas e outra através de um vão. Numa varredura anterior, SEM a
+    # restrição de cauda logo abaixo, 2 já era ruído (43 sobem contra 42 caem);
+    # a restrição não mexeu no platô (22/1 viraram 21/1 em 8).
+    #
+    # A ÚNICA que cai em 8 é `multi_20.png` (3 degraus), de 0,0532 para 0,0779 —
+    # já suja antes da guarda. Como na guarda de continuidade, nenhuma extração
+    # LIMPA é quebrada. Os maiores ganhos são polilinhas que estavam agarradas
+    # num distrator inteiro: 0,768 -> 0,0079, 0,669 -> 0,0074, 0,340 -> 0,0105.
+    #
+    # PONTA A PONTA NOS QUATRO LOTES DE CONTROLE (700 figuras), veredito
+    # conjuntivo de `acerto_conjuntivo.py`, sem guarda -> com guarda:
+    #
+    #   lote            n     ESTRITO      PRATICO      TOLERANTE
+    #   -------------  ---   ----------   ----------   -----------
+    #   lote_k_menor1  100    82 ->  84    89 ->  90    91 ->  91
+    #   lote_k_maior1  100    94 ->  94    96 ->  96    96 ->  96
+    #   lote_ruido     100    70 ->  69    85 ->  84    91 ->  90
+    #   lote_misto2    400   304 -> 305   340 -> 341   365 -> 365
+    #   TOTAL          700   550 -> 552   610 -> 611   643 -> 642
+    #
+    # A guarda muda o resultado em 17 das 700. No ESTRITO 4 sobem e 2 caem; no
+    # PRATICO 3 sobem e 2 caem. É um EMPATE nesta população, e era de se
+    # esperar: os lotes de controle já são quase todos de extração limpa, e o
+    # ganho grande da guarda está em figura suja (no corpus de 297, extrações
+    # sujas caem de 15 para 2). Onde ela age, age forte — NRMSE de curva
+    # 0,0999 -> 0,0012, 0,0513 -> 0,0106, 0,0478 -> 0,0010, 0,0264 -> 0,0051.
+    #
+    # AS DUAS QUE CAEM, auditadas, e o modo de falha que elas expõem:
+    #
+    #   `ruido_Kmenor1_20dB_03.png` (0,0154 -> 0,0686). OCLUSÃO POR LEGENDA: a
+    #   caixa tapa a curva de t = 100 s a 120 s e ela reaparece MAIS BAIXO. A
+    #   guarda lê o reaparecimento como outro objeto e amputa 27 % da janela;
+    #   sem o patamar assentado o erro de K vai de 0,8 % para 10 % e o de t_dom
+    #   de 0,7 % para 35 %. É custo real e novo — ver OCLUSAO_LEGENDA.md.
+    #
+    #   `bal_K-_1deg_129.png` (0,0172 -> 0,1219). Curva pontilhada; a guarda
+    #   corta só 6 % da cauda, e mesmo assim K vai de 2,5 % para 19 % e t_dom de
+    #   7 % para 24 % — é a cauda que fixa K.
+    #
+    # LIMITAR O TAMANHO DA CAUDA DESCARTADA NÃO SEPARA os casos, e por isso não
+    # está aqui: a `bal_K-_1deg_129` descarta 6 % e regride, enquanto a
+    # `resposta_3.png`, que é o alvo, descarta 10 % e é o conserto.
+    #
+    # ATENÇÃO, como toda constante a jusante do Estágio A: as tabelas acima
+    # valem para a máscara promovida. Mudou a máscara, remeça.
+    maus = _emendas_suspeitas(x_arr, y_arr, espessura_mediana)
+    if maus:
+        bordas = [0] + [i + 1 for i in maus] + [x_arr.size]
+        a, b = max(((bordas[k], bordas[k + 1]) for k in range(len(bordas) - 1)),
+                   key=lambda seg: x_arr[seg[1] - 1] - x_arr[seg[0]])
+        # SÓ CORTA A CAUDA. Quando o maior segmento não é o primeiro, a guarda
+        # se declara incompetente e não mexe em nada.
+        #
+        # A assimetria NÃO é conveniência — as duas pontas carregam coisas
+        # diferentes. A cauda carrega o patamar assentado, que o ajuste
+        # extrapola: perdê-la custa PRECISÃO. A cabeça carrega o repouso e a
+        # partida da resposta, de onde saem `theta`, o sinal do degrau e a
+        # detecção de `resposta_inversa`: perdê-la custa SIGNIFICADO — a série
+        # amputada vira uma curva bem-comportada diferente, e a pipeline passa
+        # a ACEITAR em silêncio o que deveria recusar.
+        #
+        # Medido, e foi assim que a assimetria apareceu: com a regra "fique com
+        # o maior segmento" sem restrição, em `data/val_nmp[:60]` (fase não
+        # mínima, fora da família) a guarda cortava a CABEÇA em 21 das 60 e a
+        # cauda em NENHUMA, e a recusa por `resposta_inversa` desabava de 90 %
+        # para 58,3 % — o estrato existe exatamente para proteger essa guarda
+        # (ver `tests/part2/test_estrato_fora_da_familia.py`). A máscara
+        # fragmenta a curva fora da família (cobertura do platô de repouso 0,884
+        # -> 0,286) e é a EMENDA por cima do mergulho que denuncia o defeito;
+        # cortá-la apagava a evidência.
+        if a == 0:
+            x_arr, y_arr = x_arr[a:b], y_arr[a:b]
+            if x_arr.size < 2:
+                return np.empty(0), np.empty(0)
+
     x_full = np.arange(int(x_arr[0]), int(x_arr[-1]) + 1, dtype=float)
     y_full = np.interp(x_full, x_arr, y_arr)
 
