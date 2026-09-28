@@ -59,6 +59,40 @@ def resposta(order, K, tau, wn, zeta, theta, t):
     return y
 
 
+# HORIZONTE do NRMSE ESTENDIDO, em constantes de tempo dominantes contadas a
+# partir de theta. O NRMSE na janela e cego a erro de EXTRAPOLACAO: com a janela
+# curta, (K, zeta, theta) deslizam juntos ao longo de um vale e desenham a mesma
+# subida com patamares diferentes — medido no `lote_misto2`, K errado em 52 %
+# com NRMSE de janela de 0,6 % (`ruido_Kmaior1_15dB_17`). Estender a comparacao
+# ate o regime permanente torna esse erro visivel.
+#
+# Por que 6: assentar a 1 % leva ~4,6 t_dom; 6 cobre isso com folga sem deixar
+# o regime permanente dominar tanto a media que o erro de theta (que so vive
+# no transitorio) se dilua. `HORIZONTES_SENSIBILIDADE` existe para mostrar que
+# a conclusao nao depende do numero escolhido — `acerto_conjuntivo.py` reporta
+# o nivel ESTENDIDO em cada um deles.
+HORIZONTE_T_DOM = 6.0
+HORIZONTES_SENSIBILIDADE = (4.6, 5.0, 6.0, 8.0, 12.0)
+
+
+def nrmse_horizonte(v, ordem_hat, p, m):
+    """NRMSE da curva reconstruida contra a verdade em [0, theta + m*t_dom].
+
+    O horizonte nunca e mais curto que a janela desenhada (`t_fim`): o nivel
+    estendido so ACRESCENTA tempo a comparacao, nunca tira.
+    """
+    t_lim = max(float(v["t_fim"]), float(v["theta"]) + m * float(v["t_dom"]))
+    t = np.linspace(0.0, t_lim, 3000)
+    y_true = resposta(v["order"], v["K"], v["tau"], v["wn"], v["zeta"],
+                      v["theta"], t)
+    y_hat = resposta(ordem_hat, p.get("K"), p.get("tau"), p.get("wn"),
+                     p.get("zeta"), p.get("theta"), t)
+    faixa = float(np.ptp(y_true))
+    if faixa <= 0:
+        return None
+    return float(np.sqrt(np.mean((y_hat - y_true) ** 2)) / faixa)
+
+
 def erro_rel(hat, ref):
     if hat is None or ref is None or ref == 0:
         return None
@@ -138,6 +172,12 @@ def main() -> None:
             reg["nrmse_curva"] = (None if faixa <= 0 else
                                   float(np.sqrt(np.mean((y_hat - y_true) ** 2)) / faixa))
             reg["t_lim_curva"] = t_lim
+            # --- nivel 3b: erro de CURVA ESTENDIDO (ver HORIZONTE_T_DOM)
+            reg["nrmse_estendido"] = nrmse_horizonte(v, ordem_hat, p,
+                                                     HORIZONTE_T_DOM)
+            reg["nrmse_horizontes"] = {
+                str(m): nrmse_horizonte(v, ordem_hat, p, m)
+                for m in HORIZONTES_SENSIBILIDADE}
             # JANELA EFETIVA, em constantes de tempo dominantes. Assentar a
             # 1 % leva ~4,6 t_dom; abaixo disso o patamar nao aparece e K
             # deixa de ser observavel.
@@ -241,6 +281,8 @@ def main() -> None:
                 and x["nrmse_curva"] <= lim)
         P(f"    NRMSE <= {lim:.2f}: {c}/{len(oks)} ({c/max(1,len(oks)):.1%})  "
           f"[{c}/{n} do total = {c/n:.1%}]")
+    P(f"  erro de CURVA ESTENDIDO (NRMSE ate theta + {HORIZONTE_T_DOM:g} t_dom):")
+    P(resumo([x.get("nrmse_estendido") for x in oks], "nrmse estendido"))
     P()
 
     P("=" * 78)
