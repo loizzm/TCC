@@ -1,5 +1,5 @@
-"""Nivel ESTENDIDO do acerto conjuntivo: NRMSE da curva num horizonte que passa
-da janela desenhada.
+"""Nivel unico ESTRITO do acerto conjuntivo: NRMSE da curva num horizonte que
+passa da janela desenhada (theta + 6 t_dom).
 
 O NRMSE na janela e cego a erro de EXTRAPOLACAO: com a janela curta, varias
 combinacoes (K, zeta, theta) desenham a mesma subida e assentam em patamares
@@ -13,7 +13,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from acerto_conjuntivo import PRATICO, avalia_estendido
+from acerto_conjuntivo import SNR_MIN_DB, avalia, faixa_ganho, snr_db
 from analisa_aleatorias import nrmse_horizonte
 
 
@@ -52,7 +52,7 @@ def test_horizonte_nunca_e_mais_curto_que_a_janela_desenhada():
     assert curto == pytest.approx(na_janela, rel=1e-9)
 
 
-def test_caso_15dB_17_passa_na_janela_e_reprova_no_estendido():
+def test_caso_15dB_17_passa_na_janela_e_reprova_no_horizonte_estendido():
     # ruido_Kmaior1_15dB_17.png: verdade e ajuste reais do lote_misto2
     v = {"order": "second", "K": -1.479605504769435, "tau": None,
          "wn": 0.07618897328332647, "zeta": 0.7327927028385658,
@@ -69,57 +69,66 @@ def _fig(**mud):
     x = {"ok": True, "reason": "", "order_true": "second", "order_hat": "second",
          "err_K": 0.0, "err_theta_T": 0.0, "sinal_K_ok": True,
          "nrmse_curva": 0.001, "nrmse_estendido": 0.001,
-         "nrmse_horizontes": {"6.0": 0.001, "12.0": 0.001}}
+         "nrmse_horizontes": {"6.0": 0.001, "12.0": 0.001},
+         "theta_true": 1.0, "t_dom_true": 4.0, "theta_hat": 1.0, "t_dom_hat": 4.0}
     x.update(mud)
     return x
 
 
 def test_aprova_com_estrutura_certa_e_nrmse_estendido_abaixo_de_2pct():
-    assert avalia_estendido(_fig(nrmse_estendido=0.0199)) == []
+    assert avalia(_fig(nrmse_estendido=0.0199)) == []
 
 
 def test_limiar_e_estrito_2pct_reprova():
-    assert avalia_estendido(_fig(nrmse_estendido=0.02)) == ["curva estendida"]
+    assert avalia(_fig(nrmse_estendido=0.02)) == ["curva"]
 
 
 def test_nao_cobra_K_nem_theta_diretamente():
     # K e theta ficam cobertos pelo NRMSE estendido, nao por limiar proprio
-    assert avalia_estendido(_fig(err_K=0.5, err_theta_T=0.1,
+    assert avalia(_fig(err_K=0.5, err_theta_T=0.1,
                                  nrmse_estendido=0.01)) == []
 
 
 def test_troca_de_estrutura_reprova():
-    assert avalia_estendido(_fig(order_hat="fopdt")) == ["estrutura"]
+    assert avalia(_fig(order_hat="fopdt")) == ["estrutura"]
 
 
 def test_nao_entregou_reprova_sozinho():
-    f = avalia_estendido(_fig(ok=False, reason="polilinha_curta"))
+    f = avalia(_fig(ok=False, reason="polilinha_curta"))
     assert f == ["nao entregou (polilinha_curta)"]
 
 
 def test_nrmse_ausente_reprova():
-    assert avalia_estendido(_fig(nrmse_estendido=None)) == ["curva estendida"]
+    assert avalia(_fig(nrmse_estendido=None)) == ["curva"]
 
 
 def test_horizonte_explicito_le_nrmse_horizontes():
     x = _fig(nrmse_estendido=0.001, nrmse_horizontes={"6.0": 0.001, "12.0": 0.05})
-    assert avalia_estendido(x, horizonte=12.0) == ["curva estendida"]
-    assert avalia_estendido(x, horizonte=6.0) == []
+    assert avalia(x, horizonte=12.0) == ["curva"]
+    assert avalia(x, horizonte=6.0) == []
 
 
-# --- nivel PRATICO: o ESTENDIDO sem exigir o rotulo de estrutura -----------
-
-@pytest.mark.parametrize("verdade, predito", [("second", "fopdt"), ("fopdt", "second")])
-def test_pratico_aceita_troca_de_estrutura_nos_dois_sentidos(verdade, predito):
-    x = _fig(order_true=verdade, order_hat=predito, nrmse_estendido=0.01)
-    assert avalia_estendido(x, PRATICO) == []
 
 
-def test_pratico_ainda_reprova_troca_que_estraga_a_curva():
-    x = _fig(order_true="second", order_hat="fopdt", nrmse_estendido=0.03)
-    assert avalia_estendido(x, PRATICO) == ["curva estendida"]
+# --- corte de dominio de aplicabilidade por SNR -----------------------------
+
+from acerto_conjuntivo import SNR_MIN_DB, faixa_ganho, snr_db
 
 
-def test_pratico_nao_entregou_reprova():
-    x = _fig(ok=False, reason="polilinha_curta")
-    assert avalia_estendido(x, PRATICO) == ["nao entregou (polilinha_curta)"]
+def test_snr_db_le_do_nome_do_arquivo():
+    assert snr_db({"arquivo": "ruido_Kmaior1_05dB_00.png"}) == 5
+    assert snr_db({"arquivo": "ruido_Kmenor1_60dB_19.png"}) == 60
+
+
+def test_snr_db_none_quando_o_nome_nao_tem_faixa():
+    assert snr_db({"arquivo": "gen_000.png"}) is None
+
+
+def test_faixa_ganho_le_do_nome():
+    assert faixa_ganho({"arquivo": "ruido_Kmaior1_05dB_00.png"}) == "K>1"
+    assert faixa_ganho({"arquivo": "ruido_Kmenor1_10dB_00.png"}) == "K<1"
+    assert faixa_ganho({"arquivo": "gen_000.png"}) is None
+
+
+def test_corte_default_e_15db():
+    assert SNR_MIN_DB == 15
