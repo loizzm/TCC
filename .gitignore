@@ -91,3 +91,21 @@ docs_frente/
 # lotes sao derivados dos scripts com a semente registrada. Fica so no disco.
 # Historico: `git checkout 77dfb74 -- reports/` traz tudo de volta.
 reports/
+
+# LIMPEZA DO REPOSITORIO (so train_unet.py e identificar.py ficam versionados
+# entre os scripts; so o modelo em uso, unet_stageA.pt, entre os checkpoints).
+# Os demais SAEM do versionamento mas FICAM no disco — sao insumo de medicao e
+# geracao, nao o deliverable. Historico: `git show <commit>:<arquivo>`.
+acerto_conjuntivo.py
+analisa_aleatorias.py
+gera_lote_ruidoso.py
+rg.py
+rg_aleatorio.py
+rg_negativo.py
+img.py
+helpers/
+tests/test_acerto_conjuntivo.py
+
+# Todos os checkpoints exceto o modelo em uso.
+models/*.pt
+!models/unet_stageA.pt
