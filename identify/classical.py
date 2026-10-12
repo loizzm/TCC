@@ -71,69 +71,31 @@ ZETA_BOUNDS = (1e-3, 10.0)
 
 _TINY = 1e-300
 
-# Tamanho do trecho contíguo da guarda `_polo_rapido_e_artefato`, em fração da
-# série. É o ÚNICO número dela escolhido por medição — o limiar (1,0) é
-# estrutural. Varrido nos dois caminhos que usam `identify` (§38):
+# GUARDA DE POLO RAPIDO: o polo extra e' RESOLUVEL pela amostragem?
 #
-#   frac    imagem (n=837)          oráculo 20 dB (n=300)
-#   -----   ---------------------   ---------------------
-#   0,005   90,08 %  (custo  -1)    --
-#   0,01    91,64 %  (custo  -3)    88,0 %
-#   0,02    92,71 %  (custo  -6)    87,3 %
-#   0,03    92,95 %  (custo  -7)    87,7 %   <- escolhido
-#   0,05    92,95 %  (custo  -9)    87,7 %
-#   0,08    91,64 %  (custo -23)    86,7 %
+# Um polo cujo tau nao chega a alguns intervalos de amostragem nao e'
+# distinguivel de um canto instantaneo: nao ha exponencial observavel ali, so'
+# o arredondamento do proprio traco (espessura da linha e antialiasing).
 #
-# 0,03 e 0,05 empatam no platô do caminho da imagem e no oráculo; 0,03 é o
-# escolhido por ter o MENOR custo dentro do platô (7 contra 9 amostras de 2ª
-# ordem rebaixadas) e por ser a janela mais curta — trecho menor é afirmação
-# mais forte de localidade, que é o que a guarda quer dizer.
-TRECHO_FRAC = 0.03
-
-# SEGUNDO TERMO DA MESMA GUARDA: o polo extra e' RESOLUVEL pela amostragem?
-#
-# `_polo_rapido_e_artefato` pergunta ONDE o ganho aconteceu, e responde bem
-# quando o ganho esta concentrado. Mas ela decide por uma razao que fica em
-# cima do limiar estrutural 1,0, e essa razao se mexe com a mascara. Medido na
-# figura real `caso_real_rg_fopdt_atraso.png` (FOPDT verdadeiro, K=5, tau=1,
-# theta=4), com duas mascaras diferentes da MESMA imagem:
-#
-#     mascara promovida ....... trecho = 1,039  -> rebaixa, `fopdt`  (certo)
-#     mascara `render2` ep.17 . trecho = 0,973  -> NAO rebaixa, `second` (erro)
-#
-# Seis centesimos separam acertar de errar, e o limiar 1,0 nao e calibravel:
-# ele e a fronteira do enunciado ("fora do trecho o 2a ordem nao vence").
-#
-# O POLO RAPIDO EM AMOSTRAS e' o mesmo julgamento por outra via, e nao se mexe:
-# 1,48 e 1,42 amostras nas duas mascaras acima — 4 % de diferenca, contra 7 %
-# do trecho em torno de um limiar que ele cruza. Um polo cujo tau nao chega a
-# alguns intervalos de amostragem nao e' distinguivel de um canto instantaneo:
-# nao ha exponencial observavel ali, so' o arredondamento do proprio traco.
-#
-# MEDIDO nas figuras reais (duas mascaras cada):
+# MEDIDO nas figuras reais (polo rapido em amostras, duas mascaras cada):
 #     FOPDT verdadeiro  sistema1 1,48 / 1,42 ; neg_fopdt 1,30 / 1,33
 #     2a ordem real     neg_super 5,22 / 10,33 ; sistema2 9,89 / 10,17
 #
-# MEDIDO em `data/test` (n=837, o mesmo n com que `TRECHO_FRAC` foi fixado),
-# acuracia de selecao de estrutura com o termo ligado:
+# O limiar e' escolhido pela MARGEM ate as figuras reais, nao pela acuracia no
+# corpus (que varia dentro de 1 sigma entre 2,5 e 5,0). Em 3,0 o `sistema1`
+# (1,48) entra com fator 2,0 de folga e o `neg_super` (5,22) fica de fora com
+# fator 1,7; em 5,0 a folga do `neg_super` cai para 4 %, e foi exatamente ai
+# que uma tentativa anterior deste criterio quebrou 8 testes.
 #
-#   limiar   1a ordem   2a ordem   global
-#   -------  ---------  ---------  --------
-#   (so trecho)  91,9 %    95,3 %   93,55 %
-#   2,5          92,3 %    95,1 %   93,67 %
-#   3,0          93,3 %    94,8 %   94,03 %   <- escolhido
-#   4,0          94,2 %    94,3 %   94,27 %
-#   5,0          95,3 %    93,4 %   94,38 %
+# HISTORICO. Esta guarda era o segundo termo de outra, `_polo_rapido_e_artefato`
+# (o ganho de SSE do 2a ordem cabia todo num trecho contiguo de 3 % da serie?).
+# Aquela foi REMOVIDA por nao ter fundamentacao na literatura e por ter o
+# tamanho do trecho escolhido no proprio `data/test`. Custo medido
+# (`data/test`, n=895, AIC com n_eff): 94,41 % -> 92,85 % global
+# (1a ordem 94,5 -> 89,7 %; 2a ordem 94,3 -> 96,1 %).
 #
-# A acuracia NAO escolhe o limiar: 1 sigma em n=837 e' 0,82 p.p. e a faixa
-# inteira de 93,55 % a 94,38 % cabe dentro dela. Quem escolhe e' a MARGEM ate
-# as figuras reais. Em 3,0 o `sistema1` (1,48) entra com fator 2,0 de folga e o
-# `neg_super` (5,22) fica de fora com fator 1,7; em 5,0 a folga do `neg_super`
-# cai para 4 %, e foi exatamente ai que uma tentativa anterior deste criterio
-# quebrou 8 testes e teve de ser revertida.
-#
-# Como `_polo_rapido_e_artefato`, SO' VALE PARA `zeta > 1`, e pela mesma razao:
-# com polos complexos nao existe polo rapido separado para descartar.
+# SO' VALE PARA `zeta > 1`: com polos complexos nao existe polo rapido separado
+# para descartar, e rebaixar destruiria justamente o zeta.
 POLO_MIN_AMOSTRAS = 3.0
 
 
@@ -927,99 +889,12 @@ def _n_efetivo(t: np.ndarray, y: np.ndarray, fit: FitResult) -> float:
     return max(n_eff, float(fit.n_params) + 2.0)
 
 
-def _ganho_num_trecho_so(t: np.ndarray, y: np.ndarray,
-                         r1: FitResult, r2: FitResult, frac: float = TRECHO_FRAC) -> float:
-    """Quanto da vantagem de SSE do 2ª ordem sobre o FOPDT cabe no MELHOR
-    trecho CONTÍGUO de `frac` da série. Acima de 1, fora desse trecho o
-    2ª ordem é PIOR que o FOPDT.
-
-    Contíguo, e não "os pontos de maior ganho onde quer que estejam": a
-    diferença é o que separa artefato de RENDER de ruído de medição. Um canto
-    rasterizado é um acidente LOCAL — ocupa pixels vizinhos; o ruído de
-    aquisição é disperso por construção, e a versão dispersa da estatística
-    confunde os dois. Medido no estrato do critério 1.2 (série ORÁCULO, sem
-    render nenhum, SNR fixo de 20 dB, n=300), acurácia de seleção de estrutura:
-
-        sem guarda ................... 88,3 %
-        DISPERSO, 1 % dos pontos ..... 85,7 %   (-2,6 p.p.)
-        trecho CONTÍGUO de 3 % ....... 87,7 %   (-0,6 p.p.)
-
-    A versão dispersa custava 2,6 p.p. num caminho que nem tem render — era a
-    guarda pegando picos de ruído. A contígua fica dentro do ruído amostral de
-    n=300 (1 sigma = 1,9 p.p.).
-
-    `t` precisa estar ordenado — `_clean` garante isso e é por onde `identify`
-    passa.
-    """
-    g = ((y - model_response("fopdt", r1.params, t)) ** 2
-         - (y - model_response("second", r2.params, t)) ** 2)
-    total = float(g.sum())
-    if not np.isfinite(total) or total <= 0.0 or g.size == 0:
-        return 0.0
-    k = max(1, int(round(frac * g.size)))
-    if k >= g.size:
-        return 1.0
-    c = np.concatenate(([0.0], np.cumsum(g)))
-    return float(np.max(c[k:] - c[:-k])) / total
-
-
-def _polo_rapido_e_artefato(t: np.ndarray, y: np.ndarray,
-                            r1: FitResult, r2: FitResult) -> bool:
-    """O polo extra do 2ª ordem descreve DINÂMICA ou o traço do próprio render?
-
-    O critério de `identify` compara SSE agregado, e SSE agregado não sabe
-    ONDE o ganho aconteceu. Uma 2ª ordem superamortecida pode vencer um FOPDT
-    colocando o segundo polo tão rápido que ele só arredonda o CANTO do
-    degrau — e o canto de uma curva rasterizada já vem arredondado pela
-    espessura da linha e pelo antialiasing, então o "ganho" é o modelo
-    ajustando o desenho, não a planta.
-
-    Medido na imagem real do `rg.py` (FOPDT verdadeiro: K=5, tau=1, theta=4):
-    o ajuste FOPDT acerta os três parâmetros (K=5,02, tau=0,997, theta=3,99,
-    NRMSE=0,0020) e mesmo assim perdia para uma 2ª ordem cujo polo extra fica
-    em tau = 45 ms = 2,35 amostras = 3,6 px. DOIS pontos, de 406, respondiam
-    por 107,5 % de toda a vantagem de SSE; no resto da série o 2ª ordem era,
-    no líquido, pior.
-
-    Daí o teste: se UM trecho contíguo de `TRECHO_FRAC` da série responde por
-    100 % ou mais do ganho, então FORA dele o 2ª ordem não vence — a estrutura
-    inteira está apoiada num punhado de pixels vizinhos. O limiar 1,0 não é
-    calibrado: é a fronteira estrutural do enunciado. Quem foi escolhido por
-    medição é só o TAMANHO do trecho (ver `TRECHO_FRAC`).
-
-    Medido no corpus (`data/test`, n=837 com calibração e ajuste), ordem
-    contra o `order` do meta:
-
-        ordem correta em plantas de 1ª ordem .... 82,6 % -> 92,1 %  (+41)
-        ordem correta em plantas de 2ª ordem .... 95,6 % -> 93,9 %  ( -7)
-        ordem correta global ................... 88,89 % -> 92,95 %
-
-    As amostras perdidas são plantas de 2ª ordem genuinamente
-    superamortecidas (zeta de 2 a 3,5) cujo polo rápido é quase invisível na
-    janela; rebaixá-las a FOPDT preserva o polo DOMINANTE — medido numa
-    amostragem delas, o tau reportado ficou a 0,1 % a 1,5 % do tau dominante
-    verdadeiro e K a menos de 1 %. Perde-se o rótulo, não a física.
-
-    SÓ VALE PARA `zeta > 1`. Com polos complexos não existe "polo rápido
-    separado" a descartar: a oscilação é a assinatura inteira e nenhum FOPDT a
-    representa, então rebaixar destruiria justamente o zeta — a grandeza que o
-    nível adimensional da Decisão E existe para entregar. Sem a restrição o
-    corpus rebaixaria 1 amostra a mais (e ela é de 1ª ordem, ou seja, ganho):
-    a restrição custa quase nada e fecha um modo de falha inteiro.
-    """
-    z = r2.params.get("zeta")
-    if z is None or not np.isfinite(z) or z <= 1.0:
-        return False
-    return _ganho_num_trecho_so(t, y, r1, r2) > 1.0
-
-
 def _polo_abaixo_da_resolucao(t: np.ndarray, r2: FitResult) -> bool:
     """O polo extra do 2a ordem tem constante de tempo menor que
     `POLO_MIN_AMOSTRAS` intervalos de amostragem?
 
-    Segundo termo da guarda de polo rapido, por uma via que nao depende de
-    onde o ganho de SSE caiu. Ver o bloco de `POLO_MIN_AMOSTRAS` para a
-    medicao que fixa o limiar e para o que a tentativa anterior errou.
+    Ver o bloco de `POLO_MIN_AMOSTRAS` para a medicao que fixa o limiar e
+    para o que a tentativa anterior errou.
 
     `t` precisa estar ordenado — `_clean` garante isso.
     """
@@ -1042,8 +917,8 @@ def _polo_abaixo_da_resolucao(t: np.ndarray, r2: FitResult) -> bool:
 def identify(t, y) -> FitResult:
     """Estágio D: ajusta FOPDT e 2ª ordem e escolhe pela verossimilhança
     penalizada com nº de pontos EFETIVO (ver `_n_efetivo`), com uma guarda
-    contra polo extra que só ajusta o traço do render
-    (`_polo_rapido_e_artefato`).
+    contra polo extra abaixo da resolução da amostragem
+    (`_polo_abaixo_da_resolucao`).
 
     Equivale ao AIC quando o resíduo é branco; difere dele exatamente na medida
     em que a polilinha extraída é autocorrelacionada. Os campos `.aic` dos dois
@@ -1086,8 +961,6 @@ def _identify_ascendente(t, y) -> FitResult:
     n_eff = _n_efetivo(tc, yc, r2)
     ganho = n_eff * np.log(max(r1.sse, 1e-300) / max(r2.sse, 1e-300))
     if ganho <= 2.0 * (r2.n_params - r1.n_params):
-        return r1
-    if _polo_rapido_e_artefato(tc, yc, r1, r2):
         return r1
     return r1 if _polo_abaixo_da_resolucao(tc, r2) else r2
 

@@ -24,7 +24,8 @@ daí, e um terceiro continua ABERTO por exigir retreino (ver §39.3).
   - Sistema 1: o Estágio D escolhia `second` para uma planta de 1a ordem. O polo
     extra ficava em tau = 45 ms = 2,35 amostras = 3,6 px — a espessura do próprio
     traço no canto do degrau. 107,5 % do ganho de SSE do 2a ordem sobre o FOPDT
-    vinha de DOIS pontos. Consertado por `_polo_rapido_e_artefato`.
+    vinha de DOIS pontos. Consertado por `_polo_abaixo_da_resolucao` (o polo
+    extra fica abaixo de `POLO_MIN_AMOSTRAS` intervalos de amostragem).
   - Sistema 3: `_equiespacados` reprovava o eixo y com os NOVE rótulos lidos
     corretamente, porque o recorte da faixa cortava os glifos dos rótulos
     extremos e enviesava o centróide deles em 1,5 px para dentro. Consertado por
@@ -133,13 +134,13 @@ def test_sistema3_recupera_K_wn_zeta_theta(modelo):
 
 def test_sistema2_guarda_nao_rebaixa_2a_ordem_legitima(modelo):
     """zeta = 1,5 é 2a ordem SUPERamortecida de verdade — o regime exato em que
-    `_polo_rapido_e_artefato` tem licença para agir.
+    `_polo_abaixo_da_resolucao` tem licença para agir.
 
     Sem este teste a guarda do Sistema 1 poderia ser apertada até rebaixar
     qualquer superamortecida, e o corpus sintético sozinho não protegeria contra
     isso nesta geometria (curva rente à moldura), que ele não produz. Margem
-    medida: o estatístico do trecho dá 0,639 aqui contra o limiar de 1,0, e
-    1,013 no Sistema 1.
+    medida: o polo rápido fica a ~10 amostras aqui contra o limiar de 3, e
+    1,48 no Sistema 1.
     """
     r = _roda(SISTEMA_2, modelo)
     assert r["order"] == "second", (
