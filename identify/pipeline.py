@@ -850,13 +850,13 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     (Bloco 3b). Quando `None` (padrão, assinatura idêntica à do
     `PLANO_PARTE2.md`), usa a U-Net via `model`/`device` como sempre.
 
-    **Decisão E do PLANO §1.7 (HANDOFF_P2_7 Rulings 34 e 44).** A saída tem dois
-    níveis. O `dimensionless` sai SEMPRE (critério 2.11); o `physical` só quando
-    a calibração fecha, e é `None` caso contrário. Antes desta mudança
-    `cal.ok == False` abortava a amostra inteira — contra o plano, e custando 56
-    das ~68 amostras perdidas do pipeline (Ruling 42), justamente onde ζ é
-    recuperável sem calibração nenhuma (medido: 53 recuperadas, ζ a 2,93 % de
-    MAPE, contra 2,40 % do caminho físico).
+    **Calibração é obrigatória.** Se o Estágio B falha (`cal.ok == False`), a
+    amostra é recusada com `ok=False`, `order=""` e `reason` igual ao motivo
+    da calibração. O caminho adimensional sem calibração (Decisão E do PLANO
+    §1.7) existiu e foi retirado: ele recuperava ζ em 53 de 56 amostras sem
+    escala, mas obrigava todo consumidor a tratar uma saída parcial. O bloco
+    `dimensionless` continua presente com todas as chaves (critério 2.11);
+    só é preenchido quando a calibração fecha, derivado do ajuste físico.
 
     Duas decisões de compatibilidade, deliberadas:
 
@@ -866,8 +866,8 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
     2. **`ok` continua significando "há saída física"**, não "há resposta". É o
        que o próprio §1.7 pede em "Consequência nos critérios": 2.3, 2.4 e 2.5
        passam a ser medidos sobre o subconjunto em que a calibração declarou
-       sucesso. Quem quiser o nível adimensional lê `dimensionless`, que nunca
-       é nulo.
+       sucesso. `dimensionless` nunca é nulo: numa recusa ele sai com as chaves
+       e valores nulos.
 
     Quando a calibração fecha, o bloco adimensional é DERIVADO do ajuste físico
     em vez de sair de um segundo ajuste. Isso evita um ajuste a mais por imagem e
@@ -977,26 +977,12 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
                       "" if fit.success else "ajuste_falhou", dim, cal,
                       x_px.size, planura_inicial(y_fit), fit.nrmse, tr)
 
-    # Calibração falhou: só o nível adimensional é possível. No quadro
-    # normalizado T = 1 e a faixa de y = 1, então `_adimensional` recebe as duas
-    # como 1 e devolve as grandezas já normalizadas. `cal.bbox_px` (moldura)
-    # segue disponível mesmo com `cal.ok == False` (falha é no mapeamento de
-    # unidades dos eixos, não na detecção da moldura) e serve de referência de
-    # tempo SÓ quando a polilinha estiver truncada — ver `_serie_normalizada`.
-    tn, yn = _serie_normalizada(x_px, y_px, bbox_px=cal.bbox_px)
-    if tn is None:
-        return _saida("", {}, False, cal.reason,
-                      _vazio_adimensional(), cal, x_px.size)
-    g = identify(tn, yn)
-    mau = _implausivel(yn, g.nrmse) if g.success else ""
-    if mau:
-        return _saida("", {}, False, mau, _vazio_adimensional(), cal,
-                      x_px.size, planura=planura_inicial(yn))
-    dim = _adimensional(g.params, 1.0, 1.0) if g.success else _vazio_adimensional()
-    # `order` É adimensional — o PLANO §1.7 lista a estrutura como não dependente
-    # de calibração —, então sai preenchido mesmo sem nível físico. Já `params`
-    # fica vazio: ele é, por contrato, o bloco FÍSICO, que aqui não existe.
-    # Consumidores antigos não se confundem porque todos passam por `ok`, que
-    # continua falso; quem quer a estrutura sem calibração lê `order`.
-    return _saida(g.order if g.success else "", {}, False, cal.reason,
-                  dim, cal, x_px.size, planura=planura_inicial(yn))
+    # Calibração falhou: a pipeline PARA aqui. Sem o mapeamento pixel ->
+    # unidade não há nível físico, e o nível adimensional (quadro normalizado,
+    # Decisão E do PLANO §1.7) foi retirado de propósito: uma saída parcial
+    # obriga quem consome a distinguir "sem escala" de "sem resposta", e o
+    # trabalho passa a reportar só o que foi medido em unidades físicas. O
+    # bloco `dimensionless` continua saindo com as chaves e valores nulos,
+    # como em qualquer outra recusa.
+    return _saida("", {}, False, cal.reason,
+                  _vazio_adimensional(), cal, x_px.size)

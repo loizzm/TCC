@@ -239,9 +239,19 @@ def test_a_pipeline_recusa_com_o_motivo_certo(_pipeline):
 
 
 def test_a_taxa_de_recusa_nao_regride(_pipeline):
-    """Piso na fração recusada por `resposta_inversa`. Ver `_RECUSA_MIN`."""
-    n = len(_pipeline)
-    recusou = sum(1 for _, r in _pipeline if r["reason"] == "resposta_inversa")
+    """Piso na fração recusada por `resposta_inversa`. Ver `_RECUSA_MIN`.
+
+    O denominador exclui as recusas do Estágio B (`_MOTIVOS_DE_CALIBRACAO`).
+    Desde que a pipeline para quando a calibração falha, essas figuras nunca
+    chegam à guarda, e contá-las mediria o OCR em vez do Estágio A. Medido nas
+    60 amostras, com a mesma máscara: antes 55 `resposta_inversa` + 5 `ok`;
+    depois 48 + 5 `ok` + 7 de calibração. Nenhuma figura passou a ser entregue.
+    """
+    chegou = [r for _, r in _pipeline
+              if (r["reason"] or "") not in _MOTIVOS_DE_CALIBRACAO]
+    n = len(chegou)
+    assert n, "nenhuma amostra do estrato passou da calibração"
+    recusou = sum(1 for r in chegou if r["reason"] == "resposta_inversa")
     assert recusou / n >= _RECUSA_MIN, (
         f"só {recusou}/{n} ({recusou/n:.1%}) recusadas por resposta_inversa, "
         f"piso {_RECUSA_MIN:.0%} — o Estágio A regrediu em curva fora da família")
