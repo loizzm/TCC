@@ -139,43 +139,49 @@ def _fopdt_basis(t, tau, theta):
     return np.where(u >= 0.0, 1.0 - np.exp(-uu / tau), 0.0)
 
 
-def _second_terms(zeta: float, v, need_d: bool = True):
-    """Termos base da resposta de 2ª ordem, em função de `v = wn*(t-theta) >= 0`.
+def _second_cases(zeta: float, v, need_d: bool = True):
+    """Resposta de 2ª ordem nos três casos de Ogata (cap. 5), em `v = wn*u >= 0`.
 
-    Com `w = (1 - zeta^2) * v^2`, `C = cos(sqrt(w))` e `S = sin(sqrt(w))/sqrt(w)`
-    são **funções inteiras de w** (para w < 0 viram cosh e sinh(.)/.), logo a
-    resposta é uma única expressão analítica, contínua e sem NaN atravessando
-    zeta = 1 — em w = 0 vale C = S = 1 e a fórmula degenera exatamente no ramo
-    criticamente amortecido `1 - exp(-wn*u)*(1 + wn*u)` do contract.md §1.
+    Com `beta = sqrt(|1 - zeta^2|)`:
 
-    Devolve `(EC, ES, ED)` = `E*C`, `E*S`, `E*dS/dw`, com `E = exp(-zeta*v)`,
-    já na forma de produto para evitar overflow de cosh quando zeta > 1.
+      zeta < 1:  c = 1 - e^{-zeta v} [cos(beta v) + (zeta/beta) sin(beta v)]
+      zeta = 1:  c = 1 - e^{-v} (1 + v)
+      zeta > 1:  c = 1 + 1/(2 beta) [e^{-s1 v}/s1 - e^{-s2 v}/s2],
+                 s1 = zeta + beta, s2 = zeta - beta
+
+    Devolve `(c, dc/dv, dc/dzeta)`. `dc/dv` é a resposta ao impulso em `v`.
+    O caso `zeta = 1` não define `dc/dzeta` sozinho (não tem zeta na fórmula);
+    usa-se o limite comum dos outros dois ramos, `-v^3 e^{-v} / 3`.
     """
     zeta = float(zeta)
     v = np.asarray(v, dtype=float)
-    w = (1.0 - zeta * zeta) * v * v
-    E = np.exp(-zeta * v)
-    if zeta <= 1.0:
-        x = np.sqrt(np.maximum(w, 0.0))
-        EC = E * np.cos(x)
-        ES = E * np.sinc(x / np.pi)          # sin(x)/x, estável em x -> 0
+    if zeta < 1.0:
+        beta = np.sqrt(1.0 - zeta * zeta)
+        E = np.exp(-zeta * v)
+        cb, sb = np.cos(beta * v), np.sin(beta * v)
+        c = 1.0 - E * (cb + (zeta / beta) * sb)
+        if not need_d:
+            return c, None, None
+        dv = E * sb / beta
+        dz = E * (beta * v * cb - sb) / beta ** 3
+    elif zeta == 1.0:
+        E = np.exp(-v)
+        c = 1.0 - E * (1.0 + v)
+        if not need_d:
+            return c, None, None
+        dv = v * E
+        dz = -v ** 3 * E / 3.0
     else:
         beta = np.sqrt(zeta * zeta - 1.0)
-        x = beta * v
-        a = np.exp(-(zeta - beta) * v)       # ambos os expoentes <= 0
-        b = np.exp(-(zeta + beta) * v)
-        EC = 0.5 * (a + b)
-        small = x <= 1e-6
-        ES = np.where(small,
-                      E * (1.0 + x * x / 6.0),
-                      (a - b) / (2.0 * np.where(small, 1.0, x)))
-    if not need_d:
-        return EC, ES, None
-    tiny_w = np.abs(w) <= 1e-4
-    ED = np.where(tiny_w,
-                  E * (-1.0 / 6.0 + w / 60.0),
-                  (EC - ES) / (2.0 * np.where(tiny_w, 1.0, w)))
-    return EC, ES, ED
+        s1, s2 = zeta + beta, zeta - beta
+        a = np.exp(-s2 * v)                  # modo lento
+        b = np.exp(-s1 * v)                  # modo rápido
+        c = 1.0 + (b / s1 - a / s2) / (2.0 * beta)
+        if not need_d:
+            return c, None, None
+        dv = (a - b) / (2.0 * beta)
+        dz = ((a - b) - beta * v * (a + b)) / (2.0 * beta ** 3)
+    return c, dv, dz
 
 
 def _second_basis(t, wn, zeta, theta):
@@ -186,9 +192,8 @@ def _second_basis(t, wn, zeta, theta):
     wn = np.maximum(np.asarray(wn, dtype=float), 1e-30)
     u = np.asarray(t, dtype=float) - np.asarray(theta, dtype=float)
     uu = np.maximum(u, 0.0)
-    v = wn * uu
-    EC, ES, _ = _second_terms(zeta, v, need_d=False)
-    return np.where(u >= 0.0, 1.0 - (EC + zeta * v * ES), 0.0)
+    c, _, _ = _second_cases(zeta, wn * uu, need_d=False)
+    return np.where(u >= 0.0, c, 0.0)
 
 
 def model_response(order: str, params: dict, t: np.ndarray) -> np.ndarray:
@@ -818,19 +823,17 @@ def fit_second(t, y, p0: dict | None = None) -> FitResult:
         return _second_basis(t, x[1], x[2], x[3]) * x[0] - y
 
     def jac(x):
-        # d(f)/dv = E*v*S  =>  d/dwn = v^2*ES/wn ; d/dtheta = -wn*v*ES ;
-        # d/dzeta = 2*v^3*ED  (ver _second_terms).
+        # Regra da cadeia sobre v = wn*(t - theta), caso a caso (_second_cases).
         K, wn, zeta, theta = x[0], max(x[1], 1e-30), x[2], x[3]
         u = t - theta
         m = u >= 0.0
-        v = wn * np.maximum(u, 0.0)
-        EC, ES, ED = _second_terms(zeta, v)
-        base = np.where(m, 1.0 - (EC + zeta * v * ES), 0.0)
-        vES = np.where(m, v * ES, 0.0)
-        return np.column_stack([base,
-                                K * v * vES / wn,
-                                K * 2.0 * v * v * np.where(m, v * ED, 0.0),
-                                -K * wn * vES])
+        uu = np.maximum(u, 0.0)
+        c, dv, dz = _second_cases(zeta, wn * uu)
+        z = np.zeros_like(uu)
+        return np.column_stack([np.where(m, c, 0.0),
+                                K * np.where(m, dv * uu, z),
+                                K * np.where(m, dz, z),
+                                -K * wn * np.where(m, dv, z)])
 
     best_x, _, ok = _multistart(fun, jac, starts, lo, hi)
     if best_x is None:
