@@ -5,7 +5,6 @@ Uso:
     python identificar.py grafico.png
     python identificar.py *.png                    # varias de uma vez
     python identificar.py grafico.png --json       # saida para script
-    python identificar.py grafico.png --classico   # extrator sem rede (sem torch)
 
 Devolve a estrutura do modelo (FOPDT ou 2a ordem) e os parametros. Quando a
 calibracao dos eixos falha, ainda devolve o bloco ADIMENSIONAL — ordem, zeta e
@@ -183,8 +182,6 @@ def main() -> int:
     ap.add_argument("imagens", nargs="+", type=Path, help="uma ou mais imagens")
     ap.add_argument("--json", action="store_true",
                     help="saida em JSON, para encadear em script")
-    ap.add_argument("--classico", action="store_true",
-                    help="usa o extrator sem rede (dispensa torch e GPU)")
     ap.add_argument("--modelo", type=Path, default=MODELO_PADRAO,
                     help=f"checkpoint da U-Net (padrao: {MODELO_PADRAO.name})")
     ap.add_argument("--cpu", action="store_true", help="forca CPU mesmo com GPU disponivel")
@@ -198,21 +195,13 @@ def main() -> int:
 
     from identify.pipeline import identify_from_image
 
-    modelo = None
-    extrator = None
-    dev = "cpu"
-    if a.classico:
-        from identify.extract_classical import extract_mask_classical
-        extrator = extract_mask_classical
-    else:
-        import torch
-        from identify.extract import load_model
-        if not a.modelo.exists():
-            print(f"erro: checkpoint ausente em {a.modelo}", file=sys.stderr)
-            print("      use --classico para rodar sem rede", file=sys.stderr)
-            return 2
-        dev = "cpu" if a.cpu else ("cuda" if torch.cuda.is_available() else "cpu")
-        modelo = load_model(str(a.modelo), dev)
+    import torch
+    from identify.extract import load_model
+    if not a.modelo.exists():
+        print(f"erro: checkpoint ausente em {a.modelo}", file=sys.stderr)
+        return 2
+    dev = "cpu" if a.cpu else ("cuda" if torch.cuda.is_available() else "cpu")
+    modelo = load_model(str(a.modelo), dev)
 
     saidas = []
     for caminho in a.imagens:
@@ -221,7 +210,7 @@ def main() -> int:
         except Exception as e:                      # imagem corrompida, formato exotico
             print(f"erro: nao consegui abrir {caminho.name}: {e}", file=sys.stderr)
             continue
-        r = identify_from_image(img, modelo, dev, extractor=extrator)
+        r = identify_from_image(img, modelo, dev)
         if a.json:
             saidas.append({"imagem": str(caminho), **r})
         else:

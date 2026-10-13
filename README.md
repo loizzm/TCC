@@ -43,12 +43,12 @@ para o caminho completo seria um diff de ~90 ocorrências sem ganho de clareza.
 ```
 image.png
    │
-   ├─[A]─► extração da curva          U-Net (ou extrator clássico) → polilinha
+   ├─[A]─► extração da curva          U-Net → polilinha
    │
-   ├─[B]─► calibração dos eixos       moldura + ticks + OCR opcional + RANSAC
+   ├─[B]─► calibração dos eixos       moldura + ticks + OCR + RANSAC
    │            │
    │            ▼
-   │      série y(t)  ──► adimensional sempre; física quando a calibração fecha
+   │      série y(t)  ──► só segue se a calibração fecha; senão, recusa
    │            │
    └─[D]─► identificação least_squares   multi-start + AIC  ──► K, τ, θ, ωn, ζ
 ```
@@ -61,10 +61,9 @@ duas estruturas são indistinguíveis e o custo é 9e-04 de NRMSE. O multi-start
 clássico convergiu em 400/400 amostras. Sobrou um modelo treinado — a U-Net do
 estágio A — e um resultado mais forte que o argumento que ele substituiu.
 
-Duas decisões de robustez acompanham essa: o **OCR é opcional** (a saída
-adimensional — estrutura, ζ, ωn·T, θ/T — não depende de calibração e é sempre
-produzida) e há um **extrator clássico sem rede** como contingência do risco de GPU
-e como baseline que justifica a U-Net.
+A calibração é **obrigatória**: se o estágio B falha, a pipeline recusa a figura
+e devolve o motivo (`ocr_insuficiente`, `ransac_failed`, ...) em vez de um
+resultado parcial.
 
 ### Estado do trabalho
 

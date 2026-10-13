@@ -242,8 +242,8 @@ def test_estagio_a_cobre_a_janela_inteira(caso, rotulo, modelo):
     não ocluído em x=640 e responde 0,047 — a probabilidade cai de 0,954 em
     x=634 para 0,027 em x=636, exatamente onde a ondulação da curva fica
     sub-pixel. O modelo aprendeu a suprimir reta horizontal de span completo
-    (critério G3b.2, que existe para os distratores), e uma resposta assentada
-    É uma reta horizontal.
+    (o que existe para os distratores), e uma resposta assentada É uma reta
+    horizontal.
 
     Nenhum dos dois tem conserto em código: são regiões fora da distribuição de
     treino. Ver §39.3 para o que o retreino precisa cobrir.

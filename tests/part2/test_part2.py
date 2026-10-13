@@ -1,4 +1,4 @@
-"""Critérios 2.1 a 2.11 do PLANO §PARTE 2, mais os portões internos G1/G2/G3b."""
+"""Critérios 2.1 a 2.11 do PLANO §PARTE 2, mais os portões internos G1/G2."""
 from __future__ import annotations
 
 import subprocess
@@ -63,92 +63,6 @@ def test_g1_3_moldura_por_n_spines(test_samples):
         record_p2(f"G1.3-{n_spines}", f"Moldura, n_spines={n_spines}",
                   "≥ 0,90", f"{frac:.3f} (n={len(errs)})", frac >= 0.90)
         assert frac >= 0.90, f"n_spines={n_spines}: {frac:.1%} dentro de 2 px"
-
-
-# --- Bloco 3b: extrator clássico (Estágio A sem rede) -----------------------
-
-def test_g3b_3_extract_classical_nao_importa_torch():
-    """Portão G3b.3: import identify.extract_classical com torch AUSENTE do
-    ambiente. Testado via subprocess com sys.modules bloqueado de verdade —
-    ler o código não é confiável (PLANO_PARTE2.md, Bloco 3b)."""
-    codigo = (
-        "import sys\n"
-        "class _Blocked:\n"
-        "    def find_module(self, name, path=None):\n"
-        "        if name == 'torch' or name.startswith('torch.'):\n"
-        "            raise ImportError('torch bloqueado de proposito')\n"
-        "        return None\n"
-        "sys.meta_path.insert(0, _Blocked())\n"
-        "import identify.extract_classical\n"
-        "print('OK')\n"
-    )
-    r = subprocess.run([sys.executable, "-c", codigo], capture_output=True, text=True)
-    ok = r.returncode == 0 and "OK" in r.stdout
-    record_p2("G3b.3", "extract_classical não importa torch", "import OK sem torch",
-              "OK" if ok else f"falhou: {r.stderr[-300:]}", ok)
-    assert ok, r.stderr
-
-
-def test_g3b_1_iou_mediana(test_samples):
-    from identify.extract_classical import extract_mask_classical
-
-    ious = []
-    por_estrato: dict[str, list[float]] = {}
-    for m in test_samples:
-        pred = extract_mask_classical(m["image"]) > 127
-        alvo = m["mask"] > 127
-        inter = float(np.logical_and(pred, alvo).sum())
-        union = float(np.logical_or(pred, alvo).sum())
-        v = inter / max(union, 1.0)
-        ious.append(v)
-        r = m["render"]
-        escuro = int(r["bg_color"].lstrip("#")[:2], 16) < 128
-        for nome in (f"grade={r['has_grid']}", f"fundo_escuro={escuro}",
-                     f"n_distractors={r['n_distractors']}"):
-            por_estrato.setdefault(nome, []).append(v)
-    med = float(np.median(ious))
-    record_p2("G3b.1", "IoU mediana (extrator clássico)", "≥ 0,70", f"{med:.4f}", med >= 0.70)
-    for nome, vs in sorted(por_estrato.items()):
-        record_p2(f"G3b.1[{nome}]", f"IoU clássico — {nome}", "diagnóstico",
-                  f"{float(np.median(vs)):.4f} (n={len(vs)})", None)
-    assert med >= 0.70, f"IoU mediana do extrator clássico: {med:.4f}"
-
-
-def test_g3b_2_sem_reta_de_span_completo(test_samples):
-    """Portão G3b.2: a máscara PREDITA não contém reta de span completo
-    (grade/spines/distratoras), reusando `_spanning_rows` sobre a própria
-    máscara de saída."""
-    from identify.extract_classical import _spanning_rows, extract_mask_classical
-
-    violacoes = 0
-    for m in test_samples:
-        pred = (extract_mask_classical(m["image"]) > 127)
-        x0, y0, x1, y1 = m["plot_bbox_px"]
-        sub = pred[y0:y1 + 1, x0:x1 + 1]
-        if sub.shape[0] < 10 or sub.shape[1] < 10:
-            continue
-        if _spanning_rows(sub).any() or _spanning_rows(sub.T).any():
-            violacoes += 1
-    record_p2("G3b.2", "Sem reta de span completo na máscara", "0 violações",
-              str(violacoes), violacoes == 0)
-    assert violacoes == 0, f"{violacoes} amostras com reta de span completo na máscara"
-
-
-def test_g3b_4_latencia(test_samples):
-    import time
-
-    from identify.extract_classical import extract_mask_classical
-
-    extract_mask_classical(test_samples[0]["image"])  # aquecimento
-    lat = []
-    for m in test_samples[:100]:
-        t0 = time.perf_counter()
-        extract_mask_classical(m["image"])
-        lat.append((time.perf_counter() - t0) * 1e3)
-    p95 = float(np.percentile(lat, 95))
-    record_p2("G3b.4", "Latência do extrator clássico", "< 200 ms",
-              f"mediana {np.median(lat):.1f} ms, p95 {p95:.1f} ms", p95 < 200.0)
-    assert p95 < 200.0, f"p95 latência: {p95:.1f} ms"
 
 
 # --- Bloco 3: U-Net (Estágio A com rede) ------------------------------------
@@ -493,29 +407,6 @@ def test_2_7_iou_por_estrato(test_samples):
         assert pmed <= PERP_MED_MAX, f"estrato {nome}: perpendicular {pmed:.3f} px"
 
 
-def test_g3b_1_vs_2_1_comparacao_iou(test_samples):
-    """Critério 2.10: U-Net x extrator clássico, mesmo conjunto — sem alvo,
-    é o resultado que justifica (ou não) a U-Net."""
-    import torch
-    from identify.extract import load_model, predict_mask
-    from identify.extract_classical import extract_mask_classical
-
-    dev = "cuda" if torch.cuda.is_available() else "cpu"
-    model = load_model("models/unet_stageA.pt", dev)
-    ious_unet, ious_classico = [], []
-    for m in test_samples:
-        alvo = m["mask"] > 127
-        p_unet = predict_mask(model, m["image"], dev) > 127
-        p_classico = extract_mask_classical(m["image"]) > 127
-        ious_unet.append(float(np.logical_and(p_unet, alvo).sum()) /
-                         max(float(np.logical_or(p_unet, alvo).sum()), 1.0))
-        ious_classico.append(float(np.logical_and(p_classico, alvo).sum()) /
-                             max(float(np.logical_or(p_classico, alvo).sum()), 1.0))
-    med_unet, med_classico = float(np.median(ious_unet)), float(np.median(ious_classico))
-    record_p2("2.10", "IoU mediana: U-Net vs. extrator clássico", "sem alvo",
-              f"U-Net={med_unet:.4f}  clássico={med_classico:.4f}", None)
-
-
 # --- Bloco 5: integração, degradação e relatório ----------------------------
 
 # CRITÉRIO 2.8 (latência por imagem, < 500 ms) — REMOVIDO.
@@ -534,12 +425,8 @@ def test_g3b_1_vs_2_1_comparacao_iou(test_samples):
 # que uma medida dependente de hardware pode honestamente ser. O que saiu foi
 # o ALVO e a asserção.
 #
-# `G3b.4` (extrator clássico, < 200 ms) FICA: ele é puro NumPy/OpenCV, não usa
-# GPU, e mede 12,3 ms de mediana contra um teto de 200 ms — folga de 16x, então
-# o veredito dele não oscila com a carga da máquina.
-#
 # Se algum dia o alvo voltar, ele precisa declarar o hardware junto, ou ser
-# expresso em algo invariante (ex. latência relativa ao extrator clássico).
+# expresso em algo invariante.
 
 
 def test_2_6_degradacao_vs_oraculo(test_samples):
@@ -612,9 +499,8 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
     # entrava só como FILTRO de aceitação dos blocos acima. Essa é a forma
     # clássica do ponto cego: uma regressão de ordem não piora mediana nenhuma,
     # ela ENCOLHE a amostra, e as que somem são as difíceis, então as medianas
-    # que restam até melhoram. Já em movimento sem ninguém ver:
-    # `2.6-classico-aceitas` caiu 183 -> 181 neste bloco, e o estrato da reta de
-    # referência vira a ordem de 1 em 30 amostras (HANDOFF_P2_7 §35.6).
+    # que restam até melhoram. Já em movimento sem ninguém ver: o estrato da
+    # reta de referência vira a ordem de 1 em 30 amostras (HANDOFF_P2_7 §35.6).
     ordem_ok = 0
     ordem_ok_sc = 0
     ordem_n_sc = 0
@@ -897,59 +783,3 @@ def test_2_6_degradacao_vs_oraculo(test_samples):
         assert pior <= 3.0, f"pior degradação: {piores}"
     if d_adim is not None:
         assert d_adim <= 3.0, f"degradação adimensional de zeta: {d_adim:+.2f} p.p."
-
-
-def test_2_6_diagnostico_extrator_classico(test_samples):
-    """Diagnóstico (não é critério do PLANO): mesma medição do 2.6, mas
-    trocando a U-Net (Bloco 3) pelo extrator sem rede (Bloco 3b) —
-    comparação pendente registrada no HANDOFF_P2_5.md §7, item 4. Sem
-    `assert`: não é um portão do PLANO, só material de decisão entre os
-    dois extratores.
-    """
-    from identify.classical import identify as estagio_d
-    from identify.extract_classical import extract_mask_classical
-    from identify.pipeline import identify_from_image
-    from tests.conftest import meta_t_dom
-
-    err_oraculo: dict[str, list[float]] = {}
-    err_real: dict[str, list[float]] = {}
-    aceitas = 0
-    for m in test_samples:
-        alvo = m["params"]
-        t_dom = meta_t_dom(m)
-
-        o = estagio_d(m["series"]["t"], m["series"]["y"])
-        r = identify_from_image(m["image"], None, extractor=extract_mask_classical)
-        if not (o.success and r["ok"] and r["order"] == m["order"]
-                and o.order == m["order"]):
-            continue
-        aceitas += 1
-        for k in ("K", "tau", "wn", "zeta"):
-            if alvo.get(k) is None:
-                continue
-            for saida, acc in ((o.params, err_oraculo), (r["params"], err_real)):
-                if saida.get(k) is None:
-                    continue
-                acc.setdefault(k, []).append(
-                    abs(saida[k] - alvo[k]) / max(abs(alvo[k]), 1e-12) * 100.0)
-        for saida, acc in ((o.params, err_oraculo), (r["params"], err_real)):
-            if saida.get("theta") is not None:
-                acc.setdefault("theta", []).append(
-                    abs(saida["theta"] - alvo["theta"]) / max(t_dom, 1e-12) * 100.0)
-
-    record_p2("2.6-classico-aceitas", "Amostras comparáveis (extrator clássico)",
-              "diagnóstico", f"{aceitas}/{len(test_samples)}", None)
-    if aceitas < 100:
-        record_p2("2.6-classico", "Degradação end-to-end (extrator clássico)",
-                  "diagnóstico (n insuficiente)", f"n={aceitas} < 100", None)
-        return
-    piores = []
-    for k in sorted(set(err_oraculo) & set(err_real)):
-        d = float(np.median(err_real[k])) - float(np.median(err_oraculo[k]))
-        piores.append((k, d))
-        record_p2(f"2.6-classico[{k}]", f"ΔMAPE (clássico) — {k}", "diagnóstico",
-                  f"{d:+.2f} p.p. (oráculo {np.median(err_oraculo[k]):.2f}%, "
-                  f"real {np.median(err_real[k]):.2f}%)", d <= 3.0)
-    pior = max(d for _, d in piores)
-    record_p2("2.6-classico", "Degradação end-to-end (extrator clássico, pior parâmetro)",
-              "diagnóstico", f"{pior:+.2f} p.p. (n={aceitas})", pior <= 3.0)

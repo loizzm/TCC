@@ -158,11 +158,12 @@ def test_serie_curta_demais_nao_trunca():
 
 def test_campos_de_truncagem_sempre_existem():
     """Aditivo significa SEMPRE presente: consumidor não pode levar KeyError."""
+    from identify.extract import load_model
     from identify.pipeline import identify_from_image
-    from identify.extract_classical import extract_mask_classical
 
+    modelo = load_model("models/unet_stageA.pt", "cpu")
     img = np.full((300, 400, 3), 255, dtype=np.uint8)   # imagem vazia: falha cedo
-    r = identify_from_image(img, None, "cpu", extractor=extract_mask_classical)
+    r = identify_from_image(img, modelo, "cpu")
     for campo in ("truncado_em", "ganho_truncagem", "nrmse_full", "nrmse_final"):
         assert campo in r, f"campo {campo!r} ausente da saída"
     assert r["truncado_em"] is None

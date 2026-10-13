@@ -840,15 +840,8 @@ def _num_ou_none(v):
     return float(v) if v is not None and np.isfinite(v) else None
 
 
-def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
-                        extractor=None) -> dict:
+def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu") -> dict:
     """Imagem -> parâmetros. Nunca levanta: falha vira ok=False.
-
-    `extractor`: opcional, `callable(image_rgb) -> mask uint8 0/255` — troca
-    `predict_mask` (U-Net, Bloco 3) por outro extrator com a mesma
-    assinatura de saída, ex. `identify.extract_classical.extract_mask_classical`
-    (Bloco 3b). Quando `None` (padrão, assinatura idêntica à do
-    `PLANO_PARTE2.md`), usa a U-Net via `model`/`device` como sempre.
 
     **Calibração é obrigatória.** Se o Estágio B falha (`cal.ok == False`), a
     amostra é recusada com `ok=False`, `order=""` e `reason` igual ao motivo
@@ -938,7 +931,7 @@ def identify_from_image(image_rgb: np.ndarray, model, device: str = "cpu",
         }
 
     cal = calibrate(image_rgb)
-    mask = extractor(image_rgb) if extractor is not None else predict_mask(model, image_rgb, device)
+    mask = predict_mask(model, image_rgb, device)
     x_px, y_px = mask_to_polyline(mask, bbox=cal.bbox_px if any(cal.bbox_px) else None)
 
     if x_px.size < 10:
